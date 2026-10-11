@@ -21,11 +21,19 @@ export class ApiError extends Error {
 
 const TIMEOUT_MS = 20000; // 20 секунд чекаємо відповідь
 let onUnauthorized = () => {}; // що робити, коли сесія закінчилась
+let onAdminUnauthorized = () => {}; // те саме для адмінки (/admin/...)
 
 // Один раз при старті: setUnauthorizedHandler(() => показати «Zugang»)
 export function setUnauthorizedHandler(fn) {
   onUnauthorized = fn;
 }
+// 401 в адмінці означає «показати Admin · Login», а не екран входу класу
+export function setAdminUnauthorizedHandler(fn) {
+  onAdminUnauthorized = fn;
+}
+
+// Заголовок для PATCH/DELETE Klausur: версія з останньої відповіді (поле version)
+export const ifMatch = (version) => ({ "If-Match": `"v${version}"` });
 
 // Головна функція: await api("/week?date=2026-10-05")
 //                  await api("/auth/login", { method: "POST", body: { password } })
@@ -62,7 +70,9 @@ export async function api(path, { method = "GET", body, signal, headers = {}, ti
   const err = data?.error ?? {};
   const retryAfter = Number(res.headers.get("Retry-After")) || null;
   const apiError = new ApiError(res.status, err.code ?? "http_error", err.message ?? "Anfrage fehlgeschlagen.", err.details ?? {}, retryAfter);
-  if (res.status === 401 && err.code === "not_authenticated") onUnauthorized(); // сесія закінчилась
+  if (res.status === 401 && err.code === "not_authenticated") {
+    (path.startsWith("/admin") ? onAdminUnauthorized : onUnauthorized)(); // сесія закінчилась
+  }
   throw apiError;
 }
 
