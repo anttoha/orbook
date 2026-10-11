@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import AuthPage from "./AuthPage";
@@ -16,6 +16,7 @@ const HomePage = () => {
   );
   const [passwordValue, setPasswordValue] = useState("");
   const [isPasswordValid, setIsPasswordValid] = useState(true);
+  const [page, setPage] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -27,7 +28,17 @@ const HomePage = () => {
     }
   };
 
-  if (!isLogged) {
+  useEffect(async () => {
+    try {
+      const me = await api("/auth/me");
+      if (!me.authenticated) setPage("zugang");
+      else setPage("app");
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  if (page === 'zugang') {
     return (
       <AuthPage
         passwordValue={passwordValue}
@@ -60,7 +71,10 @@ const HomePage = () => {
           Лежат вне Container: иначе flex добавил бы им лишний отступ справа */}
       <SheetHost />
       {/* всплывающие уведомления (toast) */}
-      <Toaster position="top-center" toastOptions={{ style: { fontFamily: "inherit" } }} />
+      <Toaster
+        position="top-center"
+        toastOptions={{ style: { fontFamily: "inherit" } }}
+      />
     </Tooltip.Provider>
   );
 };
