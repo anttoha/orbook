@@ -1,43 +1,29 @@
 import { Flag } from "lucide-react";
 import { cn } from "../../shared/utils/cn";
-import { fachClasses, fachName, statusBadge } from "../../shared/utils/lessons";
+import { lessonBadge, subjectName } from "../../shared/utils/format";
+import { fachClasses } from "../../shared/utils/lessons";
 
 // ─────────────────────────────────────────────────────────────
-// Ячейка урока в сетке недели.
-// Если урок есть — это кнопка (клик → шторка урока). Её оборачивает
-// LessonContextMenu, поэтому все лишние пропсы (...props: style,
-// onClick, onContextMenu, ref от Radix) передаём прямо на <button>.
+// Клітинка уроку в сітці тижня (телефон): код предмета + кабінет.
+// Це кнопка (клік → шторка уроку). Її обгортає LessonContextMenu, тому всі зайві
+// пропси (...props: onClick, onContextMenu, ref від Radix) передаємо прямо на <button>.
 // ─────────────────────────────────────────────────────────────
 const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
-  // Общие классы ячейки
-  const base = "relative flex flex-col justify-between gap-1.75 overflow-hidden rounded-[14px] px-2 py-1.75 leading-none";
+  // Спільні класи клітинки; кнопка: текст зліва, без виділення тексту і системного меню iOS
+  const base =
+    "relative flex min-h-0 flex-1 flex-col justify-between gap-1 overflow-hidden rounded-[14px] px-2 py-1.75 text-left leading-none select-none [-webkit-touch-callout:none] transition-transform active:scale-[0.97]";
+  const label = [subjectName(lesson.subject), lessonBadge(lesson)].filter(Boolean).join(", "); // для скрінрідера
 
-  // Пустая ячейка (урока нет или курс скрыт)
-  if (!lesson) {
-    return <div style={props.style} className={cn(base, "bg-sand/60", className)} />;
-  }
-
-  // Классы для кнопки: текст слева, без выделения текста и системного меню iOS при долгом нажатии
-  const interactive = "text-left select-none [-webkit-touch-callout:none] transition-transform active:scale-[0.97]";
-
-  // Подпись для скринридера: «Mathe, Vertretung»
-  const label = [fachName(lesson.fach), statusBadge(lesson)].filter(Boolean).join(", ");
-
-  // Отменённый урок: пунктирная рамка, зачёркнутое сокращение
+  // Скасований урок: пунктирна рамка, закреслений код
   if (lesson.status === "cancelled") {
     return (
-      <button
-        type="button"
-        aria-label={label}
-        {...props}
-        className={cn(base, interactive, "border-[1.5px] border-dashed border-faint2 text-faint", isPast && "opacity-50", className)}
-      >
-        <span className="text-body-sm font-extrabold line-through">{lesson.short}</span>
+      <button type="button" aria-label={label} {...props} className={cn(base, "border-[1.5px] border-dashed border-faint2 text-faint", isPast && "opacity-50", className)}>
+        <span className="text-body-sm font-extrabold line-through">{lesson.subject.code}</span>
       </button>
     );
   }
 
-  const isChanged = lesson.status === "changed"; // Vertretung?
+  const isChanged = lesson.status !== "normal"; // Vertretung, Raumänderung, перенос
 
   return (
     <button
@@ -46,25 +32,19 @@ const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
       {...props}
       className={cn(
         base,
-        interactive,
-        fachClasses(lesson.fach, overrides), // цвет предмета (с учётом своего цвета)
-        isChanged && "ring-2 ring-accent ring-inset", // рамка у замены
-        isPast && "opacity-45", // прошедший урок бледнее
+        fachClasses(lesson.subject.code, overrides), // колір предмета (з урахуванням свого кольору)
+        isChanged && "ring-2 ring-accent ring-inset", // рамка у зміни
+        isPast && "opacity-45", // минулий урок блідіший
         className,
       )}
     >
-      <span className="text-body-sm font-extrabold">{lesson.short}</span>
-      <span
-        className={cn(
-          "text-small",
-          lesson.exam || isChanged ? "font-extrabold text-accent-ink" : "font-bold opacity-70",
-        )}
-      >
-        {lesson.exam ? "Test" : lesson.room}
+      <span className="truncate text-body-sm font-extrabold">{lesson.subject.code}</span>
+      <span className={cn("truncate text-small", lesson.examId || isChanged ? "font-extrabold text-accent-ink" : "font-bold opacity-70")}>
+        {lesson.examId ? "Klausur" : lesson.room}
       </span>
 
-      {/* флажок Klausur в углу */}
-      {lesson.exam && (
+      {/* прапорець Klausur у куті */}
+      {lesson.examId && (
         <span className="absolute top-px right-px grid place-items-center rounded-tr-[14px] rounded-bl-md bg-accent p-1.25 text-on-accent">
           <Flag className="size-2.5" strokeWidth={3} />
         </span>

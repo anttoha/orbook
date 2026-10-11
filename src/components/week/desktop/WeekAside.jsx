@@ -1,42 +1,36 @@
 import { Link } from "react-router-dom";
-import { startOfDay } from "date-fns";
-import { getDayInfo, getDayLessons, getUpcomingExams, getWeekStats, periods } from "../../../shared/data/timetable";
 import { useNow } from "../../../shared/hooks/useNow";
+import { useDay, useLessonFilter } from "../../../shared/hooks/usePlan";
 import { useSheet } from "../../../shared/hooks/useSheet";
+import { usePlanStore } from "../../../shared/store/planStore";
 import { useUserStore } from "../../../shared/store/userStore";
-import { toISODate } from "../../../shared/utils/dates";
-import { applyHidden, getLiveStatus } from "../../../shared/utils/lessons";
+import { lessonState } from "../../../shared/utils/lessonClock";
 import CurrentLessonCard from "../../day/CurrentLessonCard";
 import DayInfoBanner from "../../day/DayInfoBanner";
 import ExamCard from "./ExamCard";
 import WeekStatsCard from "./WeekStatsCard";
 
 // ─────────────────────────────────────────────────────────────
-// Правая колонка недели на ПК (макет «Seitenspalte», ширина 330px):
-// «Jetzt» · Info zum Tag · Nächste Klausuren · статистика недели.
-// На экранах 1024–1439px она стоит под сеткой (две колонки карточек).
+// Права колонка тижня на ПК (макет «Seitenspalte», ширина 330px):
+// «Jetzt» · Info zum Tag · Nächste Klausuren · статистика тижня.
+// На екранах 1024–1439px вона стоїть під сіткою (дві колонки карток).
+// days — дні показаного тижня (Mo–Fr)
 // ─────────────────────────────────────────────────────────────
 const WeekAside = ({ days }) => {
-  const now = useNow(); // текущее время
-  const { openSheet } = useSheet(); // открыть шторку
-  const hiddenCourses = useUserStore((s) => s.hiddenCourses); // скрытые курсы
-  const overrides = useUserStore((s) => s.colorOverrides); // свои цвета
+  const { now, today } = useNow(); // час школи
+  const { openSheet } = useSheet(); // відкрити шторку
+  const filter = useLessonFilter(); // «Meine Kurse»
+  const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
+  const exams = usePlanStore((s) => s.exams).slice(0, 3); // 3 найближчі Klausuren (GET /api/exams)
+  const { day: todayDay } = useDay(today); // сьогоднішній день (може бути в іншому тижні)
 
-  const today = startOfDay(now); // сегодня
-  const todayLessons = applyHidden(getDayLessons(today), hiddenCourses); // уроки сегодня
-  const live = getLiveStatus(todayLessons, now); // что идёт сейчас
-  const showLive = live && ["running", "break", "before"].includes(live.kind); // показывать «Jetzt»
-  const info = getDayInfo(today); // Info zum Tag (сегодня)
-  const exams = getUpcomingExams(now).slice(0, 3); // 3 ближайшие Klausuren
-  const stats = getWeekStats(days.slice(0, 5)); // статистика Mo–Fr показываемой недели
-
-  // Открыть урок сегодняшнего дня
-  const openToday = (index) => openSheet("stunde", { datum: toISODate(today), stunde: periods[index].n });
+  const live = todayDay ? lessonState(filter(todayDay.lessons), now) : null; // що йде зараз
+  const showLive = live && (live.current || live.next); // картка «Jetzt / Gleich»
 
   return (
     <aside className="grid content-start gap-4 lg:grid-cols-2 desktop:grid-cols-1 print:hidden">
-      {showLive && <CurrentLessonCard live={live} onOpen={openToday} />}
-      {info && <DayInfoBanner info={info} onClick={() => openSheet("info", { datum: toISODate(today) })} />}
+      {showLive && <CurrentLessonCard live={live} onOpen={(lesson) => openSheet("stunde", { datum: today, stunde: lesson.period, fach: lesson.subject.code })} />}
+      {todayDay?.info.length > 0 && <DayInfoBanner info={todayDay.info} onClick={() => openSheet("info", { datum: today })} />}
 
       {/* Nächste Klausuren */}
       {exams.length > 0 && (
@@ -48,12 +42,12 @@ const WeekAside = ({ days }) => {
             </Link>
           </header>
           {exams.map((exam, i) => (
-            <ExamCard key={`${toISODate(exam.date)}-${exam.period.n}`} exam={exam} now={now} overrides={overrides} highlight={i === 0} />
+            <ExamCard key={exam.id} exam={exam} overrides={overrides} highlight={i === 0} />
           ))}
         </section>
       )}
 
-      <WeekStatsCard days={days.slice(0, 5)} stats={stats} />
+      <WeekStatsCard days={days} />
     </aside>
   );
 };

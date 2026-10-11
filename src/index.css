@@ -29,28 +29,28 @@
     --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
     --font-nunito: "Nunito", ui-sans-serif, system-ui, sans-serif;
 
-    /* ── Стили текста (из макетов Figma) ──────────────────────────
-       Один класс = размер + высота строки (+ жирность у заголовков).
-       Использование: <h1 class="text-hero">…</h1>
-       Высоту строки можно перебить: text-body leading-none
+    /* ── Стилі тексту (з макетів Figma) ──────────────────────────
+       Один клас = розмір + висота рядка (+ жирність у заголовків).
+       Використання: <h1 class="text-hero">…</h1>
+       Висоту рядка можна перебити: text-body leading-none
        ┌──────────────┬───────┬──────────────────────────────────────┐
-       │ класс        │ px    │ где используется                     │
+       │ клас         │ px    │ де використовується                  │
        ├──────────────┼───────┼──────────────────────────────────────┤
-       │ text-display │ 50/900│ «ORBook» на странице входа           │
-       │ text-hero    │ 36/900│ заголовок страницы на ПК             │
-       │ text-title   │ 29/900│ заголовок страницы на телефоне       │
-       │ text-heading │ 26/900│ заголовок шторки / панели            │
-       │ text-logo    │ 22/900│ «ORBook» в сайдбаре                  │
-       │ text-number  │ 20/900│ числа дней в сетке                   │
-       │ text-subhead │ 17/900│ «Physik · 301», месяц в календаре    │
-       │ text-input   │ 16    │ поля ввода (iOS не зумит с 16px)     │
-       │ text-body    │ 15    │ основной текст, названия предметов   │
-       │ text-body-sm │ 14    │ текст в карточках, пункты меню       │
-       │ text-label   │ 13    │ подписи, «KW 38 · …», кнопки         │
-       │ text-caption │ 12    │ вторичный текст «Web · Raum 102»     │
-       │ text-small   │ 11    │ время «08:15», мелкие подписи        │
-       │ text-micro   │ 10    │ бейджи VERTRETUNG, «Pause · 20 min»  │
-       │ text-tiny    │ 9     │ время в сетке недели на телефоне     │
+       │ text-display │ 50/900│ «ORBook» на сторінці входу           │
+       │ text-hero    │ 36/900│ заголовок сторінки на ПК             │
+       │ text-title   │ 29/900│ заголовок сторінки на телефоні       │
+       │ text-heading │ 26/900│ заголовок шторки / панелі            │
+       │ text-logo    │ 22/900│ «ORBook» у сайдбарі                  │
+       │ text-number  │ 20/900│ числа днів у сітці                   │
+       │ text-subhead │ 17/900│ «Physik · 301», місяць у календарі   │
+       │ text-input   │ 16    │ поля вводу (iOS не зумить з 16px)    │
+       │ text-body    │ 15    │ основний текст, назви предметів      │
+       │ text-body-sm │ 14    │ текст у картках, пункти меню         │
+       │ text-label   │ 13    │ підписи, «KW 41 · …», кнопки         │
+       │ text-caption │ 12    │ другорядний текст «T25 · Raum 305»   │
+       │ text-small   │ 11    │ час «08:15», дрібні підписи          │
+       │ text-micro   │ 10    │ бейджі VERTRETUNG, «Pause · 20 min»  │
+       │ text-tiny    │ 9     │ час у сітці тижня на телефоні        │
        └──────────────┴───────┴──────────────────────────────────────┘ */
     --text-display: 50px;
     --text-display--line-height: 1.1;
@@ -90,7 +90,7 @@
     --text-tiny: 9px;
     --text-tiny--line-height: 1.2;
 
-    --color-overlay: #2a243366; /* затемнение под окнами и панелями */
+    --color-overlay: #2a243366; /* затемнення під вікнами і панелями */
     --color-paper: #fbf7f2;
     --color-accent: #6c4df6;
     --color-ink: #2a2433;
@@ -220,7 +220,7 @@
     }
 }
 
-/* Анимации для окон и меню (animate-fade-in, animate-pop-in и т.д.) */
+/* Анімації для вікон і меню (animate-fade-in, animate-pop-in тощо) */
 @theme {
     --animate-fade-in: fade-in 0.15s ease-out;
     --animate-fade-out: fade-out 0.12s ease-in;

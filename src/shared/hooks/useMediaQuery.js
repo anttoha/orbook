@@ -1,19 +1,19 @@
 import { useSyncExternalStore } from "react";
 
-// true, если media query совпадает: useMediaQuery("(min-width: 90rem)")
-// useSyncExternalStore подписывается на изменения ширины окна
+// true, якщо media query збігається: useMediaQuery("(min-width: 90rem)")
+// useSyncExternalStore підписується на зміни ширини вікна
 export const useMediaQuery = (query) =>
   useSyncExternalStore(
     (onChange) => {
-      const media = window.matchMedia(query); // объект media query
-      media.addEventListener("change", onChange); // сообщаем React об изменениях
-      return () => media.removeEventListener("change", onChange); // отписка
+      const media = window.matchMedia(query); // об'єкт media query
+      media.addEventListener("change", onChange); // повідомляємо React про зміни
+      return () => media.removeEventListener("change", onChange); // відписка
     },
-    () => window.matchMedia(query).matches, // текущее значение
+    () => window.matchMedia(query).matches, // поточне значення
   );
 
-// Компьютерный вид (сайдбар, панели справа) — с 1024px (брейкпоинт lg)
+// Комп'ютерний вигляд (сайдбар, панелі праворуч) — з 1024px (брейкпоінт lg)
 export const DESKTOP_QUERY = "(min-width: 64rem)";
 
-// Широкий экран — макет 1:1 с правой колонкой (брейкпоинт desktop из index.css, 1440px)
+// Широкий екран — макет 1:1 з правою колонкою (брейкпоінт desktop з index.css, 1440px)
 export const WIDE_QUERY = "(min-width: 90rem)";

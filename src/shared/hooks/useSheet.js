@@ -1,27 +1,27 @@
 import { useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 
-// Все параметры адреса, которые относятся к шторкам
+// Усі параметри адреси, що стосуються шторок
 const SHEET_KEYS = ["sheet", "datum", "stunde", "fach", "bereich", "kw", "id"];
 
 // ─────────────────────────────────────────────────────────────
-// Открытие/закрытие шторок через адрес страницы:
-//   ?sheet=stunde&datum=2025-09-17&stunde=2
-// Плюсы: кнопка «Назад» закрывает шторку, ссылку можно отправить.
-// Шторки рисует <SheetHost /> (он читает эти параметры).
+// Відкриття/закриття шторок через адресу сторінки:
+//   ?sheet=stunde&datum=2026-10-07&stunde=2&fach=Ma
+// Плюси: кнопка «Назад» закриває шторку, посилання можна надіслати.
+// Шторки малює <SheetHost /> (він читає ці параметри).
 // ─────────────────────────────────────────────────────────────
 export const useSheet = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Открыть шторку name с параметрами. replace: true — не добавлять запись в историю
+  // Відкрити шторку name з параметрами. replace: true — не додавати запис в історію
   const openSheet = useCallback(
     (name, params = {}, { replace = false } = {}) => {
       setSearchParams(
         (prev) => {
-          SHEET_KEYS.forEach((key) => prev.delete(key)); // убираем параметры прошлой шторки
-          prev.set("sheet", name); // какая шторка
+          SHEET_KEYS.forEach((key) => prev.delete(key)); // прибираємо параметри минулої шторки
+          prev.set("sheet", name); // яка шторка
           Object.entries(params).forEach(([key, value]) => {
-            if (value != null) prev.set(key, String(value)); // её параметры
+            if (value != null) prev.set(key, String(value)); // її параметри
           });
           return prev;
         },
@@ -31,26 +31,26 @@ export const useSheet = () => {
     [setSearchParams],
   );
 
-  // Закрыть шторку (replace — чтобы «Назад» не открыл её снова)
+  // Закрити шторку (replace — щоб «Назад» не відкрив її знову)
   const closeSheet = useCallback(() => {
     setSearchParams(
       (prev) => {
-        if (!prev.has("sheet")) return prev; // уже закрыта
-        SHEET_KEYS.forEach((key) => prev.delete(key)); // убираем все параметры шторки
+        if (!prev.has("sheet")) return prev; // вже закрита
+        SHEET_KEYS.forEach((key) => prev.delete(key)); // прибираємо всі параметри шторки
         return prev;
       },
       { replace: true },
     );
   }, [setSearchParams]);
 
-  // Текущая шторка и её параметры
+  // Поточна шторка та її параметри
   const sheet = {
     name: searchParams.get("sheet"), // "stunde" | "info" | "notiz" | "farbe" | "teilen" | "kalender" | null
     datum: searchParams.get("datum"),
     stunde: searchParams.get("stunde"),
     fach: searchParams.get("fach"),
     bereich: searchParams.get("bereich"),
-    kw: searchParams.get("kw"), // понедельник недели для «kalender» и «teilen» (не путать с ?woche= у страницы недели)
+    kw: searchParams.get("kw"), // понеділок тижня для «kalender» і «teilen» (не плутати з ?woche= у сторінки тижня)
     id: searchParams.get("id"),
   };
 

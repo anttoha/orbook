@@ -1,24 +1,24 @@
 import { cn } from "../../shared/utils/cn";
 
 // ─────────────────────────────────────────────────────────────
-// Переключатель «Liste | Zeitleiste», «Heute | Morgen | Woche».
-// options: [{ value, label, icon? }], value — выбранное, onChange(value)
-// variant: "card" — выбранный белый (телефон), "accent" — выбранный фиолетовый (ПК)
-// size: "md" — высота 36px, "sm" — 28px (компактный, как в шапке на ПК)
-// iconOnly — показывать только иконки (подпись уходит в aria-label)
+// Перемикач «Liste | Zeitleiste», «Heute | Morgen | Woche».
+// options: [{ value, label, icon? }], value — вибране, onChange(value)
+// variant: "card" — вибраний білий (телефон), "accent" — вибраний фіолетовий (ПК)
+// size: "md" — висота 36px, "sm" — 28px (компактний, як у шапці на ПК)
+// iconOnly — показувати тільки іконки (підпис іде в aria-label)
 // ─────────────────────────────────────────────────────────────
 const Segmented = ({ options, value, onChange, label, className, variant = "card", size = "md", iconOnly = false }) => {
   return (
-    // role="group" + aria-label — скринридер прочитает, что это за переключатель
+    // role="group" + aria-label — скрінрідер прочитає, що це за перемикач
     <div role="group" aria-label={label} className={cn("flex rounded-full bg-sand p-1", className)}>
       {options.map((option) => {
-        const active = option.value === value; // выбран ли этот вариант
+        const active = option.value === value; // чи вибраний цей варіант
         return (
           <button
             key={option.value}
             type="button"
-            aria-pressed={active} // «нажата» ли кнопка — для скринридера
-            aria-label={iconOnly ? option.label : undefined} // подпись для варианта «только иконки»
+            aria-pressed={active} // чи «натиснута» кнопка — для скрінрідера
+            aria-label={iconOnly ? option.label : undefined} // підпис для варіанта «тільки іконки»
             title={iconOnly ? option.label : undefined}
             onClick={() => onChange(option.value)}
             className={cn(
@@ -26,8 +26,8 @@ const Segmented = ({ options, value, onChange, label, className, variant = "card
               size === "sm" ? "h-7 px-3" : "h-9 px-3",
               active
                 ? variant === "accent"
-                  ? "bg-accent text-on-accent" // ПК: фиолетовая «пилюля»
-                  : "bg-card text-ink shadow-sm" // телефон: белая «пилюля»
+                  ? "bg-accent text-on-accent" // ПК: фіолетова «пігулка»
+                  : "bg-card text-ink shadow-sm" // телефон: біла «пігулка»
                 : "text-muted hover:text-ink",
             )}
           >

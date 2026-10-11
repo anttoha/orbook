@@ -1,59 +1,59 @@
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { getDayLessons, periods } from "../../shared/data/timetable";
+import { useDay } from "../../shared/hooks/usePlan";
 import { useUserStore } from "../../shared/store/userStore";
-import { formatDe, parseISODate } from "../../shared/utils/dates";
-import { fachName } from "../../shared/utils/lessons";
+import { isIsoDate, longDate, numericDate, subjectName, weekdayLong, weekdayShort } from "../../shared/utils/format";
 import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
 
 // ─────────────────────────────────────────────────────────────
-// Шторка заметки.
-//   ?sheet=notiz&datum=…&stunde=2  — заметка к уроку
-//   ?sheet=notiz&datum=…&id=…      — изменить заметку на день
-//   ?sheet=notiz&datum=…           — новая заметка на день
+// Шторка нотатки (нотатки живуть тільки на пристрої — userStore).
+//   ?sheet=notiz&datum=…&stunde=2  — нотатка до уроку
+//   ?sheet=notiz&datum=…&id=…      — змінити нотатку на день
+//   ?sheet=notiz&datum=…           — нова нотатка на день
 // ─────────────────────────────────────────────────────────────
 const NoteSheet = ({ open, onClose, sheet }) => {
-  const date = parseISODate(sheet.datum); // дата из адреса
-  const period = sheet.stunde ? periods[Number(sheet.stunde) - 1] : null; // урок (если заметка к уроку)
-  const lesson = date && period ? getDayLessons(date)[period.n - 1] : null; // сам урок
+  const valid = isIsoDate(sheet.datum); // чи правильна дата в адресі
+  const { day } = useDay(valid ? sheet.datum : null); // день (для назви уроку)
+  const period = sheet.stunde ? Number(sheet.stunde) : null; // номер уроку (якщо нотатка до уроку)
+  const lesson = period ? day?.lessons.find((l) => l.period === period) : null; // сам урок
 
-  // id заметки: к уроку — «дата#урок», на день — из адреса (или новая)
-  const noteId = period ? `${sheet.datum}#${period.n}` : sheet.id;
-  const note = useUserStore((s) => s.notes.find((n) => n.id === noteId)); // уже сохранённая заметка
+  // id нотатки: до уроку — «дата#урок», на день — з адреси (або нова)
+  const noteId = period ? `${sheet.datum}#${period}` : sheet.id;
+  const note = useUserStore((s) => s.notes.find((n) => n.id === noteId)); // уже збережена нотатка
 
-  if (!date) return null; // кривой адрес
+  if (!valid) return null; // крива адреса
 
-  // Подпись над заголовком: «2. Std · Mathe · Mi, 17.9.» или «Mittwoch, 17. September»
-  const eyebrow = lesson
-    ? `${period.n}. Std · ${fachName(lesson.fach)} · ${formatDe(date, "EEEEEE, d.M.")}`
-    : formatDe(date, "EEEE, d. MMMM");
+  // Підпис над заголовком: «2. Std · Mathe · Mi, 7.10.» або «Mittwoch, 7. Oktober»
+  const eyebrow = period
+    ? `${period}. Std${lesson ? ` · ${subjectName(lesson.subject)}` : ""} · ${weekdayShort(sheet.datum)}, ${numericDate(sheet.datum)}`
+    : `${weekdayLong(sheet.datum)}, ${longDate(sheet.datum)}`;
 
   return (
     <Sheet open={open} onClose={onClose} panelLabel="Notiz" eyebrow={eyebrow} title={note ? "Notiz bearbeiten" : "Neue Notiz"}>
-      {/* key — при смене заметки форма создаётся заново с её текстом */}
-      <NoteForm key={noteId ?? "neu"} note={note} noteId={noteId} date={sheet.datum} period={period?.n ?? null} onDone={onClose} />
+      {/* key — при зміні нотатки форма створюється заново з її текстом */}
+      <NoteForm key={noteId ?? "neu"} note={note} noteId={noteId} date={sheet.datum} period={period} onDone={onClose} />
     </Sheet>
   );
 };
 
-// Форма с полем ввода и кнопками
+// Форма з полем вводу і кнопками
 const NoteForm = ({ note, noteId, date, period, onDone }) => {
-  const [text, setText] = useState(note?.text ?? ""); // текст в поле ввода
-  const saveNote = useUserStore((s) => s.saveNote); // сохранить
-  const deleteNote = useUserStore((s) => s.deleteNote); // удалить
+  const [text, setText] = useState(note?.text ?? ""); // текст у полі
+  const saveNote = useUserStore((s) => s.saveNote); // зберегти
+  const deleteNote = useUserStore((s) => s.deleteNote); // видалити
 
-  // Сохранение: закрываем сразу, «сервер» досинхронизирует в фоне
+  // Збереження
   const handleSubmit = (e) => {
-    e.preventDefault(); // не перезагружать страницу
-    if (!text.trim()) return; // пустую не сохраняем
+    e.preventDefault(); // не перезавантажувати сторінку
+    if (!text.trim()) return; // порожню не зберігаємо
     saveNote({ id: noteId, date, period, text: text.trim() });
     toast.success("Notiz gespeichert");
     onDone();
   };
 
-  // Удаление
+  // Видалення
   const handleDelete = () => {
     deleteNote(noteId);
     toast("Notiz gelöscht");
@@ -69,12 +69,12 @@ const NoteForm = ({ note, noteId, date, period, onDone }) => {
           onChange={(e) => setText(e.target.value)}
           placeholder="z. B. Sportsachen mitnehmen"
           rows={4}
-          autoFocus // сразу можно печатать
+          autoFocus // одразу можна друкувати
           className="w-full resize-none rounded-2xl bg-card p-3.5 text-body font-bold text-ink outline-none placeholder:text-faint focus:ring-2 focus:ring-accent/30"
         />
       </label>
       <div className="flex gap-2.5">
-        {/* «Löschen» только для уже сохранённой заметки */}
+        {/* «Löschen» тільки для вже збереженої нотатки */}
         {note && (
           <Button onClick={handleDelete} className="text-danger">
             <Trash2 className="size-4.5" /> Löschen

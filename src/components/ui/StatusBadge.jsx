@@ -1,11 +1,17 @@
+import { lessonBadge } from "../../shared/utils/format";
 import Badge from "./Badge";
 
-// Бейдж по статусу урока: Vertretung / fällt aus / Klausur (или ничего)
-const StatusBadge = ({ lesson, className }) => {
-  if (lesson.status === "cancelled") return <Badge variant="cancelled" className={className}>fällt aus</Badge>;
-  if (lesson.exam) return <Badge variant="exam" className={className}>Klausur</Badge>;
-  if (lesson.status === "changed") return <Badge variant="changed" className={className}>Vertretung</Badge>;
-  return null; // обычный урок — без бейджа
+// Бейдж уроку: FÄLLT AUS / VERTRETUNG / RAUM / KLAUSUR (або нічого).
+// exam — Klausur цього уроку (якщо є): тоді пишемо її тип — «Klausur», «Test», «Abgabe»
+const StatusBadge = ({ lesson, exam, className }) => {
+  const label = lessonBadge(lesson); // текст бейджа за статусом
+  if (!label) return null; // звичайний урок — без бейджа
+  if (lesson.examId) return <Badge variant="exam" className={className}>{exam?.type ?? "Klausur"}</Badge>;
+  return (
+    <Badge variant={lesson.status === "cancelled" ? "cancelled" : "changed"} className={className}>
+      {label}
+    </Badge>
+  );
 };
 
 export default StatusBadge;

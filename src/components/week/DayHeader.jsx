@@ -1,36 +1,22 @@
 import { Link } from "react-router-dom";
-import { format } from "date-fns";
-import { de } from "date-fns/locale";
 import { cn } from "../../shared/utils/cn";
+import { dayNumber, longDate, weekdayLong } from "../../shared/utils/format";
 
-// Шапка дня в сетке («MI 17»). Это ссылка на страницу дня (to="/tag/2025-09-17")
-const DayHeader = ({ day, isToday, hasExam, to, style }) => {
+// Шапка дня в сітці тижня («MI 17»). Це посилання на сторінку дня (/tag/2026-10-07)
+const DayHeader = ({ day, isToday, style }) => {
   return (
     <Link
-      to={to}
+      to={`/tag/${day.date}`}
       style={style}
-      aria-label={format(day, "EEEE, d. MMMM", { locale: de })}
-      className={cn(
-        "relative flex flex-col items-center rounded-2xl py-1 transition-colors",
-        isToday ? "bg-accent text-on-accent" : "text-ink hover:bg-sand",
-      )}
+      aria-label={`${weekdayLong(day.date)}, ${longDate(day.date)}`}
+      className={cn("relative flex flex-col items-center rounded-2xl py-1 transition-colors", isToday ? "bg-accent text-on-accent" : "text-ink hover:bg-sand")}
     >
-      <span
-        className={cn(
-          "mb-px text-caption leading-4 font-extrabold uppercase",
-          isToday ? "text-today-sub" : "text-faint",
-        )}
-      >
-        {format(day, "EEEEEE", { locale: de })}
-      </span>
-      <span className="text-number leading-6 font-black">{format(day, "d")}</span>
+      <span className={cn("mb-px text-caption leading-4 font-extrabold uppercase", isToday ? "text-today-sub" : "text-faint")}>{day.weekday}</span>
+      <span className="text-number leading-6 font-black">{dayNumber(day.date)}</span>
 
-      {isToday && (
-        <span className="absolute top-1.25 right-1.75 size-1.5 rounded-full bg-today-sub" />
-      )}
-      {!isToday && hasExam && (
-        <span className="absolute top-1.25 right-1.75 size-1.5 rounded-full bg-accent" />
-      )}
+      {/* крапка: сьогодні — світла, у дня є Klausur — фіолетова */}
+      {isToday && <span className="absolute top-1.25 right-1.75 size-1.5 rounded-full bg-today-sub" />}
+      {!isToday && day.exams.length > 0 && <span className="absolute top-1.25 right-1.75 size-1.5 rounded-full bg-accent" />}
     </Link>
   );
 };

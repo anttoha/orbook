@@ -1,10 +1,10 @@
 import { clsx } from "clsx";
 import { extendTailwindMerge } from "tailwind-merge";
 
-// tailwind-merge убирает конфликтующие классы ("p-2 p-4" → "p-4").
-// Наши стили текста (text-body, text-caption…) он сам не знает и принимает их
-// за ЦВЕТ текста — тогда "text-caption text-faint" терял бы размер.
-// Поэтому говорим ему: это группа «размер шрифта» (font-size).
+// tailwind-merge прибирає конфліктні класи ("p-2 p-4" → "p-4").
+// Наших стилів тексту (text-body, text-caption…) він сам не знає і приймає їх
+// за КОЛІР тексту — тоді "text-caption text-faint" втрачав би розмір.
+// Тому кажемо йому: це група «розмір шрифту» (font-size).
 const twMerge = extendTailwindMerge({
   extend: {
     classGroups: {

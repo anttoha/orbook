@@ -1,6 +1,6 @@
 import { cn } from "../../shared/utils/cn";
 
-// Плашка клавиши: <Kbd>Esc</Kbd>, <Kbd>⌘K</Kbd> (как на макете — рамка, мелкий текст)
+// Плашка клавіші: <Kbd>Esc</Kbd>, <Kbd>⌘K</Kbd> (як на макеті — рамка, дрібний текст)
 const Kbd = ({ className, children }) => (
   <kbd
     className={cn(

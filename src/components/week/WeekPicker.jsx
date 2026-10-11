@@ -1,79 +1,84 @@
-import { useState } from "react";
-import {
-  addDays,
-  addMonths,
-  eachWeekOfInterval,
-  endOfMonth,
-  getISOWeek,
-  isSameDay,
-  isSameMonth,
-  isWeekend,
-  startOfISOWeek,
-  startOfMonth,
-} from "date-fns";
+import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { getDayLessons, getHoliday } from "../../shared/data/timetable";
+import { api } from "../../shared/api/api";
 import { useNow } from "../../shared/hooks/useNow";
+import { usePlanStore } from "../../shared/store/planStore";
 import { cn } from "../../shared/utils/cn";
-import { formatDe } from "../../shared/utils/dates";
+import { addDays, dayNumber, isoWeek, isWeekend, longDate, mondayOf, monthLong, weekdayLong } from "../../shared/utils/format";
 import Button from "../ui/Button";
 
 // Заголовки колонок
 const WEEKDAYS = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 
+// Помічники для місяців. Місяць — рядок першого числа: "2026-10-01"
+const firstOfMonth = (iso) => `${iso.slice(0, 7)}-01`;
+const shiftMonth = (first, n) => {
+  const d = new Date(`${first}T00:00:00Z`);
+  d.setUTCMonth(d.getUTCMonth() + n); // JS сам переносить рік
+  return d.toISOString().slice(0, 10);
+};
+const lastOfMonth = (first) => addDays(shiftMonth(first, 1), -1);
+
 // ─────────────────────────────────────────────────────────────
-// Месячный календарь «Woche wählen» (используется в шторке на телефоне
-// и в выпадающем окне на ПК). Клик по дню выбирает всю его неделю.
-// onOpenWeek(понедельник) — нажали «KW xx öffnen»
+// Місячний календар «Woche wählen» (у шторці на телефоні і у випадаючому вікні на ПК).
+// Клік по дню вибирає весь його тиждень.
+//   сірі дні    — вихідні та meta.holidays (назв свят у даних немає — пишемо «frei»)
+//   крапки      — Klausuren місяця (GET /api/exams?from=…&to=…)
+// onOpenWeek(понеділок) — натиснули «KW xx öffnen»
 // ─────────────────────────────────────────────────────────────
 const WeekPicker = ({ initialWeek, onOpenWeek }) => {
-  const now = useNow(); // сегодня
-  const [selected, setSelected] = useState(() => startOfISOWeek(initialWeek ?? now)); // выбранная неделя (понедельник)
-  const [month, setMonth] = useState(() => startOfMonth(initialWeek ?? now)); // показываемый месяц
+  const { today } = useNow(); // сьогодні
+  const holidays = usePlanStore((s) => s.meta?.holidays); // вільні дні навчального року
+  const [selected, setSelected] = useState(() => mondayOf(initialWeek ?? today)); // вибраний тиждень (понеділок)
+  const [month, setMonth] = useState(() => firstOfMonth(initialWeek ?? today)); // показаний місяць
+  const [examDays, setExamDays] = useState({}); // { "2026-10": Set дат із Klausuren }
 
-  // Недели месяца: от понедельника недели с 1-м числом до недели с последним числом
-  const weeks = eachWeekOfInterval({ start: startOfMonth(month), end: endOfMonth(month) }, { weekStartsOn: 1 });
+  const free = new Set(holidays ?? []); // для швидкої перевірки
+  const last = lastOfMonth(month); // останній день місяця
 
-  // Праздники этого месяца — для подписи внизу
-  const monthHolidays = weeks
-    .flatMap((monday) => Array.from({ length: 7 }, (_, i) => addDays(monday, i))) // все дни сетки
-    .filter((day) => isSameMonth(day, month) && getHoliday(day)); // только праздники этого месяца
+  // Klausuren показаного місяця — окремим запитом (тільки один раз на місяць)
+  useEffect(() => {
+    const key = month.slice(0, 7);
+    let cancelled = false; // місяць змінили, поки чекали — відповідь не потрібна
+    api(`/exams?from=${month}&to=${lastOfMonth(month)}`)
+      .then((data) => !cancelled && setExamDays((prev) => ({ ...prev, [key]: new Set(data.exams.map((e) => e.date)) })))
+      .catch(() => {}); // без мережі просто без крапок
+    return () => {
+      cancelled = true;
+    };
+  }, [month]);
+  const exams = examDays[month.slice(0, 7)] ?? new Set();
 
-  // Кнопка «Heute»: выбрать текущую неделю и её месяц
-  const goToday = () => {
-    setSelected(startOfISOWeek(now));
-    setMonth(startOfMonth(now));
-  };
+  // Тижні місяця: від понеділка тижня з 1-м числом до тижня з останнім
+  const weeks = [];
+  for (let monday = mondayOf(month); monday <= last; monday = addDays(monday, 7)) weeks.push(monday);
 
-  // «KW xx öffnen»: сообщаем наверх, какую неделю открыть
-  const openWeek = () => onOpenWeek(selected);
+  // Сервер не віддає дати далі ніж 800 днів — далі не гортаємо
+  const canGoNext = shiftMonth(month, 1) <= addDays(today, 790);
 
   return (
     <>
-      {/* ── месяц и стрелки ── */}
+      {/* ── місяць і стрілки ── */}
       <div className="flex items-center justify-between">
-        <button
-          type="button"
-          aria-label="Vorheriger Monat"
-          onClick={() => setMonth((m) => addMonths(m, -1))}
-          className="grid size-9 place-items-center rounded-full bg-card text-muted"
-        >
+        <button type="button" aria-label="Vorheriger Monat" onClick={() => setMonth((m) => shiftMonth(m, -1))} className="grid size-9 place-items-center rounded-full bg-card text-muted">
           <ChevronLeft className="size-4.5" />
         </button>
-        <p className="text-subhead text-ink">{formatDe(month, "MMMM yyyy")}</p>
+        <p className="text-subhead text-ink">
+          {monthLong(month)} {month.slice(0, 4)}
+        </p>
         <button
           type="button"
           aria-label="Nächster Monat"
-          onClick={() => setMonth((m) => addMonths(m, 1))}
-          className="grid size-9 place-items-center rounded-full bg-card text-muted"
+          disabled={!canGoNext}
+          onClick={() => setMonth((m) => shiftMonth(m, 1))}
+          className="grid size-9 place-items-center rounded-full bg-card text-muted disabled:opacity-40"
         >
           <ChevronRight className="size-4.5" />
         </button>
       </div>
 
-      {/* ── календарь: колонка KW + 7 дней ── */}
+      {/* ── календар: колонка KW + 7 днів ── */}
       <div className="flex flex-col gap-1">
-        {/* заголовки колонок */}
         <div className="grid grid-cols-8 text-center text-small font-extrabold text-faint">
           <span>KW</span>
           {WEEKDAYS.map((d) => (
@@ -81,54 +86,40 @@ const WeekPicker = ({ initialWeek, onOpenWeek }) => {
           ))}
         </div>
 
-        {weeks.map((monday) => {
-          const isSelected = isSameDay(monday, selected); // эта неделя выбрана?
-          return (
-            <div
-              key={monday.toISOString()}
-              className={cn("grid grid-cols-8 items-center rounded-full", isSelected && "bg-tint")} // подсветка всей недели
-            >
-              {/* номер недели */}
-              <span className="text-center text-small font-extrabold text-faint">{getISOWeek(monday)}</span>
+        {weeks.map((monday) => (
+          <div key={monday} className={cn("grid grid-cols-8 items-center rounded-full", monday === selected && "bg-tint")}>
+            {/* номер тижня */}
+            <span className="text-center text-small font-extrabold text-faint">{isoWeek(monday)}</span>
 
-              {Array.from({ length: 7 }, (_, i) => addDays(monday, i)).map((day) => {
-                const inMonth = isSameMonth(day, month); // день этого месяца?
-                const isToday = isSameDay(day, now); // сегодня?
-                const holiday = getHoliday(day); // праздник?
-                const hasExam = getDayLessons(day).some((l) => l?.exam); // есть Klausur?
-
-                return (
-                  <button
-                    key={day.toISOString()}
-                    type="button"
-                    onClick={() => setSelected(startOfISOWeek(day))} // выбрать неделю этого дня
-                    aria-label={`${formatDe(day, "EEEE, d. MMMM")}${holiday ? ` · ${holiday}` : ""}`}
-                    className="relative mx-auto grid size-9 place-items-center"
-                  >
-                    <span
-                      className={cn(
-                        "grid size-8 place-items-center rounded-full text-body-sm font-extrabold",
-                        isToday && "bg-accent text-on-accent", // сегодня — фиолетовый кружок
-                        !isToday && (!inMonth ? "text-faint2" : isWeekend(day) || holiday ? "text-faint" : "text-ink"),
-                      )}
-                    >
-                      {formatDe(day, "d")}
-                    </span>
-                    {/* точка под числом: Klausur — фиолетовая, праздник — серая */}
-                    {(hasExam || holiday) && (
-                      <span
-                        className={cn(
-                          "absolute bottom-0 size-1 rounded-full",
-                          hasExam ? "bg-accent" : "bg-faint2",
-                        )}
-                      />
+            {Array.from({ length: 7 }, (_, i) => addDays(monday, i)).map((day) => {
+              const inMonth = day.slice(0, 7) === month.slice(0, 7); // день цього місяця?
+              const isFree = free.has(day); // канікули / свято
+              return (
+                <button
+                  key={day}
+                  type="button"
+                  onClick={() => setSelected(mondayOf(day))} // вибрати тиждень цього дня
+                  aria-label={`${weekdayLong(day)}, ${longDate(day)}${isFree ? " · frei" : ""}`}
+                  className="relative mx-auto grid size-9 place-items-center"
+                >
+                  <span
+                    className={cn(
+                      "grid size-8 place-items-center rounded-full text-body-sm font-extrabold",
+                      day === today && "bg-accent text-on-accent", // сьогодні — фіолетовий кружечок
+                      day !== today && (!inMonth ? "text-faint2" : isWeekend(day) || isFree ? "text-faint" : "text-ink"),
                     )}
-                  </button>
-                );
-              })}
-            </div>
-          );
-        })}
+                  >
+                    {dayNumber(day)}
+                  </span>
+                  {/* крапка під числом: Klausur — фіолетова, вільний день — сіра */}
+                  {(exams.has(day) || isFree) && (
+                    <span className={cn("absolute bottom-0 size-1 rounded-full", exams.has(day) ? "bg-accent" : "bg-faint2")} />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        ))}
       </div>
 
       {/* ── легенда ── */}
@@ -136,18 +127,23 @@ const WeekPicker = ({ initialWeek, onOpenWeek }) => {
         <span className="flex items-center gap-1.5">
           <span className="size-1.5 rounded-full bg-accent" /> Klausur
         </span>
-        {monthHolidays.map((day) => (
-          <span key={day.toISOString()} className="flex items-center gap-1.5">
-            <span className="size-1.5 rounded-full bg-faint2" /> {formatDe(day, "d. MMM")} · {getHoliday(day)}
-          </span>
-        ))}
+        <span className="flex items-center gap-1.5">
+          <span className="size-1.5 rounded-full bg-faint2" /> frei
+        </span>
       </div>
 
       {/* ── кнопки ── */}
       <div className="flex gap-2.5">
-        <Button onClick={goToday}>Heute</Button>
-        <Button variant="primary" onClick={openWeek}>
-          KW {getISOWeek(selected)} öffnen
+        <Button
+          onClick={() => {
+            setSelected(mondayOf(today)); // поточний тиждень
+            setMonth(firstOfMonth(today)); // і його місяць
+          }}
+        >
+          Heute
+        </Button>
+        <Button variant="primary" onClick={() => onOpenWeek(selected)}>
+          KW {isoWeek(selected)} öffnen
         </Button>
       </div>
     </>

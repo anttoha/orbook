@@ -1,42 +1,42 @@
 import { useEffect, useRef } from "react";
 
 // ─────────────────────────────────────────────────────────────
-// Горячие клавиши. Пример:
+// Гарячі клавіші. Приклад:
 //   useHotkeys({ t: goToday, arrowleft: prevWeek, "mod+k": focusSearch })
-// Ключ — event.key в нижнем регистре; "mod+" = ⌘ на Mac или Ctrl на Windows.
-// Пока курсор в поле ввода или открыто окно/меню — клавиши без mod не срабатывают.
+// Ключ — event.key малими літерами; "mod+" = ⌘ на Mac або Ctrl на Windows.
+// Поки курсор у полі вводу або відкрите вікно/меню — клавіші без mod не спрацьовують.
 // ─────────────────────────────────────────────────────────────
 export const useHotkeys = (bindings, enabled = true) => {
-  const ref = useRef(bindings); // последние обработчики (без переподписки на каждый рендер)
+  const ref = useRef(bindings); // останні обробники (без переписки на кожен рендер)
 
-  // Обновляем ref после рендера (а не во время него — так требует React)
+  // Оновлюємо ref після рендера (а не під час нього — так вимагає React)
   useEffect(() => {
     ref.current = bindings;
   });
 
   useEffect(() => {
-    if (!enabled) return; // выключено — не слушаем
+    if (!enabled) return; // вимкнено — не слухаємо
 
     const onKeyDown = (event) => {
       const key = event.key.toLowerCase(); // "t", "arrowleft", "k"…
-      const mod = event.metaKey || event.ctrlKey; // ⌘ или Ctrl
-      const name = mod ? `mod+${key}` : key; // имя сочетания
+      const mod = event.metaKey || event.ctrlKey; // ⌘ або Ctrl
+      const name = mod ? `mod+${key}` : key; // назва сполучення
 
       if (!mod) {
-        if (event.altKey || event.shiftKey) return; // Alt/Shift — не наши сочетания
-        const target = event.target; // где сейчас фокус
-        const typing = target.closest?.("input, textarea, select, [contenteditable=true]"); // печатает в поле
-        const overlay = document.querySelector("[role=dialog], [role=menu]"); // открыто окно или меню
-        if (typing || overlay) return; // не мешаем вводу и окнам
+        if (event.altKey || event.shiftKey) return; // Alt/Shift — не наші сполучення
+        const target = event.target; // де зараз фокус
+        const typing = target.closest?.("input, textarea, select, [contenteditable=true]"); // друкує в полі
+        const overlay = document.querySelector("[role=dialog], [role=menu]"); // відкрите вікно або меню
+        if (typing || overlay) return; // не заважаємо вводу і вікнам
       }
 
-      const handler = ref.current[name]; // есть ли обработчик
+      const handler = ref.current[name]; // чи є обробник
       if (!handler) return;
-      event.preventDefault(); // отменяем действие браузера (например, ⌘K)
+      event.preventDefault(); // скасовуємо дію браузера (наприклад, ⌘K)
       handler(event);
     };
 
-    window.addEventListener("keydown", onKeyDown); // слушаем всю страницу
-    return () => window.removeEventListener("keydown", onKeyDown); // отписка
+    window.addEventListener("keydown", onKeyDown); // слухаємо всю сторінку
+    return () => window.removeEventListener("keydown", onKeyDown); // відписка
   }, [enabled]);
 };

@@ -1,57 +1,51 @@
 import { Fragment } from "react";
-import { periods } from "../../shared/data/timetable";
+import { useNow } from "../../shared/hooks/useNow";
 import { useUserStore } from "../../shared/store/userStore";
-import { isPeriodNow, isPeriodPast, minutesOfDay, toMinutes } from "../../shared/utils/time";
-import { toISODate } from "../../shared/utils/dates";
+import { berlinParts, isLessonNow, isLessonPast, toMinutes } from "../../shared/utils/lessonClock";
+import { lessonExam, lessonKey } from "../../shared/utils/lessons";
 import BreakRow from "./BreakRow";
 import LessonRow from "./LessonRow";
 
-// Перемены короче этого не показываем (5-минутные между уроками)
+// Перерви, коротші за це, не показуємо (5-хвилинні між уроками)
 const MIN_BREAK = 10;
 
 // ─────────────────────────────────────────────────────────────
-// Вид «Liste»: уроки дня сверху вниз + перемены между ними.
-// onOpen(index) — клик по уроку
-// variant — "outside" (телефон) или "inline" (ПК: время внутри карточки)
+// Вигляд «Liste»: уроки дня згори вниз + перерви між ними.
+// day — день із сервера (для Klausuren), lessons — уроки після фільтра «Meine Kurse»
+// onOpen(lesson) — клік по уроку
+// variant — "outside" (телефон) або "inline" (ПК: час усередині картки)
+// preliminary — це «очікувані» уроки (план ще не вийшов): показуємо блідо, без меню
 // ─────────────────────────────────────────────────────────────
-const LessonList = ({ date, lessons, now, onOpen, variant = "outside" }) => {
-  const overrides = useUserStore((s) => s.colorOverrides); // свои цвета
-  const notes = useUserStore((s) => s.notes); // все заметки (фильтруем ниже)
-  const iso = toISODate(date); // "2025-09-17"
+const LessonList = ({ day, lessons, onOpen, variant = "outside", preliminary = false }) => {
+  const { now } = useNow(); // час школи
+  const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
+  const notes = useUserStore((s) => s.notes); // усі нотатки (фільтруємо нижче)
+  const minutes = berlinParts(now).minutes; // зараз у хвилинах
 
-  // Только те уроки, что есть (пустые места пропускаем)
-  const items = periods
-    .map((period, index) => ({ period, index, lesson: lessons[index] }))
-    .filter((item) => item.lesson);
+  // Спершу уроки з часом (за часом), уроки без часу (10) — у кінець
+  const sorted = [...lessons].sort((a, b) => (a.start ? toMinutes(a.start) : 9999) - (b.start ? toMinutes(b.start) : 9999) || a.period - b.period);
 
   return (
     <div className="flex flex-col gap-2.5">
-      {items.map(({ period, index, lesson }, k) => {
-        // Перемена перед уроком: начало этого − конец предыдущего
-        const gap = k > 0 ? toMinutes(period.start) - toMinutes(items[k - 1].period.end) : 0;
-
-        // Идёт ли урок сейчас → сколько осталось и какая доля прошла
-        const running = isPeriodNow(period, date, now) && lesson.status !== "cancelled";
-        const live = running
-          ? {
-              minutesLeft: toMinutes(period.end) - minutesOfDay(now),
-              progress: (minutesOfDay(now) - toMinutes(period.start)) / (toMinutes(period.end) - toMinutes(period.start)),
-            }
-          : null;
+      {sorted.map((lesson, k) => {
+        const prev = sorted[k - 1]; // попередній урок
+        // Перерва перед уроком: початок цього − кінець попереднього
+        const gap = prev?.end && lesson.start ? toMinutes(lesson.start) - toMinutes(prev.end) : 0;
+        // Урок іде зараз → скільки лишилось (для бейджа «LÄUFT · 27 MIN»)
+        const live = isLessonNow(lesson, day.date, now) ? { minutesLeft: toMinutes(lesson.end) - minutes } : null;
 
         return (
-          <Fragment key={period.n}>
+          <Fragment key={lessonKey(lesson)}>
             {gap >= MIN_BREAK && <BreakRow minutes={gap} inline={variant === "inline"} />}
             <LessonRow
               lesson={lesson}
-              period={period}
-              index={index}
-              date={date}
-              isPast={isPeriodPast(period, date, now)}
+              exam={lessonExam(day, lesson)}
+              date={day.date}
+              isPast={preliminary || isLessonPast(lesson, day.date, now)}
               live={live}
-              note={notes.find((n) => n.id === `${iso}#${period.n}`)} // заметка к этому уроку
+              note={notes.find((n) => n.id === `${day.date}#${lesson.period}`)} // нотатка до цього уроку
               overrides={overrides}
-              onOpen={() => onOpen(index)}
+              onOpen={preliminary ? undefined : () => onOpen(lesson)}
               variant={variant}
             />
           </Fragment>

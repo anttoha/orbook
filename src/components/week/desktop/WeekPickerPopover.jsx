@@ -1,15 +1,14 @@
 import { useState } from "react";
 import * as Popover from "@radix-ui/react-popover";
 import { Calendar } from "lucide-react";
-import { toISODate } from "../../../shared/utils/dates";
 import WeekPicker from "../WeekPicker";
 
 // ─────────────────────────────────────────────────────────────
-// Кнопка 📅 + выпадающий календарь «Woche wählen» (ПК, макет «Woche wählen (Dropdown)»).
-// weekStart — показываемая неделя; onPick(понедельник) — выбрали неделю
+// Кнопка 📅 + випадаючий календар «Woche wählen» (ПК, макет «Woche wählen (Dropdown)»).
+// monday — показаний тиждень; onPick(понеділок) — вибрали тиждень
 // ─────────────────────────────────────────────────────────────
-const WeekPickerPopover = ({ weekStart, onPick, buttonClassName }) => {
-  const [open, setOpen] = useState(false); // открыт ли календарь
+const WeekPickerPopover = ({ monday, onPick, buttonClassName }) => {
+  const [open, setOpen] = useState(false); // чи відкритий календар
 
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
@@ -22,16 +21,16 @@ const WeekPickerPopover = ({ weekStart, onPick, buttonClassName }) => {
         <Popover.Content
           align="center"
           sideOffset={8}
-          collisionPadding={16} // не вылезать за край экрана
+          collisionPadding={16} // не вилазити за край екрана
           className="z-50 flex w-[360px] flex-col gap-4 rounded-[24px] bg-card p-4.5 shadow-2xl shadow-ink/15 outline-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
         >
-          {/* key — при каждом открытии календарь начинается с показываемой недели */}
+          {/* key — при кожному відкритті календар починається з показаного тижня */}
           <WeekPicker
-            key={toISODate(weekStart)}
-            initialWeek={weekStart}
-            onOpenWeek={(monday) => {
-              onPick(monday); // переходим на неделю
-              setOpen(false); // и закрываем календарь
+            key={monday}
+            initialWeek={monday}
+            onOpenWeek={(picked) => {
+              onPick(picked); // переходимо на тиждень
+              setOpen(false); // і закриваємо календар
             }}
           />
         </Popover.Content>

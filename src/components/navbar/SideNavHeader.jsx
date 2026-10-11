@@ -1,13 +1,16 @@
 import { PanelLeft } from "lucide-react";
-import Logo from "../ui/Logo";
+import { usePlanStore } from "../../shared/store/planStore";
 import { cn } from "../../shared/utils/cn";
-import { SCHOOL_CLASS } from "../../shared/data/timetable";
+import Logo from "../ui/Logo";
 
-// Шапка сайдбара: логотип, класс («9B») и кнопка свернуть/развернуть
+// Шапка сайдбара: логотип, клас («8A», з сервера), «Demo» і кнопка згорнути/розгорнути
 const SideNavHeader = ({ isHidden, onChangeIsHidden }) => {
+  const className = usePlanStore((s) => s.me?.className); // клас із GET /api/auth/me
+  const demo = usePlanStore((s) => s.meta?.demo); // демо-сервер з вигаданими даними
+
   return (
     <header className="flex h-[43px] w-full shrink-0 items-center">
-      {/* логотип + класс; при сворачивании плавно уезжают (max-width → 0) */}
+      {/* логотип + клас; при згортанні плавно від'їжджають (max-width → 0) */}
       <div
         className={cn(
           "flex min-w-0 items-center gap-2.25 overflow-hidden whitespace-nowrap",
@@ -17,12 +20,11 @@ const SideNavHeader = ({ isHidden, onChangeIsHidden }) => {
         aria-hidden={isHidden}
       >
         <Logo className="items-center gap-2" titleClassName="text-logo" withIcon />
-        <span className="rounded-full bg-sand px-2 py-0.75 text-micro leading-none font-extrabold text-ink uppercase">
-          {SCHOOL_CLASS}
-        </span>
+        {className && <span className="rounded-full bg-sand px-2 py-0.75 text-micro leading-none font-extrabold text-ink uppercase">{className}</span>}
+        {demo && <span className="rounded-full bg-tint px-2 py-0.75 text-micro leading-none font-extrabold text-accent-ink uppercase">Demo</span>}
       </div>
 
-      {/* свернуть / развернуть */}
+      {/* згорнути / розгорнути */}
       <button
         type="button"
         onClick={() => onChangeIsHidden((prev) => !prev)}

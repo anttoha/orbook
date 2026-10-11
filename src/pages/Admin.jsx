@@ -1,6 +1,6 @@
 import { Keyboard } from "lucide-react";
 
-// Заглушка страницы «Admin» (ссылка внизу сайдбара). Макеты Admin сделаем позже.
+// Заглушка сторінки «Admin» (посилання внизу сайдбара). Адмінку зробимо пізніше (гайд docs/frontend/09-admin.md).
 const Admin = () => {
   return (
     <section className="flex flex-col items-center gap-3 rounded-[24px] bg-card px-6 py-16 text-center">

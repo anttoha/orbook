@@ -18,12 +18,12 @@ export const router = createBrowserRouter([
         children: [
           { index: true, Component: Week },
           { path: "woche", Component: Week },
-          { path: "heute", Component: Day }, // сегодняшний день
-          { path: "tag/:datum", Component: Day }, // любой день: /tag/2025-09-17
+          { path: "heute", Component: Day }, // сьогоднішній день
+          { path: "tag/:datum", Component: Day }, // будь-який день: /tag/2026-10-07
           { path: "testen", Component: Tests },
           { path: "statistik", Component: Statistic },
           { path: "mehr", Component: More },
-          { path: "admin", Component: Admin }, // пока заглушка
+          { path: "admin", Component: Admin }, // поки заглушка
         ],
       },
         ]

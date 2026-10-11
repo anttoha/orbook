@@ -5,35 +5,34 @@ import { DESKTOP_QUERY, useMediaQuery } from "../../shared/hooks/useMediaQuery";
 import { useSheet } from "../../shared/hooks/useSheet";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
-import { toISODate } from "../../shared/utils/dates";
 import Kbd from "../ui/Kbd";
 import { menuContentClass, menuIconClass, menuItemClass, menuSeparatorClass } from "../ui/menuStyles";
 
 // ─────────────────────────────────────────────────────────────
-// Меню «⋮» у недели.
+// Меню «⋮» у тижня.
 //   Телефон: Woche wählen, Zu heute springen, Heute öffnen, Wochenende, Plan neu laden, Woche teilen
-//   ПК (макет «Woche · Menü»): Zu heute springen T, Tagesansicht D, Wochenende,
-//                              Plan neu laden R, Woche teilen, Drucken ⌘P
-//   (сами клавиши T / D / R работают на странице недели — см. useHotkeys в Week.jsx)
-// weekStart — показываемая неделя, onToday — перейти на текущую неделю,
-// onPickWeek — открыть календарь «Woche wählen» (только телефон)
+//   ПК: Zu heute springen T, Tagesansicht D, Wochenende, Plan neu laden R, Woche teilen, Drucken ⌘P
+//   (самі клавіші T / D / R працюють на сторінці тижня — див. useHotkeys у Week.jsx)
+// monday — показаний тиждень ("2026-10-05"), onToday — перейти на поточний тиждень,
+// onPickWeek — відкрити календар «Woche wählen» (тільки телефон)
 // ─────────────────────────────────────────────────────────────
-const WeekMenu = ({ weekStart, onToday, onPickWeek }) => {
-  const navigate = useNavigate(); // переход на другую страницу
-  const isDesktop = useMediaQuery(DESKTOP_QUERY); // ПК или телефон
-  const { openSheet } = useSheet(); // открыть шторку
-  const showWeekend = useUserStore((s) => s.showWeekend); // выходные показаны?
-  const toggleWeekend = useUserStore((s) => s.toggleWeekend); // переключить выходные
-  const hiddenCount = useUserStore((s) => s.hiddenCourses.length); // сколько курсов скрыто
-  const showAllCourses = useUserStore((s) => s.showAllCourses); // вернуть все курсы
-  const reloadPlan = usePlanStore((s) => s.reload); // «Plan neu laden»
+const WeekMenu = ({ monday, onToday, onPickWeek }) => {
+  const navigate = useNavigate(); // перехід на іншу сторінку
+  const isDesktop = useMediaQuery(DESKTOP_QUERY); // ПК чи телефон
+  const { openSheet } = useSheet(); // відкрити шторку
+  const showWeekend = useUserStore((s) => s.showWeekend); // вихідні показано?
+  const toggleWeekend = useUserStore((s) => s.toggleWeekend); // перемкнути вихідні
+  const hasPicked = useUserStore((s) => s.picked.length > 0); // чи є приховані курси
+  const showAllCourses = useUserStore((s) => s.showAllCourses); // показати всі курси
+  const refreshPlan = usePlanStore((s) => s.refreshPlan); // «Plan neu laden» (POST /api/plan/refresh)
+  const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // «Teilen» може бути вимкнене адміном
 
-  // Подсказка клавиши справа в пункте (только на ПК)
+  // Підказка клавіші справа в пункті (тільки на ПК)
   const shortcut = (key) => isDesktop && <Kbd className="ml-auto">{key}</Kbd>;
 
   return (
     <DropdownMenu.Root>
-      {/* кнопка «⋮»; asChild — используем свою кнопку вместо стандартной */}
+      {/* кнопка «⋮»; asChild — використовуємо свою кнопку замість стандартної */}
       <DropdownMenu.Trigger asChild>
         <button
           type="button"
@@ -45,9 +44,9 @@ const WeekMenu = ({ weekStart, onToday, onPickWeek }) => {
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>
-        {/* align="end" — меню выравнивается по правому краю кнопки */}
+        {/* align="end" — меню вирівнюється по правому краю кнопки */}
         <DropdownMenu.Content align="end" sideOffset={8} className={menuContentClass}>
-          {/* на ПК календарь — отдельная кнопка 📅 в шапке, в меню он не нужен */}
+          {/* на ПК календар — окрема кнопка 📅 у шапці, в меню він не потрібен */}
           {!isDesktop && (
             <DropdownMenu.Item className={menuItemClass} onSelect={onPickWeek}>
               <Calendar className={menuIconClass} /> Woche wählen
@@ -60,7 +59,7 @@ const WeekMenu = ({ weekStart, onToday, onPickWeek }) => {
             <List className={menuIconClass} /> {isDesktop ? "Tagesansicht" : "Heute öffnen"} {shortcut("D")}
           </DropdownMenu.Item>
 
-          {/* пункт-галочка: сам показывает, включено ли */}
+          {/* пункт-галочка: сам показує, чи увімкнено */}
           <DropdownMenu.CheckboxItem className={menuItemClass} checked={showWeekend} onCheckedChange={toggleWeekend}>
             <CalendarRange className={menuIconClass} /> Wochenende anzeigen
             <DropdownMenu.ItemIndicator className="ml-auto text-accent">
@@ -70,28 +69,27 @@ const WeekMenu = ({ weekStart, onToday, onPickWeek }) => {
 
           <DropdownMenu.Separator className={menuSeparatorClass} />
 
-          <DropdownMenu.Item className={menuItemClass} onSelect={reloadPlan}>
+          <DropdownMenu.Item className={menuItemClass} onSelect={refreshPlan}>
             <RefreshCw className={menuIconClass} /> Plan neu laden {shortcut("R")}
           </DropdownMenu.Item>
-          <DropdownMenu.Item
-            className={menuItemClass}
-            onSelect={() => openSheet("teilen", { bereich: "woche", kw: toISODate(weekStart) })}
-          >
-            <Share className={menuIconClass} /> Woche teilen
-          </DropdownMenu.Item>
-          {/* «Drucken» — системная печать браузера (только ПК) */}
+          {shareEnabled && (
+            <DropdownMenu.Item className={menuItemClass} onSelect={() => openSheet("teilen", { bereich: "woche", kw: monday })}>
+              <Share className={menuIconClass} /> Woche teilen
+            </DropdownMenu.Item>
+          )}
+          {/* «Drucken» — системний друк браузера (тільки ПК) */}
           {isDesktop && (
             <DropdownMenu.Item className={menuItemClass} onSelect={() => window.print()}>
               <Printer className={menuIconClass} /> Drucken {shortcut("⌘P")}
             </DropdownMenu.Item>
           )}
 
-          {/* показываем, только если есть скрытые курсы */}
-          {hiddenCount > 0 && (
+          {/* тільки якщо якісь курси приховані */}
+          {hasPicked && (
             <>
               <DropdownMenu.Separator className={menuSeparatorClass} />
               <DropdownMenu.Item className={menuItemClass} onSelect={showAllCourses}>
-                <Eye className={menuIconClass} /> Ausgeblendete Kurse zeigen ({hiddenCount})
+                <Eye className={menuIconClass} /> Alle Kurse zeigen
               </DropdownMenu.Item>
             </>
           )}

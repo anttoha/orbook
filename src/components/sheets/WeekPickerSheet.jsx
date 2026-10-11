@@ -1,23 +1,22 @@
 import { useNavigate } from "react-router-dom";
-import { parseISODate, toISODate } from "../../shared/utils/dates";
 import Sheet from "../ui/Sheet";
 import WeekPicker from "../week/WeekPicker";
 
 // ─────────────────────────────────────────────────────────────
-// Шторка «Woche wählen» (телефон). Адрес: ?sheet=kalender&kw=2025-09-15
-// На ПК календарь открывается выпадающим окном у кнопки 📅 (WeekPickerPopover).
+// Шторка «Woche wählen» (телефон). Адреса: ?sheet=kalender&kw=2026-10-05
+// На ПК календар відкривається випадаючим вікном біля кнопки 📅 (WeekPickerPopover).
 // ─────────────────────────────────────────────────────────────
 const WeekPickerSheet = ({ open, onClose, sheet }) => {
-  const navigate = useNavigate(); // переход на неделю
+  const navigate = useNavigate(); // перехід на тиждень
 
   return (
     <Sheet open={open} onClose={onClose} desktop="dialog" title="Woche wählen">
-      {/* key — при новом открытии календарь начинается с переданной недели */}
+      {/* key — при новому відкритті календар починається з переданого тижня */}
       <WeekPicker
         key={sheet.kw}
-        initialWeek={parseISODate(sheet.kw)}
-        // переход на неделю (параметры шторки уходят из адреса — она закроется)
-        onOpenWeek={(monday) => navigate(`/woche?woche=${toISODate(monday)}`)}
+        initialWeek={sheet.kw}
+        // перехід на тиждень (параметри шторки йдуть з адреси — вона закриється)
+        onOpenWeek={(monday) => navigate(`/woche?woche=${monday}`)}
       />
     </Sheet>
   );

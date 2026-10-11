@@ -1,12 +1,12 @@
-import { format } from "date-fns";
-import { usePlanStore } from "../../../shared/store/planStore";
+import { infoParagraphs } from "../../../shared/utils/format";
 
 // ─────────────────────────────────────────────────────────────
-// Карточка «Info zum Tag» в правой колонке дня (ПК):
-// первые два абзаца + «Alles» (открывает панель со всем текстом).
+// Картка «Info zum Tag» у правій колонці дня (ПК):
+// перші два абзаци + «Alles» (відкриває панель з усім текстом).
+// day — день із сервера: info (рядки), publishedAt (коли школа опублікувала план)
 // ─────────────────────────────────────────────────────────────
-const DayInfoCard = ({ info, onOpen }) => {
-  const updatedAt = usePlanStore((s) => s.updatedAt); // когда обновлялся план
+const DayInfoCard = ({ day, onOpen }) => {
+  const paragraphs = infoParagraphs(day.info); // абзаци тексту школи
 
   return (
     <section className="rounded-[24px] bg-card p-4">
@@ -17,11 +17,14 @@ const DayInfoCard = ({ info, onOpen }) => {
         </button>
       </header>
       <div className="mt-2.5 flex flex-col gap-2.5 text-body font-medium text-ink">
-        {info.paragraphs.slice(0, 2).map((p) => (
-          <p key={p}>{p}</p>
+        {paragraphs.slice(0, 2).map((p) => (
+          <p key={p} className="line-clamp-4">
+            {p}
+          </p>
         ))}
       </div>
-      <p className="mt-2.5 text-caption font-semibold text-faint">Aus dem Vertretungsplan · Stand {format(updatedAt, "HH:mm")}</p>
+      {/* «Stand 11:26» — час публікації плану школою (HH:MM з ISO-рядка) */}
+      {day.publishedAt && <p className="mt-2.5 text-caption font-semibold text-faint">Aus dem Vertretungsplan · Stand {day.publishedAt.slice(11, 16)}</p>}
     </section>
   );
 };

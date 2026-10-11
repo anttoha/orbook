@@ -7,38 +7,38 @@ import NoteSheet from "./NoteSheet";
 import ShareSheet from "./ShareSheet";
 import WeekPickerSheet from "./WeekPickerSheet";
 
-// Какое имя в адресе (?sheet=…) какой шторке соответствует
+// Яке ім'я в адресі (?sheet=…) якій шторці відповідає
 const SHEETS = {
-  stunde: LessonSheet, // детали урока
+  stunde: LessonSheet, // деталі уроку
   info: DayInfoSheet, // Info zum Tag
-  notiz: NoteSheet, // заметка
+  notiz: NoteSheet, // нотатка
   farbe: ColorSheet, // Fachfarbe ändern
   teilen: ShareSheet, // Teilen
   kalender: WeekPickerSheet, // Woche wählen
 };
 
 // ─────────────────────────────────────────────────────────────
-// Рисует шторку, указанную в адресе. Лежит один раз в HomePage,
-// поэтому шторки работают на любой странице.
+// Малює шторку, вказану в адресі. Лежить один раз у HomePage,
+// тому шторки працюють на будь-якій сторінці.
 // ─────────────────────────────────────────────────────────────
 const SheetHost = () => {
-  const { sheet, closeSheet } = useSheet(); // текущая шторка из адреса
+  const { sheet, closeSheet } = useSheet(); // поточна шторка з адреси
 
-  // Пока шторка закрывается (анимация), параметров в адресе уже нет.
-  // Поэтому запоминаем последние параметры и показываем их до конца анимации.
+  // Поки шторка закривається (анімація), параметрів в адресі вже немає.
+  // Тому запам'ятовуємо останні параметри і показуємо їх до кінця анімації.
   const [last, setLast] = useState(sheet);
   if (sheet.name && JSON.stringify(sheet) !== JSON.stringify(last)) {
-    setLast(sheet); // React разрешает так обновлять состояние из новых данных во время рендера
+    setLast(sheet); // React дозволяє так оновлювати стан із нових даних під час рендера
   }
 
-  const shown = sheet.name ? sheet : last; // что рисуем
+  const shown = sheet.name ? sheet : last; // що малюємо
   const Component = SHEETS[shown.name]; // компонент шторки
-  if (!Component) return null; // шторок ещё не открывали / неизвестное имя
+  if (!Component) return null; // шторок ще не відкривали / невідоме ім'я
 
   return (
     <Component
-      key={shown.name} // другая шторка — новый компонент
-      open={sheet.name === shown.name} // открыта, пока имя есть в адресе
+      key={shown.name} // інша шторка — новий компонент
+      open={sheet.name === shown.name} // відкрита, поки ім'я є в адресі
       onClose={closeSheet}
       sheet={shown}
     />

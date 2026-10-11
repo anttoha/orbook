@@ -2,16 +2,16 @@ import { Link } from "react-router-dom";
 import { cn } from "../../shared/utils/cn";
 
 // ─────────────────────────────────────────────────────────────
-// Пункт меню сайдбара: иконка + подпись (+ счётчик справа).
-// isHidden — сайдбар свёрнут: подпись прозрачная, видна только иконка
-// badge — число справа (например, 5 у «Testen»); null — без счётчика
+// Пункт меню сайдбара: іконка + підпис (+ лічильник праворуч).
+// isHidden — сайдбар згорнутий: підпис прозорий, видно тільки іконку
+// badge — число праворуч (наприклад, 5 у «Testen»); null — без лічильника
 // ─────────────────────────────────────────────────────────────
 const NavigationLink = ({ active, tab, isHidden = false, badge = null, className = "", iconClassName = "", textClassName = "" }) => {
   return (
     <Link
       to={tab.to}
       aria-current={active ? "page" : undefined}
-      title={isHidden ? tab.label : undefined} // подсказка в свёрнутом виде
+      title={isHidden ? tab.label : undefined} // підказка в згорнутому вигляді
       className={cn(
         "flex h-[42px] items-center gap-3 overflow-hidden rounded-full px-3 text-body font-semibold transition-colors",
         active ? "bg-accent font-bold text-on-accent" : "text-ink/80 hover:bg-sand",
@@ -28,7 +28,7 @@ const NavigationLink = ({ active, tab, isHidden = false, badge = null, className
       >
         {tab.label}
       </span>
-      {/* счётчик */}
+      {/* лічильник */}
       {badge > 0 && !isHidden && (
         <span
           className={cn(
