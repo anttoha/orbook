@@ -421,8 +421,10 @@
     :where(button, a[href], summary, [role="switch"], [role="button"], label:has(input, [role="switch"])):not(:disabled) {
         cursor: pointer;
         -webkit-tap-highlight-color: transparent; /* сіра пляма Safari замість нашого відгуку */
-        transition-property: scale, filter, background-color, color, opacity;
-        transition-duration: 0.12s;
+        /* вибраний чип чи кружечок міняє фон, рамку й колір плавно, а не стрибком */
+        transition-property: scale, filter, background-color, border-color, color, box-shadow, opacity;
+        transition-duration: 0.2s;
+        transition-timing-function: ease-out;
     }
 
     /* Палець або клік: елемент трохи «просідає». data-no-press — для великих блоків, де це заважає */

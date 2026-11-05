@@ -12,7 +12,7 @@ const SubjectBadge = ({ subject, size = "md", className }) => {
   const overrides = useUserStore((s) => s.colorOverrides);
   const code = subjectCode(subject);
   return (
-    <span title={code} className={cn("grid shrink-0 place-items-center rounded-full text-note font-black", SIZES[size], fachClasses(subject?.code, overrides), className)}>
+    <span title={code} className={cn("grid shrink-0 place-items-center rounded-full text-note font-black transition-colors duration-300", SIZES[size], fachClasses(subject?.code, overrides), className)}>
       {badgeCode(code)}
     </span>
   );

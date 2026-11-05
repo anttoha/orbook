@@ -46,7 +46,15 @@ const SideNavFooter = ({ collapsed }) => {
 
         <div className={cn("mt-2.5 flex items-center", collapsed ? "flex-col gap-2" : "justify-between")}>
           {/* перемикач теми: ☀ / ☾ */}
-          <div role="group" aria-label="Darstellung" className={cn("flex rounded-full bg-sand p-0.75", collapsed && "flex-col")}>
+          <div role="group" aria-label="Darstellung" className={cn("relative flex rounded-full bg-sand p-0.75", collapsed && "flex-col")}>
+            {/* фіолетова пігулка їде до вибраної теми: вбік, а в згорнутому сайдбарі — вниз */}
+            <span
+              aria-hidden="true"
+              className={cn(
+                "absolute top-0.75 left-0.75 h-6.5 w-7.5 rounded-full bg-accent transition-[translate] duration-250 ease-out motion-reduce:transition-none",
+                isDark && (collapsed ? "translate-y-full" : "translate-x-full"),
+              )}
+            />
             {[
               { value: "light", icon: Sun, label: "Hell", on: !isDark },
               { value: "dark", icon: Moon, label: "Dunkel", on: isDark },
@@ -56,8 +64,9 @@ const SideNavFooter = ({ collapsed }) => {
                 type="button"
                 aria-label={option.label}
                 aria-pressed={option.on}
+                data-no-press
                 onClick={() => setTheme(option.value)}
-                className={cn("grid h-6.5 w-7.5 place-items-center rounded-full transition-colors", option.on ? "bg-accent text-on-accent" : "text-faint hover:text-ink")}
+                className={cn("relative grid h-6.5 w-7.5 place-items-center rounded-full transition-colors duration-250", option.on ? "text-on-accent" : "text-faint hover:text-ink")}
               >
                 <option.icon className="size-3.5" />
               </button>

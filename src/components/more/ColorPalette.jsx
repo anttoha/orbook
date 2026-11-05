@@ -9,12 +9,16 @@ import { CheckIcon } from "../ui/icons";
 const ColorPalette = ({ subject, current, onPick }) => {
   return (
     <div className="sticky top-2 z-10 rounded-card bg-card px-3.5 pt-3.5 pb-3.5 shadow-raise">
-      <div className="mb-3 flex items-center gap-2.5">
-        <SubjectBadge subject={subject} />
-        <p className="min-w-0 flex-1 truncate text-row font-extrabold text-ink">{subject.name}</p>
-        <p className="shrink-0 text-hint font-extrabold text-faint">Farbe wählen</p>
+      <div className="mb-3 flex items-center gap-3">
+        <SubjectBadge subject={subject} size="lg" />
+        <div className="min-w-0">
+          <p className="truncate text-subhead text-ink">{subject.name}</p>
+          {/* назва кольору словами: видно й тим, хто погано розрізняє кольори */}
+          <p className="text-hint font-extrabold text-faint">Farbe wählen · {PALETTES[current]?.label}</p>
+        </div>
       </div>
       <div className="flex flex-wrap gap-2.5">
+        {/* рамка «перетікає»: у невибраних вона та сама, але прозора й нульова, тому браузер плавно міняє і колір, і товщину */}
         {SWATCH_ORDER.map((key) => (
           <button
             key={key}
@@ -22,9 +26,9 @@ const ColorPalette = ({ subject, current, onPick }) => {
             aria-label={PALETTES[key].label}
             aria-pressed={key === current}
             onClick={() => onPick(key)}
-            className={cn("grid size-8.5 place-items-center rounded-full text-white", PALETTES[key].solid, key === current && "ring-3 ring-ink ring-offset-2 ring-offset-card")}
+            className={cn("grid size-8.5 place-items-center rounded-full text-white ring-offset-2 ring-offset-card transition-[box-shadow,scale] duration-300 ease-out", PALETTES[key].solid, key === current ? "ring-3 ring-ink" : "ring-0 ring-transparent hover:scale-110")}
           >
-            {key === current && <CheckIcon className="size-4" />}
+            {key === current && <CheckIcon className="size-4 motion-safe:animate-pop-in" />}
           </button>
         ))}
       </div>

@@ -21,12 +21,19 @@ const SubjectRow = ({ subject, overrides, selected, onSelect }) => (
       type="button"
       onClick={onSelect}
       aria-current={selected ? "true" : undefined}
-      className={cn("flex h-13.25 w-full items-center gap-3 rounded-field px-2 text-left", selected ? "bg-tint" : "hover:bg-paper")}
+      className={cn("flex h-13.25 w-full items-center gap-3 rounded-field px-2 text-left transition-colors duration-300", selected ? "bg-tint" : "hover:bg-paper")}
     >
       <SubjectBadge subject={subject} />
-      <span className={cn("min-w-0 flex-1 truncate text-row text-ink", selected ? "font-extrabold" : "font-semibold")}>{subject.name}</span>
-      <span className={cn("size-5.5 shrink-0 rounded-full", fachDotClass(subject.code, overrides))} />
-      {selected ? <CheckIcon className="size-4 shrink-0 text-accent-ink" /> : <ChevronRight className="size-4 shrink-0 text-faint2" />}
+      <span className={cn("min-w-0 flex-1 truncate text-row transition-colors duration-300", selected ? "font-extrabold text-accent-ink" : "font-semibold text-ink")}>{subject.name}</span>
+      <span className={cn("size-5.5 shrink-0 rounded-full transition-colors duration-300", fachDotClass(subject.code, overrides))} />
+      {/* вибраний — галочка у фіолетовому кружечку, як у макеті «Nutzbarkeit» */}
+      {selected ? (
+        <span className="grid size-5.5 shrink-0 place-items-center rounded-full bg-accent text-on-accent motion-safe:animate-pop-in">
+          <CheckIcon className="size-3.5" />
+        </span>
+      ) : (
+        <ChevronRight className="size-4 shrink-0 text-faint2" />
+      )}
     </button>
   </li>
 );
