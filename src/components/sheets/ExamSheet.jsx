@@ -1,13 +1,12 @@
+import SubjectBadge from "../ui/SubjectBadge";
 import { Calendar, Share } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { examIcsUrl } from "../../shared/api/api";
 import { useExam } from "../../shared/hooks/useExams";
 import { usePlanStore } from "../../shared/store/planStore";
-import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
 import { examCountdown } from "../../shared/utils/exams";
-import { longDate, subjectCode, subjectName, weekdayLong } from "../../shared/utils/format";
-import { fachClasses } from "../../shared/utils/lessons";
+import { longDate, subjectName, weekdayLong } from "../../shared/utils/format";
 import { examText, shareText } from "../../shared/utils/share";
 import ExamBadge from "../exams/ExamBadge";
 import Button from "../ui/Button";
@@ -46,7 +45,6 @@ const ExamPlaceholder = ({ open, onClose, status, error }) => (
 const ExamSheet = ({ open, onClose, sheet }) => {
   const { exam, status, error } = useExam(sheet.id);
   const navigate = useNavigate();
-  const overrides = useUserStore((s) => s.colorOverrides); // свої кольори предметів
   const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // адмін міг вимкнути «Teilen»
 
   if (!exam) return <ExamPlaceholder open={open} onClose={onClose} status={status} error={error} />;
@@ -65,7 +63,7 @@ const ExamSheet = ({ open, onClose, sheet }) => {
       title={exam.topic || subjectName(exam.subject)}
       titleClassName="text-brand"
       hideClose
-      icon={<span className={cn("grid size-11 shrink-0 place-items-center rounded-full text-note font-black", fachClasses(exam.subject?.code, overrides))}>{subjectCode(exam.subject)}</span>}
+      icon={<SubjectBadge subject={exam.subject} size="lg" />}
       footer={
         <div className="flex w-full flex-col gap-3.5">
           <div className="flex gap-2">

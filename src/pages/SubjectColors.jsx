@@ -1,3 +1,4 @@
+import SubjectBadge from "../components/ui/SubjectBadge";
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { toast } from "sonner";
@@ -10,7 +11,7 @@ import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { cn } from "../shared/utils/cn";
 import { visibleSubjects } from "../shared/utils/courses";
-import { fachClasses, fachDotClass, paletteOf } from "../shared/utils/lessons";
+import { fachDotClass, paletteOf } from "../shared/utils/lessons";
 
 // Рядок предмета: натискання вибирає його, і палітра зверху змінює саме його колір.
 // Вибраний виділено фоном, жирною назвою і галочкою — щоб було видно, що зараз фарбуємо
@@ -22,7 +23,7 @@ const SubjectRow = ({ subject, overrides, selected, onSelect }) => (
       aria-current={selected ? "true" : undefined}
       className={cn("flex h-13.25 w-full items-center gap-3 rounded-field px-2 text-left", selected ? "bg-tint" : "hover:bg-paper")}
     >
-      <span className={cn("grid size-8 shrink-0 place-items-center rounded-full text-note font-black", fachClasses(subject.code, overrides))}>{subject.code}</span>
+      <SubjectBadge subject={subject} />
       <span className={cn("min-w-0 flex-1 truncate text-row text-ink", selected ? "font-extrabold" : "font-semibold")}>{subject.name}</span>
       <span className={cn("size-5.5 shrink-0 rounded-full", fachDotClass(subject.code, overrides))} />
       {selected ? <CheckIcon className="size-4 shrink-0 text-accent-ink" /> : <ChevronRight className="size-4 shrink-0 text-faint2" />}

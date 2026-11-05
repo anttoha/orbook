@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { changedLabel, lastStandLabel, planMomentText, standText, subjectCode, subjectName, updatedAgoText, visibleLessons } from "./format";
+import { badgeCode, changedLabel, lastStandLabel, planMomentText, standText, subjectCode, subjectName, updatedAgoText, visibleLessons } from "./format";
 
 describe("standText", () => {
   it("сегодня, вчера и другой день", () => {
@@ -100,5 +100,12 @@ describe("visibleLessons", () => {
   });
   it("вибір за вибором і схований обов'язковий разом", () => {
     expect(visibleLessons(lessons, courses, new Set(["keine"]), new Set(["131"]))).toEqual([lessons[2]]);
+  });
+});
+
+describe("badgeCode", () => {
+  it("короткі коди як є, довгі — 3 літери", () => {
+    expect(badgeCode("Ma")).toBe("Ma");
+    expect(badgeCode("AGTan")).toBe("AGT");
   });
 });

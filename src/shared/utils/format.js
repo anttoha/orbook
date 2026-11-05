@@ -186,6 +186,9 @@ export const subjectName = (subject) => subject?.name ?? subject?.code ?? NO_SUB
 // Код предмета в клітинці. subject буває null: так школа записує заміну чи захід без предмета.
 export const subjectCode = (subject) => subject?.code ?? NO_SUBJECT_CODE;
 
+// Код для кружечка: не більше 3 літер («AGTan» → «AGT»), інакше вилазить за край
+export const badgeCode = (code) => (code.length > 3 ? code.slice(0, 3) : code);
+
 // Пояснення школи до уроку (lesson.info). Стандартні фрази («En (T25) fällt aus», «für En (T25)»,
 // «verlegt von St.7 …») дублюють бейдж — їх не показуємо, решту («Sporttheorie») — як є.
 const BOILERPLATE = /^(?:\S+ \([^)]*\) )?(?:fällt aus|verlegt (?:von|nach) .*)$|^für \S+ \([^)]*\)$/;

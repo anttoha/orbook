@@ -1,11 +1,11 @@
+import SubjectBadge from "../ui/SubjectBadge";
 import { File, Share } from "lucide-react";
 import { useDay } from "../../shared/hooks/usePlan";
 import { useSheet } from "../../shared/hooks/useSheet";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
-import { cn } from "../../shared/utils/cn";
-import { subjectCode, subjectName } from "../../shared/utils/format";
-import { fachClasses, fachTextClass, findLesson, lessonExam, lessonNote } from "../../shared/utils/lessons";
+import { subjectName } from "../../shared/utils/format";
+import { fachTextClass, findLesson, lessonExam, lessonNote } from "../../shared/utils/lessons";
 import { lessonText, shareText } from "../../shared/utils/share";
 import ChangedValue from "../lesson/ChangedValue";
 import Button from "../ui/Button";
@@ -49,11 +49,7 @@ const LessonSheet = ({ open, onClose, sheet }) => {
       titleClassName={fachTextClass(lesson.subject?.code, overrides)}
       hideClose
       // кружечок з кодом предмета в його кольорі
-      icon={
-        <span className={cn("grid size-11 shrink-0 place-items-center rounded-full text-note font-black", fachClasses(lesson.subject?.code, overrides))}>
-          {subjectCode(lesson.subject)}
-        </span>
-      }
+      icon={<SubjectBadge subject={lesson.subject} size="lg" />}
       footer={
         <>
           {/* replace: true — «Назад» із нотатки не поверне в цю шторку */}
