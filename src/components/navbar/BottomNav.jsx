@@ -1,10 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "../../shared/utils/cn";
-import { isFullScreenPage, isTabActive } from "../../shared/utils/isTabActive";
+import { isFullScreenPage, isTabActive, isTabEnabled } from "../../shared/utils/isTabActive";
 import { navTabs } from "../../shared/constants/constants";
+import { usePlanStore } from "../../shared/store/planStore";
 
 const BottomNav = () => {
   const { pathname } = useLocation();
+  const features = usePlanStore((s) => s.me?.features); // вимкнені школою розділи не показуємо
   if (isFullScreenPage(pathname)) return null; // форма на весь екран: унизу її кнопки
 
   return (
@@ -12,7 +14,7 @@ const BottomNav = () => {
       <div className="px-4">
         <nav className="pointer-events-auto flex h-14.5 rounded-full border border-hair bg-card p-1.75">
           {navTabs
-            .filter((t) => t.mobile)
+            .filter((t) => t.mobile && isTabEnabled(t, features))
             .map((tab) => {
               const active = isTabActive(tab, pathname);
 

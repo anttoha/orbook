@@ -34,3 +34,6 @@ export const CheckIcon = ({ className }) => <Outline d="M5 12l5 5 9-10" classNam
 
 // «Bearbeiten»: олівець
 export const PencilIcon = ({ className }) => <Outline d="M4 20h4L19 9l-4-4L4 16v4z" className={className} />;
+
+// Три стовпчики: «Statistik» (меню і екран «Noch zu wenig Daten»)
+export const StatsIcon = ({ className }) => <Outline d="M5 20V11M12 20V5M19 20v-8" className={className} />;

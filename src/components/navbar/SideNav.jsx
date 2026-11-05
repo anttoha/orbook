@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { usePlanStore } from "../../shared/store/planStore";
 import { cn } from "../../shared/utils/cn";
-import { isTabActive } from "../../shared/utils/isTabActive";
+import { isTabActive, isTabEnabled } from "../../shared/utils/isTabActive";
 import { navTabs } from "../../shared/constants/constants";
 import NavigationLink from "./NavigationLink";
 import QuickSearch from "./QuickSearch";
@@ -20,6 +20,7 @@ const SideNav = () => {
   const { pathname } = useLocation(); // поточна адреса — для підсвічування пунктів
   const [isHidden, setIsHidden] = useState(false); // чи згорнутий сайдбар
   const examCount = usePlanStore((s) => s.exams.length); // лічильник у «Testen» (найближчі Klausuren)
+  const features = usePlanStore((s) => s.me?.features); // вимкнені школою розділи не показуємо
 
   return (
     <aside
@@ -38,7 +39,7 @@ const SideNav = () => {
 
       <nav className="mt-5 space-y-1">
         {navTabs
-          .filter((t) => t.desktop)
+          .filter((t) => t.desktop && isTabEnabled(t, features))
           .map((tab) => (
             <NavigationLink
               key={tab.to}
