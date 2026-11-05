@@ -11,14 +11,15 @@ import { fachClasses } from "../../shared/utils/lessons";
 const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
   // Спільні класи клітинки; кнопка: текст зліва, без виділення тексту і системного меню iOS
   const base =
-    "relative flex min-h-0 flex-1 flex-col justify-between gap-1 overflow-hidden rounded-cell px-2 py-1.75 text-left leading-none select-none [-webkit-touch-callout:none] transition-transform active:scale-[0.97]";
+    "relative flex min-h-0 flex-1 flex-col justify-between gap-1 overflow-hidden rounded-cell px-2 py-2 text-left leading-none select-none [-webkit-touch-callout:none] transition-transform active:scale-[0.97]";
   const label = [subjectName(lesson.subject), lessonBadge(lesson)].filter(Boolean).join(", "); // для скрінрідера
 
   // Скасований урок: пунктирна рамка, закреслений код
   if (lesson.status === "cancelled") {
     return (
-      <button type="button" aria-label={label} {...props} className={cn(base, "border-[1.5px] border-dashed border-faint2 text-faint", isPast && "opacity-50", className)}>
-        <span className="text-body-sm font-extrabold line-through">{lesson.subject.code}</span>
+      <button type="button" aria-label={label} {...props} className={cn(base, "border border-dashed border-faint2", isPast && "opacity-50", className)}>
+        <span className="text-hint font-semibold text-faint line-through">{lesson.subject.code}</span>
+        <span className="truncate text-nano font-bold text-muted">fällt aus</span>
       </button>
     );
   }
@@ -38,8 +39,8 @@ const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
         className,
       )}
     >
-      <span className="truncate text-body-sm font-extrabold">{lesson.subject.code}</span>
-      <span className={cn("truncate text-small", lesson.examId || isChanged ? "font-extrabold text-accent-ink" : "font-bold opacity-70")}>
+      <span className="truncate text-hint font-black">{lesson.subject.code}</span>
+      <span className={cn("truncate", lesson.examId ? "text-nano font-extrabold text-accent-ink" : "text-room", isChanged && !lesson.examId && "font-extrabold text-accent-ink", !isChanged && !lesson.examId && "font-semibold opacity-85")}>
         {lesson.examId ? "Klausur" : lesson.room}
       </span>
 

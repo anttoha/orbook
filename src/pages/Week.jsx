@@ -1,7 +1,8 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, ChartNoAxesColumn, ChevronRight, Flag } from "lucide-react";
+import { ChartNoAxesColumn, ChevronLeft, ChevronRight, Flag } from "lucide-react";
 import WeekGrid from "../components/week/WeekGrid";
 import WeekMenu from "../components/week/WeekMenu";
+import WeekStand from "../components/week/WeekStand";
 import DayPanel from "../components/week/desktop/DayPanel";
 import PeriodGrid from "../components/week/desktop/PeriodGrid";
 import TimeGrid from "../components/week/desktop/TimeGrid";
@@ -13,14 +14,34 @@ import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useNow } from "../shared/hooks/useNow";
 import { useWeek } from "../shared/hooks/usePlan";
 import { useSheet } from "../shared/hooks/useSheet";
+import { useSwipe } from "../shared/hooks/useSwipe";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { cn } from "../shared/utils/cn";
 import { addDays, examWhen, isIsoDate, mondayOf, subjectName, weekHeading, weekSummaryText, weekTitle, weekdayShort } from "../shared/utils/format";
-import { currentMonday, weekDays } from "../shared/utils/lessons";
+import { currentMonday, isWeekEmpty, weekDays } from "../shared/utils/lessons";
 
 // Кругла кнопка в шапці
 const roundButton = "flex size-9.5 items-center justify-center rounded-full bg-card outline-none focus-visible:ring-2 focus-visible:ring-accent/50";
+
+// Рядок підсумку тижня. Статистику школа може вимкнути: тоді це просто текст
+const WeekSummaryRow = ({ text, linked }) => {
+  const body = (
+    <>
+      <ChartNoAxesColumn className="size-4.75 shrink-0" />
+      <h3 className="min-w-0 flex-1 text-row leading-5 font-medium text-ink">{text}</h3>
+      {linked && <ChevronRight className="size-4 shrink-0" />}
+    </>
+  );
+  const className = "flex items-center gap-3 py-4";
+  return linked ? (
+    <Link to="/statistik" className={className}>
+      {body}
+    </Link>
+  ) : (
+    <div className={className}>{body}</div>
+  );
+};
 
 // ─────────────────────────────────────────────────────────────
 // Сторінка тижня.  /woche?woche=2026-10-05  (понеділок у адресі)
@@ -74,10 +95,22 @@ const Week = () => {
     r: refreshPlan,
   });
 
+  // Свайп по сторінці на телефоні: сусідній тиждень
+  const swipe = useSwipe({ onLeft: () => setWeek(addDays(monday, 7)), onRight: () => setWeek(addDays(monday, -7)) });
+  const statisticsEnabled = usePlanStore((s) => s.me?.features?.statistics !== false);
+
   // Сітка або її стан: скелет / помилка
   const gridState = (grid) => {
     if (week.status === "error") return <PlanError resource={week} onRetry={reload} />;
     if (!days) return <Skeleton className={isDesktop ? "h-140" : "h-105"} />;
+    if (isWeekEmpty(week.data?.days)) {
+      return (
+        <>
+          <p className="text-body-sm text-muted">Noch kein Plan für diese Woche</p>
+          {grid}
+        </>
+      );
+    }
     return grid;
   };
 
@@ -100,6 +133,8 @@ const Week = () => {
           onWeekChange={setWeek}
           onToday={goToday}
         />
+
+        <WeekStand days={week.data?.days} />
 
         <PlanBanner resource={week} onRetry={reload} />
 
@@ -125,26 +160,28 @@ const Week = () => {
   const nextExam = exams[0]; // найближча Klausur (сервер віддає за датою)
 
   return (
-    <section className="flex flex-col gap-3.5">
+    <section className="flex flex-col gap-3.5" {...swipe}>
       <header className="flex items-end justify-between gap-3">
         <div className="min-w-0 space-y-1">
           {/* «KW 41 · 5.–9. Okt» — по натисканню відкривається календар «Woche wählen» */}
-          <button type="button" onClick={() => openSheet("kalender", { kw: monday })} className="block text-label leading-[0.8] font-extrabold text-faint">
+          <button type="button" onClick={() => openSheet("kalender", { kw: monday })} className="block text-hint font-extrabold text-faint">
             {title}
           </button>
-          <h2 className="truncate text-title leading-[1.1] font-black text-ink">{heading}</h2>
+          <h1 className="truncate text-title text-ink">{heading}</h1>
         </div>
         {/* як на макеті: ‹ ⋮ › (календар — у меню «⋮» і по натисканню на рядок KW) */}
         <div className="flex shrink-0 gap-1.5">
           <button type="button" aria-label="Vorherige Woche" onClick={() => setWeek(addDays(monday, -7))} className={roundButton}>
-            <ArrowLeft className="size-4.25" />
+            <ChevronLeft className="size-4.5" />
           </button>
           <WeekMenu monday={monday} onToday={goToday} onPickWeek={() => openSheet("kalender", { kw: monday })} />
           <button type="button" aria-label="Nächste Woche" onClick={() => setWeek(addDays(monday, 7))} className={roundButton}>
-            <ArrowRight className="size-4.25" />
+            <ChevronRight className="size-4.5" />
           </button>
         </div>
       </header>
+
+      <WeekStand days={week.data?.days} />
 
       <PlanBanner resource={week} onRetry={reload} />
 
@@ -157,10 +194,10 @@ const Week = () => {
           <Link to={`/tag/${nextExam.date}`} className="flex items-center gap-3 py-2">
             <Flag className="size-4.75 shrink-0" />
             <div className="min-w-0 flex-1">
-              <h3 className="text-body leading-5 font-medium text-ink">
+              <h3 className="text-row leading-5 font-medium text-ink">
                 {weekdayShort(nextExam.date)} · {subjectName(nextExam.subject)}
               </h3>
-              <p className="mt-0.5 truncate text-caption leading-4">
+              <p className="mt-0.5 text-caption leading-4">
                 Nächste {nextExam.type}
                 {nextExam.topic && ` · ${nextExam.topic}`}
               </p>
@@ -171,12 +208,7 @@ const Week = () => {
         )}
 
         {/* підсумок тижня: «1 fällt aus · 3 Vertretungen · 2 Raumwechsel» */}
-        {week.data && (
-          <div className="flex items-center gap-3 py-4">
-            <ChartNoAxesColumn className="size-4.75 shrink-0" />
-            <h3 className="min-w-0 flex-1 text-body leading-5 font-medium text-ink">{weekSummaryText(week.data.summary)}</h3>
-          </div>
-        )}
+        {week.data && <WeekSummaryRow text={weekSummaryText(week.data.summary)} linked={statisticsEnabled} />}
       </div>
     </section>
   );

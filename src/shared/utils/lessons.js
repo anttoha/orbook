@@ -99,3 +99,16 @@ export function lessonNote(lesson, exam) {
   if (exam) return `${exam.type}${exam.topic ? ` · ${exam.topic}` : ""}`;
   return lessonCaption(lesson) || movedText(lesson.moved) || (lesson.status === "added" ? "Zusatzstunde" : null);
 }
+
+// Рядок під заголовком тижня. Показуємо план сьогоднішнього дня (або перший день, де план є),
+// бо дні тижня публікуються в різний час. Результат: { publishedAt, fetchedAt, stale } або null.
+export function weekStandSource(days, today) {
+  const list = days ?? [];
+  const day = list.find((item) => item.date === today && item.publishedAt) ?? list.find((item) => item.publishedAt);
+  const checked = list.map((item) => item.fetchedAt).filter(Boolean).sort().at(-1) ?? null; // найсвіжіша перевірка
+  if (!day && !checked) return null;
+  return { publishedAt: day?.publishedAt ?? null, fetchedAt: checked, stale: list.some((item) => item.stale) };
+}
+
+// Чи немає уроків за весь тиждень: тоді підказка «Noch kein Plan für diese Woche»
+export const isWeekEmpty = (days) => Boolean(days?.length) && days.every((day) => !day.lessons?.length);

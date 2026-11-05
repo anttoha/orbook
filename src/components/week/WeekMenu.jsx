@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Calendar, CalendarCheck, CalendarRange, Check, Eye, List, MoreVertical, Printer, RefreshCw, Share } from "lucide-react";
@@ -27,11 +28,15 @@ const WeekMenu = ({ monday, onToday, onPickWeek }) => {
   const refreshPlan = usePlanStore((s) => s.refreshPlan); // «Plan neu laden» (POST /api/plan/refresh)
   const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // «Teilen» може бути вимкнене адміном
 
+  const [open, setOpen] = useState(false); // чи відкрите меню
+
   // Підказка клавіші справа в пункті (тільки на ПК)
   const shortcut = (key) => isDesktop && <Kbd className="ml-auto">{key}</Kbd>;
 
   return (
-    <DropdownMenu.Root>
+    <DropdownMenu.Root onOpenChange={setOpen}>
+      {/* затемнення під меню, як на макеті телефона (на ПК його немає) */}
+      {open && <div aria-hidden="true" className="fixed inset-0 z-40 animate-fade-in bg-overlay lg:hidden" />}
       {/* кнопка «⋮»; asChild — використовуємо свою кнопку замість стандартної */}
       <DropdownMenu.Trigger asChild>
         <button

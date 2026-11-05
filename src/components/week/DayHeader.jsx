@@ -9,10 +9,10 @@ const DayHeader = ({ day, isToday, style }) => {
       to={`/tag/${day.date}`}
       style={style}
       aria-label={`${weekdayLong(day.date)}, ${longDate(day.date)}`}
-      className={cn("relative flex flex-col items-center rounded-field py-1 transition-colors", isToday ? "bg-accent text-on-accent" : "text-ink hover:bg-sand")}
+      className={cn("relative flex h-10.5 flex-col items-center justify-center rounded-cell transition-colors", isToday ? "bg-accent text-on-accent" : "text-ink hover:bg-sand")}
     >
-      <span className={cn("mb-px text-caption leading-4 font-extrabold uppercase", isToday ? "text-today-sub" : "text-faint")}>{day.weekday}</span>
-      <span className="text-number leading-6 font-black">{dayNumber(day.date)}</span>
+      <span className={cn("text-micro font-bold uppercase", isToday ? "text-today-sub" : "text-faint")}>{day.weekday}</span>
+      <span className="text-cell-sm">{dayNumber(day.date)}</span>
 
       {/* крапка: сьогодні — світла, у дня є Klausur — фіолетова */}
       {isToday && <span className="absolute top-1.25 right-1.75 size-1.5 rounded-full bg-today-sub" />}

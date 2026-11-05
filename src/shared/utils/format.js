@@ -96,6 +96,20 @@ export function standText(moment, nowIso) {
   return `Stand von ${numericDate(day)} ${time}`;
 }
 
+// «aktualisiert vor 3 Min.»: коли сервер востаннє перевіряв план.
+// fetchedAt новіший за now буває на демо, де «сьогодні» вигадане: тоді «gerade eben».
+export function updatedAgoText(fetchedAt, now) {
+  const moment = Date.parse(fetchedAt ?? "");
+  if (Number.isNaN(moment)) return null;
+  const minutes = Math.floor((now.getTime() - moment) / 60_000);
+  if (minutes < 1) return "aktualisiert gerade eben";
+  if (minutes < 60) return `aktualisiert vor ${minutes} Min.`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `aktualisiert vor ${hours} Std.`;
+  const days = Math.floor(hours / 24);
+  return `aktualisiert vor ${days} ${days === 1 ? "Tag" : "Tagen"}`;
+}
+
 // Наступний (step = 1) або попередній (step = -1) навчальний день: пропускає вихідні і meta.holidays
 export function nextSchoolDay(iso, holidays = [], step = 1) {
   const free = new Set(holidays);

@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "../../shared/utils/cn";
 import { isTabActive } from "../../shared/utils/isTabActive";
-import Container from "../ui/Container";
 import { navTabs } from "../../shared/constants/constants";
 
 const BottomNav = () => {
@@ -9,7 +8,7 @@ const BottomNav = () => {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-10 bg-linear-to-t from-paper to-transparent pt-10 pb-5.5 lg:hidden print:hidden">
-      <Container>
+      <div className="px-4">
         <nav className="pointer-events-auto flex h-14.5 rounded-full border border-hair bg-card p-1.75">
           {navTabs
             .filter((t) => t.mobile)
@@ -42,7 +41,7 @@ const BottomNav = () => {
               );
             })}
         </nav>
-      </Container>
+      </div>
     </div>
   );
 };
