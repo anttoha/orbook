@@ -1,6 +1,6 @@
 // Тест на null в уроке: сервер может прислать урок без Kurs и без Klausur.
 import { describe, expect, it } from "vitest";
-import { fachClasses, findLesson, isWeekEmpty, lessonExam, lessonKey, weekCheckSource } from "./lessons";
+import { fachClasses, findLesson, isPlanDown, isWeekEmpty, lessonExam, lessonKey, weekCheckSource } from "./lessons";
 
 const lesson = { period: 4, status: "normal", subject: { code: "En", name: "Englisch" }, course: null, examId: null };
 
@@ -72,5 +72,24 @@ describe("урок без предмета (subject: null, так бывает �
 
   it("без кода и без такого урока берёт первый в этом часу", () => {
     expect(findLesson([normal], "2", undefined)).toBe(normal);
+  });
+});
+
+describe("isPlanDown", () => {
+  it("5xx с сохранённым планом: экран, пока не попросили показать", () => {
+    expect(isPlanDown({ status: "unavailable" }, false)).toBe(true);
+    expect(isPlanDown({ status: "unavailable" }, true)).toBe(false);
+  });
+
+  it("5xx без сохранённого: экран всегда", () => {
+    expect(isPlanDown({ status: "error", error: { status: 503 } }, true)).toBe(true);
+  });
+
+  it("нет сети и другие ошибки: не этот экран", () => {
+    expect(isPlanDown({ status: "offline" }, false)).toBe(false);
+    expect(isPlanDown({ status: "error", error: { status: 0 } }, false)).toBe(false);
+    expect(isPlanDown({ status: "error", error: { status: 403 } }, false)).toBe(false);
+    expect(isPlanDown({ status: "error" }, false)).toBe(false);
+    expect(isPlanDown({ status: "ready" }, false)).toBe(false);
   });
 });

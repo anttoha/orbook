@@ -2,7 +2,9 @@ import { create } from "zustand";
 import { toast } from "sonner";
 import { api, retryText, setUnauthorizedHandler } from "../api/api";
 import { cache, loadWithCache } from "../api/offlineCache";
-import { createSchoolClock } from "../utils/lessonClock";
+import { berlinParts, createSchoolClock } from "../utils/lessonClock";
+import { currentMonday } from "../utils/lessons";
+import { planChanges } from "../utils/planDiff";
 
 // ─────────────────────────────────────────────────────────────
 // planStore — УСІ дані з сервера живуть тут (одне місце, щоб не шукати).
@@ -17,12 +19,38 @@ import { createSchoolClock } from "../utils/lessonClock";
 //              status: "loading" | "ready" | "offline" | "unavailable" | "error"
 //   clock    — годинник школи (поправка з meta.serverTime)
 //   now      — поточний час школи (Date), оновлюється раз на хвилину
+//   newPlan  — план змінився, учень ще не дивився: { lastChangeAt, changes } або null
+//   lastStandShown — школа не відповідає, а учень попросив показати збережений план
 //
 // Компоненти читають так:  const exams = usePlanStore((s) => s.exams);
 // Тиждень/день зручніше брати хуками useWeek / useDay (shared/hooks/usePlan.js).
 // ─────────────────────────────────────────────────────────────
 
 let statusRequest = null; // запит /plan/status, що зараз виконується
+
+// Який lastChangeAt учень уже бачив (між запусками). Сховище може бути заборонене: тоді просто без пам'яті
+const SEEN_KEY = "orbook.seenChange";
+const seenChange = {
+  read() {
+    try {
+      return localStorage.getItem(SEEN_KEY);
+    } catch {
+      return null;
+    }
+  },
+  save(value) {
+    try {
+      if (value) localStorage.setItem(SEEN_KEY, value);
+      else localStorage.removeItem(SEEN_KEY);
+    } catch {
+      // немає сховища — плашка може показатись ще раз, це не страшно
+    }
+  },
+};
+
+// Тижні, які учень бачив останніми: з ними порівнюємо новий план, щоб написати, що змінилось.
+// Лежить поза стором: це не показується на екрані
+let seenWeeks = {};
 
 export const usePlanStore = create((set, get) => ({
   me: undefined,
@@ -37,6 +65,8 @@ export const usePlanStore = create((set, get) => ({
   clock: createSchoolClock(null), // поки meta немає — звичайний час пристрою
   now: new Date(), // поточний час школи; оновлює tick() раз на хвилину (HomePage)
   refreshing: false, // іде «Plan neu laden»
+  newPlan: null,
+  lastStandShown: false,
 
   // ── Старт застосунку: хто я? ──
   start: async () => {
@@ -62,7 +92,9 @@ export const usePlanStore = create((set, get) => ({
   logout: async () => {
     await api("/auth/logout", { method: "POST" }).catch(() => {}); // без мережі — виходимо локально
     cache.clearAll(); // кеш відповідей особистий — стираємо
-    set({ me: null, meta: null, courses: [], coursesStatus: "loading", exams: [], status: null, weeks: {} });
+    seenChange.save(null);
+    seenWeeks = {};
+    set({ me: null, meta: null, courses: [], coursesStatus: "loading", exams: [], status: null, weeks: {}, newPlan: null, lastStandShown: false });
   },
 
   // ── Після входу: паралельно meta, курси, Klausuren, стан плану ──
@@ -86,6 +118,8 @@ export const usePlanStore = create((set, get) => ({
       load("exams", "/exams", ({ data }) => set({ exams: data.exams })),
       load("status", "/plan/status", ({ data }) => set({ status: data })),
     ]);
+    // Після meta: «сьогодні» вже за годинником школи
+    get().noticePlanChange(get().status?.lastChangeAt);
   },
 
   // ── Курси класу. Окремо від loadBasics, щоб кнопка «Erneut versuchen» могла вантажити лише їх ──
@@ -99,21 +133,53 @@ export const usePlanStore = create((set, get) => ({
     }
   },
 
-  // ── Тиждень (Mo–Fr), monday — "2026-10-05". silent: не показувати скелет, якщо дані вже є ──
-  loadWeek: async (monday, { silent = false } = {}) => {
+  // ── Тиждень (Mo–Fr), monday — "2026-10-05". silent: не показувати скелет, якщо дані вже є.
+  // seen: учень уже подивився новий план, далі порівнюємо вже з цією відповіддю ──
+  loadWeek: async (monday, { silent = false, seen = false } = {}) => {
     const prev = get().weeks[monday];
     const setWeek = (value) => set((s) => ({ weeks: { ...s.weeks, [monday]: value } }));
+    // запам'ятати до запиту: відповідь перезапише і екран, і збережене
+    if (!seen) seenWeeks[monday] ??= prev?.data ?? cache.load(`week:${monday}`)?.data ?? null;
     if (!silent || !prev?.data) setWeek({ status: "loading", data: prev?.data ?? null });
     try {
       const result = await loadWithCache(`week:${monday}`, () => api(`/week?date=${monday}`));
       setWeek({ status: result.status, data: result.data, savedAt: result.savedAt, error: result.error ?? null });
+      if (seen && result.status === "ready") seenWeeks[monday] = result.data;
+      if (result.status === "ready") set({ lastStandShown: false }); // школа знову відповідає
     } catch (error) {
       setWeek({ status: "error", data: null, error });
     }
   },
 
   // Перезавантажити всі тижні, які вже відкривали (після нового плану)
-  reloadWeeks: () => Object.keys(get().weeks).forEach((monday) => get().loadWeek(monday, { silent: true })),
+  reloadWeeks: (options) => Object.keys(get().weeks).forEach((monday) => get().loadWeek(monday, { silent: true, ...options })),
+
+  // ── «Letzten Stand zeigen» ──
+  showLastStand: () => set({ lastStandShown: true }),
+
+  // ── Чи є план, якого учень ще не бачив? Сервер новіший за збережений lastChangeAt → плашка «Neuer Plan».
+  // Свіжий тиждень беремо окремо: екран не міняється, поки учень не натисне «Ansehen» ──
+  noticePlanChange: async (lastChangeAt) => {
+    if (!lastChangeAt) return;
+    const seen = seenChange.read();
+    if (!seen) {
+      seenChange.save(lastChangeAt); // перший запуск: нового для учня ще нічого немає
+      return;
+    }
+    if (Date.parse(lastChangeAt) <= Date.parse(seen) || get().newPlan?.lastChangeAt === lastChangeAt) return;
+    const today = berlinParts(get().now).date;
+    const monday = currentMonday(today);
+    const before = seenWeeks[monday] ?? get().weeks[monday]?.data ?? null;
+    const fresh = await api(`/week?date=${monday}`).catch(() => null); // не вийшло — плашка без подробиць
+    set({ newPlan: { lastChangeAt, changes: fresh ? planChanges(before, fresh, today) : [] } });
+  },
+
+  // ── «Ansehen»: показати новий план і більше про нього не нагадувати ──
+  seeNewPlan: () => {
+    seenChange.save(get().newPlan?.lastChangeAt);
+    set({ newPlan: null });
+    get().reloadWeeks({ seen: true });
+  },
 
   // ── «Plan neu laden»: сервер одразу питає школу (кілька секунд) ──
   refreshPlan: async () => {
@@ -123,10 +189,13 @@ export const usePlanStore = create((set, get) => ({
       const result = await api("/plan/refresh", { method: "POST" });
       set({ status: result.status });
       if (!result.refreshed) {
-        toast.error("Plan konnte nicht geladen werden", { action: { label: "Nochmal", onClick: () => get().refreshPlan() } });
+        toast.error("Plan konnte nicht geladen werden", { duration: 6000, action: { label: "Nochmal", onClick: () => get().refreshPlan() } });
       } else {
-        toast.success(result.changed ? "Plan aktualisiert" : "Plan ist aktuell");
-        get().reloadWeeks(); // нові дані тижнів
+        toast.success(result.changed ? "Plan aktualisiert" : "Plan ist aktuell", { duration: 3000 });
+        // учень сам оновив план і зараз його побачить: плашка «Neuer Plan» уже зайва
+        seenChange.save(result.status?.lastChangeAt);
+        set({ newPlan: null });
+        get().reloadWeeks({ seen: true }); // нові дані тижнів
         get().loadBasics(); // і Klausuren / стан
       }
     } catch (error) {
@@ -143,16 +212,12 @@ export const usePlanStore = create((set, get) => ({
   // ── Раз на хвилину: чи змінився план? (GET /api/plan/status) ──
   checkStatus: async () => {
     if (statusRequest) return; // попередній опит ще йде (повільна мережа): не накладаємо
-    const before = get().status?.lastChangeAt;
     try {
       statusRequest = api("/plan/status", { conditional: true });
       const status = await statusRequest;
       if (!status) return; // 304 — нічого не змінилось, нічого не перемальовуємо
       set({ status });
-      if (before && status.lastChangeAt && status.lastChangeAt !== before) {
-        // план змінився — пропонуємо подивитись
-        toast("Neuer Plan da", { action: { label: "Ansehen", onClick: () => get().reloadWeeks() }, duration: 10000 });
-      }
+      await get().noticePlanChange(status.lastChangeAt);
     } catch {
       // немає мережі — спробуємо наступного разу
     } finally {

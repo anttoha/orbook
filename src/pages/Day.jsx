@@ -1,8 +1,10 @@
-import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { Eye, Flag, List, RefreshCw } from "lucide-react";
+import { Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Eye, List } from "lucide-react";
 import CurrentLessonCard from "../components/day/CurrentLessonCard";
+import DayFreeState from "../components/day/DayFreeState";
 import DayInfoBanner from "../components/day/DayInfoBanner";
 import DayPageHeader from "../components/day/DayPageHeader";
+import DaySkeleton from "../components/day/DaySkeleton";
 import LessonList from "../components/day/LessonList";
 import NextExamNote from "../components/day/NextExamNote";
 import NotesSection from "../components/day/NotesSection";
@@ -11,8 +13,9 @@ import DayHeaderDesktop from "../components/day/desktop/DayHeaderDesktop";
 import DayInfoCard from "../components/day/desktop/DayInfoCard";
 import DayStrip from "../components/day/desktop/DayStrip";
 import UpcomingCard from "../components/day/desktop/UpcomingCard";
-import { TimelineIcon } from "../components/ui/icons";
-import { PlanBanner, PlanError, Skeleton } from "../components/ui/PlanState";
+import { FlagIcon, TimelineIcon } from "../components/ui/icons";
+import NewPlanBanner from "../components/ui/NewPlanBanner";
+import { PlanBanner, PlanDown, PlanError } from "../components/ui/PlanState";
 import Segmented from "../components/ui/Segmented";
 import { useHotkeys } from "../shared/hooks/useHotkeys";
 import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
@@ -22,9 +25,9 @@ import { useSheet } from "../shared/hooks/useSheet";
 import { useSwipe } from "../shared/hooks/useSwipe";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
-import { isIsoDate, longDate, mondayOf, nextSchoolDay, subjectName, weekdayLong, weekdayShort } from "../shared/utils/format";
+import { isIsoDate, mondayOf, nextSchoolDay, subjectName } from "../shared/utils/format";
 import { lessonState } from "../shared/utils/lessonClock";
-import { freeText } from "../shared/utils/lessons";
+import { freeText, isPlanDown } from "../shared/utils/lessons";
 
 // Варіанти перемикача вигляду
 const VIEWS = [
@@ -51,9 +54,9 @@ const Day = () => {
   const filter = useLessonFilter(); // «Meine Kurse»
   const showAllCourses = useUserStore((s) => s.showAllCourses); // показати всі курси
   const holidays = usePlanStore((s) => s.meta?.holidays); // вільні дні (для гортання)
-  const refreshPlan = usePlanStore((s) => s.refreshPlan); // «Jetzt prüfen»
   const loadWeek = usePlanStore((s) => s.loadWeek); // «Erneut versuchen»
   const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // «Teilen» увімкнене?
+  const lastStandShown = usePlanStore((s) => s.lastStandShown); // учень попросив збережений план
 
   const valid = !datum || isIsoDate(datum); // крива дата → на сьогодні
   const date = datum ?? today; // який день показуємо
@@ -104,52 +107,29 @@ const Day = () => {
   const live = day && date === today ? lessonState(lessons, now) : null; // що йде зараз (тільки сьогодні)
   const showLive = Boolean(live?.current || live?.next); // картка «Jetzt / Gleich»
   const free = day ? freeText(day) : null; // «Wochenende» / «Schulfrei» / «Plan fehlt noch»
-  const next = nextSchoolDay(date, holidays); // наступний навчальний день
+  const isWeekendDay = day?.freeReason === "weekend"; // вихідні складаємо самі, вони не залежать від відповіді сервера
+  const down = !isWeekendDay && isPlanDown(week, lastStandShown); // школа або сервер не відповідає
+  const isLoading = !day && week.status !== "error"; // поки вантажиться, перемикач уже видно (макет «Tag · lädt»)
 
   // ── Блоки, однакові для телефону і ПК ──
 
   // Завантаження / помилка (поки дня немає)
-  const loadingState = !day && (week.status === "error" ? <PlanError resource={week} onRetry={reload} /> : <Skeleton className="h-80" />);
+  const loadingState = !day && (week.status === "error" ? <PlanError resource={week} onRetry={reload} /> : <DaySkeleton />);
 
   // День без плану: вихідний, свято, план ще не вийшов, школа не відповідає
-  const freeState = free && (
-    <div className="flex flex-col items-center gap-1 rounded-card bg-card px-4 py-10 text-center">
-      {day.status === "holiday" ? (
-        <>
-          <p className="text-subhead text-ink">{day.freeReason === "weekend" ? "Wochenende" : date === today ? "Heute ist frei" : "Kein Unterricht"}</p>
-          <p className="text-label font-bold text-faint">{day.freeReason === "weekend" ? "Kein Unterricht" : "Schulfrei"}</p>
-        </>
-      ) : day.status === "not_published" ? (
-        <>
-          <p className="text-subhead text-ink">Plan für {weekdayLong(date)} fehlt noch</p>
-          <p className="max-w-sm text-label font-semibold text-muted">Die Schule stellt den Plan meist am Vortag ab Mittag online. ORBook schaut regelmäßig nach.</p>
-          <button type="button" onClick={refreshPlan} className="mt-2 flex items-center gap-1.5 rounded-full bg-sand px-4 py-2 text-label font-extrabold text-ink">
-            <RefreshCw className="size-3.5" /> Jetzt prüfen
-          </button>
-        </>
-      ) : (
-        <>
-          <p className="text-subhead text-ink">Plan nicht erreichbar</p>
-          <p className="max-w-sm text-label font-semibold text-muted">stundenplan24.de antwortet nicht. Meist liegt das am Schulserver, nicht an dir.</p>
-        </>
-      )}
-      {/* «Nächster Schultag · Mo, 6. Okt» */}
-      {next && (
-        <Link to={`/tag/${next}${search}`} className="mt-2 text-label font-extrabold text-accent">
-          Nächster Schultag · {weekdayShort(next)}, {longDate(next)}
-        </Link>
-      )}
-    </div>
-  );
+  const freeState = free && <DayFreeState day={day} today={today} week={week} onRetry={reload} search={search} fill={expected.length === 0} />;
 
   // Klausuren дня без плану: «Klausur: Mathe, 1. Stunde» (у звичайні дні вони видно на уроці)
   const examNotes =
     day && day.status !== "ok" && day.exams.length > 0 && (
       <div className="flex flex-col gap-2">
         {day.exams.map((exam) => (
-          <p key={exam.id} className="flex items-center gap-3 rounded-field bg-tint px-4 py-3 text-label font-bold text-accent-ink">
-            <Flag className="size-4 shrink-0" /> {exam.type}: {subjectName(exam.subject)}
-            {exam.lesson && `, ${exam.lesson}. Stunde`}
+          <p key={exam.id} className="flex items-center gap-2.5 rounded-field bg-tint px-3.25 py-3 text-label text-accent-ink">
+            <FlagIcon className="size-4 shrink-0" />
+            <span>
+              <span className="font-bold">{exam.type}:</span> {subjectName(exam.subject)}
+              {exam.lesson && `, ${exam.lesson}. Stunde`}
+            </span>
           </p>
         ))}
       </div>
@@ -193,21 +173,28 @@ const Day = () => {
           onShare={shareEnabled ? () => openSheet("teilen", { bereich: "heute", datum: date }) : null}
         />
         {week.data && <DayStrip days={week.data.days} date={date} today={today} search={search} />}
+        <NewPlanBanner />
         <PlanBanner resource={week} onRetry={reload} />
 
         {/* ліва колонка — уроки, права (360px) — Info, нотатки, «Kommt noch».
             На 1024–1439px права колонка йде вниз */}
         <div className="grid items-start gap-9 desktop:grid-cols-[minmax(0,1fr)_360px]">
           <div className="flex flex-col gap-3.5">
-            {loadingState}
-            {showLive && <CurrentLessonCard live={live} onOpen={openLesson} />}
-            {freeState}
-            {examNotes}
-            {expectedState}
-            {allHidden}
-            {lessons.length > 0 && view === "liste" && <LessonList day={day} lessons={lessons} onOpen={openLesson} />}
-            {lessons.length > 0 && view === "zeitleiste" && <Timeline day={day} lessons={lessons} onOpen={openLesson} />}
-            {restoreHidden}
+            {down ? (
+              <PlanDown resource={week} onRetry={reload} />
+            ) : (
+              <>
+                {loadingState}
+                {showLive && <CurrentLessonCard live={live} onOpen={openLesson} />}
+                {freeState}
+                {examNotes}
+                {expectedState}
+                {allHidden}
+                {lessons.length > 0 && view === "liste" && <LessonList day={day} lessons={lessons} onOpen={openLesson} />}
+                {lessons.length > 0 && view === "zeitleiste" && <Timeline day={day} lessons={lessons} onOpen={openLesson} />}
+                {restoreHidden}
+              </>
+            )}
           </div>
 
           <aside className="grid content-start gap-4 lg:grid-cols-2 desktop:grid-cols-1">
@@ -226,39 +213,46 @@ const Day = () => {
   return (
     <section {...swipe} className="flex flex-col gap-3">
       <DayPageHeader date={date} today={today} day={day} onInfo={openInfo} search={search} />
+      <NewPlanBanner />
 
-      {lessons.length > 0 && <Segmented label="Ansicht" options={VIEWS} value={view} onChange={setView} className="mt-0.5" />}
-
-      <PlanBanner resource={week} onRetry={reload} />
-      {day?.info.length > 0 && <DayInfoBanner info={day.info} onClick={openInfo} />}
-
-      {loadingState}
-      {freeState}
-      {examNotes}
-      {expectedState}
-      {allHidden}
-
-      {/* вигляд «Liste» */}
-      {lessons.length > 0 && view === "liste" && (
+      {down ? (
+        <PlanDown resource={week} onRetry={reload} />
+      ) : (
         <>
-          {showLive && <CurrentLessonCard live={live} onOpen={openLesson} />}
-          <div className="mt-0.5">
-            <LessonList day={day} lessons={lessons} onOpen={openLesson} />
-          </div>
+          {(lessons.length > 0 || isLoading) && <Segmented label="Ansicht" options={VIEWS} value={view} onChange={setView} className="mt-0.5" />}
+
+          <PlanBanner resource={week} onRetry={reload} />
+          {day?.info.length > 0 && <DayInfoBanner info={day.info} onClick={openInfo} />}
+
+          {loadingState}
+          {freeState}
+          {examNotes}
+          {expectedState}
+          {allHidden}
+
+          {/* вигляд «Liste» */}
+          {lessons.length > 0 && view === "liste" && (
+            <>
+              {showLive && <CurrentLessonCard live={live} onOpen={openLesson} />}
+              <div className="mt-0.5">
+                <LessonList day={day} lessons={lessons} onOpen={openLesson} />
+              </div>
+            </>
+          )}
+
+          {/* вигляд «Zeitleiste» */}
+          {lessons.length > 0 && view === "zeitleiste" && (
+            <>
+              <Timeline day={day} lessons={lessons} onOpen={openLesson} />
+              <NextExamNote />
+            </>
+          )}
+
+          {restoreHidden}
+
+          <NotesSection date={date} lessons={day?.lessons} hideEmpty={day?.status !== "ok"} />
         </>
       )}
-
-      {/* вигляд «Zeitleiste» */}
-      {lessons.length > 0 && view === "zeitleiste" && (
-        <>
-          <Timeline day={day} lessons={lessons} onOpen={openLesson} />
-          <NextExamNote />
-        </>
-      )}
-
-      {restoreHidden}
-
-      <NotesSection date={date} lessons={day?.lessons} />
     </section>
   );
 };

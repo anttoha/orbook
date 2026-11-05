@@ -9,14 +9,17 @@ import { subjectName } from "../../shared/utils/format";
 //   variant="list" — телефон: заголовок + окремі картки
 //   variant="card" — ПК: усе в одній білій картці (макет «Tag · Liste», права колонка)
 // date — "2026-10-07"; lessons — уроки дня (для підпису «Sport · 6. Std»)
+// hideEmpty — без нотаток секції немає (день без плану на телефоні: у макеті там тільки стан дня)
 // ─────────────────────────────────────────────────────────────
-const NotesSection = ({ date, lessons = [], variant = "list" }) => {
+const NotesSection = ({ date, lessons = [], variant = "list", hideEmpty = false }) => {
   const { openSheet } = useSheet(); // відкрити шторку нотатки
   const allNotes = useUserStore((s) => s.notes); // усі нотатки (фільтр нижче)
   const isCard = variant === "card"; // варіант для ПК?
 
   // Нотатки цього дня: спочатку до уроків по порядку, потім на день за часом
   const notes = allNotes.filter((n) => n.date === date).sort((a, b) => (a.period ?? 99) - (b.period ?? 99) || a.updatedAt - b.updatedAt);
+
+  if (hideEmpty && notes.length === 0) return null;
 
   // Відкрити нотатку: до уроку — за номером уроку, на день — за id
   const open = (note) => openSheet("notiz", note.period ? { datum: date, stunde: note.period } : { datum: date, id: note.id });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { changedLabel, planMomentText, standText, subjectCode, subjectName, updatedAgoText } from "./format";
+import { changedLabel, lastStandLabel, planMomentText, standText, subjectCode, subjectName, updatedAgoText } from "./format";
 
 describe("standText", () => {
   it("сегодня, вчера и другой день", () => {
@@ -80,5 +80,13 @@ describe("planMomentText", () => {
 
   it("null: прочерк", () => {
     expect(planMomentText(null, today)).toBe("—");
+  });
+});
+
+describe("lastStandLabel", () => {
+  it("сегодня только время, другой день с названием, пусто — прочерк", () => {
+    expect(lastStandLabel("2026-11-05T07:12", "2026-11-05")).toBe("07:12");
+    expect(lastStandLabel("2026-11-04T07:12", "2026-11-05")).toBe("gestern 07:12");
+    expect(lastStandLabel(null, "2026-11-05")).toBe("—");
   });
 });

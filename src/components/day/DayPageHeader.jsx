@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Info } from "lucide-react";
 import { usePlanStore } from "../../shared/store/planStore";
+import { cn } from "../../shared/utils/cn";
 import { longDate, mondayOf, nextSchoolDay, relativeDayWord, weekdayLong } from "../../shared/utils/format";
 import ChangedLine from "../week/ChangedLine";
 
@@ -29,7 +30,7 @@ const DayPageHeader = ({ date, today, day, onInfo, search = "" }) => {
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-0.5">
-          <p className="truncate text-hint font-extrabold text-accent-ink">
+          <p className={cn("truncate text-hint font-extrabold", date === today ? "text-accent-ink" : "text-faint")}>
             {weekdayLong(date)}
             {word && ` · ${word}`}
           </p>

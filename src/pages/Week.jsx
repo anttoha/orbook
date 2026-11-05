@@ -8,7 +8,9 @@ import PeriodGrid from "../components/week/desktop/PeriodGrid";
 import TimeGrid from "../components/week/desktop/TimeGrid";
 import WeekAside from "../components/week/desktop/WeekAside";
 import WeekHeaderDesktop from "../components/week/desktop/WeekHeaderDesktop";
-import { PlanBanner, PlanError, Skeleton } from "../components/ui/PlanState";
+import NewPlanBanner from "../components/ui/NewPlanBanner";
+import { PlanBanner, PlanDown, PlanError, Skeleton } from "../components/ui/PlanState";
+import WeekSkeleton from "../components/week/WeekSkeleton";
 import { useHotkeys } from "../shared/hooks/useHotkeys";
 import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useNow } from "../shared/hooks/useNow";
@@ -19,7 +21,7 @@ import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { cn } from "../shared/utils/cn";
 import { addDays, examWhen, isIsoDate, mondayOf, subjectName, weekHeading, weekSummaryText, weekTitle, weekdayShort } from "../shared/utils/format";
-import { currentMonday, isWeekEmpty, weekDays } from "../shared/utils/lessons";
+import { currentMonday, isWeekEmpty, weekDays, isPlanDown } from "../shared/utils/lessons";
 
 // Кругла кнопка в шапці
 const roundButton = "flex size-9.5 items-center justify-center rounded-full bg-card outline-none focus-visible:ring-2 focus-visible:ring-accent/50";
@@ -68,6 +70,8 @@ const Week = () => {
   const title = weekTitle(monday, lastDay); // «KW 41 · 5.–9. Okt»
   const heading = weekHeading(monday, today); // «Diese Woche»
   const reload = () => loadWeek(monday); // кнопки «Erneut versuchen» / «Neu laden»
+  const lastStandShown = usePlanStore((s) => s.lastStandShown); // учень попросив збережений план
+  const down = isPlanDown(week, lastStandShown); // школа або сервер не відповідає: екран замість сітки
 
   // Поміняти параметр адреси (null — видалити); replace — без нового запису в історії
   const setParam = (key, value) => {
@@ -99,10 +103,14 @@ const Week = () => {
   const swipe = useSwipe({ onLeft: () => setWeek(addDays(monday, 7)), onRight: () => setWeek(addDays(monday, -7)) });
   const statisticsEnabled = usePlanStore((s) => s.me?.features?.statistics !== false);
 
+  // Без мережі час уже є в плашці «Offline · Stand von …», при збої рядка теж не треба
+  const showUpdated = !down && week.status !== "offline";
+
   // Сітка або її стан: скелет / помилка
   const gridState = (grid) => {
+    if (down) return <PlanDown resource={week} onRetry={reload} />;
     if (week.status === "error") return <PlanError resource={week} onRetry={reload} />;
-    if (!days) return <Skeleton className={isDesktop ? "h-140" : "h-105"} />;
+    if (!days) return isDesktop ? <Skeleton className="h-140" /> : <WeekSkeleton />;
     if (isWeekEmpty(week.data?.days)) {
       return (
         <>
@@ -134,9 +142,10 @@ const Week = () => {
           onToday={goToday}
         />
 
-        <WeekUpdated days={week.data?.days} />
+        {showUpdated && <WeekUpdated days={week.data?.days} />}
 
-        <PlanBanner resource={week} onRetry={reload} />
+        <NewPlanBanner />
+        {!down && <PlanBanner resource={week} onRetry={reload} />}
 
         {/* сітка + права частина; на екрані ≥ 1440px — поруч, на 1024–1439px — права частина під сіткою */}
         <div className={cn("grid items-start gap-8", view === "stunden" ? "desktop:grid-cols-[minmax(0,1fr)_420px]" : "desktop:grid-cols-[minmax(0,1fr)_330px]")}>
@@ -181,35 +190,39 @@ const Week = () => {
         </div>
       </header>
 
-      <WeekUpdated days={week.data?.days} />
+      {showUpdated && <WeekUpdated days={week.data?.days} />}
 
-      <PlanBanner resource={week} onRetry={reload} />
+      <NewPlanBanner />
+      {!down && <PlanBanner resource={week} onRetry={reload} />}
 
       {/* клік по уроку → шторка уроку; клік по дню — посилання всередині сітки */}
       {gridState(<WeekGrid days={days} onLessonClick={openLesson} />)}
 
-      <div className="flex flex-col divide-y divide-hair rounded-card bg-card px-3.5 text-faint">
-        {/* найближча Klausur → сторінка цього дня */}
-        {nextExam && (
-          <Link to={`/tag/${nextExam.date}`} className="flex items-center gap-3 py-2">
-            <Flag className="size-4.75 shrink-0" />
-            <div className="min-w-0 flex-1">
-              <h3 className="text-row leading-5 font-medium text-ink">
-                {weekdayShort(nextExam.date)} · {subjectName(nextExam.subject)}
-              </h3>
-              <p className="mt-0.5 text-caption leading-4">
-                Nächste {nextExam.type}
-                {nextExam.topic && ` · ${nextExam.topic}`}
-              </p>
-            </div>
-            <span className="shrink-0 text-label whitespace-nowrap">{examWhen(nextExam)}</span>
-            <ChevronRight className="size-4 shrink-0" />
-          </Link>
-        )}
+      {/* поки вантажиться, заглушка вже показує ці рядки; при збої їх немає зовсім (макет «Plan nicht erreichbar») */}
+      {days && !down && (
+        <div className="flex flex-col divide-y divide-hair rounded-card bg-card px-3.5 text-faint">
+          {/* найближча Klausur → сторінка цього дня */}
+          {nextExam && (
+            <Link to={`/tag/${nextExam.date}`} className="flex items-center gap-3 py-2">
+              <Flag className="size-4.75 shrink-0" />
+              <div className="min-w-0 flex-1">
+                <h3 className="text-row leading-5 font-medium text-ink">
+                  {weekdayShort(nextExam.date)} · {subjectName(nextExam.subject)}
+                </h3>
+                <p className="mt-0.5 text-caption leading-4">
+                  Nächste {nextExam.type}
+                  {nextExam.topic && ` · ${nextExam.topic}`}
+                </p>
+              </div>
+              <span className="shrink-0 text-label whitespace-nowrap">{examWhen(nextExam)}</span>
+              <ChevronRight className="size-4 shrink-0" />
+            </Link>
+          )}
 
-        {/* підсумок тижня: «1 fällt aus · 3 Vertretungen · 2 Raumwechsel» */}
-        {week.data && <WeekSummaryRow text={weekSummaryText(week.data.summary)} linked={statisticsEnabled} />}
-      </div>
+          {/* підсумок тижня: «1 fällt aus · 3 Vertretungen · 2 Raumwechsel» */}
+          <WeekSummaryRow text={weekSummaryText(week.data.summary)} linked={statisticsEnabled} />
+        </div>
+      )}
     </section>
   );
 };

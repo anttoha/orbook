@@ -96,6 +96,12 @@ export function standText(moment, nowIso) {
   return `Stand von ${numericDate(day)} ${time}`;
 }
 
+// Підпис кнопки «Letzten Stand zeigen · 07:12»: сьогодні тільки час, інакше ще й день. moment = null → «—»
+export function lastStandLabel(moment, today) {
+  if (moment?.slice(0, 10) === today) return moment.slice(11, 16);
+  return planMomentText(moment, today);
+}
+
 // Другий рядок у плашці дня: коли план цього дня востаннє змінився.
 // Той самий день — «07:08», інший — «Mi 15:15». Дати в API вже в часі школи (+01:00),
 // тому беремо їх із рядка, а не через Date. Немає плану або часу — null.

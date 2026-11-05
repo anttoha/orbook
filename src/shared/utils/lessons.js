@@ -117,5 +117,10 @@ export function weekCheckSource(days) {
   return { fetchedAt, stale: list.some((item) => item.stale) };
 }
 
+// Чи показувати екран «Plan kommt gerade nicht an» замість плану: сервер або школа відповіли помилкою 5xx.
+// Є збережене (unavailable) — поки учень сам не попросив його показати; немає — завжди.
+// Застарілий план (stale) сюди не входить: він є, і його можна читати, про давність каже рядок «aktualisiert …».
+export const isPlanDown = (week, lastStandShown) => (week.status === "unavailable" ? !lastStandShown : week.status === "error" && week.error?.status >= 500);
+
 // Чи немає уроків за весь тиждень: тоді підказка «Noch kein Plan für diese Woche»
 export const isWeekEmpty = (days) => Boolean(days?.length) && days.every((day) => !day.lessons?.length);

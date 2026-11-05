@@ -2,13 +2,14 @@ import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { Toaster } from "sonner";
-import { TriangleAlert } from "lucide-react";
+import { Check, TriangleAlert } from "lucide-react";
 import AuthPage from "./AuthPage";
 import CourseStart from "./CourseStart";
 import Container from "../components/ui/Container";
 import SideNav from "../components/navbar/SideNav";
 import BottomNav from "../components/navbar/BottomNav";
 import SheetHost from "../components/sheets/SheetHost";
+import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { usePlanPolling } from "../shared/hooks/usePlanPolling";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
@@ -28,6 +29,7 @@ const HomePage = () => {
   const tick = usePlanStore((s) => s.tick); // оновити «зараз»
   const demo = usePlanStore((s) => s.meta?.demo); // демо-сервер?
   const coursesChosen = useUserStore((s) => s.coursesChosen); // чи пройдено вибір курсів
+  const isDesktop = useMediaQuery(DESKTOP_QUERY); // сповіщення: на телефоні над меню, на ПК внизу праворуч
 
   // Один раз при відкритті: дізнатись, чи ми увійшли
   useEffect(() => {
@@ -82,7 +84,24 @@ const HomePage = () => {
           Лежать поза Container: інакше flex додав би їм зайвий відступ праворуч */}
       <SheetHost />
       {/* спливаючі сповіщення (toast) */}
-      <Toaster position="top-center" toastOptions={{ style: { fontFamily: "inherit" } }} />
+      <Toaster
+        position={isDesktop ? "bottom-right" : "bottom-center"}
+        offset={isDesktop ? { bottom: 28, right: 28 } : { bottom: 96 }}
+        mobileOffset={{ bottom: 96, left: 16, right: 16 }}
+        style={{ "--width": "400px" }}
+        visibleToasts={1} // один тост за раз: новий замінює старий
+        icons={{ success: <Check className="size-4" />, error: <TriangleAlert className="size-4" /> }}
+        toastOptions={{
+          unstyled: true,
+          classNames: {
+            // колір помилки через data-type: окремий клас програв би bg-ink за порядком у CSS
+            toast: "flex w-full items-center gap-2.5 rounded-field bg-ink px-3.5 py-3 font-sans text-nav font-semibold text-paper shadow-menu data-[type=error]:bg-danger data-[type=error]:text-white",
+            title: "min-w-0",
+            icon: "shrink-0",
+            actionButton: "ml-auto shrink-0 text-label font-bold underline",
+          },
+        }}
+      />
     </Tooltip.Provider>
   );
 };
