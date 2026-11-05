@@ -20,6 +20,12 @@ export const ShieldIcon = ({ className }) => <Outline d="M12 3l8 3v6c0 4.5-3.4 8
 // Editor-Code: ключ (кружечок і стрижень)
 export const KeyIcon = ({ className }) => <Outline d="M8 11a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM11 12l9-9M17 6l3 3" className={className} />;
 
+// «Klasse verlassen»: двері зі стрілкою
+export const LeaveIcon = ({ className }) => <Outline d="M14 8V5a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-3M10 12h10m0 0l-3-3m3 3l-3 3" className={className} />;
+
+// Кнопка WhatsApp: бульбашка зі слухавкою
+export const WhatsappIcon = ({ className }) => <Outline d="M4 20l1.3-4A8 8 0 1 1 8 18.7zM9 9c0 3 3 6 6 6l1-1.5-2-1-1 1c-1-.5-2-1.5-2.5-2.5l1-1-1-2z" className={className} />;
+
 // «Löschen»: кошик
 export const TrashIcon = ({ className }) => <Outline d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" className={className} />;
 

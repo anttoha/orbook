@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { Copy, MessageCircle, RefreshCw } from "lucide-react";
+import { Copy, RefreshCw } from "lucide-react";
 import { copyText, loadShareText, whatsappUrl } from "../../shared/utils/share";
+import { cn } from "../../shared/utils/cn";
+import { CheckIcon, WhatsappIcon } from "../ui/icons";
 import { Skeleton } from "../ui/PlanState";
 import Button from "../ui/Button";
 import Segmented from "../ui/Segmented";
@@ -63,7 +65,7 @@ const ShareOptions = ({ sheet }) => {
 
   return (
     <>
-      <Segmented label="Zeitraum" options={RANGES} value={range} onChange={change(setRange)} />
+      <Segmented label="Zeitraum" size="form" options={RANGES} value={range} onChange={change(setRange)} />
 
       {/* галочки */}
       <div className="grid grid-cols-2 gap-2">
@@ -96,13 +98,12 @@ const ShareOptions = ({ sheet }) => {
 
 // Галочка з підписом
 const Checkbox = ({ label, checked, onChange }) => (
-  <label className="flex cursor-pointer items-center gap-2.5 rounded-field bg-card px-3.5 py-3 text-body-sm font-bold text-ink">
-    <input
-      type="checkbox"
-      checked={checked}
-      onChange={(e) => onChange(e.target.checked)}
-      className="size-4.5 accent-accent" // accent-* фарбує системну галочку
-    />
+  <label className="flex h-10 cursor-pointer items-center gap-3.25 px-1 text-body-sm text-ink">
+    {/* справжня галочка лишається для клавіатури і скрінрідера, видно намальовану */}
+    <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="peer sr-only" />
+    <span className={cn("grid size-4.5 shrink-0 place-items-center rounded-mark peer-focus-visible:ring-2 peer-focus-visible:ring-accent/50", checked ? "bg-accent text-on-accent" : "border-2 border-faint2")}>
+      {checked && <CheckIcon className="size-3.5" />}
+    </span>
     {label}
   </label>
 );
@@ -116,26 +117,21 @@ const Composer = ({ initialText }) => {
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        rows={6}
+        rows={5}
         aria-label="Nachricht"
-        className="w-full resize-none rounded-field bg-ok-tint p-3.5 text-body-sm leading-relaxed font-bold text-ink outline-none focus:ring-2 focus:ring-ok/40"
+        className="w-full resize-none rounded-cell bg-ok-tint px-3.5 py-3 text-body-sm leading-5.25 text-ink outline-none focus:ring-2 focus:ring-ok/40"
       />
-      <p className="-mt-2 px-1 text-caption font-bold text-faint">Du kannst den Text vor dem Senden noch ändern.</p>
+      <p className="text-caption text-faint">Du kannst den Text vor dem Senden noch ändern.</p>
 
-      <div className="flex gap-2.5">
+      <div className="-mt-1 flex gap-2">
         <Button onClick={() => copyText(text)}>
-          <Copy className="size-4.5" /> Kopieren
+          <Copy className="size-4" /> Kopieren
         </Button>
         {/* звичайне посилання в новій вкладці: відкриє WhatsApp (застосунок або web) */}
-        <a
-          href={whatsappUrl(text)}
-          target="_blank"
-          rel="noreferrer"
-          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-accent text-body font-extrabold text-on-accent active:opacity-80"
-        >
+        <Button variant="primary" href={whatsappUrl(text)} target="_blank" rel="noreferrer">
           {/* на ПК відкриється WhatsApp Web, тому й підпис такий (як на макеті) */}
-          <MessageCircle className="size-4.5" /> WhatsApp<span className="hidden lg:inline"> Web</span>
-        </a>
+          <WhatsappIcon className="size-4" /> WhatsApp<span className="hidden lg:inline"> Web</span>
+        </Button>
       </div>
     </>
   );
