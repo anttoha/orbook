@@ -36,6 +36,8 @@ export const useDay = (iso) => {
 export const useLessonFilter = () => {
   const courses = usePlanStore((s) => s.courses);
   const picked = useUserStore((s) => s.picked);
+  const hiddenRequired = useUserStore((s) => s.hiddenRequired);
   const set = new Set(picked);
-  return (lessons) => visibleLessons(lessons, courses, set);
+  const hidden = new Set(hiddenRequired);
+  return (lessons) => visibleLessons(lessons, courses, set, hidden);
 };

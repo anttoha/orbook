@@ -6,9 +6,10 @@ import { isoWeek, longDate, monthLong, shortDate } from "./format";
 
 // Адреса запиту. picked — «Meine Kurse»: [] — рахувати всі уроки, інакше тільки вибрані курси.
 // NO_OPTIONAL («keine») іде як є: сервер такого курсу не знає і рахує лише обов'язкові уроки
-export function statsPath(range, picked = []) {
-  const courses = picked.length ? `&courses=${picked.map(encodeURIComponent).join(",")}` : "";
-  return `/stats?range=${range}${courses}`;
+// hiddenRequired — приховані обов'язкові курси: їх сервер не рахує (параметр hidden)
+const listParam = (name, list) => (list.length ? `&${name}=${list.map(encodeURIComponent).join(",")}` : "");
+export function statsPath(range, picked = [], hiddenRequired = []) {
+  return `/stats?range=${range}${listParam("courses", picked)}${listParam("hidden", hiddenRequired)}`;
 }
 
 // «Vertretungen» рахуємо так само, як рядок під тижнем: заміна + перенесений + доданий урок

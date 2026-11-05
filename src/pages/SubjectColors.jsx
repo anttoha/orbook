@@ -3,6 +3,7 @@ import { ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import CoursesState from "../components/courses/CoursesState";
 import ColorPalette from "../components/more/ColorPalette";
+import { CheckIcon } from "../components/ui/icons";
 import ListCard from "../components/ui/ListCard";
 import PageHeader from "../components/ui/PageHeader";
 import { usePlanStore } from "../shared/store/planStore";
@@ -11,14 +12,20 @@ import { cn } from "../shared/utils/cn";
 import { visibleSubjects } from "../shared/utils/courses";
 import { fachClasses, fachDotClass, paletteOf } from "../shared/utils/lessons";
 
-// Рядок предмета: натискання показує його палітру зверху
-const SubjectRow = ({ subject, overrides, onSelect }) => (
-  <li>
-    <button type="button" onClick={onSelect} className="flex h-13.25 w-full items-center gap-3 text-left">
+// Рядок предмета: натискання вибирає його, і палітра зверху змінює саме його колір.
+// Вибраний виділено фоном, жирною назвою і галочкою — щоб було видно, що зараз фарбуємо
+const SubjectRow = ({ subject, overrides, selected, onSelect }) => (
+  <li className="-mx-2">
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-current={selected ? "true" : undefined}
+      className={cn("flex h-13.25 w-full items-center gap-3 rounded-field px-2 text-left", selected ? "bg-tint" : "hover:bg-paper")}
+    >
       <span className={cn("grid size-8 shrink-0 place-items-center rounded-full text-note font-black", fachClasses(subject.code, overrides))}>{subject.code}</span>
-      <span className="min-w-0 flex-1 truncate text-row font-semibold text-ink">{subject.name}</span>
+      <span className={cn("min-w-0 flex-1 truncate text-row text-ink", selected ? "font-extrabold" : "font-semibold")}>{subject.name}</span>
       <span className={cn("size-5.5 shrink-0 rounded-full", fachDotClass(subject.code, overrides))} />
-      <ChevronRight className="size-4 shrink-0 text-faint2" />
+      {selected ? <CheckIcon className="size-4 shrink-0 text-accent-ink" /> : <ChevronRight className="size-4 shrink-0 text-faint2" />}
     </button>
   </li>
 );
@@ -36,7 +43,8 @@ const SubjectColors = () => {
   const setColorOverrides = useUserStore((s) => s.setColorOverrides);
   const [selectedCode, setSelectedCode] = useState(null);
 
-  const subjects = visibleSubjects(courses, picked, metaSubjects);
+  const hiddenRequired = useUserStore((s) => s.hiddenRequired);
+  const subjects = visibleSubjects(courses, picked, metaSubjects, hiddenRequired);
   const selected = subjects.find((subject) => subject.code === selectedCode) ?? subjects[0];
 
   const resetAll = () => {
@@ -57,10 +65,10 @@ const SubjectColors = () => {
       <CoursesState>
         {selected && (
           <>
-            <ColorPalette subjectName={selected.name} current={paletteOf(selected.code, overrides)} onPick={(palette) => setFachColor(selected.code, palette)} />
+            <ColorPalette subject={selected} current={paletteOf(selected.code, overrides)} onPick={(palette) => setFachColor(selected.code, palette)} />
             <ListCard>
               {subjects.map((subject) => (
-                <SubjectRow key={subject.code} subject={subject} overrides={overrides} onSelect={() => setSelectedCode(subject.code)} />
+                <SubjectRow key={subject.code} subject={subject} overrides={overrides} selected={subject.code === selected.code} onSelect={() => setSelectedCode(subject.code)} />
               ))}
             </ListCard>
           </>

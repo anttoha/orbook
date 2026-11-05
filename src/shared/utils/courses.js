@@ -30,6 +30,10 @@ export const optionalNumbers = (courses) => (courses ?? []).filter((course) => c
 // Чи видно вибірковий курс у плані: порожній picked — видно всі
 export const isCourseOn = (picked, nr) => picked.length === 0 || picked.includes(nr);
 
+// Чи видно курс будь-якого типу: за вибором — як вище, обов'язковий — якщо учень його не сховав
+export const isCourseVisible = (course, picked, hiddenRequired = []) =>
+  course.optional ? isCourseOn(picked, course.nr) : !hiddenRequired.includes(course.nr);
+
 // Перемкнути курс у вже вибраному стані (allOptional — номери всіх вибіркових курсів).
 // Усі ввімкнені = порожній список: так і новий курс школи теж буде видно.
 export function toggleCourse(picked, nr, allOptional) {
@@ -40,20 +44,20 @@ export function toggleCourse(picked, nr, allOptional) {
 }
 
 // «7 von 8»: обов'язкові видно завжди, до них додаємо ввімкнені вибіркові
-export function courseCount(courses, picked) {
+export function courseCount(courses, picked, hiddenRequired = []) {
   const list = courses ?? [];
-  const on = list.filter((course) => !course.optional || isCourseOn(picked, course.nr));
+  const on = list.filter((course) => isCourseVisible(course, picked, hiddenRequired));
   return { on: on.length, all: list.length };
 }
 
 // Предмети видимих курсів для «Fachfarben», кожен один раз.
 // subject буває null, а name — null: тоді беремо назву з meta.subjects або код.
-export function visibleSubjects(courses, picked, metaSubjects) {
+export function visibleSubjects(courses, picked, metaSubjects, hiddenRequired = []) {
   const subjects = new Map();
   for (const course of courses ?? []) {
     const code = course.subject?.code;
     if (!code || subjects.has(code)) continue;
-    if (course.optional && !isCourseOn(picked, course.nr)) continue;
+    if (!isCourseVisible(course, picked, hiddenRequired)) continue;
     subjects.set(code, { code, name: course.subject.name ?? metaSubjects?.[code] ?? code });
   }
   return [...subjects.values()];

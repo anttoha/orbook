@@ -13,16 +13,18 @@ import { statsPath } from "../utils/stats";
 // ─────────────────────────────────────────────────────────────
 export function useStats(range) {
   const picked = useUserStore((s) => s.picked);
-  const coursesKey = picked.join(","); // рядок, щоб ефект не перезапускався від нового масиву з тими самими курсами
+  const hiddenRequired = useUserStore((s) => s.hiddenRequired);
+  // рядок, щоб ефект не перезапускався від нового масиву з тими самими курсами
+  const coursesKey = `${picked.join(",")}|${hiddenRequired.join(",")}`;
   const [attempt, setAttempt] = useState(0); // «Erneut versuchen» збільшує — ефект іде ще раз
   const [result, setResult] = useState({ key: null });
   const key = `${range}|${coursesKey}|${attempt}`; // для яких умов отримано result
 
   useEffect(() => {
     const controller = new AbortController(); // сторінку закрили або змінили період: відповідь уже не потрібна
-    const courses = coursesKey ? coursesKey.split(",") : [];
+    const [courses, hidden] = coursesKey.split("|").map((part) => (part ? part.split(",") : []));
     // кеш окремо для кожного вибору курсів: цифри в них різні
-    const load = (r) => loadWithCache(`stats:${r}:${coursesKey}`, () => api(statsPath(r, courses), { signal: controller.signal }));
+    const load = (r) => loadWithCache(`stats:${r}:${coursesKey}`, () => api(statsPath(r, courses, hidden), { signal: controller.signal }));
     const requests = range === "week" ? [load("week")] : [load("month"), load("week")];
 
     Promise.all(requests)

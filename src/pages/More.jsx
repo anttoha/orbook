@@ -26,7 +26,8 @@ const More = () => {
   const theme = useTheme((s) => s.theme);
 
   const school = [me?.className, me?.schoolName].filter(Boolean).join(" · "); // обидва поля бувають порожні
-  const count = courseCount(courses, picked);
+  const hiddenRequired = useUserStore((s) => s.hiddenRequired);
+  const count = courseCount(courses, picked, hiddenRequired);
 
   return (
     <section className="flex flex-col gap-4.5 lg:max-w-186">

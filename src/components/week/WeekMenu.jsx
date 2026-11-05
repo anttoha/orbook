@@ -23,7 +23,7 @@ const WeekMenu = ({ monday, onToday, onPickWeek }) => {
   const { openSheet } = useSheet(); // відкрити шторку
   const showWeekend = useUserStore((s) => s.showWeekend); // вихідні показано?
   const toggleWeekend = useUserStore((s) => s.toggleWeekend); // перемкнути вихідні
-  const hasPicked = useUserStore((s) => s.picked.length > 0); // чи є приховані курси
+  const hasPicked = useUserStore((s) => s.picked.length > 0 || s.hiddenRequired.length > 0); // чи є приховані курси
   const showAllCourses = useUserStore((s) => s.showAllCourses); // показати всі курси
   const refreshPlan = usePlanStore((s) => s.refreshPlan); // «Plan neu laden» (POST /api/plan/refresh)
   const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // «Teilen» може бути вимкнене адміном

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { toggleCourse } from "../utils/courses";
+import { toggleCourse, togglePicked } from "../utils/courses";
 
 // ─────────────────────────────────────────────────────────────
 // userStore — те, що користувач налаштовує САМ і що живе тільки на пристрої
@@ -15,6 +15,7 @@ export const useUserStore = create(
       // ── стан ──
       notes: [], // нотатки: { id, date: "2026-10-07", period: 2 | null, text, updatedAt }
       picked: [], // «Meine Kurse»: номери вибраних курсів за вибором (course.nr). [] — показувати все
+      hiddenRequired: [], // номери прихованих обов'язкових курсів: учень сам вирішує, що бачити
       colorOverrides: {}, // свої кольори: { Ma: "kunst" } — Mathe малюється палітрою Kunst
       showWeekend: false, // показувати Sa/So у сітці тижня
       // Чи пройдено екран «Welche Kurse hast du?». Окремий прапорець, бо picked: [] теж законний вибір
@@ -46,14 +47,18 @@ export const useUserStore = create(
       // allOptional — номери всіх курсів за вибором (з /api/courses)
       hideCourse: (nr, allOptional) => set({ picked: toggleCourse(get().picked, nr, allOptional) }),
 
+      // Сховати або показати обов'язковий курс
+      toggleRequired: (nr) => set({ hiddenRequired: togglePicked(get().hiddenRequired, nr) }),
+      setHiddenRequired: (hiddenRequired) => set({ hiddenRequired }),
+
       // Повернути попередній вибір (кнопка «Rückgängig» у сповіщенні)
       setPicked: (picked) => set({ picked }),
 
       // «Weiter» на екрані першого запуску: зберегти вибір і більше не питати
-      finishCourseChoice: (picked) => set({ picked, coursesChosen: true }),
+      finishCourseChoice: (picked, hiddenRequired = []) => set({ picked, hiddenRequired, coursesChosen: true }),
 
       // Показати всі курси знову
-      showAllCourses: () => set({ picked: [] }),
+      showAllCourses: () => set({ picked: [], hiddenRequired: [] }),
 
       // ── вигляд ──
 
@@ -85,7 +90,7 @@ export const useUserStore = create(
       name: "orbook-user", // ключ у localStorage
       version: 2, // версія 2: дані з сервера (коди предметів замість «mathe», курси за номером)
       // Старі налаштування (з тестових даних) не підходять — лишаємо тільки нотатки і вихідні
-      migrate: (old) => ({ notes: old?.notes ?? [], picked: [], colorOverrides: {}, showWeekend: old?.showWeekend ?? false }),
+      migrate: (old) => ({ notes: old?.notes ?? [], picked: [], hiddenRequired: [], colorOverrides: {}, showWeekend: old?.showWeekend ?? false }),
     },
   ),
 );

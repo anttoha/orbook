@@ -35,7 +35,7 @@ const WeekSummaryRow = ({ text, linked }) => {
       {linked && <ChevronRight className="size-4 shrink-0" />}
     </>
   );
-  const className = "flex items-center gap-3 py-4";
+  const className = cn("flex items-center gap-3 py-4", linked && "-mx-2 rounded-field px-2 hover:bg-paper");
   return linked ? (
     <Link to="/statistik" className={className}>
       {body}

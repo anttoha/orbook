@@ -167,12 +167,14 @@ export function movedText(moved) {
   return "";
 }
 
-// Фільтр «Meine Kurse». courses — відповідь /api/courses; picked — Set номерів вибраних курсів.
-// Нічого не вибрано — показуємо все. Уроки без course і обов'язкові курси видно завжди.
-export function visibleLessons(lessons, courses, picked) {
-  if (!picked || picked.size === 0) return lessons;
+// Фільтр «Meine Kurse». courses — відповідь /api/courses; picked — Set номерів вибраних курсів за вибором
+// (порожній — видно всі за вибором); hiddenRequired — Set прихованих обов'язкових. Уроки без course видно завжди.
+export function visibleLessons(lessons, courses, picked, hiddenRequired = new Set()) {
+  const allOptional = !picked || picked.size === 0;
+  if (allOptional && hiddenRequired.size === 0) return lessons;
   const optional = new Set(courses.filter((c) => c.optional).map((c) => c.nr));
-  return lessons.filter((l) => !l.course || !optional.has(l.course.nr) || picked.has(l.course.nr));
+  const shown = (nr) => (optional.has(nr) ? allOptional || picked.has(nr) : !hiddenRequired.has(nr));
+  return lessons.filter((l) => !l.course || shown(l.course.nr));
 }
 
 const NO_SUBJECT_NAME = "Ohne Fach";

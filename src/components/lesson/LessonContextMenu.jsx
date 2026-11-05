@@ -26,12 +26,15 @@ const LessonContextMenu = ({ lesson, date, children }) => {
   const picked = useUserStore((s) => s.picked); // вибрані курси
   const hideCourse = useUserStore((s) => s.hideCourse); // сховати курс
   const setPicked = useUserStore((s) => s.setPicked); // повернути вибір
+  const hiddenRequired = useUserStore((s) => s.hiddenRequired); // приховані обов'язкові
+  const toggleRequired = useUserStore((s) => s.toggleRequired);
+  const setHiddenRequired = useUserStore((s) => s.setHiddenRequired);
   const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // адмін міг вимкнути «Teilen»
 
   const params = { datum: date, stunde: lesson.period, fach: lesson.subject?.code }; // параметри шторок цього уроку
-  // Сховати можна лише курс за вибором (Wahl); обов'язкові («immer») — ні
+  // Сховати можна будь-який курс; урок без курсу (подія, заміна) — ні
   const course = courses.find((c) => c.nr === lesson.course?.nr);
-  const canHide = Boolean(course?.optional);
+  const canHide = Boolean(course);
 
   // Дії меню
   const openDetails = () => openSheet("stunde", params);
@@ -40,10 +43,14 @@ const LessonContextMenu = ({ lesson, date, children }) => {
 
   // «Kurs ausblenden» + сповіщення з кнопкою «Rückgängig» (скасувати)
   const handleHide = () => {
-    const before = picked; // запам'ятовуємо, щоб можна було повернути
-    hideCourse(course.nr, courses.filter((c) => c.optional).map((c) => c.nr));
+    const before = { picked, hiddenRequired }; // запам'ятовуємо, щоб можна було повернути
+    if (course.optional) hideCourse(course.nr, courses.filter((c) => c.optional).map((c) => c.nr));
+    else toggleRequired(course.nr);
     toast(`${subjectName(lesson.subject)} (${course.label}) ausgeblendet`, {
-      action: { label: "Rückgängig", onClick: () => setPicked(before) },
+      action: { label: "Rückgängig", onClick: () => {
+        setPicked(before.picked);
+        setHiddenRequired(before.hiddenRequired);
+      } },
     });
   };
 

@@ -17,6 +17,10 @@ const CourseStart = () => {
   const savedPicked = useUserStore((s) => s.picked);
   const finishCourseChoice = useUserStore((s) => s.finishCourseChoice);
   const [picked, setPicked] = useState(savedPicked);
+  const [hiddenRequired, setHiddenRequired] = useState([]); // обов'язкові спочатку ввімкнені, їх можна вимкнути
+
+  const isOn = (course) => (course.optional ? picked.includes(course.nr) : !hiddenRequired.includes(course.nr));
+  const toggle = (course) => (course.optional ? setPicked((list) => togglePicked(list, course.nr)) : setHiddenRequired((list) => togglePicked(list, course.nr)));
 
   return (
     <div className="flex min-h-dvh flex-col bg-paper lg:px-11 lg:py-7">
@@ -38,7 +42,7 @@ const CourseStart = () => {
             <span className="hidden lg:inline">Einstellungen</span> → Meine Kurse.
           </p>
 
-          <CourseLists isOn={(nr) => picked.includes(nr)} onToggle={(nr) => setPicked((list) => togglePicked(list, nr))} />
+          <CourseLists isOn={isOn} onToggle={toggle} />
 
           <div className="mt-auto flex gap-2.5 pt-6 lg:justify-end">
             {/* Попередній крок — вхід. Сесія вже є, тому повернутись туди можна лише вийшовши */}
@@ -46,7 +50,7 @@ const CourseStart = () => {
               Zurück
             </Button>
             {status === "ready" && (
-              <Button variant="primary" onClick={() => finishCourseChoice(picked)} className="gap-1.5 lg:flex-none lg:px-4.5">
+              <Button variant="primary" onClick={() => finishCourseChoice(picked, hiddenRequired)} className="gap-1.5 lg:flex-none lg:px-4.5">
                 <ChevronRight className="size-4" /> Weiter
               </Button>
             )}

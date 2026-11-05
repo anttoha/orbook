@@ -10,6 +10,7 @@ import SideNav from "../components/navbar/SideNav";
 import BottomNav from "../components/navbar/BottomNav";
 import SheetHost from "../components/sheets/SheetHost";
 import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
+import { usePageAnimation } from "../shared/hooks/usePageAnimation";
 import { usePlanPolling } from "../shared/hooks/usePlanPolling";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
@@ -32,6 +33,7 @@ const HomePage = () => {
   const demo = usePlanStore((s) => s.meta?.demo); // демо-сервер?
   const coursesChosen = useUserStore((s) => s.coursesChosen); // чи пройдено вибір курсів
   const fullScreen = isFullScreenPage(useLocation().pathname); // форма: без меню, кнопки притиснуті донизу
+  const page = usePageAnimation(); // перехід між сторінками: справа, зліва або плавно
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // сповіщення: на телефоні над меню, на ПК внизу праворуч
 
   // Один раз при відкритті: дізнатись, чи ми увійшли
@@ -77,7 +79,10 @@ const HomePage = () => {
         <main className={cn("min-w-0 flex-1 pt-6 pb-28 lg:pt-6.5 lg:pr-5 lg:pb-8", fullScreen && "flex min-h-dvh flex-col pb-7.5")}>
           {/* Демо-сервер: плашка, щоб не сплутати зі справжнім планом (на ПК — у сайдбарі) */}
           {demo && <p className="mb-3 w-fit rounded-full bg-tint px-2.5 py-1 text-micro font-extrabold text-accent-ink uppercase lg:hidden">Demo · ausgedachte Daten</p>}
-          <Outlet />
+          {/* key: нова сторінка — новий блок, і анімація появи грає знову */}
+          <div key={page.key} className={cn("flex flex-1 flex-col", page.className)}>
+            <Outlet />
+          </div>
         </main>
 
         <BottomNav />

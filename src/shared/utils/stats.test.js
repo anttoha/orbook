@@ -14,6 +14,9 @@ describe("statsPath", () => {
   it("вибрані курси — через кому", () => {
     expect(statsPath("week", ["131", "141"])).toBe("/stats?range=week&courses=131,141");
   });
+  it("приховані обов'язкові — параметр hidden", () => {
+    expect(statsPath("month", [], ["131"])).toBe("/stats?range=month&hidden=131");
+  });
   it("«усі за вибором вимкнено» іде як є", () => {
     expect(statsPath("month", ["keine"])).toBe("/stats?range=month&courses=keine");
   });

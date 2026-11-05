@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { NO_OPTIONAL, courseCount, courseTitle, isCourseOn, splitCourses, toggleCourse, togglePicked, visibleSubjects } from "./courses";
+import { NO_OPTIONAL, courseCount, courseTitle, isCourseOn, isCourseVisible, splitCourses, toggleCourse, togglePicked, visibleSubjects } from "./courses";
 
 const course = (over) => ({ nr: "1", subject: { code: "Ma", name: "Mathe" }, teacher: "T03", group: null, label: "Ma", optional: false, ...over });
 
@@ -94,5 +94,18 @@ describe("visibleSubjects", () => {
       { code: "Eg", name: "Eg" },
     ]);
     expect(visibleSubjects(null, [])).toEqual([]);
+  });
+});
+
+describe("isCourseVisible — обов'язкові теж можна сховати", () => {
+  const required = { nr: "131", optional: false };
+  const optional = { nr: "141", optional: true };
+  it("обов'язковий видно, поки його не сховали", () => {
+    expect(isCourseVisible(required, [], [])).toBe(true);
+    expect(isCourseVisible(required, [], ["131"])).toBe(false);
+  });
+  it("за вибором — як раніше", () => {
+    expect(isCourseVisible(optional, [], ["131"])).toBe(true);
+    expect(isCourseVisible(optional, ["keine"], [])).toBe(false);
   });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { changedLabel, lastStandLabel, planMomentText, standText, subjectCode, subjectName, updatedAgoText } from "./format";
+import { changedLabel, lastStandLabel, planMomentText, standText, subjectCode, subjectName, updatedAgoText, visibleLessons } from "./format";
 
 describe("standText", () => {
   it("сегодня, вчера и другой день", () => {
@@ -88,5 +88,17 @@ describe("lastStandLabel", () => {
     expect(lastStandLabel("2026-11-05T07:12", "2026-11-05")).toBe("07:12");
     expect(lastStandLabel("2026-11-04T07:12", "2026-11-05")).toBe("gestern 07:12");
     expect(lastStandLabel(null, "2026-11-05")).toBe("—");
+  });
+});
+
+describe("visibleLessons", () => {
+  const courses = [{ nr: "131", optional: false }, { nr: "141", optional: true }];
+  const lessons = [{ course: { nr: "131" } }, { course: { nr: "141" } }, { course: null }];
+  it("нічого не сховано — усі уроки", () => expect(visibleLessons(lessons, courses, new Set())).toHaveLength(3));
+  it("схований обов'язковий курс зникає, урок без курсу лишається", () => {
+    expect(visibleLessons(lessons, courses, new Set(), new Set(["131"]))).toEqual([lessons[1], lessons[2]]);
+  });
+  it("вибір за вибором і схований обов'язковий разом", () => {
+    expect(visibleLessons(lessons, courses, new Set(["keine"]), new Set(["131"]))).toEqual([lessons[2]]);
   });
 });
