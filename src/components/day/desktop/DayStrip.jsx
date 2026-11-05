@@ -6,9 +6,9 @@ import { cn } from "../../../shared/utils/cn";
 // Смуга днів тижня над списком (макет «Tag · Liste»):
 //   MO 5.   DI 6. ◌   [MI 7. heute]   DO 8. •   FR 9. ⚑
 // Значки праворуч: ◌ — щось скасовано, • — зміна (Vertretung, Raum), ⚑ — Klausur.
-// days — дні тижня з сервера; date — відкритий день; search — хвіст адреси (вигляд)
+// days — дні тижня з сервера; date — відкритий день
 // ─────────────────────────────────────────────────────────────
-const DayStrip = ({ days, date, today, search }) => {
+const DayStrip = ({ days, date, today }) => {
   return (
     <nav aria-label="Wochentage" className="flex h-13 gap-1 rounded-full bg-sand p-1">
       {days.map((day) => {
@@ -26,7 +26,7 @@ const DayStrip = ({ days, date, today, search }) => {
         return (
           <Link
             key={day.date}
-            to={`/tag/${day.date}${search}`}
+            to={`/tag/${day.date}`}
             aria-current={active ? "page" : undefined}
             className={cn("flex min-w-0 flex-1 items-center gap-2 rounded-full px-4 transition-colors", active ? "bg-accent text-on-accent" : "text-ink hover:bg-card/60")}
           >

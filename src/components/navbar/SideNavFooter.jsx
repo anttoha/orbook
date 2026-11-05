@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Keyboard, Moon, Settings, Sun } from "lucide-react";
 import { useNow } from "../../shared/hooks/useNow";
-import { useTheme } from "../../shared/hooks/useTheme";
+import { isDarkTheme, useTheme } from "../../shared/hooks/useTheme";
 import { usePlanStore } from "../../shared/store/planStore";
 import { cn } from "../../shared/utils/cn";
 import { standText } from "../../shared/utils/format";
@@ -30,8 +30,7 @@ const SideNavFooter = ({ collapsed }) => {
   const status = usePlanStore((s) => s.status); // стан плану з сервера
   const refreshing = usePlanStore((s) => s.refreshing); // іде «Plan neu laden»
 
-  // Тема зараз темна? («system» — дивимось на налаштування системи)
-  const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const isDark = isDarkTheme(theme);
   const text = refreshing ? "Plan wird geladen…" : planText(status, today);
 
   return (

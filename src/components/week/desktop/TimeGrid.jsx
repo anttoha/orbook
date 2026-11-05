@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useNow } from "../../../shared/hooks/useNow";
 import { useLessonFilter } from "../../../shared/hooks/usePlan";
+import { FONT_SCALES } from "../../../shared/constants/constants";
 import { useUserStore } from "../../../shared/store/userStore";
 import { cn } from "../../../shared/utils/cn";
 import { berlinParts, isLessonPast, toMinutes } from "../../../shared/utils/lessonClock";
@@ -26,6 +27,8 @@ const TimeGrid = ({ days, onLessonClick }) => {
   const { now, today } = useNow(); // час школи
   const filter = useLessonFilter(); // «Meine Kurse»
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
+  // Висота шкали: більший шрифт і вимкнена «Kompakte Woche» роблять картки вищими
+  const pxPerMin = useUserStore((s) => PX_PER_MIN * FONT_SCALES[s.fontScale] * (s.compactWeek ? 1 : 1.25));
 
   const shown = days.map((day) => ({ ...day, lessons: filter(day.lessons) })); // без прихованих курсів
   const todayIndex = days.findIndex((d) => d.date === today); // колонка «сьогодні» (-1 — не цей тиждень)
@@ -34,7 +37,7 @@ const TimeGrid = ({ days, onLessonClick }) => {
   // Межі сітки: від найранішого початку до найпізнішого кінця (порожній тиждень — 07:30–13:10)
   const dayStart = timed.length ? Math.min(...timed.map((l) => toMinutes(l.start))) : 450;
   const dayEnd = timed.length ? Math.max(...timed.map((l) => toMinutes(l.end))) : 790;
-  const y = (minutes) => (minutes - dayStart) * PX_PER_MIN; // хвилини → пікселі зверху
+  const y = (minutes) => (minutes - dayStart) * pxPerMin; // хвилини → пікселі зверху
   const height = y(dayEnd) + 12; // висота області з уроками (+ запас знизу)
 
   // Цілі години для ліній і підписів (8:00 … 15:00)
@@ -98,7 +101,7 @@ const TimeGrid = ({ days, onLessonClick }) => {
                 return card(day, lesson, "absolute", {
                   // позиція за часом: зверху — початок уроку, висота — тривалість
                   top: y(start) + CARD_GAP,
-                  height: (end - start) * PX_PER_MIN - CARD_GAP * 2,
+                  height: (end - start) * pxPerMin - CARD_GAP * 2,
                   // ширину колонки ділимо між паралельними курсами
                   left: `calc(${(k / siblings.length) * 100}% + 3px)`,
                   width: `calc(${100 / siblings.length}% - 6px)`,

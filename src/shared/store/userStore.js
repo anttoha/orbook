@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { toggleCourse } from "../utils/courses";
 
 // ─────────────────────────────────────────────────────────────
 // userStore — те, що користувач налаштовує САМ і що живе тільки на пристрої
@@ -18,6 +19,11 @@ export const useUserStore = create(
       showWeekend: false, // показувати Sa/So у сітці тижня
       // Чи пройдено екран «Welche Kurse hast du?». Окремий прапорець, бо picked: [] теж законний вибір
       coursesChosen: false,
+      // «Darstellung». За замовчуванням — як на макеті 24
+      startView: "woche", // що відкривати на «/»: "woche" | "heute"
+      dayView: "liste", // вигляд дня: "liste" | "zeitleiste"
+      compactWeek: true, // менші клітинки тижня
+      fontScale: 2, // шрифт: 1 — A, 2 — A+ (як на макетах), 3 — A++
 
       // ── нотатки ──
 
@@ -38,10 +44,7 @@ export const useUserStore = create(
       // «Kurs ausblenden»: прибрати курс із вибраних.
       // Якщо ще нічого не вибрано (видно все) — вибираємо всі курси за вибором, крім цього.
       // allOptional — номери всіх курсів за вибором (з /api/courses)
-      hideCourse: (nr, allOptional) => {
-        const current = get().picked.length ? get().picked : allOptional;
-        set({ picked: current.filter((n) => n !== nr) });
-      },
+      hideCourse: (nr, allOptional) => set({ picked: toggleCourse(get().picked, nr, allOptional) }),
 
       // Повернути попередній вибір (кнопка «Rückgängig» у сповіщенні)
       setPicked: (picked) => set({ picked }),
@@ -64,6 +67,19 @@ export const useUserStore = create(
 
       // Показати / сховати вихідні в сітці тижня
       toggleWeekend: () => set({ showWeekend: !get().showWeekend }),
+
+      // Замінити всі свої кольори разом: «Standard» у Fachfarben і його «Rückgängig»
+      setColorOverrides: (colorOverrides) => set({ colorOverrides }),
+
+      setStartView: (startView) => set({ startView }),
+      setDayView: (dayView) => set({ dayView }),
+      setCompactWeek: (compactWeek) => set({ compactWeek }),
+
+      // Розмір шрифту: атрибут на <html> вмикає масштаб в index.css
+      setFontScale: (fontScale) => {
+        document.documentElement.dataset.fontScale = fontScale;
+        set({ fontScale });
+      },
     }),
     {
       name: "orbook-user", // ключ у localStorage

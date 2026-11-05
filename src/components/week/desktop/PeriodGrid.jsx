@@ -20,6 +20,7 @@ const PeriodGrid = ({ days, selectedDay, onSelectDay, onLessonClick }) => {
   const filter = useLessonFilter(); // «Meine Kurse»
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
   const lessonTimes = usePlanStore((s) => s.meta?.lessonTimes); // час уроків
+  const rowHeight = useUserStore((s) => (s.compactWeek ? 104 : 130)); // «Kompakte Woche»
 
   const shown = days.map((day) => ({ ...day, lessons: filter(day.lessons) })); // без прихованих курсів
   const rows = periodRows(shown, lessonTimes); // номери уроків цього тижня
@@ -28,8 +29,8 @@ const PeriodGrid = ({ days, selectedDay, onSelectDay, onLessonClick }) => {
   return (
     <div
       className="grid gap-x-2.5 gap-y-3"
-      // 64px під номер уроку + рівні колонки днів; рядки: шапка + уроки мінімум по 104px
-      style={{ gridTemplateColumns: `64px repeat(${days.length}, minmax(0, 1fr))`, gridTemplateRows: `auto repeat(${rows.length}, minmax(104px, auto))` }}
+      // 64px під номер уроку + рівні колонки днів; рядки: шапка + уроки мінімальної висоти
+      style={{ gridTemplateColumns: `64px repeat(${days.length}, minmax(0, 1fr))`, gridTemplateRows: `auto repeat(${rows.length}, minmax(${rowHeight}px, auto))` }}
     >
       {/* рамка + фон вибраного дня (під уроками, на всю висоту колонки) */}
       {selectedIndex >= 0 && (

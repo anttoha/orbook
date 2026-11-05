@@ -6,6 +6,10 @@ import ExamEdit from "../../pages/ExamEdit";
 import EditorCode from "../../pages/EditorCode";
 import Statistic from "../../pages/Statistic";
 import More from "../../pages/More";
+import MyCourses from "../../pages/MyCourses";
+import Appearance from "../../pages/Appearance";
+import SubjectColors from "../../pages/SubjectColors";
+import StartPage from "../../pages/StartPage";
 import Week from "../../pages/Week";
 import Day from "../../pages/Day";
 import Admin from "../../pages/Admin";
@@ -29,7 +33,7 @@ export const router = createBrowserRouter([
         Component: HomePage,
         errorElement: <RouteError />,
         children: [
-          page({ index: true, Component: Week }),
+          page({ index: true, Component: StartPage }), // Woche або Heute: налаштування «Startansicht»
           page({ path: "woche", Component: Week }),
           page({ path: "heute", Component: Day }), // сьогоднішній день
           page({ path: "tag/:datum", Component: Day }), // будь-який день: /tag/2026-10-07
@@ -39,6 +43,9 @@ export const router = createBrowserRouter([
           page({ path: "editor-code", Component: EditorCode }),
           page({ path: "statistik", Component: Statistic }),
           page({ path: "mehr", Component: More }),
+          page({ path: "mehr/kurse", Component: MyCourses }),
+          page({ path: "mehr/darstellung", Component: Appearance }),
+          page({ path: "mehr/fachfarben", Component: SubjectColors }),
           page({ path: "admin", Component: Admin }), // поки заглушка
         ],
       },

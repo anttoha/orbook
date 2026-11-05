@@ -10,12 +10,11 @@ const roundLink = "grid size-9.5 shrink-0 place-items-center rounded-full bg-car
 
 // ─────────────────────────────────────────────────────────────
 // Шапка сторінки дня (телефон):  ‹  «Mittwoch · heute (i)» / «7. Oktober» / «↻ 07:08»   ‹ ›
-// date / today — "YYYY-MM-DD"; search — хвіст адреси (?ansicht=zeitleiste),
-// щоб при гортанні днів вигляд зберігався.
+// date / today — "YYYY-MM-DD".
 // day — день (null, поки вантажиться); onInfo — відкрити «Info zum Tag» для будь-якого дня.
 // Четверта кругла кнопка не вміщається поруч із довгою датою, тому (i) — малий значок біля дня тижня.
 // ─────────────────────────────────────────────────────────────
-const DayPageHeader = ({ date, today, day, onInfo, search = "" }) => {
+const DayPageHeader = ({ date, today, day, onInfo }) => {
   const holidays = usePlanStore((s) => s.meta?.holidays); // канікули й свята пропускаємо
   const word = relativeDayWord(date, today); // heute / morgen / gestern
   const prev = nextSchoolDay(date, holidays, -1); // попередній навчальний день
@@ -48,10 +47,10 @@ const DayPageHeader = ({ date, today, day, onInfo, search = "" }) => {
 
       {/* гортати дні (вихідні та канікули пропускаються) */}
       <div className="mt-1 flex shrink-0 gap-1.5">
-        <Link to={`/tag/${prev}${search}`} aria-label="Vorheriger Schultag" className={roundLink}>
+        <Link to={`/tag/${prev}`} aria-label="Vorheriger Schultag" className={roundLink}>
           <ChevronLeft className="size-4.25" />
         </Link>
-        <Link to={`/tag/${next}${search}`} aria-label="Nächster Schultag" className={roundLink}>
+        <Link to={`/tag/${next}`} aria-label="Nächster Schultag" className={roundLink}>
           <ChevronRight className="size-4.25" />
         </Link>
       </div>

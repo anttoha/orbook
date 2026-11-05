@@ -40,6 +40,8 @@
        Висоту рядка можна перебити: text-body leading-none
        Розміри й жирність взяті з SVG «ORBook Soft». У великих заголовків
        letter-spacing -0.015em, теж як у SVG.
+       Значення в rem (1rem = 16px): так «Schriftgröße» масштабує весь текст.
+       Тільки text-input лишається в px: з шрифтом менше 16px iOS збільшує сторінку.
        ┌──────────────┬───────┬──────────────────────────────────────┐
        │ клас         │ px    │ де використовується                  │
        ├──────────────┼───────┼──────────────────────────────────────┤
@@ -79,113 +81,113 @@
        │ text-tiny    │ 9     │ «Pause · 20 min», дні в сітці        │
        │ text-nano    │ 8.5   │ час і «fällt aus» у сітці            │
        └──────────────┴───────┴──────────────────────────────────────┘ */
-    --text-landing: 56px;
+    --text-landing: 3.5rem;
     --text-landing--line-height: 1.02;
     --text-landing--font-weight: 900;
     --text-landing--letter-spacing: -0.015em;
-    --text-display: 50px;
+    --text-display: 3.125rem;
     --text-display--line-height: 1.1;
     --text-display--font-weight: 900;
     --text-display--letter-spacing: -0.015em;
-    --text-lobby: 40px;
+    --text-lobby: 2.5rem;
     --text-lobby--line-height: 1.15;
     --text-lobby--font-weight: 900;
     --text-lobby--letter-spacing: -0.015em;
-    --text-hero: 38px;
+    --text-hero: 2.375rem;
     --text-hero--line-height: 1.15;
     --text-hero--font-weight: 900;
     --text-hero--letter-spacing: -0.015em;
-    --text-welcome: 36px;
+    --text-welcome: 2.25rem;
     --text-welcome--line-height: 1.15;
     --text-welcome--font-weight: 900;
     --text-welcome--letter-spacing: -0.015em;
-    --text-countdown: 46px;
+    --text-countdown: 2.875rem;
     --text-countdown--line-height: 1;
     --text-countdown--font-weight: 900;
     --text-countdown--letter-spacing: -0.015em;
-    --text-stat: 32px;
+    --text-stat: 2rem;
     --text-stat--line-height: 1.15;
     --text-stat--font-weight: 900;
     --text-stat--letter-spacing: -0.015em;
-    --text-sheet: 30px;
+    --text-sheet: 1.875rem;
     --text-sheet--line-height: 1.15;
     --text-sheet--font-weight: 900;
     --text-sheet--letter-spacing: -0.015em;
-    --text-title: 29px;
+    --text-title: 1.8125rem;
     --text-title--line-height: 1.1;
     --text-title--font-weight: 900;
     --text-title--letter-spacing: -0.015em;
-    --text-panel: 28px;
+    --text-panel: 1.75rem;
     --text-panel--line-height: 1.15;
     --text-panel--font-weight: 900;
     --text-panel--letter-spacing: -0.015em;
-    --text-heading: 26px;
+    --text-heading: 1.625rem;
     --text-heading--line-height: 1.15;
     --text-heading--font-weight: 900;
     --text-heading--letter-spacing: -0.015em;
-    --text-state: 25px;
+    --text-state: 1.5625rem;
     --text-state--line-height: 1.15;
     --text-state--font-weight: 900;
     --text-state--letter-spacing: -0.015em;
-    --text-brand: 24px;
+    --text-brand: 1.5rem;
     --text-brand--line-height: 1.15;
     --text-brand--font-weight: 900;
     --text-brand--letter-spacing: -0.015em;
-    --text-dialog: 23px;
+    --text-dialog: 1.4375rem;
     --text-dialog--line-height: 1.2;
     --text-dialog--font-weight: 900;
     --text-dialog--letter-spacing: -0.015em;
-    --text-logo: 22px;
+    --text-logo: 1.375rem;
     --text-logo--line-height: 1.1;
     --text-logo--font-weight: 900;
     --text-logo--letter-spacing: -0.015em;
-    --text-number: 20px;
+    --text-number: 1.25rem;
     --text-number--line-height: 1.2;
     --text-number--font-weight: 900;
     --text-number--letter-spacing: -0.015em;
-    --text-cell: 19px;
+    --text-cell: 1.1875rem;
     --text-cell--line-height: 1.2;
     --text-cell--font-weight: 900;
     --text-cell--letter-spacing: -0.015em;
-    --text-cell-sm: 18px;
+    --text-cell-sm: 1.125rem;
     --text-cell-sm--line-height: 1.2;
     --text-cell-sm--font-weight: 900;
     --text-cell-sm--letter-spacing: -0.015em;
-    --text-subhead: 17px;
+    --text-subhead: 1.0625rem;
     --text-subhead--line-height: 1.3;
     --text-subhead--font-weight: 900;
     --text-subhead--letter-spacing: -0.015em;
     --text-input: 16px;
     --text-input--line-height: 1.4;
-    --text-lead: 15.5px;
+    --text-lead: 0.96875rem;
     --text-lead--line-height: 1.35;
-    --text-body: 15px;
+    --text-body: 0.9375rem;
     --text-body--line-height: 1.35;
-    --text-row: 14.5px;
+    --text-row: 0.90625rem;
     --text-row--line-height: 1.35;
-    --text-body-sm: 14px;
+    --text-body-sm: 0.875rem;
     --text-body-sm--line-height: 1.35;
-    --text-nav: 13.5px;
+    --text-nav: 0.84375rem;
     --text-nav--line-height: 1.35;
-    --text-label: 13px;
+    --text-label: 0.8125rem;
     --text-label--line-height: 1.3;
-    --text-hint: 12.5px;
+    --text-hint: 0.78125rem;
     --text-hint--line-height: 1.3;
-    --text-caption: 12px;
+    --text-caption: 0.75rem;
     --text-caption--line-height: 1.35;
-    --text-note: 11.5px;
+    --text-note: 0.71875rem;
     --text-note--line-height: 1.35;
-    --text-small: 11px;
+    --text-small: 0.6875rem;
     --text-small--line-height: 1.3;
-    --text-axis: 10.5px;
+    --text-axis: 0.65625rem;
     --text-axis--line-height: 1.3;
-    --text-micro: 10px;
+    --text-micro: 0.625rem;
     --text-micro--line-height: 1.2;
-    --text-room: 9.5px;
+    --text-room: 0.59375rem;
     --text-room--line-height: 1.2;
-    --text-tiny: 9px;
+    --text-tiny: 0.5625rem;
     --text-tiny--line-height: 1.2;
-    --text-nano: 8.5px;
+    --text-nano: 0.53125rem;
     --text-nano--line-height: 1.2;
 
     /* ── Радіуси (з SVG Soft) ──────────────────────────────────
@@ -197,6 +199,7 @@
        │ rounded-mark  │ 3  │ чекбокс                            │
        │ rounded-tag   │ 4  │ маленький бейдж                    │
        │ rounded-chip  │ 8  │ номер уроку на ПК, клавіша ⌘K      │
+       │ rounded-thumb │ 10 │ картинка теми в Darstellung        │
        │ rounded-tile  │ 12 │ клітинка дати, пункт меню          │
        │ rounded-cell  │ 14 │ урок у сітці тижня                 │
        │ rounded-field │ 16 │ поле вводу, простий список         │
@@ -210,6 +213,7 @@
     --radius-mark: 3px;
     --radius-tag: 4px;
     --radius-chip: 8px;
+    --radius-thumb: 10px;
     --radius-tile: 12px;
     --radius-cell: 14px;
     --radius-field: 16px;
@@ -266,6 +270,12 @@
     --color-skeleton: #eee7de;
     --color-switch-off: #c0b8c6;
     --color-switch-thumb: #ffffff;
+
+    /* Мініатюри теми в Darstellung: показують саму тему, тому не змінюються разом із нею */
+    --color-preview-light: #faf9f6;
+    --color-preview-light-line: #14151a;
+    --color-preview-dark: #141518;
+    --color-preview-dark-line: #f2f1ed;
 
     /* fach */
     --color-deutsch-tint: #f6d7da;
@@ -342,6 +352,11 @@
     --color-switch-off: #352f40;
     --color-switch-thumb: #16131c;
 
+    --color-preview-light: #faf9f6;
+    --color-preview-light-line: #14151a;
+    --color-preview-dark: #141518;
+    --color-preview-dark-line: #f2f1ed;
+
     /* fach */
     --color-deutsch-tint: #482836;
     --color-deutsch-text: #f3b5c4;
@@ -381,6 +396,16 @@
         color-scheme: light;
         /* Свайп по тижню і дню — наш. Без цього браузер на той самий рух ще й іде «назад» в історії */
         overscroll-behavior-x: none;
+    }
+
+    /* «Schriftgröße» (Darstellung): A і A++. A+ — це 100 %, як на макетах.
+       Відсотки, а не px: так зберігається розмір шрифту з налаштувань браузера */
+    html[data-font-scale="1"] {
+        font-size: 93.75%;
+    }
+
+    html[data-font-scale="3"] {
+        font-size: 112.5%;
     }
 
     body {

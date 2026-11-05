@@ -1,4 +1,5 @@
 import { useNow } from "../../shared/hooks/useNow";
+import { FONT_SCALES } from "../../shared/constants/constants";
 import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
 import { subjectName } from "../../shared/utils/format";
@@ -21,13 +22,14 @@ const BLOCK_PADDING = 12; // внутрішній відступ блока: н�
 const Timeline = ({ day, lessons, onOpen }) => {
   const { now, today } = useNow(); // час школи
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
+  const scale = useUserStore((s) => FONT_SCALES[s.fontScale]); // шрифт більший — блоки теж вищі
 
   const items = lessons.filter((l) => l.start && l.end).sort((a, b) => toMinutes(a.start) - toMinutes(b.start)); // тільки з часом
   if (items.length === 0) return null; // нічого малювати
 
   const dayStart = Math.min(...items.map((l) => toMinutes(l.start))); // початок першого уроку (хв)
   const dayEnd = Math.max(...items.map((l) => toMinutes(l.end))); // кінець останнього
-  const y = (minutes) => (minutes - dayStart) * PX_PER_MIN; // хвилини → пікселі зверху
+  const y = (minutes) => (minutes - dayStart) * PX_PER_MIN * scale; // хвилини → пікселі зверху
 
   // Цілі години всередині дня (8:00, 9:00 …) для підписів зліва
   const hours = [];
@@ -83,7 +85,7 @@ const Timeline = ({ day, lessons, onOpen }) => {
               // позиція за часом; ширину ділимо між паралельними курсами
               style={{
                 top: y(start),
-                height: (end - start) * BLOCK_PX_PER_MIN,
+                height: (end - start) * BLOCK_PX_PER_MIN * scale,
                 paddingInline: BLOCK_PADDING,
                 left: `calc(${AXIS}px + (100% - ${AXIS}px) * ${k / siblings.length})`,
                 width: `calc((100% - ${AXIS}px) / ${siblings.length} - ${siblings.length > 1 ? 4 : 0}px)`,

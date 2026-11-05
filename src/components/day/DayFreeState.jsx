@@ -17,7 +17,7 @@ const freeTitle = (day, isToday) => {
 // Макети «Tag · frei», «Tag · Plan fehlt noch», «Plan nicht erreichbar».
 // fill — зайняти висоту екрана (false, коли нижче є сірі уроки «vorläufig»)
 // ─────────────────────────────────────────────────────────────
-const DayFreeState = ({ day, today, week, onRetry, search, fill }) => {
+const DayFreeState = ({ day, today, week, onRetry, fill }) => {
   const holidays = usePlanStore((s) => s.meta?.holidays);
   const refreshPlan = usePlanStore((s) => s.refreshPlan);
   const refreshing = usePlanStore((s) => s.refreshing);
@@ -27,7 +27,7 @@ const DayFreeState = ({ day, today, week, onRetry, search, fill }) => {
     return (
       <StateScreen icon={Sun} title={freeTitle(day, day.date === today)} text="Laut Plan kein Unterricht." fill={fill}>
         {next && (
-          <Link to={`/tag/${next}${search}`} className="flex h-12 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink">
+          <Link to={`/tag/${next}`} className="flex h-12 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink">
             <ChevronRight className="size-4" /> Nächster Schultag · {weekdayShort(next)}, {shortDate(next)}
           </Link>
         )}

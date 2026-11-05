@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { EditorCodeField, EditorCodeNote } from "../components/exams/EditorCodeField";
 import Button from "../components/ui/Button";
@@ -10,10 +10,10 @@ import { usePlanStore } from "../shared/store/planStore";
 import { fullDate } from "../shared/utils/examRules";
 
 // Коду ще немає: поле вводу. ?weiter=neu — після коду одразу до форми запису
-const UnlockForm = () => {
+const UnlockForm = ({ backTo }) => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const next = params.get("weiter") === "neu" ? "/testen/neu" : "/testen"; // лише наші адреси, не з параметра
+  const next = params.get("weiter") === "neu" ? "/testen/neu" : backTo; // лише наші адреси, не з параметра
   const { code, setCode, error, busy, submit } = useEditorUnlock(() => navigate(next, { replace: true }));
 
   return (
@@ -65,11 +65,12 @@ const ActiveCode = ({ editor }) => {
 // ─────────────────────────────────────────────────────────────
 const EditorCode = () => {
   const editor = usePlanStore((s) => s.me?.editor);
+  const backTo = useLocation().state?.from ?? "/testen"; // прийшли з «Mehr» — туди й повертаємось
 
   return (
     <section className="flex flex-1 flex-col lg:max-w-186">
-      <PageHeader backTo="/testen" eyebrow="Bearbeiten" title="Editor-Code" />
-      {editor ? <ActiveCode editor={editor} /> : <UnlockForm />}
+      <PageHeader backTo={backTo} eyebrow="Bearbeiten" title="Editor-Code" />
+      {editor ? <ActiveCode editor={editor} /> : <UnlockForm backTo={backTo} />}
     </section>
   );
 };

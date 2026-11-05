@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
-import { ChevronLeft, EyeOff, FileText, Server, Shield, Users } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import { EyeOff, FileText, Server, Shield, Users } from "lucide-react";
+import PageHeader from "../components/ui/PageHeader";
 import { usePublicInfo } from "../shared/hooks/usePublicInfo";
 import { responsibleText } from "../shared/utils/privacy";
 
@@ -25,18 +26,12 @@ const Fact = ({ Icon, title, text }) => (
 // Кнопка «Meine Sync-Notizen löschen» з'явиться разом із синхронізацією нотаток (частина 11).
 const Datenschutz = () => {
   const info = usePublicInfo();
+  const from = useLocation().state?.from;
 
   return (
     <main className="mx-auto min-h-dvh w-full max-w-110 bg-paper px-gutter py-5">
-      <header className="flex items-center gap-3">
-        <Link to="/" aria-label="Zurück" className="grid size-9 shrink-0 place-items-center rounded-full bg-card text-ink">
-          <ChevronLeft className="size-4.5" />
-        </Link>
-        <div>
-          <p className="text-hint font-extrabold text-faint">Kurz und ehrlich</p>
-          <h1 className="text-title text-ink">Datenschutz</h1>
-        </div>
-      </header>
+      {/* З «Mehr» повертаємось туди, з екрана входу — на нього */}
+      <PageHeader backTo={from ?? "/"} eyebrow="Kurz und ehrlich" title="Datenschutz" />
 
       <ul className="mt-5 flex flex-col gap-5">
         {FACTS.map((fact) => (

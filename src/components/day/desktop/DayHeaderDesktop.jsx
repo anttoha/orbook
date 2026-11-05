@@ -20,11 +20,10 @@ const VIEWS = [
 // Шапка сторінки дня на ПК (макет «Tag · Liste»):
 //   Mittwoch · heute                     [Liste|Zeitleiste]  ‹ ›  ⇪
 //   7. Oktober
-// search — хвіст адреси (?ansicht=zeitleiste), щоб при гортанні днів вигляд зберігався
 // onShare — null, якщо «Teilen» вимкнене адміном (тоді кнопки немає)
 // day — день (ще може бути null, поки вантажиться); onInfo — відкрити «Info zum Tag» (решение власника)
 // ─────────────────────────────────────────────────────────────
-const DayHeaderDesktop = ({ date, today, day, view, onViewChange, onInfo, onShare, search }) => {
+const DayHeaderDesktop = ({ date, today, day, view, onViewChange, onInfo, onShare }) => {
   const holidays = usePlanStore((s) => s.meta?.holidays); // вільні дні пропускаємо
   const word = relativeDayWord(date, today); // heute / morgen / gestern
 
@@ -42,10 +41,10 @@ const DayHeaderDesktop = ({ date, today, day, view, onViewChange, onInfo, onShar
       <div className="flex items-center gap-6">
         <Segmented label="Ansicht" options={VIEWS} value={view} onChange={onViewChange} variant="accent" size="sm" className="shrink-0" />
         <div className="flex items-center gap-2">
-          <Link to={`/tag/${nextSchoolDay(date, holidays, -1)}${search}`} aria-label="Vortag" className={roundButton}>
+          <Link to={`/tag/${nextSchoolDay(date, holidays, -1)}`} aria-label="Vortag" className={roundButton}>
             <ChevronLeft className="size-4.25" />
           </Link>
-          <Link to={`/tag/${nextSchoolDay(date, holidays, 1)}${search}`} aria-label="Nächster Tag" className={roundButton}>
+          <Link to={`/tag/${nextSchoolDay(date, holidays, 1)}`} aria-label="Nächster Tag" className={roundButton}>
             <ChevronRight className="size-4.25" />
           </Link>
           {day && (

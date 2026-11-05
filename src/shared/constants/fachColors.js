@@ -15,6 +15,9 @@ export const PALETTES = {
   biologie: { tint: "bg-biologie-tint text-biologie-text", text: "text-biologie-text", solid: "bg-biologie-solid", border: "border-biologie-solid", label: "Grün" },
 };
 
+// Порядок кружечків у «Fachfarben», як на макеті 25
+export const SWATCH_ORDER = ["deutsch", "mathe", "englisch", "physik", "geschichte", "biologie", "sport", "kunst"];
+
 // Код предмета зі шкільного плану (subject.code) → палітра за замовчуванням (як у дизайні).
 // У даних школи біологія має код "Bi" (не "Bio").
 export const DEFAULT_PALETTE = {

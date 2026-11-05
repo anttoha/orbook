@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { create } from "zustand";
 
 const STORAGE_KEY = "theme";
 
@@ -12,31 +12,33 @@ const getStoredTheme = () => {
 
 const media = window.matchMedia("(prefers-color-scheme: dark)");
 
+// Тема зараз темна? «system» дивиться на налаштування пристрою
+export const isDarkTheme = (theme) => theme === "dark" || (theme === "system" && media.matches);
+
 const applyTheme = (theme) => {
-    const isDark = theme === "dark" || (theme === "system" && media.matches);
-    document.documentElement.classList.toggle("dark", isDark);
+    document.documentElement.classList.toggle("dark", isDarkTheme(theme));
+
+    // Панель браузера на телефоні — кольору сторінки, навіть якщо тема не збігається із системною
+    const paper = getComputedStyle(document.documentElement).getPropertyValue("--color-paper").trim();
+    if (!paper) return;
+    document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => meta.setAttribute("content", paper));
 };
 
-export const useTheme = () => {
-    const [theme, setThemeState] = useState(getStoredTheme);
-
-    useEffect(() => {
-        applyTheme(theme);
-
-        if (theme !== "system") return;
-        const onChange = () => applyTheme("system");
-        media.addEventListener("change", onChange);
-        return () => media.removeEventListener("change", onChange);
-    }, [theme]);
-
-    const setTheme = useCallback((next) => {
+// Store, а не useState: сайдбар і Darstellung мають бачити одну й ту саму тему
+export const useTheme = create((set) => ({
+    theme: getStoredTheme(), // "light" | "dark" | "system"
+    setTheme: (theme) => {
         try {
-            localStorage.setItem(STORAGE_KEY, next);
+            localStorage.setItem(STORAGE_KEY, theme);
         } catch {
             // localStorage заборонено (приватний режим): тема діє до перезавантаження
         }
-        setThemeState(next);
-    }, []);
+        applyTheme(theme);
+        set({ theme });
+    },
+}));
 
-    return { theme, setTheme };
-};
+applyTheme(useTheme.getState().theme);
+
+// Застосунок живе, поки відкрита вкладка, тому цей слухач не прибираємо
+media.addEventListener("change", () => applyTheme(useTheme.getState().theme));

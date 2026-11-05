@@ -2,54 +2,16 @@ import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import Button from "../components/ui/Button";
 import OrbitMark from "../components/ui/OrbitMark";
-import { PlanError, Skeleton } from "../components/ui/PlanState";
-import CourseGroup from "../components/courses/CourseGroup";
-import CourseRow from "../components/courses/CourseRow";
+import CourseLists from "../components/courses/CourseLists";
 import StepBar from "../components/courses/StepBar";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
-import { splitCourses, togglePicked } from "../shared/utils/courses";
-
-// Тіло екрана для кожного стану завантаження курсів
-const CourseLists = ({ status, courses, picked, onToggle, onRetry }) => {
-  if (status === "loading") {
-    return (
-      <div role="status" aria-label="Kurse werden geladen" className="flex flex-col gap-3 lg:grid lg:grid-cols-2 lg:gap-7">
-        <Skeleton className="h-67 rounded-card" />
-        <Skeleton className="h-40.5 rounded-card" />
-      </div>
-    );
-  }
-  if (status === "error") {
-    return <PlanError title="Kurse konnten nicht geladen werden" resource={{ error: { message: "Bitte prüfe deine Verbindung." } }} onRetry={onRetry} />;
-  }
-  if (courses.length === 0) {
-    return <p className="rounded-card bg-card px-5 py-10 text-center text-body-sm text-muted">Noch keine Kurse. Der Plan wurde noch nicht geladen.</p>;
-  }
-
-  const { required, optional } = splitCourses(courses);
-  return (
-    <div className="flex flex-col gap-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-7">
-      <CourseGroup title="Pflicht">
-        {required.map((course) => (
-          <CourseRow key={course.nr} course={course} />
-        ))}
-      </CourseGroup>
-      <CourseGroup title="Wahl">
-        {optional.map((course) => (
-          <CourseRow key={course.nr} course={course} checked={picked.includes(course.nr)} onChange={() => onToggle(course.nr)} />
-        ))}
-      </CourseGroup>
-    </div>
-  );
-};
+import { togglePicked } from "../shared/utils/courses";
 
 // Екран першого запуску «Welche Kurse hast du?» (макет 03).
 // Вибір зберігається лише після «Weiter»: до цього він живе у стані екрана.
 const CourseStart = () => {
-  const courses = usePlanStore((s) => s.courses);
   const status = usePlanStore((s) => s.coursesStatus);
-  const loadCourses = usePlanStore((s) => s.loadCourses);
   const logout = usePlanStore((s) => s.logout);
   const schoolClass = usePlanStore((s) => s.me?.className);
   const savedPicked = useUserStore((s) => s.picked);
@@ -76,7 +38,7 @@ const CourseStart = () => {
             <span className="hidden lg:inline">Einstellungen</span> → Meine Kurse.
           </p>
 
-          <CourseLists status={status} courses={courses} picked={picked} onToggle={(nr) => setPicked((list) => togglePicked(list, nr))} onRetry={loadCourses} />
+          <CourseLists isOn={(nr) => picked.includes(nr)} onToggle={(nr) => setPicked((list) => togglePicked(list, nr))} />
 
           <div className="mt-auto flex gap-2.5 pt-6 lg:justify-end">
             {/* Попередній крок — вхід. Сесія вже є, тому повернутись туди можна лише вийшовши */}

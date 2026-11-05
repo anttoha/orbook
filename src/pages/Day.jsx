@@ -1,4 +1,4 @@
-import { Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { Eye, List } from "lucide-react";
 import CurrentLessonCard from "../components/day/CurrentLessonCard";
 import DayFreeState from "../components/day/DayFreeState";
@@ -39,7 +39,7 @@ const VIEWS = [
 // Сторінка дня.
 //   /tag/2026-10-07 — будь-який день
 //   /heute          — сьогодні (datum в адресі немає)
-//   ?ansicht=zeitleiste — вигляд «Zeitleiste» замість «Liste»
+// Вигляд (Liste / Zeitleiste) — настройка userStore.dayView, її ж змінює «Darstellung».
 // День береться з тижня (GET /api/week), окремого запиту немає.
 // Стан дня (day.status): ok — план є · holiday — вільно · not_published — плану ще немає ·
 // unavailable — сервер школи недоступний (тоді показуємо «очікувані» уроки expectedLessons)
@@ -47,7 +47,6 @@ const VIEWS = [
 const Day = () => {
   const { datum } = useParams(); // дата з адреси (у /heute її немає)
   const { now, today } = useNow(); // час школи
-  const [searchParams, setSearchParams] = useSearchParams(); // ?ansicht=…
   const { openSheet } = useSheet(); // відкрити шторку
   const navigate = useNavigate(); // перехід на інший день
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // ≥ 1024px — комп'ютерний вигляд
@@ -61,28 +60,16 @@ const Day = () => {
   const valid = !datum || isIsoDate(datum); // крива дата → на сьогодні
   const date = datum ?? today; // який день показуємо
   const { day, week } = useDay(valid ? date : null); // день + тиждень (стан завантаження)
-  const view = searchParams.get("ansicht") === "zeitleiste" ? "zeitleiste" : "liste"; // поточний вигляд
-  const search = view === "zeitleiste" ? "?ansicht=zeitleiste" : ""; // хвіст адреси для посилань на інші дні
-
-  // Змінити вигляд (replace — не засмічуємо історію)
-  const setView = (value) => {
-    setSearchParams(
-      (prev) => {
-        if (value === "zeitleiste") prev.set("ansicht", value);
-        else prev.delete("ansicht"); // «Liste» — вигляд за замовчуванням, в адресі не потрібен
-        return prev;
-      },
-      { replace: true },
-    );
-  };
+  const view = useUserStore((s) => s.dayView); // поточний вигляд
+  const setView = useUserStore((s) => s.setDayView);
 
   // Гарячі клавіші дня: ← → день, T сьогодні, L / Z вигляд.
   // (викликаємо до return нижче — хуки мають викликатися завжди)
   useHotkeys(
     {
-      arrowleft: () => navigate(`/tag/${nextSchoolDay(date, holidays, -1)}${search}`),
-      arrowright: () => navigate(`/tag/${nextSchoolDay(date, holidays, 1)}${search}`),
-      t: () => navigate(`/heute${search}`),
+      arrowleft: () => navigate(`/tag/${nextSchoolDay(date, holidays, -1)}`),
+      arrowright: () => navigate(`/tag/${nextSchoolDay(date, holidays, 1)}`),
+      t: () => navigate("/heute"),
       l: () => setView("liste"),
       z: () => setView("zeitleiste"),
     },
@@ -91,8 +78,8 @@ const Day = () => {
 
   // Свайп на телефоні: як стрілки в шапці, до сусіднього навчального дня
   const swipe = useSwipe({
-    onLeft: () => navigate(`/tag/${nextSchoolDay(date, holidays, 1)}${search}`),
-    onRight: () => navigate(`/tag/${nextSchoolDay(date, holidays, -1)}${search}`),
+    onLeft: () => navigate(`/tag/${nextSchoolDay(date, holidays, 1)}`),
+    onRight: () => navigate(`/tag/${nextSchoolDay(date, holidays, -1)}`),
   });
 
   if (!valid) return <Navigate to="/heute" replace />;
@@ -117,7 +104,7 @@ const Day = () => {
   const loadingState = !day && (week.status === "error" ? <PlanError resource={week} onRetry={reload} /> : <DaySkeleton />);
 
   // День без плану: вихідний, свято, план ще не вийшов, школа не відповідає
-  const freeState = free && <DayFreeState day={day} today={today} week={week} onRetry={reload} search={search} fill={expected.length === 0} />;
+  const freeState = free && <DayFreeState day={day} today={today} week={week} onRetry={reload} fill={expected.length === 0} />;
 
   // Klausuren дня без плану: «Klausur: Mathe, 1. Stunde» (у звичайні дні вони видно на уроці)
   const examNotes =
@@ -169,10 +156,9 @@ const Day = () => {
           view={view}
           onViewChange={setView}
           onInfo={openInfo}
-          search={search}
           onShare={shareEnabled ? () => openSheet("teilen", { bereich: "heute", datum: date }) : null}
         />
-        {week.data && <DayStrip days={week.data.days} date={date} today={today} search={search} />}
+        {week.data && <DayStrip days={week.data.days} date={date} today={today} />}
         <NewPlanBanner />
         <PlanBanner resource={week} onRetry={reload} />
 
@@ -212,7 +198,7 @@ const Day = () => {
   // ── Телефон ──
   return (
     <section {...swipe} className="flex flex-col gap-3">
-      <DayPageHeader date={date} today={today} day={day} onInfo={openInfo} search={search} />
+      <DayPageHeader date={date} today={today} day={day} onInfo={openInfo} />
       <NewPlanBanner />
 
       {down ? (
