@@ -18,25 +18,25 @@ const CurrentLessonCard = ({ live, onOpen }) => {
   const footer = isRunning ? afterText(live.current, live.next, subjectName) : `Beginn ${lesson.start} · bis ${lesson.end}`;
 
   return (
-    <button type="button" onClick={() => onOpen(lesson)} className="flex flex-col gap-2.5 rounded-card bg-accent p-4 text-left text-on-accent">
+    <button type="button" onClick={() => onOpen(lesson)} className="flex flex-col gap-1.5 rounded-card bg-accent px-3.5 py-3 text-left text-on-accent">
       {/* верхній рядок */}
       <div className="flex items-baseline gap-2">
-        <span className="text-caption font-extrabold opacity-75">{isRunning ? "Jetzt" : "Gleich"}</span>
-        <span className="min-w-0 flex-1 truncate text-subhead font-black">
+        <span className="text-hint font-extrabold text-today-sub">{isRunning ? "Jetzt" : "Gleich"}</span>
+        <span className="min-w-0 flex-1 truncate text-lead font-bold">
           {subjectName(lesson.subject)}
           {lesson.room && ` · ${lesson.room}`}
         </span>
-        <span className="shrink-0 text-label font-extrabold opacity-90">{isRunning ? `noch ${live.minutesLeft} min` : `in ${live.breakMinutes} min`}</span>
+        <span className="shrink-0 text-label font-bold">{isRunning ? `noch ${live.minutesLeft} min` : `in ${live.breakMinutes} min`}</span>
       </div>
 
-      {/* смужка прогресу уроку (тільки коли урок іде) */}
+      {/* смужка прогресу уроку (тільки коли урок іде); фон у макеті білий 22% в обох темах */}
       {isRunning && (
-        <div className="h-1.5 overflow-hidden rounded-full bg-on-accent/25">
+        <div className="h-1 overflow-hidden rounded-full bg-white/22">
           <div className="h-full rounded-full bg-on-accent" style={{ width: `${lessonProgress(lesson, now) * 100}%` }} />
         </div>
       )}
 
-      <p className="text-caption font-bold opacity-80">{footer}</p>
+      <p className="text-caption text-today-sub">{footer}</p>
     </button>
   );
 };

@@ -12,7 +12,7 @@
 | 02 | Zugang (вход по паролю, ошибки) | 01, 02 | нет | ✅ готово |
 | 03 | Kurse wählen | см. /opt/orbook-be/docs/frontend/ | нет | ✅ готово |
 | 04 | Woche + «Stand von …» под днём | 04, 11 | нет | ✅ готово (ПК — в части 12) |
-| 05 | Tag (Liste, Zeitleiste, Stunde, Info zum Tag) + «Stand» | 05–08 | нет | |
+| 05 | Tag (Liste, Zeitleiste, Stunde, Info zum Tag) + «Stand» | 05–08 | нет | ✅ готово (ПК — в части 12) |
 | 06 | Состояния и офлайн | Zustände | нет | |
 | 07 | Klausuren: просмотр | 13–15, 36 | нет | |
 | 08 | Klausuren: запись, Editor-Code | 16–19 | нет | |

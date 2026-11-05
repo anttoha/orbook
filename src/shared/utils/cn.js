@@ -8,7 +8,8 @@ const customMerge = extendTailwindMerge({
   extend: {
     theme: {
       text: ["landing", "display", "lobby", "hero", "welcome", "stat", "sheet", "title", "panel", "heading", "state", "brand", "dialog", "logo", "number", "cell", "cell-sm", "subhead", "input", "lead", "body", "row", "body-sm", "nav", "label", "hint", "caption", "note", "small", "axis", "micro", "room", "tiny", "nano"],
-      radius: ["tick", "mark", "tag", "chip", "tile", "cell", "field", "box", "card", "panel"],
+      radius: ["tick", "mark", "tag", "chip", "tile", "cell", "field", "block", "box", "card", "panel"],
+      tracking: ["badge"],
       shadow: ["lift", "raise", "menu", "sheet"],
       spacing: ["gutter", "gutter-auth"],
       container: ["sidebar", "sidebar-mini", "search", "popover", "sheet", "dialog"],

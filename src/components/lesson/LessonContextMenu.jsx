@@ -26,6 +26,7 @@ const LessonContextMenu = ({ lesson, date, children }) => {
   const picked = useUserStore((s) => s.picked); // вибрані курси
   const hideCourse = useUserStore((s) => s.hideCourse); // сховати курс
   const setPicked = useUserStore((s) => s.setPicked); // повернути вибір
+  const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // адмін міг вимкнути «Teilen»
 
   const params = { datum: date, stunde: lesson.period, fach: lesson.subject?.code }; // параметри шторок цього уроку
   // Сховати можна лише курс за вибором (Wahl); обов'язкові («immer») — ні
@@ -52,7 +53,7 @@ const LessonContextMenu = ({ lesson, date, children }) => {
   const handleKeyDown = (event) => {
     const key = event.key.toLowerCase();
     const nothingHighlighted = event.target === event.currentTarget; // фокус на самому меню, а не на пункті
-    const action = { n: openNote, s: share, enter: nothingHighlighted ? openDetails : null }[key]; // клавіша → дія
+    const action = { n: openNote, s: shareEnabled ? share : null, enter: nothingHighlighted ? openDetails : null }[key]; // клавіша → дія
     if (!action) return;
     event.preventDefault();
     // У ContextMenu немає «закрити з коду» — імітуємо Esc, його Radix слухає на document
@@ -74,9 +75,11 @@ const LessonContextMenu = ({ lesson, date, children }) => {
           <ContextMenu.Item className={menuItemClass} onSelect={openNote}>
             <FileText className={menuIconClass} /> Notiz zur Stunde <Shortcut>N</Shortcut>
           </ContextMenu.Item>
-          <ContextMenu.Item className={menuItemClass} onSelect={share}>
-            <Share className={menuIconClass} /> Teilen <Shortcut>S</Shortcut>
-          </ContextMenu.Item>
+          {shareEnabled && (
+            <ContextMenu.Item className={menuItemClass} onSelect={share}>
+              <Share className={menuIconClass} /> Teilen <Shortcut>S</Shortcut>
+            </ContextMenu.Item>
+          )}
 
           <ContextMenu.Separator className={menuSeparatorClass} />
 

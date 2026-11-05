@@ -3,9 +3,9 @@ import { cn } from "../../shared/utils/cn";
 import { planMomentText } from "../../shared/utils/format";
 
 const Row = ({ label, children, warning = false }) => (
-  <div className="flex items-center justify-between gap-4 py-3">
-    <dt className="text-body-sm font-bold text-faint">{label}</dt>
-    <dd className={cn("text-body-sm font-bold", warning ? "text-danger" : "text-ink")}>{children}</dd>
+  <div className="flex py-3">
+    <dt className="w-32 shrink-0 text-row text-faint">{label}</dt>
+    <dd className={cn("min-w-0 flex-1 text-row", warning ? "text-danger" : "text-ink")}>{children}</dd>
   </div>
 );
 
@@ -16,7 +16,7 @@ const DayPlanDetails = ({ day }) => {
   const { today } = useNow();
 
   return (
-    <dl className="divide-y divide-hair rounded-card bg-card px-3.5">
+    <dl className="divide-y divide-hair">
       <Row label="Plan geändert">{planMomentText(day.changedAt, today)}</Row>
       <Row label="Veröffentlicht">{planMomentText(day.publishedAt, today)}</Row>
       <Row label="Zuletzt geprüft" warning={day.stale}>

@@ -1,5 +1,5 @@
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ChartNoAxesGantt, Eye, Flag, List, RefreshCw } from "lucide-react";
+import { Eye, Flag, List, RefreshCw } from "lucide-react";
 import CurrentLessonCard from "../components/day/CurrentLessonCard";
 import DayInfoBanner from "../components/day/DayInfoBanner";
 import DayPageHeader from "../components/day/DayPageHeader";
@@ -11,6 +11,7 @@ import DayHeaderDesktop from "../components/day/desktop/DayHeaderDesktop";
 import DayInfoCard from "../components/day/desktop/DayInfoCard";
 import DayStrip from "../components/day/desktop/DayStrip";
 import UpcomingCard from "../components/day/desktop/UpcomingCard";
+import { TimelineIcon } from "../components/ui/icons";
 import { PlanBanner, PlanError, Skeleton } from "../components/ui/PlanState";
 import Segmented from "../components/ui/Segmented";
 import { useHotkeys } from "../shared/hooks/useHotkeys";
@@ -18,6 +19,7 @@ import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useNow } from "../shared/hooks/useNow";
 import { useDay, useLessonFilter } from "../shared/hooks/usePlan";
 import { useSheet } from "../shared/hooks/useSheet";
+import { useSwipe } from "../shared/hooks/useSwipe";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { isIsoDate, longDate, mondayOf, nextSchoolDay, subjectName, weekdayLong, weekdayShort } from "../shared/utils/format";
@@ -27,7 +29,7 @@ import { freeText } from "../shared/utils/lessons";
 // Варіанти перемикача вигляду
 const VIEWS = [
   { value: "liste", label: "Liste", icon: List },
-  { value: "zeitleiste", label: "Zeitleiste", icon: ChartNoAxesGantt },
+  { value: "zeitleiste", label: "Zeitleiste", icon: TimelineIcon },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -84,9 +86,16 @@ const Day = () => {
     valid, // для кривої дати клавіші не потрібні
   );
 
+  // Свайп на телефоні: як стрілки в шапці, до сусіднього навчального дня
+  const swipe = useSwipe({
+    onLeft: () => navigate(`/tag/${nextSchoolDay(date, holidays, 1)}${search}`),
+    onRight: () => navigate(`/tag/${nextSchoolDay(date, holidays, -1)}${search}`),
+  });
+
   if (!valid) return <Navigate to="/heute" replace />;
 
   const reload = () => loadWeek(mondayOf(date)); // завантажити тиждень ще раз
+  const openInfo = () => openSheet("info", { datum: date }); // для будь-якого дня, навіть без тексту школи
   const openLesson = (lesson) => openSheet("stunde", { datum: date, stunde: lesson.period, fach: lesson.subject?.code });
 
   const lessons = day?.status === "ok" ? filter(day.lessons) : []; // уроки без прихованих курсів
@@ -150,7 +159,7 @@ const Day = () => {
   const expectedState = expected.length > 0 && (
     <div className="flex flex-col gap-2">
       <p className="px-1 text-label font-extrabold text-faint">Vorläufig (wie sonst an diesem Tag)</p>
-      <LessonList day={day} lessons={expected} preliminary variant={isDesktop ? "inline" : "outside"} />
+      <LessonList day={day} lessons={expected} preliminary />
     </div>
   );
 
@@ -176,8 +185,10 @@ const Day = () => {
         <DayHeaderDesktop
           date={date}
           today={today}
+          day={day}
           view={view}
           onViewChange={setView}
+          onInfo={openInfo}
           search={search}
           onShare={shareEnabled ? () => openSheet("teilen", { bereich: "heute", datum: date }) : null}
         />
@@ -194,13 +205,13 @@ const Day = () => {
             {examNotes}
             {expectedState}
             {allHidden}
-            {lessons.length > 0 && view === "liste" && <LessonList day={day} lessons={lessons} onOpen={openLesson} variant="inline" />}
+            {lessons.length > 0 && view === "liste" && <LessonList day={day} lessons={lessons} onOpen={openLesson} />}
             {lessons.length > 0 && view === "zeitleiste" && <Timeline day={day} lessons={lessons} onOpen={openLesson} />}
             {restoreHidden}
           </div>
 
           <aside className="grid content-start gap-4 lg:grid-cols-2 desktop:grid-cols-1">
-            {day?.info.length > 0 && <DayInfoCard day={day} onOpen={() => openSheet("info", { datum: date })} />}
+            {day?.info.length > 0 && <DayInfoCard day={day} onOpen={openInfo} />}
             <NotesSection date={date} lessons={day?.lessons} variant="card" />
             <div className="lg:col-span-2 desktop:col-span-1">
               <UpcomingCard days={week.data?.days ?? []} today={today} />
@@ -213,13 +224,13 @@ const Day = () => {
 
   // ── Телефон ──
   return (
-    <section className="flex flex-col gap-3.5">
-      <DayPageHeader date={date} today={today} search={search} />
+    <section {...swipe} className="flex flex-col gap-3">
+      <DayPageHeader date={date} today={today} day={day} onInfo={openInfo} search={search} />
 
-      {lessons.length > 0 && <Segmented label="Ansicht" options={VIEWS} value={view} onChange={setView} />}
+      {lessons.length > 0 && <Segmented label="Ansicht" options={VIEWS} value={view} onChange={setView} className="mt-0.5" />}
 
       <PlanBanner resource={week} onRetry={reload} />
-      {day?.info.length > 0 && <DayInfoBanner info={day.info} onClick={() => openSheet("info", { datum: date })} />}
+      {day?.info.length > 0 && <DayInfoBanner info={day.info} onClick={openInfo} />}
 
       {loadingState}
       {freeState}
@@ -231,7 +242,9 @@ const Day = () => {
       {lessons.length > 0 && view === "liste" && (
         <>
           {showLive && <CurrentLessonCard live={live} onOpen={openLesson} />}
-          <LessonList day={day} lessons={lessons} onOpen={openLesson} />
+          <div className="mt-0.5">
+            <LessonList day={day} lessons={lessons} onOpen={openLesson} />
+          </div>
         </>
       )}
 

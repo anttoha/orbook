@@ -66,7 +66,7 @@ const LoginForm = () => {
         spellCheck={false}
       />
 
-      <Button type="submit" variant="primary" disabled={loading || locked} className="mt-4 w-full flex-none gap-1.5 text-row font-bold">
+      <Button type="submit" variant="primary" disabled={loading || locked} className="mt-4 w-full flex-none gap-1.5">
         {!loading && <ChevronRight className="size-4" />}
         {loading ? "Wird geprüft…" : "Öffnen"}
       </Button>

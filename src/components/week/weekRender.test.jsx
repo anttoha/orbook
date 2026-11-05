@@ -15,6 +15,7 @@ import PeriodGrid from "./desktop/PeriodGrid";
 import TimeGrid from "./desktop/TimeGrid";
 import WeekAside from "./desktop/WeekAside";
 import DayPlanDetails from "../sheets/DayPlanDetails";
+import DayPageHeader from "../day/DayPageHeader";
 import LessonList from "../day/LessonList";
 import Timeline from "../day/Timeline";
 import { hardLessons, hardWeek } from "./weekFixture";
@@ -51,7 +52,7 @@ const drawDay = (day) => {
   const lessons = day.status === "ok" ? day.lessons : [];
   return [
     draw(<LessonList day={day} lessons={lessons} onOpen={noop} />),
-    draw(<LessonList day={day} lessons={day.expectedLessons} preliminary variant="inline" />),
+    draw(<LessonList day={day} lessons={day.expectedLessons} preliminary />),
     draw(<Timeline day={day} lessons={lessons} onOpen={noop} />),
   ].join("");
 };
@@ -68,6 +69,24 @@ describe("неделя и день со сложными уроками", () => 
 
   it("день рисуется списком и временной шкалой", () => {
     for (const day of hardWeek.days) expect(drawDay(day)).toBeTypeOf("string");
+  });
+
+  it("учитель и кабинет бывают null: без лишней точки", () => {
+    const base = hardLessons[1];
+    const day = hardWeek.days[1]; // не сегодня: урок не идёт, значка «Läuft · 15 min» с такой же точкой нет
+    const row = (lesson) => draw(<LessonList day={day} lessons={[lesson]} onOpen={noop} />);
+    expect(row({ ...base, teacher: null, room: "301" })).not.toContain("·");
+    expect(row({ ...base, teacher: null, room: "301" })).toContain("301");
+    expect(row({ ...base, teacher: "T03", room: null })).not.toContain("Raum");
+    expect(row({ ...base, teacher: null, room: null })).not.toContain("Raum");
+  });
+
+  it("шапка дня: время изменения плана; пока дня нет, кнопки (i) нет", () => {
+    const day = hardWeek.days[0];
+    const header = draw(<DayPageHeader date={day.date} today={day.date} day={day} onInfo={noop} />);
+    expect(header).toContain("07:08");
+    expect(header).toContain("Info zum Tag");
+    expect(draw(<DayPageHeader date={day.date} today={day.date} day={null} onInfo={noop} />)).not.toContain("Info zum Tag");
   });
 
   it("подробности плана: три строки, у пустых прочерк", () => {

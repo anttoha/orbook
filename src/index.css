@@ -190,6 +190,7 @@
        │ rounded-tile  │ 12 │ клітинка дати, пункт меню          │
        │ rounded-cell  │ 14 │ урок у сітці тижня                 │
        │ rounded-field │ 16 │ поле вводу, простий список         │
+       │ rounded-block │ 18 │ блок уроку на шкалі дня            │
        │ rounded-box   │ 20 │ урок у списку дня, блок            │
        │ rounded-card  │ 22 │ картка                             │
        │ rounded-panel │ 28 │ сайдбар, шторка, вікно             │
@@ -202,9 +203,13 @@
     --radius-tile: 12px;
     --radius-cell: 14px;
     --radius-field: 16px;
+    --radius-block: 18px;
     --radius-box: 20px;
     --radius-card: 22px;
     --radius-panel: 28px;
+
+    /* ── Міжлітерний інтервал бейджів VERTRETUNG, FÄLLT AUS (0.57px при 9.5px) ── */
+    --tracking-badge: 0.06em;
 
     /* ── Тіні: значення лежать у --soft-shadow-* (див. :root і .dark нижче).
        Tailwind вставляє значення тіні прямо в клас, тому без var()
@@ -363,6 +368,8 @@
 @layer base {
     html {
         color-scheme: light;
+        /* Свайп по тижню і дню — наш. Без цього браузер на той самий рух ще й іде «назад» в історії */
+        overscroll-behavior-x: none;
     }
 
     body {

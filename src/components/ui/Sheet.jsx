@@ -20,10 +20,12 @@ import Kbd from "./Kbd";
 //   eyebrow       — рядок над заголовком
 //   title         — заголовок (обов'язковий для скрінрідерів)
 //   titleAside    — щось праворуч від заголовка (наприклад, бейдж)
+//   titleClassName — колір заголовка (окно уроку: колір предмета)
+//   hideClose     — без хрестика на телефоні (вікно уроку за макетом: закривається змахом і кліком по фону)
 //   icon          — кружечок ліворуч від заголовка
 //   footer        — кнопки внизу
 // ─────────────────────────────────────────────────────────────
-const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, titleAside, icon, footer, children }) => {
+const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, titleAside, titleClassName, hideClose = false, icon, footer, children }) => {
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // який варіант показувати
   const isPanel = isDesktop && desktop === "panel"; // панель праворуч?
 
@@ -38,9 +40,9 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
       {isDesktop && <Kbd>Esc</Kbd>}
       <Close
         aria-label="Schließen"
-        className="grid size-9 place-items-center rounded-full bg-card text-ink transition-colors outline-none hover:bg-sand focus-visible:ring-2 focus-visible:ring-accent/50"
+        className="grid size-8.5 place-items-center rounded-full bg-card text-ink transition-colors outline-none hover:bg-sand focus-visible:ring-2 focus-visible:ring-accent/50"
       >
-        <X className="size-4.5" />
+        <X className="size-4" />
       </Close>
     </div>
   );
@@ -63,11 +65,11 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
             {eyebrow || title}
           </Description>
           <div className="flex flex-wrap items-center gap-2">
-            <Title className={cn("text-heading font-black text-ink", isPanel && "text-sheet")}>{title}</Title>
+            <Title className={cn("text-heading font-black text-ink", isPanel && "text-sheet", titleClassName)}>{title}</Title>
             {titleAside}
           </div>
         </div>
-        {!isPanel && renderClose(Close)}
+        {!isPanel && !(hideClose && !isDesktop) && renderClose(Close)}
       </header>
     </>
   );
@@ -76,7 +78,7 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
   const body = (
     <>
       <div className="mt-4 flex flex-col gap-4">{children}</div>
-      {footer && <div className="mt-5 flex gap-2.5">{footer}</div>}
+      {footer && <div className="mt-3.5 flex gap-2 lg:mt-5 lg:gap-2.5">{footer}</div>}
     </>
   );
 
@@ -114,9 +116,9 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
         {/* шторка притиснута донизу; vaul сам анімує виїзд і змах */}
         <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-panel bg-paper outline-none">
           {/* «ручка» зверху — за неї зручно тягнути */}
-          <div aria-hidden className="mx-auto mt-2.5 h-1.5 w-10 shrink-0 rounded-full bg-faint2" />
+          <div aria-hidden className="mx-auto mt-2.5 h-1 w-9.5 shrink-0 rounded-full bg-faint2" />
           {/* прокручувана частина; знизу враховуємо смужку жестів iPhone */}
-          <div className="overflow-y-auto px-5 pt-3 pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
+          <div className="overflow-y-auto px-gutter pt-3 pb-[calc(1.875rem+env(safe-area-inset-bottom))]">
             {renderHeader(Drawer.Title, Drawer.Description, Drawer.Close)}
             {body}
           </div>

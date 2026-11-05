@@ -5,13 +5,13 @@ import { infoParagraphs } from "../../shared/utils/format";
 // info — day.info з сервера (рядки; текст школи для всієї школи)
 const DayInfoBanner = ({ info, onClick }) => {
   return (
-    <button type="button" onClick={onClick} className="flex items-center gap-3 rounded-field bg-sand px-3.5 py-3 text-left text-label font-bold text-ink">
-      <Info className="size-4.5 shrink-0 text-muted" />
+    <button type="button" onClick={onClick} className="flex items-start gap-2.5 rounded-field bg-sand px-3.25 py-3 text-left text-label leading-4.5 text-muted">
+      <Info className="size-4 shrink-0" />
       {/* перший абзац, максимум два рядки */}
       <p className="line-clamp-2 min-w-0 flex-1">
-        <span className="font-black">Info zum Tag:</span> {infoParagraphs(info)[0]}
+        <span className="font-bold text-ink">Info zum Tag:</span> {infoParagraphs(info)[0]}
       </p>
-      <ChevronRight className="size-4 shrink-0 text-faint" />
+      <ChevronRight className="size-3.75 shrink-0 text-faint" />
     </button>
   );
 };

@@ -1,30 +1,23 @@
-import { FileText, Share } from "lucide-react";
+import { File, Share } from "lucide-react";
 import { useDay } from "../../shared/hooks/usePlan";
 import { useSheet } from "../../shared/hooks/useSheet";
+import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
 import { subjectCode, subjectName } from "../../shared/utils/format";
-import { fachClasses, findLesson, lessonExam, lessonNote } from "../../shared/utils/lessons";
+import { fachClasses, fachTextClass, findLesson, lessonExam, lessonNote } from "../../shared/utils/lessons";
 import { lessonText, shareText } from "../../shared/utils/share";
+import ChangedValue from "../lesson/ChangedValue";
 import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
 import StatusBadge from "../ui/StatusBadge";
 
-// Рядок «Lehrer / Raum / Kurs / Info»
-// (на ПК — більший і без білої підкладки, як на макеті «Stunde · Details (Panel rechts)»)
+// Рядок «Lehrer / Raum / Kurs / Info»: однаковий на телефоні й на ПК
 const Row = ({ label, children }) => (
-  <div className="flex gap-4 py-3 lg:py-3.5">
-    <dt className="w-16 shrink-0 text-body-sm font-bold text-faint lg:w-20 lg:text-body lg:font-medium lg:text-muted">{label}</dt>
-    <dd className="min-w-0 flex-1 text-body-sm font-bold text-ink lg:text-body lg:font-semibold">{children}</dd>
+  <div className="flex py-3">
+    <dt className="w-20.5 shrink-0 text-row text-faint">{label}</dt>
+    <dd className="min-w-0 flex-1 text-row text-ink">{children}</dd>
   </div>
-);
-
-// Нове значення + закреслене старе: «T26 ~~T25~~» (старе — з lesson.changes, буває null)
-const Changed = ({ value, old }) => (
-  <>
-    <span className={cn(old && "font-extrabold text-accent-ink")}>{value ?? "—"}</span>
-    {old && <s className="ml-2 font-bold text-faint">{old}</s>}
-  </>
 );
 
 // ─────────────────────────────────────────────────────────────
@@ -37,6 +30,7 @@ const LessonSheet = ({ open, onClose, sheet }) => {
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
   const note = useUserStore((s) => s.notes.find((n) => n.id === `${sheet.datum}#${sheet.stunde}`)); // нотатка до уроку
   const { day } = useDay(sheet.datum); // день із тижня
+  const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // адмін міг вимкнути «Teilen»
 
   const lesson = day ? findLesson(day.lessons, sheet.stunde, sheet.fach) : null; // сам урок
   if (!lesson) return null; // ще вантажиться або урок зник після оновлення плану
@@ -52,9 +46,11 @@ const LessonSheet = ({ open, onClose, sheet }) => {
       eyebrow={`${lesson.period}. Stunde${lesson.start ? ` · ${lesson.start}–${lesson.end}` : ""}`}
       title={subjectName(lesson.subject)}
       titleAside={<StatusBadge lesson={lesson} exam={exam} />}
+      titleClassName={fachTextClass(lesson.subject?.code, overrides)}
+      hideClose
       // кружечок з кодом предмета в його кольорі
       icon={
-        <span className={cn("grid size-11 shrink-0 place-items-center rounded-full text-body-sm font-black", fachClasses(lesson.subject?.code, overrides))}>
+        <span className={cn("grid size-11 shrink-0 place-items-center rounded-full text-note font-black", fachClasses(lesson.subject?.code, overrides))}>
           {subjectCode(lesson.subject)}
         </span>
       }
@@ -62,25 +58,27 @@ const LessonSheet = ({ open, onClose, sheet }) => {
         <>
           {/* replace: true — «Назад» із нотатки не поверне в цю шторку */}
           <Button onClick={() => openSheet("notiz", { datum: sheet.datum, stunde: lesson.period }, { replace: true })}>
-            <FileText className="size-4.5" /> Notiz
+            <File className="size-4.5" /> Notiz
           </Button>
-          <Button onClick={() => shareText(lessonText(lesson, sheet.datum))}>
-            <Share className="size-4.5" /> Teilen
-          </Button>
+          {shareEnabled && (
+            <Button onClick={() => shareText(lessonText(lesson, sheet.datum))}>
+              <Share className="size-4.5" /> Teilen
+            </Button>
+          )}
         </>
       }
     >
       {/* dl — список «назва: значення» */}
-      <dl className="divide-y divide-hair rounded-field bg-card px-4 lg:rounded-none lg:bg-transparent lg:px-0">
+      <dl className="divide-y divide-hair">
         {lesson.status === "cancelled" ? (
           <Row label="Status">fällt aus</Row>
         ) : (
           <>
             <Row label="Lehrer">
-              <Changed value={lesson.teacher} old={lesson.changes?.teacher?.old} />
+              <ChangedValue value={lesson.teacher} change={lesson.changes?.teacher} oldClassName="ml-2" />
             </Row>
             <Row label="Raum">
-              <Changed value={lesson.room} old={lesson.changes?.room?.old} />
+              <ChangedValue value={lesson.room} change={lesson.changes?.room} oldClassName="ml-2" />
             </Row>
           </>
         )}

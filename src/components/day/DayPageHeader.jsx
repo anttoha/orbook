@@ -1,44 +1,59 @@
 import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Info } from "lucide-react";
 import { usePlanStore } from "../../shared/store/planStore";
 import { longDate, mondayOf, nextSchoolDay, relativeDayWord, weekdayLong } from "../../shared/utils/format";
+import ChangedLine from "../week/ChangedLine";
 
-// Кругла кнопка-посилання
+// Кругла кнопка-посилання 38×38
 const roundLink = "grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink";
 
 // ─────────────────────────────────────────────────────────────
-// Шапка сторінки дня (телефон):  ‹  «Mittwoch · heute» / «7. Oktober»   ‹ ›
+// Шапка сторінки дня (телефон):  ‹  «Mittwoch · heute (i)» / «7. Oktober» / «↻ 07:08»   ‹ ›
 // date / today — "YYYY-MM-DD"; search — хвіст адреси (?ansicht=zeitleiste),
-// щоб при гортанні днів вигляд зберігався
+// щоб при гортанні днів вигляд зберігався.
+// day — день (null, поки вантажиться); onInfo — відкрити «Info zum Tag» для будь-якого дня.
+// Четверта кругла кнопка не вміщається поруч із довгою датою, тому (i) — малий значок біля дня тижня.
 // ─────────────────────────────────────────────────────────────
-const DayPageHeader = ({ date, today, search = "" }) => {
+const DayPageHeader = ({ date, today, day, onInfo, search = "" }) => {
   const holidays = usePlanStore((s) => s.meta?.holidays); // канікули й свята пропускаємо
   const word = relativeDayWord(date, today); // heute / morgen / gestern
   const prev = nextSchoolDay(date, holidays, -1); // попередній навчальний день
   const next = nextSchoolDay(date, holidays, 1); // наступний навчальний день
 
   return (
-    <header className="flex items-center gap-2">
-      {/* назад до тижня (просто стрілка, без кола — як на макеті) */}
-      <Link to={`/woche?woche=${mondayOf(date)}`} aria-label="Zur Woche" className="-ml-1.5 grid size-7 shrink-0 place-items-center text-ink">
-        <ChevronLeft className="size-5.5" strokeWidth={2.5} />
+    <header className="flex items-start gap-2.5">
+      {/* назад до тижня */}
+      <Link to={`/woche?woche=${mondayOf(date)}`} aria-label="Zur Woche" className={`${roundLink} mt-1`}>
+        <ChevronLeft className="size-4.25" />
       </Link>
 
       <div className="min-w-0 flex-1">
-        <p className="text-label leading-4 font-extrabold text-accent">
-          {weekdayLong(date)}
-          {word && ` · ${word}`}
-        </p>
-        <h1 className="truncate text-title text-ink">{longDate(date)}</h1>
+        <div className="flex items-center gap-0.5">
+          <p className="truncate text-hint font-extrabold text-accent-ink">
+            {weekdayLong(date)}
+            {word && ` · ${word}`}
+          </p>
+          {/* від'ємні поля: зона натискання 32px, а рядок лишається низьким */}
+          {day && (
+            <button type="button" aria-label="Info zum Tag" onClick={onInfo} className="-my-2 grid size-8 shrink-0 place-items-center text-muted">
+              <Info className="size-3.5" />
+            </button>
+          )}
+        </div>
+        {/* «30. September» на вузьких телефонах інакше обрізалось би */}
+        <h1 className="truncate text-title text-ink max-[379px]:text-heading max-[339px]:text-number">{longDate(date)}</h1>
+        <ChangedLine day={day} isToday={false} className="mt-0.5 h-3.5 text-small leading-none" iconClassName="size-2.5" />
       </div>
 
       {/* гортати дні (вихідні та канікули пропускаються) */}
-      <Link to={`/tag/${prev}${search}`} aria-label="Vorheriger Schultag" className={roundLink}>
-        <ChevronLeft className="size-4.5" />
-      </Link>
-      <Link to={`/tag/${next}${search}`} aria-label="Nächster Schultag" className={roundLink}>
-        <ChevronRight className="size-4.5" />
-      </Link>
+      <div className="mt-1 flex shrink-0 gap-1.5">
+        <Link to={`/tag/${prev}${search}`} aria-label="Vorheriger Schultag" className={roundLink}>
+          <ChevronLeft className="size-4.25" />
+        </Link>
+        <Link to={`/tag/${next}${search}`} aria-label="Nächster Schultag" className={roundLink}>
+          <ChevronRight className="size-4.25" />
+        </Link>
+      </div>
     </header>
   );
 };

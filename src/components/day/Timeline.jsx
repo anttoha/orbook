@@ -2,13 +2,15 @@ import { useNow } from "../../shared/hooks/useNow";
 import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
 import { subjectName } from "../../shared/utils/format";
-import { berlinParts, isLessonPast, toMinutes } from "../../shared/utils/lessonClock";
+import { berlinParts, isLessonNow, isLessonPast, toMinutes } from "../../shared/utils/lessonClock";
 import { fachClasses, lessonExam, lessonKey } from "../../shared/utils/lessons";
 import StatusBadge from "../ui/StatusBadge";
 import LessonContextMenu from "../lesson/LessonContextMenu";
 
-const PX_PER_MIN = 1.3; // скільки пікселів висоти на одну хвилину
-const AXIS = 48; // ширина колонки з годинами зліва (px)
+const PX_PER_MIN = 1.28; // шкала: скільки пікселів висоти на одну хвилину
+const BLOCK_PX_PER_MIN = 1.2; // блок трохи нижчий за свій час: так між уроками є зазор, як на макеті
+const AXIS = 50; // ширина колонки з годинами зліва (px)
+const BLOCK_PADDING = 12; // внутрішній відступ блока: на цьому рівні стоїть і підпис перерви
 
 // ─────────────────────────────────────────────────────────────
 // Вигляд «Zeitleiste»: уроки як блоки на шкалі часу.
@@ -20,7 +22,7 @@ const Timeline = ({ day, lessons, onOpen }) => {
   const { now, today } = useNow(); // час школи
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
 
-  const items = lessons.filter((l) => l.start).sort((a, b) => toMinutes(a.start) - toMinutes(b.start)); // тільки з часом
+  const items = lessons.filter((l) => l.start && l.end).sort((a, b) => toMinutes(a.start) - toMinutes(b.start)); // тільки з часом
   if (items.length === 0) return null; // нічого малювати
 
   const dayStart = Math.min(...items.map((l) => toMinutes(l.start))); // початок першого уроку (хв)
@@ -40,17 +42,20 @@ const Timeline = ({ day, lessons, onOpen }) => {
   const showNow = day.date === today && nowMin >= dayStart && nowMin <= dayEnd;
 
   return (
-    <div className="relative" style={{ height: y(dayEnd) + 8 }}>
-      {/* підписи годин */}
+    <div className="relative mt-1.5" style={{ height: y(dayEnd) + 14 }}>
+      {/* години: підпис зліва і тонка лінія через усю шкалу */}
       {hours.map((h) => (
-        <span key={h} className="absolute left-0 -translate-y-1/2 text-right text-small font-bold text-faint" style={{ top: y(h * 60), width: AXIS - 12 }}>
-          {h}:00
-        </span>
+        <div key={h} className="absolute inset-x-0" style={{ top: y(h * 60) }}>
+          <span className="absolute left-0 -translate-y-1/2 text-right text-axis text-faint" style={{ width: AXIS - 12 }}>
+            {h}:00
+          </span>
+          <span className="absolute right-0 h-px bg-hair" style={{ left: AXIS - 2 }} />
+        </div>
       ))}
 
       {/* підписи перерв посередині проміжку */}
       {breaks.map((b) => (
-        <span key={b.from} className="absolute right-0 -translate-y-1/2 text-center text-micro font-bold text-faint" style={{ top: y((b.from + b.to) / 2), left: AXIS }}>
+        <span key={b.from} className="absolute -translate-y-1/2 text-tiny font-extrabold text-faint2" style={{ top: y((b.from + b.to) / 2), left: AXIS + BLOCK_PADDING }}>
           Pause · {b.to - b.from} min
         </span>
       ))}
@@ -62,6 +67,7 @@ const Timeline = ({ day, lessons, onOpen }) => {
         const siblings = items.filter((l) => l.period === lesson.period); // паралельні курси
         const k = siblings.indexOf(lesson); // який по рахунку
         const isCancelled = lesson.status === "cancelled";
+        const isHighlighted = !isCancelled && (lesson.status !== "normal" || isLessonNow(lesson, day.date, now)); // зміна або урок, що йде
 
         return (
           <LessonContextMenu key={lessonKey(lesson)} lesson={lesson} date={day.date}>
@@ -69,38 +75,40 @@ const Timeline = ({ day, lessons, onOpen }) => {
               type="button"
               onClick={() => onOpen(lesson)}
               className={cn(
-                "absolute flex flex-col justify-between overflow-hidden rounded-field px-3 py-2 text-left select-none [-webkit-touch-callout:none]",
-                isCancelled ? "border-[1.5px] border-dashed border-faint2 bg-paper text-faint" : fachClasses(lesson.subject?.code, overrides),
-                !isCancelled && lesson.status !== "normal" && "ring-2 ring-accent ring-inset",
+                "absolute flex flex-col justify-center gap-0.5 overflow-hidden text-left select-none [-webkit-touch-callout:none]",
+                isCancelled ? "rounded-cell border border-dashed border-faint2 text-faint" : cn("rounded-block", fachClasses(lesson.subject?.code, overrides)),
+                isHighlighted && "ring-2 ring-accent",
                 isLessonPast(lesson, day.date, now) && "opacity-50",
               )}
               // позиція за часом; ширину ділимо між паралельними курсами
               style={{
                 top: y(start),
-                height: (end - start) * PX_PER_MIN,
+                height: (end - start) * BLOCK_PX_PER_MIN,
+                paddingInline: BLOCK_PADDING,
                 left: `calc(${AXIS}px + (100% - ${AXIS}px) * ${k / siblings.length})`,
                 width: `calc((100% - ${AXIS}px) / ${siblings.length} - ${siblings.length > 1 ? 4 : 0}px)`,
               }}
             >
               <div className="flex items-center gap-2">
-                <span className={cn("truncate text-body-sm font-extrabold", isCancelled && "line-through")}>{subjectName(lesson.subject)}</span>
-                <StatusBadge lesson={lesson} exam={lessonExam(day, lesson)} />
-                <span className="ml-auto shrink-0 text-small font-bold opacity-70">
+                <span className={cn("truncate text-body-sm font-black", isCancelled && "line-through")}>{subjectName(lesson.subject)}</span>
+                {/* у відміненого бейдж не потрібен: нижче написано «fällt aus» */}
+                {!isCancelled && <StatusBadge lesson={lesson} exam={lessonExam(day, lesson)} />}
+                <span className="ml-auto shrink-0 text-small text-faint">
                   {lesson.start}–{lesson.end}
                 </span>
               </div>
-              <p className="truncate text-caption font-bold opacity-80">{isCancelled ? "fällt aus" : [lesson.teacher, lesson.room].filter(Boolean).join(" · ")}</p>
+              <p className="truncate text-caption text-muted">{isCancelled ? "fällt aus" : [lesson.teacher, lesson.room].filter(Boolean).join(" · ")}</p>
             </button>
           </LessonContextMenu>
         );
       })}
 
-      {/* лінія «зараз»: час у фіолетовій плашці + лінія */}
+      {/* лінія «зараз»: час у фіолетовій плашці, крапка і лінія трохи за край блоків (як на макеті) */}
       {showNow && (
-        <div className="pointer-events-none absolute inset-x-0 z-10 flex -translate-y-1/2 items-center" style={{ top: y(nowMin) }}>
-          <span className="rounded-chip bg-accent px-1.5 py-0.5 text-micro font-extrabold text-on-accent">{hhmm}</span>
-          <span className="size-2 shrink-0 rounded-full bg-accent" />
-          <span className="h-0.5 flex-1 bg-accent" />
+        <div className="pointer-events-none absolute left-0 -right-1.5 z-10 flex -translate-y-1/2 items-center gap-0.5" style={{ top: y(nowMin) }}>
+          <span className="grid h-4.5 w-10.5 shrink-0 place-items-center rounded-tag bg-accent text-micro font-bold text-paper">{hhmm}</span>
+          <span className="size-2.25 shrink-0 rounded-full bg-accent" />
+          <span className="-ml-0.5 h-0.5 flex-1 bg-accent" />
         </div>
       )}
     </div>

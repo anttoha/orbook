@@ -80,11 +80,11 @@ const CourseStart = () => {
 
           <div className="mt-auto flex gap-2.5 pt-6 lg:justify-end">
             {/* Попередній крок — вхід. Сесія вже є, тому повернутись туди можна лише вийшовши */}
-            <Button onClick={logout} className="flex-none px-4.5 text-row font-bold">
+            <Button onClick={logout} className="flex-none px-4.5">
               Zurück
             </Button>
             {status === "ready" && (
-              <Button variant="primary" onClick={() => finishCourseChoice(picked)} className="gap-1.5 text-row font-bold lg:flex-none lg:px-4.5">
+              <Button variant="primary" onClick={() => finishCourseChoice(picked)} className="gap-1.5 lg:flex-none lg:px-4.5">
                 <ChevronRight className="size-4" /> Weiter
               </Button>
             )}

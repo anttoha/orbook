@@ -13,10 +13,9 @@ const MIN_BREAK = 10;
 // Вигляд «Liste»: уроки дня згори вниз + перерви між ними.
 // day — день із сервера (для Klausuren), lessons — уроки після фільтра «Meine Kurse»
 // onOpen(lesson) — клік по уроку
-// variant — "outside" (телефон) або "inline" (ПК: час усередині картки)
 // preliminary — це «очікувані» уроки (план ще не вийшов): показуємо блідо, без меню
 // ─────────────────────────────────────────────────────────────
-const LessonList = ({ day, lessons, onOpen, variant = "outside", preliminary = false }) => {
+const LessonList = ({ day, lessons, onOpen, preliminary = false }) => {
   const { now } = useNow(); // час школи
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
   const notes = useUserStore((s) => s.notes); // усі нотатки (фільтруємо нижче)
@@ -26,7 +25,7 @@ const LessonList = ({ day, lessons, onOpen, variant = "outside", preliminary = f
   const sorted = [...lessons].sort((a, b) => (a.start ? toMinutes(a.start) : 9999) - (b.start ? toMinutes(b.start) : 9999) || a.period - b.period);
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className="flex flex-col gap-2">
       {sorted.map((lesson, k) => {
         const prev = sorted[k - 1]; // попередній урок
         // Перерва перед уроком: початок цього − кінець попереднього
@@ -36,7 +35,7 @@ const LessonList = ({ day, lessons, onOpen, variant = "outside", preliminary = f
 
         return (
           <Fragment key={lessonKey(lesson)}>
-            {gap >= MIN_BREAK && <BreakRow minutes={gap} inline={variant === "inline"} />}
+            {gap >= MIN_BREAK && <BreakRow minutes={gap} />}
             <LessonRow
               lesson={lesson}
               exam={lessonExam(day, lesson)}
@@ -46,7 +45,6 @@ const LessonList = ({ day, lessons, onOpen, variant = "outside", preliminary = f
               note={notes.find((n) => n.id === `${day.date}#${lesson.period}`)} // нотатка до цього уроку
               overrides={overrides}
               onOpen={preliminary ? undefined : () => onOpen(lesson)}
-              variant={variant}
             />
           </Fragment>
         );

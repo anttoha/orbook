@@ -26,6 +26,9 @@ export function paletteOf(code, overrides) {
 // Класи світлої плашки предмета: fachClasses("Ma", overrides) → "bg-mathe-tint text-mathe-text"
 export const fachClasses = (code, overrides) => PALETTES[paletteOf(code, overrides)].tint;
 
+// Тільки колір тексту предмета: заголовок у вікні уроку
+export const fachTextClass = (code, overrides) => PALETTES[paletteOf(code, overrides)].text;
+
 // Унікальний ключ уроку в межах дня (у одного period буває кілька уроків — паралельні курси)
 export const lessonKey = (lesson) => `${lesson.period}-${lesson.subject?.code ?? ""}-${lesson.course?.nr ?? ""}`;
 
