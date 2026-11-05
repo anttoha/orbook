@@ -96,6 +96,17 @@ export function standText(moment, nowIso) {
   return `Stand von ${numericDate(day)} ${time}`;
 }
 
+// Рядок під днем: коли план цього дня востаннє змінився.
+// Той самий день — «geändert 07:06», інший — «geändert Mi 20:01». Дати в API — час школи (+01:00),
+// тому беремо їх із рядка, а не через Date. Немає плану або часу — null.
+export function changedText(day) {
+  const moment = day?.changedAt ?? day?.publishedAt;
+  if (!moment || day.status !== "ok") return null;
+  const date = moment.slice(0, 10);
+  const time = moment.slice(11, 16);
+  return date === day.date ? `geändert ${time}` : `geändert ${weekdayShort(date)} ${time}`;
+}
+
 // «aktualisiert vor 3 Min.»: коли сервер востаннє перевіряв план.
 // fetchedAt новіший за now буває на демо, де «сьогодні» вигадане: тоді «gerade eben».
 export function updatedAgoText(fetchedAt, now) {

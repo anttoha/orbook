@@ -22,6 +22,8 @@ import { createSchoolClock } from "../utils/lessonClock";
 // Тиждень/день зручніше брати хуками useWeek / useDay (shared/hooks/usePlan.js).
 // ─────────────────────────────────────────────────────────────
 
+let statusRequest = null; // запит /plan/status, що зараз виконується
+
 export const usePlanStore = create((set, get) => ({
   me: undefined,
   startError: null, // помилка при старті (немає мережі й нічого не збережено)
@@ -140,17 +142,21 @@ export const usePlanStore = create((set, get) => ({
 
   // ── Раз на хвилину: чи змінився план? (GET /api/plan/status) ──
   checkStatus: async () => {
+    if (statusRequest) return; // попередній опит ще йде (повільна мережа): не накладаємо
     const before = get().status?.lastChangeAt;
     try {
-      const status = await api("/plan/status");
-      if (!status) return; // 304 — нічого не змінилось
+      statusRequest = api("/plan/status", { conditional: true });
+      const status = await statusRequest;
+      if (!status) return; // 304 — нічого не змінилось, нічого не перемальовуємо
       set({ status });
       if (before && status.lastChangeAt && status.lastChangeAt !== before) {
         // план змінився — пропонуємо подивитись
         toast("Neuer Plan da", { action: { label: "Ansehen", onClick: () => get().reloadWeeks() }, duration: 10000 });
       }
     } catch {
-      // немає мережі — спробуємо через хвилину
+      // немає мережі — спробуємо наступного разу
+    } finally {
+      statusRequest = null;
     }
   },
 }));

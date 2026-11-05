@@ -9,6 +9,7 @@ import Container from "../components/ui/Container";
 import SideNav from "../components/navbar/SideNav";
 import BottomNav from "../components/navbar/BottomNav";
 import SheetHost from "../components/sheets/SheetHost";
+import { usePlanPolling } from "../shared/hooks/usePlanPolling";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 
@@ -25,7 +26,6 @@ const HomePage = () => {
   const startError = usePlanStore((s) => s.startError); // помилка старту
   const start = usePlanStore((s) => s.start); // GET /api/auth/me (+ решта даних)
   const tick = usePlanStore((s) => s.tick); // оновити «зараз»
-  const checkStatus = usePlanStore((s) => s.checkStatus); // чи змінився план
   const demo = usePlanStore((s) => s.meta?.demo); // демо-сервер?
   const coursesChosen = useUserStore((s) => s.coursesChosen); // чи пройдено вибір курсів
 
@@ -34,15 +34,14 @@ const HomePage = () => {
     start();
   }, [start]);
 
-  // Раз на хвилину: оновити час школи і (якщо вкладка видима) спитати стан плану
+  usePlanPolling(Boolean(me)); // кожні 10 секунд питаємо, чи змінився план
+
+  // Раз на хвилину: оновити час школи (рядок «зараз» і «noch 27 min»)
   useEffect(() => {
     if (!me) return undefined; // не увійшли — нічого не робимо
-    const id = setInterval(() => {
-      tick();
-      if (document.visibilityState === "visible") checkStatus();
-    }, 60_000);
+    const id = setInterval(tick, 60_000);
     return () => clearInterval(id);
-  }, [me, tick, checkStatus]);
+  }, [me, tick]);
 
   if (me === undefined && !startError) return <div className="min-h-dvh bg-paper" />; // перевіряємо…
 

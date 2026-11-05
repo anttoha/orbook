@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { standText, subjectCode, subjectName, updatedAgoText } from "./format";
+import { changedText, standText, subjectCode, subjectName, updatedAgoText } from "./format";
 
 describe("standText", () => {
   it("сегодня, вчера и другой день", () => {
@@ -44,5 +44,27 @@ describe("предмет может быть null", () => {
   it("subjectCode: код или прочерк", () => {
     expect(subjectCode({ code: "Ma", name: "Mathe" })).toBe("Ma");
     expect(subjectCode(null)).toBe("–");
+  });
+});
+
+describe("changedText", () => {
+  const day = { date: "2026-11-05", status: "ok", changedAt: "2026-11-05T07:06:00+01:00", publishedAt: "2026-11-04T20:01:00+01:00" };
+
+  it("в тот же день: только время", () => {
+    expect(changedText(day)).toBe("geändert 07:06");
+  });
+
+  it("в другой день: день недели и время", () => {
+    expect(changedText({ ...day, changedAt: "2026-11-04T20:01:00+01:00" })).toBe("geändert Mi 20:01");
+  });
+
+  it("changedAt = null: берём publishedAt", () => {
+    expect(changedText({ ...day, changedAt: null })).toBe("geändert Mi 20:01");
+  });
+
+  it("нет времени или плана: строки нет", () => {
+    expect(changedText({ ...day, changedAt: null, publishedAt: null })).toBeNull();
+    expect(changedText({ ...day, status: "not_published" })).toBeNull();
+    expect(changedText(null)).toBeNull();
   });
 });

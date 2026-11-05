@@ -37,7 +37,8 @@ src/
 - Sync-шифрование — только эталон `/opt/orbook-be/docs/examples/sync-crypto.mjs`, не переписывать.
 - `useEffect` — только когда правда нужно, с очисткой.
 - На каждом маршруте `errorElement` с немецким текстом «Etwas ist schiefgelaufen».
-- «Stand von …»: под названием дня мелкая серая строка из `publishedAt` дня; в шапке «aktualisiert vor N Min.» из `fetchedAt`. Ненавязчиво.
+- Под каждым днём мелкая серая строка из `changedAt` (иначе `publishedAt`): в тот же день «geändert 07:06», в другой «geändert Mi 20:01» (`changedText`). В шапке «aktualisiert vor N Min.» из `fetchedAt`. Ненавязчиво.
+- Опрос `/api/plan/status` каждые 10 секунд, только пока вкладка видима (`usePlanPolling`, `conditional: true` в `api`): при 304 ничего не перерисовываем.
 
 ## Проверки
 `npm run lint`, `npm test` (Vitest), `npm run build`. В окружении сервера стоит `NODE_ENV=production`, из-за чего `npm install` пропускает dev-зависимости: ставь `npm install --include=dev`, а тесты/линтер запускай с `NODE_ENV=development`. Разработка — против демо (`vite.config.js`: proxy `/api` → `https://orbook-demo.orbitium.net`).

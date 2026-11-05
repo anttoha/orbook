@@ -37,7 +37,13 @@ export const ifMatch = (version) => ({ "If-Match": `"v${version}"` });
 
 // Головна функція: await api("/week?date=2026-10-05")
 //                  await api("/auth/login", { method: "POST", body: { password } })
-export async function api(path, { method = "GET", body, signal, headers = {}, timeout = TIMEOUT_MS } = {}) {
+// conditional: true — частий опит. Самі шлемо If-None-Match і вимикаємо кеш браузера:
+// інакше браузер сам отримує 304 і віддає коду стару відповідь як 200, і екран перемальовується.
+// Сервер відповів 304 → api повертає null.
+const savedEtags = new Map(); // шлях → останній ETag
+
+export async function api(path, { method = "GET", body, signal, headers = {}, timeout = TIMEOUT_MS, conditional = false } = {}) {
+  const etagHeader = conditional && savedEtags.has(path) ? { "If-None-Match": savedEtags.get(path) } : {};
   const timer = new AbortController(); // щоб обірвати запит по таймауту
   const timeoutId = setTimeout(() => timer.abort(), timeout);
   const onAbort = () => timer.abort(); // скасування ззовні (наприклад, екран закрили)
@@ -49,7 +55,8 @@ export async function api(path, { method = "GET", body, signal, headers = {}, ti
       method,
       signal: timer.signal,
       credentials: "same-origin", // надсилати cookies
-      headers: { ...(body !== undefined ? { "Content-Type": "application/json" } : {}), ...headers },
+      ...(conditional ? { cache: "no-store" } : {}),
+      headers: { ...(body !== undefined ? { "Content-Type": "application/json" } : {}), ...etagHeader, ...headers },
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });
   } catch (e) {
@@ -64,7 +71,10 @@ export async function api(path, { method = "GET", body, signal, headers = {}, ti
   if (res.status === 204 || res.status === 304) return null; // відповідь без тіла
 
   const data = await res.json().catch(() => null); // тіло (або null, якщо не JSON)
-  if (res.ok) return data; // успіх
+  if (res.ok) {
+    if (conditional && res.headers.get("ETag")) savedEtags.set(path, res.headers.get("ETag"));
+    return data; // успіх
+  }
 
   // Помилка: сервер завжди відповідає { error: { code, message, details } }
   const err = data?.error ?? {};

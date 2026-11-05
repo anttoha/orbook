@@ -2,7 +2,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ChartNoAxesColumn, ChevronLeft, ChevronRight, Flag } from "lucide-react";
 import WeekGrid from "../components/week/WeekGrid";
 import WeekMenu from "../components/week/WeekMenu";
-import WeekStand from "../components/week/WeekStand";
+import WeekUpdated from "../components/week/WeekUpdated";
 import DayPanel from "../components/week/desktop/DayPanel";
 import PeriodGrid from "../components/week/desktop/PeriodGrid";
 import TimeGrid from "../components/week/desktop/TimeGrid";
@@ -134,7 +134,7 @@ const Week = () => {
           onToday={goToday}
         />
 
-        <WeekStand days={week.data?.days} />
+        <WeekUpdated days={week.data?.days} />
 
         <PlanBanner resource={week} onRetry={reload} />
 
@@ -181,7 +181,7 @@ const Week = () => {
         </div>
       </header>
 
-      <WeekStand days={week.data?.days} />
+      <WeekUpdated days={week.data?.days} />
 
       <PlanBanner resource={week} onRetry={reload} />
 

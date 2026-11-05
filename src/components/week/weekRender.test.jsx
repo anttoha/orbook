@@ -10,7 +10,7 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import { describe, expect, it } from "vitest";
 import process from "node:process";
 import WeekGrid from "./WeekGrid";
-import WeekStand from "./WeekStand";
+import WeekUpdated from "./WeekUpdated";
 import PeriodGrid from "./desktop/PeriodGrid";
 import TimeGrid from "./desktop/TimeGrid";
 import WeekAside from "./desktop/WeekAside";
@@ -37,7 +37,7 @@ const drawWeek = (days) => [
   draw(<PeriodGrid days={days} selectedDay={days[0].date} onSelectDay={noop} onLessonClick={noop} />),
   draw(<TimeGrid days={days} onLessonClick={noop} />),
   draw(<WeekAside days={days} />),
-  draw(<WeekStand days={days} />),
+  draw(<WeekUpdated days={days} />),
 ].join("");
 
 // Все виды дня
@@ -62,6 +62,7 @@ describe("неделя и день со сложными уроками", () => 
     expect(html).toContain("fällt aus"); // cancelled
     expect(html).toContain("–"); // код урока без предмета
     expect(html).toContain("AGTan"); // subject.name = null
+    expect(html).toContain("geändert 07:08"); // строка под днём
   });
 
   it("день рисуется списком и временной шкалой", () => {

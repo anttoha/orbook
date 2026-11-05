@@ -108,6 +108,27 @@ describe("api: 401", () => {
   });
 });
 
+describe("api: частый опрос", () => {
+  it("второй запрос идёт с ETag, 304 даёт null", async () => {
+    reply(200, { lastChangeAt: "x" }, { ETag: '"abc"' });
+    await expect(api("/plan/status", { conditional: true })).resolves.toEqual({ lastChangeAt: "x" });
+    expect(fetch.mock.calls[0][1].cache).toBe("no-store");
+    expect(fetch.mock.calls[0][1].headers["If-None-Match"]).toBeUndefined();
+
+    reply(304);
+    await expect(api("/plan/status", { conditional: true })).resolves.toBeNull();
+    expect(fetch.mock.calls[0][1].headers["If-None-Match"]).toBe('"abc"');
+  });
+
+  it("обычные запросы ETag не шлют и кеш не выключают", async () => {
+    reply(200, {}, { ETag: '"zzz"' });
+    await api("/week");
+    await api("/week");
+    expect(fetch.mock.calls[1][1].headers["If-None-Match"]).toBeUndefined();
+    expect(fetch.mock.calls[1][1].cache).toBeUndefined();
+  });
+});
+
 describe("помощники", () => {
   it("ifMatch: заголовок версии Klausur", () => {
     expect(ifMatch(3)).toEqual({ "If-Match": '"v3"' });

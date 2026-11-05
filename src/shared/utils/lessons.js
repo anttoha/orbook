@@ -105,14 +105,13 @@ export function lessonNote(lesson, exam) {
   return lessonCaption(lesson) || movedText(lesson.moved) || (lesson.status === "added" ? "Zusatzstunde" : null);
 }
 
-// Рядок під заголовком тижня. Показуємо план сьогоднішнього дня (або перший день, де план є),
-// бо дні тижня публікуються в різний час. Результат: { publishedAt, fetchedAt, stale } або null.
-export function weekStandSource(days, today) {
+// Рядок «aktualisiert …» під заголовком тижня: найсвіжіша перевірка серед днів і чи план застарів.
+// Результат: { fetchedAt, stale } або null, якщо перевірок ще не було.
+export function weekCheckSource(days) {
   const list = days ?? [];
-  const day = list.find((item) => item.date === today && item.publishedAt) ?? list.find((item) => item.publishedAt);
-  const checked = list.map((item) => item.fetchedAt).filter(Boolean).sort().at(-1) ?? null; // найсвіжіша перевірка
-  if (!day && !checked) return null;
-  return { publishedAt: day?.publishedAt ?? null, fetchedAt: checked, stale: list.some((item) => item.stale) };
+  const fetchedAt = list.map((item) => item.fetchedAt).filter(Boolean).sort().at(-1) ?? null;
+  if (!fetchedAt) return null;
+  return { fetchedAt, stale: list.some((item) => item.stale) };
 }
 
 // Чи немає уроків за весь тиждень: тоді підказка «Noch kein Plan für diese Woche»
