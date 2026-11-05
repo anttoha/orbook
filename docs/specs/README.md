@@ -17,7 +17,7 @@
 | 07 | Klausuren: просмотр | 13–15, 36 | нет | ✅ готово (ПК — в части 12) |
 | 08 | Klausuren: запись, Editor-Code | 16–19 | нет | ✅ готово (ПК — в части 12) |
 | 09 | Mehr, Darstellung, Fachfarben, Teilen | 22–28 | нет | ✅ готово (ПК — в части 12; Mitteilungen — в 17, Sync — в 11) |
-| 10 | Statistik | | нет | |
+| 10 | Statistik | 19, 37 | нет | ✅ готово (ПК, «Halbjahr», графики по неделям и урокам — в части 12) |
 | 11 | Notizen + Sync | 20–21 | нет | |
 | 12 | ПК-раскладка | Computer 01–53 | нет | |
 | 13 | Admin | Admin · … | нет | |

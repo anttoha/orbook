@@ -27,7 +27,7 @@ export function compareWith(now, before, data) {
   const previous = data?.previous;
   if (!previous?.daysCounted) return null;
   const diff = now - before;
-  const label = data.range === "week" ? "Vorwoche" : shortMonth(previous.from);
+  const label = data.range === "week" ? `KW ${isoWeek(previous.from)}` : shortMonth(previous.from); // «KW 37» коротше за «Vorwoche» і влазить в один рядок
   if (diff === 0) return { text: `±0 ggü. ${label}`, tone: "same" };
   // справжній мінус «−», як у дизайні, а не дефіс
   return { text: `${diff > 0 ? "+" : "−"}${Math.abs(diff)} ggü. ${label}`, tone: diff > 0 ? "up" : "down" };

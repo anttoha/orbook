@@ -1,6 +1,6 @@
 # 10 · Statistik
 
-**Статус:** в работе
+**Статус:** готово
 **Источники:** дизайн «19 Statistik», «37 Statistik · zu wenig Daten» (телефон, светлая и тёмная); `/opt/orbook-be/docs/frontend/05-statistik.md`; `docs/API.md` → «Statistik»; бэкенд `api/stats.py`, `plan/stats.py` (2026-11-05).
 
 ## Зачем
@@ -23,7 +23,7 @@
 | «9b · September» / «9b · KW 45» | `me.className` + `period.from` (месяц или KW) | `className` null → только период |
 | «11 · Stunden fallen aus» | `totals.cancelled` | 0 — показываем 0 |
 | «9 · Vertretungen» | `substitutions + moved + added` (как на экране Woche) | |
-| «+3 ggü. Aug» / «−2 ggü. Vorwoche» | разница с `previous.totals`; больше — красный, меньше — зелёный, «±0» — серый | не показывать, если `previous` null или `previous.daysCounted === 0` |
+| «+3 ggü. Aug» / «−2 ggü. KW 44» | разница с `previous.totals`; больше — красный, меньше — зелёный, «±0» — серый | не показывать, если `previous` null или `previous.daysCounted === 0` |
 | «5 · Klausuren · bis 30. Sept» | `totals.exams`, `period.to` | |
 | «Diese Woche nach Tag» | отдельный запрос `range=week`: `byWeekday[]`, серый столбик `cancelled`, сверху фиолетовый `substitutions` | все нули — пустые столбики |
 | «Fällt am häufigsten aus» | `topCancelledSubjects[]` (до 5), длина полоски от максимума | пусто — раздел скрыт |
@@ -53,7 +53,7 @@
 - Раскладки ПК и «Halbjahr» (часть 12). Выбора другого месяца (в дизайне нет).
 
 ## Отличия от дизайна
-- В режиме «Woche» подпись сравнения — «ggü. Vorwoche» (в дизайне только месяц).
+- В режиме «Woche» подпись сравнения — «ggü. KW 44» (в дизайне только месяц; «Vorwoche» не влезает в строку).
 - Цифры в режиме «мало данных» не показываем — как в макете 37.
 
 ## Слова

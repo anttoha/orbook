@@ -36,8 +36,8 @@ describe("compareWith", () => {
     expect(compareWith(9, 11, month)).toEqual({ text: "−2 ggü. Aug", tone: "down" });
   });
   it("однаково", () => expect(compareWith(4, 4, month).tone).toBe("same"));
-  it("тиждень — Vorwoche", () => {
-    expect(compareWith(2, 1, { range: "week", previous: { from: "2026-10-26", daysCounted: 5 } }).text).toBe("+1 ggü. Vorwoche");
+  it("тиждень — номер минулого KW", () => {
+    expect(compareWith(2, 1, { range: "week", previous: { from: "2026-10-26", daysCounted: 5 } }).text).toBe("+1 ggü. KW 44");
   });
   it("минулий період без даних або null — без порівняння", () => {
     expect(compareWith(3, 0, { ...month, previous: { ...month.previous, daysCounted: 0 } })).toBeNull();

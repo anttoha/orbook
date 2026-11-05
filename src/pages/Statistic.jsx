@@ -53,7 +53,7 @@ const Statistic = () => {
       <>
         <StatCards data={main} />
         <WeekdayChart byWeekday={week?.byWeekday} />
-        <div className="mt-3 flex flex-col gap-8">
+        <div className="mt-0.5 flex flex-col gap-6">
           <SubjectBars title="Fällt am häufigsten aus" items={main.topCancelledSubjects} valueKey="cancelled" />
           <SubjectBars title="Klausuren nach Fach" items={main.examsBySubject} valueKey="count" />
         </div>
