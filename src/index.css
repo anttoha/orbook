@@ -38,7 +38,9 @@
        ┌──────────────┬───────┬──────────────────────────────────────┐
        │ клас         │ px    │ де використовується                  │
        ├──────────────┼───────┼──────────────────────────────────────┤
+       │ text-landing │ 56/900│ великий заголовок на вході (ПК)      │
        │ text-display │ 50/900│ «ORBook» на сторінці входу           │
+       │ text-lobby   │ 40/900│ «Klasse öffnen» (ПК)                 │
        │ text-hero    │ 38/900│ заголовок сторінки на ПК             │
        │ text-welcome │ 36/900│ «Anmelden» на ПК                     │
        │ text-stat    │ 32/900│ великі числа в статистиці            │
@@ -47,6 +49,7 @@
        │ text-panel   │ 28/900│ дата в панелі дня, діалог на ПК      │
        │ text-heading │ 26/900│ заголовок шторки / панелі            │
        │ text-state   │ 25/900│ «Heute ist frei», порожні стани      │
+       │ text-brand   │ 24/900│ «ORBook» на вході (ПК)               │
        │ text-dialog  │ 23/900│ «Klausur löschen?» на телефоні       │
        │ text-logo    │ 22/900│ «ORBook» у сайдбарі                  │
        │ text-number  │ 20/900│ числа днів у сітці                   │
@@ -70,10 +73,18 @@
        │ text-tiny    │ 9     │ «Pause · 20 min», дні в сітці        │
        │ text-nano    │ 8.5   │ час і «fällt aus» у сітці            │
        └──────────────┴───────┴──────────────────────────────────────┘ */
+    --text-landing: 56px;
+    --text-landing--line-height: 1.02;
+    --text-landing--font-weight: 900;
+    --text-landing--letter-spacing: -0.015em;
     --text-display: 50px;
     --text-display--line-height: 1.1;
     --text-display--font-weight: 900;
     --text-display--letter-spacing: -0.015em;
+    --text-lobby: 40px;
+    --text-lobby--line-height: 1.15;
+    --text-lobby--font-weight: 900;
+    --text-lobby--letter-spacing: -0.015em;
     --text-hero: 38px;
     --text-hero--line-height: 1.15;
     --text-hero--font-weight: 900;
@@ -106,6 +117,10 @@
     --text-state--line-height: 1.15;
     --text-state--font-weight: 900;
     --text-state--letter-spacing: -0.015em;
+    --text-brand: 24px;
+    --text-brand--line-height: 1.15;
+    --text-brand--font-weight: 900;
+    --text-brand--letter-spacing: -0.015em;
     --text-dialog: 23px;
     --text-dialog--line-height: 1.2;
     --text-dialog--font-weight: 900;

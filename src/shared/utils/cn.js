@@ -1,22 +1,19 @@
 import { clsx } from "clsx";
 import { extendTailwindMerge } from "tailwind-merge";
 
-// tailwind-merge прибирає конфліктні класи ("p-2 p-4" → "p-4").
-// Наших стилів тексту (text-body, text-caption…) він сам не знає і приймає їх
-// за КОЛІР тексту — тоді "text-caption text-faint" втрачав би розмір.
-// Тому кажемо йому: це група «розмір шрифту» (font-size).
-const twMerge = extendTailwindMerge({
+// cn склеює класи й прибирає ті, що конфліктують: пізніший перемагає.
+// tailwind-merge не читає index.css, тому свої токени треба назвати тут.
+// Без цього text-row вважався б кольором і викидав би text-on-accent.
+const customMerge = extendTailwindMerge({
   extend: {
-    classGroups: {
-      "font-size": [
-        {
-          text: ["display", "hero", "title", "heading", "logo", "number", "subhead", "input", "body", "body-sm", "label", "caption", "small", "micro", "tiny"],
-        },
-      ],
+    theme: {
+      text: ["landing", "display", "lobby", "hero", "welcome", "stat", "sheet", "title", "panel", "heading", "state", "brand", "dialog", "logo", "number", "cell", "cell-sm", "subhead", "input", "lead", "body", "row", "body-sm", "nav", "label", "hint", "caption", "note", "small", "axis", "micro", "room", "tiny", "nano"],
+      radius: ["tick", "mark", "tag", "chip", "tile", "cell", "field", "box", "card", "panel"],
+      shadow: ["lift", "raise", "menu", "sheet"],
+      spacing: ["gutter", "gutter-auth"],
+      container: ["sidebar", "sidebar-mini", "search", "popover", "sheet", "dialog"],
     },
   },
 });
 
-export const cn = (...inputs) => {
-    return twMerge(clsx(inputs));
-};
+export const cn = (...inputs) => customMerge(clsx(inputs));
