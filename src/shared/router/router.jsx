@@ -2,6 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../../App";
 import HomePage from "../../pages/HomePage";
 import Tests from "../../pages/Tests";
+import ExamEdit from "../../pages/ExamEdit";
+import EditorCode from "../../pages/EditorCode";
 import Statistic from "../../pages/Statistic";
 import More from "../../pages/More";
 import Week from "../../pages/Week";
@@ -32,6 +34,9 @@ export const router = createBrowserRouter([
           page({ path: "heute", Component: Day }), // сьогоднішній день
           page({ path: "tag/:datum", Component: Day }), // будь-який день: /tag/2026-10-07
           page({ path: "testen", Component: Tests }),
+          page({ path: "testen/neu", Component: ExamEdit }), // нова Klausur
+          page({ path: "testen/:id/bearbeiten", Component: ExamEdit }), // правка
+          page({ path: "editor-code", Component: EditorCode }),
           page({ path: "statistik", Component: Statistic }),
           page({ path: "mehr", Component: More }),
           page({ path: "admin", Component: Admin }), // поки заглушка

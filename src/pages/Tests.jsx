@@ -1,9 +1,11 @@
 import { useEffect } from "react";
+import { Plus } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import ExamChips from "../components/exams/ExamChips";
 import ExamRow from "../components/exams/ExamRow";
 import ExamSkeleton from "../components/exams/ExamSkeleton";
 import Button from "../components/ui/Button";
-import { FilterIcon, FlagIcon } from "../components/ui/icons";
+import { FilterIcon, FlagIcon, KeyIcon } from "../components/ui/icons";
 import { PlanBanner, PlanError } from "../components/ui/PlanState";
 import StateScreen from "../components/ui/StateScreen";
 import { usePastExams } from "../shared/hooks/useExams";
@@ -12,6 +14,7 @@ import { useSheet } from "../shared/hooks/useSheet";
 import { useExamFilter } from "../shared/store/examFilterStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
+import { addExamTarget } from "../shared/utils/examRules";
 import { filterExams, groupExams, isFilterActive, subjectChips, toggleSubject } from "../shared/utils/exams";
 
 // «Ab heute · 5 geplant». Поки записів немає — без числа
@@ -24,11 +27,12 @@ const eyebrowText = (past, count) => {
 // Сторінка Klausuren. /testen
 // Дані: GET /api/exams (planStore), минулі — лише з «Vergangene anzeigen».
 // Фільтр рахується на пристрої (shared/utils/exams.js).
-// Кнопка «+» з'явиться разом із формою в частині 08.
 // ─────────────────────────────────────────────────────────────
 const Tests = () => {
   const { today } = useNow();
   const { openSheet } = useSheet();
+  const navigate = useNavigate();
+  const me = usePlanStore((s) => s.me);
   const upcoming = usePlanStore((s) => s.exams);
   const examsState = usePlanStore((s) => s.examsState);
   const pastExams = usePlanStore((s) => s.pastExams);
@@ -50,6 +54,7 @@ const Tests = () => {
   const reload = filter.past ? loadPastExams : loadExams;
   const shown = filterExams(list, filter, today);
   const filterActive = isFilterActive(filter);
+  const addTarget = addExamTarget(me); // куди веде «+»
   // минулі йдуть однією групою: поділ на тижні в них не працює
   const groups = filter.past ? [{ title: "Vergangen", exams: shown }] : groupExams(shown, today);
 
@@ -57,7 +62,15 @@ const Tests = () => {
     if (resource.status === "error") return <PlanError resource={resource} onRetry={reload} title="Klausuren konnten nicht geladen werden" />;
     if (list.length === 0 && resource.status === "loading") return <ExamSkeleton />;
     if (list.length === 0 && !filterActive) {
-      return <StateScreen icon={FlagIcon} title="Keine Klausuren in Sicht" text="Sobald jemand mit Editor-Code eine Klausur einträgt, steht sie hier — mit Countdown." />;
+      return (
+        <StateScreen icon={FlagIcon} title="Keine Klausuren in Sicht" text="Sobald jemand mit Editor-Code eine Klausur einträgt, steht sie hier — mit Countdown.">
+          {!me?.editor && (
+            <Button onClick={() => navigate("/editor-code")} className="flex-none">
+              <KeyIcon className="size-4" /> Editor-Code eingeben
+            </Button>
+          )}
+        </StateScreen>
+      );
     }
     if (shown.length === 0) {
       return (
@@ -81,9 +94,16 @@ const Tests = () => {
   return (
     <section className="flex flex-col gap-5.5 lg:max-w-186">
       <header className="flex flex-col gap-3.5">
-        <div className="space-y-1">
-          <p className="text-hint font-extrabold text-faint">{eyebrowText(filter.past, list.length)}</p>
-          <h1 className="text-title text-ink lg:text-hero">Klausuren</h1>
+        <div className="flex items-end justify-between gap-3">
+          <div className="min-w-0 space-y-1">
+            <p className="text-hint font-extrabold text-faint">{eyebrowText(filter.past, list.length)}</p>
+            <h1 className="text-title text-ink lg:text-hero">Klausuren</h1>
+          </div>
+          {addTarget && (
+            <Link to={addTarget} aria-label="Klausur eintragen" className="grid size-9.5 shrink-0 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
+              <Plus className="size-4.25" />
+            </Link>
+          )}
         </div>
         {/* без записів і без фільтра чипам нічого показувати (макет «Klausuren · leer») */}
         {(list.length > 0 || filterActive) && (

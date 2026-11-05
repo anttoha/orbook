@@ -45,7 +45,7 @@ export const useSheet = () => {
 
   // Поточна шторка та її параметри
   const sheet = {
-    name: searchParams.get("sheet"), // "stunde" | "info" | "notiz" | "farbe" | "teilen" | "kalender" | "klausur" | "klausurfilter" | null
+    name: searchParams.get("sheet"), // "stunde" | "info" | "notiz" | "farbe" | "teilen" | "kalender" | "klausur" | "klausurfilter" | "editorcode" | null
     datum: searchParams.get("datum"),
     stunde: searchParams.get("stunde"),
     fach: searchParams.get("fach"),

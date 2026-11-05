@@ -1,10 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "../../shared/utils/cn";
-import { isTabActive } from "../../shared/utils/isTabActive";
+import { isFullScreenPage, isTabActive } from "../../shared/utils/isTabActive";
 import { navTabs } from "../../shared/constants/constants";
 
 const BottomNav = () => {
   const { pathname } = useLocation();
+  if (isFullScreenPage(pathname)) return null; // форма на весь екран: унизу її кнопки
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-10 bg-linear-to-t from-paper to-transparent pt-10 pb-5.5 lg:hidden print:hidden">

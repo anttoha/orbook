@@ -14,6 +14,7 @@ import { planChanges } from "../utils/planDiff";
 //   me       — хто я (GET /api/auth/me): undefined — ще перевіряємо,
 //              null — не увійшли (показуємо «Zugang»), об'єкт — увійшли
 //   meta     — час уроків, свята, назви предметів, serverTime, demo (GET /api/meta)
+//              me.editor — Editor-Code цієї сесії або null (права: canCreate, canEditOwn, canEditAll)
 //   courses  — курси класу для «Meine Kurse» (GET /api/courses)
 //   exams    — найближчі Klausuren (GET /api/exams)
 //   examsState — стан цього списку: { status, savedAt, error }, status як у weeks
@@ -174,6 +175,27 @@ export const usePlanStore = create((set, get) => ({
       pastExamsRequest = null;
     }
   },
+
+  // ── Klausuren змінились (запис, видалення, «Rückgängig», інший код): вони є і в списках, і в плані ──
+  examsChanged: () => {
+    get().loadExams();
+    if (get().pastExams.status !== "idle") get().loadPastExams();
+    get().reloadWeeks();
+  },
+
+  // ── Editor-Code. Сам код ніде не лежить: сервер пам'ятає його за сесією. Помилку показує форма ──
+  unlockEditor: async (code) => {
+    const { editor } = await api("/editor/unlock", { method: "POST", body: { code } });
+    set((s) => ({ me: { ...s.me, editor } }));
+    get().examsChanged(); // canEdit у записах залежить від коду
+  },
+  lockEditor: async () => {
+    await api("/editor/lock", { method: "POST" });
+    get().dropEditor();
+    get().examsChanged();
+  },
+  // Сервер сказав, що коду більше немає (адмін заблокував, строк минув)
+  dropEditor: () => set((s) => ({ me: { ...s.me, editor: null } })),
 
   // ── Тиждень (Mo–Fr), monday — "2026-10-05". silent: не показувати скелет, якщо дані вже є.
   // seen: учень уже подивився новий план, далі порівнюємо вже з цією відповіддю ──

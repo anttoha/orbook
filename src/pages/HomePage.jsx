@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { Toaster } from "sonner";
 import { Check, TriangleAlert } from "lucide-react";
@@ -13,6 +13,8 @@ import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { usePlanPolling } from "../shared/hooks/usePlanPolling";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
+import { cn } from "../shared/utils/cn";
+import { isFullScreenPage } from "../shared/utils/isTabActive";
 
 // ─────────────────────────────────────────────────────────────
 // Оболонка застосунку. Вирішує, що показати:
@@ -29,6 +31,7 @@ const HomePage = () => {
   const tick = usePlanStore((s) => s.tick); // оновити «зараз»
   const demo = usePlanStore((s) => s.meta?.demo); // демо-сервер?
   const coursesChosen = useUserStore((s) => s.coursesChosen); // чи пройдено вибір курсів
+  const fullScreen = isFullScreenPage(useLocation().pathname); // форма: без меню, кнопки притиснуті донизу
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // сповіщення: на телефоні над меню, на ПК внизу праворуч
 
   // Один раз при відкритті: дізнатись, чи ми увійшли
@@ -71,7 +74,7 @@ const HomePage = () => {
       <Container className="min-h-dvh lg:flex lg:gap-9">
         <SideNav />
 
-        <main className="min-w-0 flex-1 pt-6 pb-28 lg:pt-6.5 lg:pr-5 lg:pb-8">
+        <main className={cn("min-w-0 flex-1 pt-6 pb-28 lg:pt-6.5 lg:pr-5 lg:pb-8", fullScreen && "flex min-h-dvh flex-col pb-7.5")}>
           {/* Демо-сервер: плашка, щоб не сплутати зі справжнім планом (на ПК — у сайдбарі) */}
           {demo && <p className="mb-3 w-fit rounded-full bg-tint px-2.5 py-1 text-micro font-extrabold text-accent-ink uppercase lg:hidden">Demo · ausgedachte Daten</p>}
           <Outlet />

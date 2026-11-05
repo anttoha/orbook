@@ -15,7 +15,7 @@
 | 05 | Tag (Liste, Zeitleiste, Stunde, Info zum Tag) + «Stand» | 05–08 | нет | ✅ готово (ПК — в части 12) |
 | 06 | Состояния и офлайн | Zustände | нет | ✅ готово (ПК — в части 12) |
 | 07 | Klausuren: просмотр | 13–15, 36 | нет | ✅ готово (ПК — в части 12) |
-| 08 | Klausuren: запись, Editor-Code | 16–19 | нет | |
+| 08 | Klausuren: запись, Editor-Code | 16–19 | нет | ✅ готово (ПК — в части 12) |
 | 09 | Mehr, Darstellung, Fachfarben, Teilen | 22–28 | нет | |
 | 10 | Statistik | | нет | |
 | 11 | Notizen + Sync | 20–21 | нет | |

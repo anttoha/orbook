@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSheet } from "../../shared/hooks/useSheet";
 import ColorSheet from "./ColorSheet";
 import DayInfoSheet from "./DayInfoSheet";
+import EditorCodeSheet from "./EditorCodeSheet";
 import ExamFilterSheet from "./ExamFilterSheet";
 import ExamSheet from "./ExamSheet";
 import LessonSheet from "./LessonSheet";
@@ -19,6 +20,7 @@ const SHEETS = {
   kalender: WeekPickerSheet, // Woche wählen
   klausur: ExamSheet, // деталі Klausur
   klausurfilter: ExamFilterSheet, // Filter
+  editorcode: EditorCodeSheet, // код посеред запису: форма лишається під вікном
 };
 
 // ─────────────────────────────────────────────────────────────

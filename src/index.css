@@ -220,6 +220,7 @@
 
     /* ── Міжлітерний інтервал бейджів VERTRETUNG, FÄLLT AUS (0.57px при 9.5px) ── */
     --tracking-badge: 0.06em;
+    --tracking-code: 0.05em; /* поле Editor-Code */
 
     /* ── Тіні: значення лежать у --soft-shadow-* (див. :root і .dark нижче).
        Tailwind вставляє значення тіні прямо в клас, тому без var()

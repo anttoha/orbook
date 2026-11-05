@@ -1,4 +1,5 @@
 import { Calendar, Share } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { examIcsUrl } from "../../shared/api/api";
 import { useExam } from "../../shared/hooks/useExams";
 import { usePlanStore } from "../../shared/store/planStore";
@@ -10,7 +11,7 @@ import { fachClasses } from "../../shared/utils/lessons";
 import { examText, shareText } from "../../shared/utils/share";
 import ExamBadge from "../exams/ExamBadge";
 import Button from "../ui/Button";
-import { ShieldIcon } from "../ui/icons";
+import { PencilIcon, ShieldIcon } from "../ui/icons";
 import { Skeleton } from "../ui/PlanState";
 import Sheet from "../ui/Sheet";
 
@@ -40,10 +41,11 @@ const ExamPlaceholder = ({ open, onClose, status, error }) => (
 
 // ─────────────────────────────────────────────────────────────
 // Вікно Klausur. Адреса: ?sheet=klausur&id=12 (посилання можна переслати).
-// «Bearbeiten» з'явиться разом із формою в частині 08.
+// «Bearbeiten» — лише коли ця сесія може міняти запис (exam.canEdit).
 // ─────────────────────────────────────────────────────────────
 const ExamSheet = ({ open, onClose, sheet }) => {
   const { exam, status, error } = useExam(sheet.id);
+  const navigate = useNavigate();
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори предметів
   const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // адмін міг вимкнути «Teilen»
 
@@ -65,16 +67,23 @@ const ExamSheet = ({ open, onClose, sheet }) => {
       hideClose
       icon={<span className={cn("grid size-11 shrink-0 place-items-center rounded-full text-note font-black", fachClasses(exam.subject?.code, overrides))}>{subjectCode(exam.subject)}</span>}
       footer={
-        <>
-          <Button href={examIcsUrl(exam.id)} download>
-            <Calendar className="size-4" /> Kalender
-          </Button>
-          {shareEnabled && (
-            <Button onClick={() => shareText(examText(exam))}>
-              <Share className="size-4" /> Teilen
+        <div className="flex w-full flex-col gap-3.5">
+          <div className="flex gap-2">
+            <Button href={examIcsUrl(exam.id)} download>
+              <Calendar className="size-4" /> Kalender
+            </Button>
+            {shareEnabled && (
+              <Button onClick={() => shareText(examText(exam))}>
+                <Share className="size-4" /> Teilen
+              </Button>
+            )}
+          </div>
+          {exam.canEdit && (
+            <Button variant="primary" className="flex-none" onClick={() => navigate(`/testen/${exam.id}/bearbeiten`)}>
+              <PencilIcon className="size-4" /> Bearbeiten
             </Button>
           )}
-        </>
+        </div>
       }
     >
       <Countdown exam={exam} />

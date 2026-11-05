@@ -7,8 +7,9 @@ import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
 import { EMPTY_FILTER, filterExams, filterSubjects, toggleSubject } from "../../shared/utils/exams";
 import { subjectName } from "../../shared/utils/format";
-import { fachBorderClass, fachClasses, fachDotClass } from "../../shared/utils/lessons";
+import SubjectToggle from "../exams/SubjectToggle";
 import Button from "../ui/Button";
+import Field from "../ui/Field";
 import Segmented from "../ui/Segmented";
 import Sheet from "../ui/Sheet";
 import Switch from "../ui/Switch";
@@ -18,27 +19,6 @@ const RANGES = [
   { value: "month", label: "Monat" },
   { value: "half", label: "Halbjahr" },
 ];
-
-// Підпис і поле під ним
-const Field = ({ label, children }) => (
-  <div>
-    <p className="mb-2.25 text-hint font-extrabold text-faint">{label}</p>
-    {children}
-  </div>
-);
-
-// Предмет у фільтрі: вибраний — у своєму кольорі з рамкою
-const SubjectToggle = ({ subject, selected, overrides, onClick }) => (
-  <button
-    type="button"
-    aria-pressed={selected}
-    onClick={onClick}
-    className={cn("flex h-9 items-center gap-1.75 rounded-full border px-3 text-label font-bold text-ink", selected ? cn(fachClasses(subject.code, overrides), fachBorderClass(subject.code, overrides), "text-ink") : "border-rule")}
-  >
-    <span className={cn("size-2 rounded-full", fachDotClass(subject.code, overrides))} />
-    {subjectName(subject)}
-  </button>
-);
 
 // ─────────────────────────────────────────────────────────────
 // Вікно фільтра. Адреса: ?sheet=klausurfilter.
@@ -109,7 +89,8 @@ const ExamFilterSheet = ({ open, onClose }) => {
             {subjects.map((subject) => (
               <SubjectToggle
                 key={subject.code}
-                subject={subject}
+                code={subject.code}
+                label={subjectName(subject)}
                 overrides={overrides}
                 selected={draft.subjects.includes(subject.code)}
                 onClick={() => change({ subjects: toggleSubject(draft.subjects, subject.code) })}

@@ -16,3 +16,15 @@ export const FilterIcon = ({ className }) => <Outline d="M4 5h16l-6 8v6l-4-2v-4z
 
 // «Nur Fach, Datum, Stunde und Thema»: щит
 export const ShieldIcon = ({ className }) => <Outline d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z" className={className} />;
+
+// Editor-Code: ключ (кружечок і стрижень)
+export const KeyIcon = ({ className }) => <Outline d="M8 11a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM11 12l9-9M17 6l3 3" className={className} />;
+
+// «Löschen»: кошик
+export const TrashIcon = ({ className }) => <Outline d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" className={className} />;
+
+// «Speichern»: галочка
+export const CheckIcon = ({ className }) => <Outline d="M5 12l5 5 9-10" className={className} />;
+
+// «Bearbeiten»: олівець
+export const PencilIcon = ({ className }) => <Outline d="M4 20h4L19 9l-4-4L4 16v4z" className={className} />;
