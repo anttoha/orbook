@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { cn } from "../../../shared/utils/cn";
-import { dayNumber, examWhen, subjectName, weekdayShort } from "../../../shared/utils/format";
-import { fachClasses } from "../../../shared/utils/lessons";
+import { examWhen, subjectName } from "../../../shared/utils/format";
+import ExamBadge from "../../exams/ExamBadge";
+import ExamDateTile from "../../exams/ExamDateTile";
 
 // ─────────────────────────────────────────────────────────────
 // Картка Klausur у правій колонці (макет «Nächste Klausuren»):
@@ -11,24 +12,16 @@ import { fachClasses } from "../../../shared/utils/lessons";
 // highlight — найближча: фіолетова рамка і фіолетове «in 2 Tagen»
 // ─────────────────────────────────────────────────────────────
 const ExamCard = ({ exam, overrides, highlight }) => {
-  const isKlausur = exam.type === "Klausur"; // Klausur — фіолетовий бейдж, Test/Abgabe — пісочний
-
   return (
     <Link
       to={`/tag/${exam.date}`}
       className={cn("flex items-center gap-3 rounded-box bg-card p-3 transition-shadow hover:shadow-raise", highlight && "ring-[1.5px] ring-accent")}
     >
-      {/* дата в кольорі предмета */}
-      <span className={cn("flex h-11 w-9.5 shrink-0 flex-col items-center justify-center rounded-tile", fachClasses(exam.subject.code, overrides))}>
-        <span className="text-cell leading-none font-black">{dayNumber(exam.date)}</span>
-        <span className="mt-0.5 text-tiny font-extrabold uppercase">{weekdayShort(exam.date)}</span>
-      </span>
+      <ExamDateTile exam={exam} overrides={overrides} />
 
       <span className="min-w-0 flex-1">
         <span className="flex items-center gap-1.5">
-          <span className={cn("rounded-full px-2 py-0.75 text-micro leading-none font-extrabold tracking-wide uppercase", isKlausur ? "bg-accent text-on-accent" : "bg-sand text-muted")}>
-            {exam.type}
-          </span>
+          <ExamBadge type={exam.type} />
           <span className="truncate text-caption font-semibold text-faint">
             {subjectName(exam.subject)}
             {exam.lesson && ` · ${exam.lesson}. Std`}

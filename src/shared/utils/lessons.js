@@ -29,6 +29,10 @@ export const fachClasses = (code, overrides) => PALETTES[paletteOf(code, overrid
 // Тільки колір тексту предмета: заголовок у вікні уроку
 export const fachTextClass = (code, overrides) => PALETTES[paletteOf(code, overrides)].text;
 
+// Крапка предмета і рамка вибраного предмета: чипи на екрані Klausuren
+export const fachDotClass = (code, overrides) => PALETTES[paletteOf(code, overrides)].solid;
+export const fachBorderClass = (code, overrides) => PALETTES[paletteOf(code, overrides)].border;
+
 // Унікальний ключ уроку в межах дня (у одного period буває кілька уроків — паралельні курси)
 export const lessonKey = (lesson) => `${lesson.period}-${lesson.subject?.code ?? ""}-${lesson.course?.nr ?? ""}`;
 

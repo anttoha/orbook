@@ -20,6 +20,11 @@
   text-box: trim-both cap alphabetic;
 }
 
+/* Ряд чипів гортається пальцем, смуга прокрутки в ньому зайва */
+@utility no-scrollbar {
+  scrollbar-width: none;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
@@ -43,6 +48,7 @@
        │ text-lobby   │ 40/900│ «Klasse öffnen» (ПК)                 │
        │ text-hero    │ 38/900│ заголовок сторінки на ПК             │
        │ text-welcome │ 36/900│ «Anmelden» на ПК                     │
+       │ text-countdown│ 46/900│ число днів у вікні Klausur          │
        │ text-stat    │ 32/900│ великі числа в статистиці            │
        │ text-sheet   │ 30/900│ заголовок панелі справа на ПК        │
        │ text-title   │ 29/900│ заголовок сторінки на телефоні       │
@@ -93,6 +99,10 @@
     --text-welcome--line-height: 1.15;
     --text-welcome--font-weight: 900;
     --text-welcome--letter-spacing: -0.015em;
+    --text-countdown: 46px;
+    --text-countdown--line-height: 1;
+    --text-countdown--font-weight: 900;
+    --text-countdown--letter-spacing: -0.015em;
     --text-stat: 32px;
     --text-stat--line-height: 1.15;
     --text-stat--font-weight: 900;

@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useSheet } from "../../shared/hooks/useSheet";
 import ColorSheet from "./ColorSheet";
 import DayInfoSheet from "./DayInfoSheet";
+import ExamFilterSheet from "./ExamFilterSheet";
+import ExamSheet from "./ExamSheet";
 import LessonSheet from "./LessonSheet";
 import NoteSheet from "./NoteSheet";
 import ShareSheet from "./ShareSheet";
@@ -15,6 +17,8 @@ const SHEETS = {
   farbe: ColorSheet, // Fachfarbe ändern
   teilen: ShareSheet, // Teilen
   kalender: WeekPickerSheet, // Woche wählen
+  klausur: ExamSheet, // деталі Klausur
+  klausurfilter: ExamFilterSheet, // Filter
 };
 
 // ─────────────────────────────────────────────────────────────

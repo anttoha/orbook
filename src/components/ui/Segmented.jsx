@@ -4,9 +4,12 @@ import { cn } from "../../shared/utils/cn";
 // Перемикач «Liste | Zeitleiste», «Heute | Morgen | Woche».
 // options: [{ value, label, icon? }], value — вибране, onChange(value)
 // variant: "card" — вибраний білий (телефон), "accent" — вибраний фіолетовий (ПК)
-// size: "md" — уся смуга 38px, "sm" — 34px (компактний, як у шапці на ПК)
+// size: "md" — уся смуга 38px, "form" — 35px (вікно фільтра), "sm" — 34px (компактний, як у шапці на ПК)
 // iconOnly — показувати тільки іконки (підпис іде в aria-label)
 // ─────────────────────────────────────────────────────────────
+// Висота кнопки і текст для кожного розміру
+const SIZES = { md: "h-8 px-3 text-hint", form: "h-7.25 px-3 text-hint", sm: "h-7 px-3 text-label" };
+
 const Segmented = ({ options, value, onChange, label, className, variant = "card", size = "md", iconOnly = false }) => {
   return (
     // role="group" + aria-label — скрінрідер прочитає, що це за перемикач
@@ -23,7 +26,7 @@ const Segmented = ({ options, value, onChange, label, className, variant = "card
             onClick={() => onChange(option.value)}
             className={cn(
               "flex flex-1 items-center justify-center gap-1.5 rounded-full font-extrabold whitespace-nowrap transition-colors",
-              size === "sm" ? "h-7 px-3 text-label" : "h-8 px-3 text-hint",
+              SIZES[size],
               active
                 ? variant === "accent"
                   ? "bg-accent text-on-accent" // ПК: фіолетова «пігулка»

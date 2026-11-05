@@ -10,3 +10,9 @@ export const TimelineIcon = ({ className }) => <Outline d="M4 4v16M4 7h9M4 12h14
 
 // Klausur: прямий прапорець
 export const FlagIcon = ({ className }) => <Outline d="M5 21V4h12l-2 4 2 4H5" className={className} />;
+
+// Кнопка фільтра: воронка
+export const FilterIcon = ({ className }) => <Outline d="M4 5h16l-6 8v6l-4-2v-4z" className={className} />;
+
+// «Nur Fach, Datum, Stunde und Thema»: щит
+export const ShieldIcon = ({ className }) => <Outline d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z" className={className} />;

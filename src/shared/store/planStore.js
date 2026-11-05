@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { toast } from "sonner";
 import { api, retryText, setUnauthorizedHandler } from "../api/api";
 import { cache, loadWithCache } from "../api/offlineCache";
+import { freshenExams, withDaysLeft } from "../utils/exams";
+import { daysBetween } from "../utils/format";
 import { berlinParts, createSchoolClock } from "../utils/lessonClock";
 import { currentMonday } from "../utils/lessons";
 import { planChanges } from "../utils/planDiff";
@@ -14,6 +16,8 @@ import { planChanges } from "../utils/planDiff";
 //   meta     — час уроків, свята, назви предметів, serverTime, demo (GET /api/meta)
 //   courses  — курси класу для «Meine Kurse» (GET /api/courses)
 //   exams    — найближчі Klausuren (GET /api/exams)
+//   examsState — стан цього списку: { status, savedAt, error }, status як у weeks
+//   pastExams  — минулі Klausuren: { status, exams, savedAt, error }, вантажаться лише на вимогу
 //   status   — стан плану: «Stand 07:12», stale (GET /api/plan/status)
 //   weeks    — завантажені тижні: { "2026-10-05": { status, data, savedAt, error } }
 //              status: "loading" | "ready" | "offline" | "unavailable" | "error"
@@ -27,6 +31,12 @@ import { planChanges } from "../utils/planDiff";
 // ─────────────────────────────────────────────────────────────
 
 let statusRequest = null; // запит /plan/status, що зараз виконується
+// Запити Klausuren, що зараз виконуються: екран і старт просять їх одночасно, запит потрібен один
+let examsRequest = null;
+let pastExamsRequest = null;
+// Скільки днів тому збережено відповідь. Обидва моменти — за годинником пристрою
+const daysSince = (savedAt) => daysBetween(berlinParts(new Date(savedAt)).date, berlinParts(new Date()).date);
+const NO_PAST_EXAMS = { status: "idle", exams: [], savedAt: null, error: null };
 
 // Який lastChangeAt учень уже бачив (між запусками). Сховище може бути заборонене: тоді просто без пам'яті
 const SEEN_KEY = "orbook.seenChange";
@@ -60,6 +70,8 @@ export const usePlanStore = create((set, get) => ({
   courses: [],
   coursesStatus: "loading", // "loading" | "ready" | "error": екрану курсів треба відрізняти «ще вантажимо» від «порожньо»
   exams: [],
+  examsState: { status: "loading", savedAt: null, error: null },
+  pastExams: NO_PAST_EXAMS,
   status: null,
   weeks: {},
   clock: createSchoolClock(null), // поки meta немає — звичайний час пристрою
@@ -94,7 +106,7 @@ export const usePlanStore = create((set, get) => ({
     cache.clearAll(); // кеш відповідей особистий — стираємо
     seenChange.save(null);
     seenWeeks = {};
-    set({ me: null, meta: null, courses: [], coursesStatus: "loading", exams: [], status: null, weeks: {}, newPlan: null, lastStandShown: false });
+    set({ me: null, meta: null, courses: [], coursesStatus: "loading", exams: [], examsState: { status: "loading", savedAt: null, error: null }, pastExams: NO_PAST_EXAMS, status: null, weeks: {}, newPlan: null, lastStandShown: false });
   },
 
   // ── Після входу: паралельно meta, курси, Klausuren, стан плану ──
@@ -115,7 +127,7 @@ export const usePlanStore = create((set, get) => ({
         set({ meta: data, clock, now: clock.now() });
       }),
       get().loadCourses(),
-      load("exams", "/exams", ({ data }) => set({ exams: data.exams })),
+      get().loadExams(),
       load("status", "/plan/status", ({ data }) => set({ status: data })),
     ]);
     // Після meta: «сьогодні» вже за годинником школи
@@ -130,6 +142,36 @@ export const usePlanStore = create((set, get) => ({
       set({ courses: data?.courses ?? [], coursesStatus: "ready" });
     } catch {
       set({ coursesStatus: "error" });
+    }
+  },
+
+  // ── Найближчі Klausuren. Старий список лишається на екрані, поки йде запит ──
+  loadExams: async () => {
+    if (examsRequest) return;
+    if (get().examsState.status === "error") set({ examsState: { status: "loading", savedAt: null, error: null } });
+    try {
+      examsRequest = loadWithCache("exams", () => api("/exams"));
+      const { data, fromCache, status, savedAt, error } = await examsRequest;
+      set({ exams: fromCache ? freshenExams(data.exams, daysSince(savedAt)) : data.exams, examsState: { status, savedAt, error: error ?? null } });
+    } catch (error) {
+      set({ examsState: { status: "error", savedAt: null, error } });
+    } finally {
+      examsRequest = null;
+    }
+  },
+
+  // ── Минулі Klausuren: лише коли учень увімкнув «Vergangene anzeigen» ──
+  loadPastExams: async () => {
+    if (pastExamsRequest) return;
+    if (get().pastExams.exams.length === 0) set({ pastExams: { ...NO_PAST_EXAMS, status: "loading" } });
+    try {
+      pastExamsRequest = loadWithCache("exams:past", () => api("/exams?past=true"));
+      const { data, fromCache, status, savedAt, error } = await pastExamsRequest;
+      set({ pastExams: { status, exams: fromCache ? withDaysLeft(data.exams, daysSince(savedAt)) : data.exams, savedAt, error: error ?? null } });
+    } catch (error) {
+      set({ pastExams: { ...NO_PAST_EXAMS, status: "error", error } });
+    } finally {
+      pastExamsRequest = null;
     }
   },
 

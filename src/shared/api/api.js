@@ -35,6 +35,9 @@ export function setAdminUnauthorizedHandler(fn) {
 // Заголовок для PATCH/DELETE Klausur: версія з останньої відповіді (поле version)
 export const ifMatch = (version) => ({ "If-Match": `"v${version}"` });
 
+// Файл календаря для однієї Klausur: кнопка-посилання, cookie браузер надішле сам
+export const examIcsUrl = (id) => `/api/exams/${id}.ics`;
+
 // Головна функція: await api("/week?date=2026-10-05")
 //                  await api("/auth/login", { method: "POST", body: { password } })
 // conditional: true — частий опит. Самі шлемо If-None-Match і вимикаємо кеш браузера:

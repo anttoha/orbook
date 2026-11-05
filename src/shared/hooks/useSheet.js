@@ -45,13 +45,13 @@ export const useSheet = () => {
 
   // Поточна шторка та її параметри
   const sheet = {
-    name: searchParams.get("sheet"), // "stunde" | "info" | "notiz" | "farbe" | "teilen" | "kalender" | null
+    name: searchParams.get("sheet"), // "stunde" | "info" | "notiz" | "farbe" | "teilen" | "kalender" | "klausur" | "klausurfilter" | null
     datum: searchParams.get("datum"),
     stunde: searchParams.get("stunde"),
     fach: searchParams.get("fach"),
     bereich: searchParams.get("bereich"),
     kw: searchParams.get("kw"), // понеділок тижня для «kalender» і «teilen» (не плутати з ?woche= у сторінки тижня)
-    id: searchParams.get("id"),
+    id: searchParams.get("id"), // номер Klausur для «klausur»
   };
 
   return { sheet, openSheet, closeSheet };

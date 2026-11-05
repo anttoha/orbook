@@ -199,8 +199,8 @@ export function weekSummaryText(summary) {
   return parts.length ? parts.join(" · ") : "Keine Änderungen";
 }
 
-// Коли Klausur: до 14 днів — «in 2 Tagen», далі — «1. Okt»
-export const examWhen = (exam) => (exam.daysLeft <= 14 ? daysLeftText(exam.daysLeft) : shortDate(exam.date));
+// Коли Klausur: до 14 днів в обидва боки — «in 2 Tagen», «vor 3 Tagen», далі — «1. Okt»
+export const examWhen = (exam) => (Math.abs(exam.daysLeft) <= 14 ? daysLeftText(exam.daysLeft) : shortDate(exam.date));
 
 // Абзаци «Info zum Tag»: порожній рядок у day.info = розрив абзацу
 export function infoParagraphs(info) {

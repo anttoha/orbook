@@ -41,6 +41,14 @@ export async function shareText(text) {
   await copyText(text);
 }
 
+// Текст про Klausur (кнопка «Teilen» у її вікні) — готується на пристрої, без імен
+export function examText(exam) {
+  const [, month, day] = exam.date.split("-");
+  const lesson = exam.lesson ? `, ${exam.lesson}. Std` : "";
+  const topic = exam.topic ? `\n${exam.topic}` : "";
+  return `${exam.type} ${subjectName(exam.subject)} am ${day}.${month}.${lesson}${topic}\n\nvia ORBook`;
+}
+
 // Текст про один урок (кнопка «Teilen» у шторці уроку і в меню) — готується на пристрої.
 // Без імен — лише предмет, час, кабінет і що змінилось.
 export function lessonText(lesson, dateIso) {
