@@ -12,7 +12,7 @@
 ## Как проверять экраны за входом
 Пароль класса демо есть только у владельца, поэтому экраны за входом проверяются локально, на подставных ответах API. На самом демо без пароля виден только экран входа и Datenschutz.
 
-1. `npm run build`, затем `npx vite preview --port 4173 --strictPort`.
+1. `npm run build`, затем `npx vite preview --port 4179 --strictPort`. Порт 4173 на `127.0.0.1` занят чужим сервисом другого проекта, его не трогать. Адрес страницы в скриптах: `http://localhost:4179`.
 2. Скопировать `tools/screens/` во временную папку вне репозитория и там выполнить `npm init -y` и `NODE_ENV=development npm i playwright-core`. Браузер уже есть в `~/.cache/ms-playwright`, тяжёлый пакет не нужен.
 3. `mock.mjs`: `open(browser, { width, height, theme, storage: chosen, api })` открывает страницу с той же CSP, что на сервере, и подставляет ответы по образцу `docs/API.md`. `side.mjs` ставит картинки рядом (PIL и ImageMagick на сервере нет).
 
