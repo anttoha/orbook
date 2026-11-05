@@ -37,7 +37,7 @@ src/
 - Sync-шифрование — только эталон `/opt/orbook-be/docs/examples/sync-crypto.mjs`, не переписывать.
 - `useEffect` — только когда правда нужно, с очисткой.
 - На каждом маршруте `errorElement` с немецким текстом «Etwas ist schiefgelaufen».
-- Под каждым днём мелкая серая строка из `changedAt` (иначе `publishedAt`): в тот же день «geändert 07:06», в другой «geändert Mi 20:01» (`changedText`). В шапке «aktualisiert vor N Min.» из `fetchedAt`. Ненавязчиво.
+- В плашке дня второй строкой под датой, с маленькой иконкой обновления: время из `changedAt` (иначе `publishedAt`), в тот же день «07:08», раньше «Mi 15:15» (`changedLabel`). Цвет `text-faint`, на сегодняшнем дне `text-on-accent/70`. Место под строку зарезервировано, высота плашки фиксированная. В шапке недели «aktualisiert vor N Min.» из `fetchedAt`. Подробности («Plan geändert», «Veröffentlicht», «Zuletzt geprüft») — в окне «Info zum Tag».
 - Опрос `/api/plan/status` каждые 10 секунд, только пока вкладка видима (`usePlanPolling`, `conditional: true` в `api`): при 304 ничего не перерисовываем.
 
 ## Проверки

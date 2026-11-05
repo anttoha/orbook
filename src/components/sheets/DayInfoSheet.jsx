@@ -3,6 +3,7 @@ import { useDay } from "../../shared/hooks/usePlan";
 import { useSheet } from "../../shared/hooks/useSheet";
 import { cn } from "../../shared/utils/cn";
 import { infoParagraphs, longDate, weekdayLong } from "../../shared/utils/format";
+import DayPlanDetails from "./DayPlanDetails";
 import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
 
@@ -14,7 +15,7 @@ const DayInfoSheet = ({ open, onClose, sheet }) => {
   const { openSheet } = useSheet(); // «Teilen» відкриває шторку Teilen
   const { day } = useDay(sheet.datum); // день із тижня
 
-  if (!day?.info.length) return null; // інформації немає — нічого показувати
+  if (!day) return null; // день ще не завантажено
   const paragraphs = infoParagraphs(day.info); // абзаци (порожній рядок = новий абзац)
 
   return (
@@ -43,6 +44,7 @@ const DayInfoSheet = ({ open, onClose, sheet }) => {
       <p className="flex items-center gap-2 rounded-field bg-sand px-3.5 py-3 text-caption font-bold text-muted lg:text-label lg:font-medium">
         <Info className="size-4 shrink-0" /> Aus dem Vertretungsplan der Schule{day.publishedAt && `, Stand ${day.publishedAt.slice(11, 16)}`}.
       </p>
+      <DayPlanDetails day={day} />
     </Sheet>
   );
 };

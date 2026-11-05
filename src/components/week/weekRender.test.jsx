@@ -7,21 +7,27 @@ import { existsSync, readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import process from "node:process";
 import WeekGrid from "./WeekGrid";
 import WeekUpdated from "./WeekUpdated";
 import PeriodGrid from "./desktop/PeriodGrid";
 import TimeGrid from "./desktop/TimeGrid";
 import WeekAside from "./desktop/WeekAside";
+import DayPlanDetails from "../sheets/DayPlanDetails";
 import LessonList from "../day/LessonList";
 import Timeline from "../day/Timeline";
 import { hardLessons, hardWeek } from "./weekFixture";
-import { usePlanStore } from "../../shared/store/planStore";
-import { createSchoolClock } from "../../shared/utils/lessonClock";
 import { lessonState } from "../../shared/utils/lessonClock";
 import { lessonText } from "../../shared/utils/share";
 import { visibleLessons } from "../../shared/utils/format";
+
+// Без браузера Zustand всегда отдаёт начальное состояние стора, setState в рисунок не попадает.
+// Поэтому «сейчас» задаём здесь: понедельник из weekFixture, идёт урок (рисуется и линия времени).
+const NOW = new Date("2026-11-02T09:00:00+01:00");
+vi.mock("../../shared/hooks/useNow", () => ({
+  useNow: () => ({ now: new Date("2026-11-02T09:00:00+01:00"), today: "2026-11-02" }),
+}));
 
 const draw = (element) => renderToStaticMarkup(
   <MemoryRouter>
@@ -50,29 +56,28 @@ const drawDay = (day) => {
   ].join("");
 };
 
-const setNow = (iso) => {
-  const clock = createSchoolClock(iso);
-  usePlanStore.setState({ clock, now: clock.now(), courses: [], exams: [], meta: { lessonTimes: [], holidays: [], subjects: {} } });
-};
-
 describe("неделя и день со сложными уроками", () => {
   it("неделя рисуется на телефоне и на ПК", () => {
-    setNow("2026-11-02T09:00:00+01:00");
     const html = drawWeek(hardWeek.days);
     expect(html).toContain("fällt aus"); // cancelled
     expect(html).toContain("–"); // код урока без предмета
     expect(html).toContain("AGTan"); // subject.name = null
-    expect(html).toContain("geändert 07:08"); // строка под днём
+    expect(html).toContain("07:08"); // когда изменился план: тот же день
+    expect(html).toContain("Mo 07:08"); // …и другой день
   });
 
   it("день рисуется списком и временной шкалой", () => {
-    setNow("2026-11-02T09:00:00+01:00");
     for (const day of hardWeek.days) expect(drawDay(day)).toBeTypeOf("string");
   });
 
+  it("подробности плана: три строки, у пустых прочерк", () => {
+    const html = draw(<DayPlanDetails day={hardWeek.days[0]} />);
+    for (const label of ["Plan geändert", "Veröffentlicht", "Zuletzt geprüft", "heute 07:08", "heute 07:06", "heute 13:00"]) expect(html).toContain(label);
+    expect(draw(<DayPlanDetails day={{ ...hardWeek.days[0], changedAt: null, publishedAt: null, fetchedAt: null }} />).match(/—/g)).toHaveLength(3);
+  });
+
   it("логика вокруг уроков не падает на null", () => {
-    const now = new Date("2026-11-02T09:00:00+01:00");
-    expect(lessonState(hardLessons, now)).toBeTruthy();
+    expect(lessonState(hardLessons, NOW)).toBeTruthy();
     expect(visibleLessons(hardLessons, [{ nr: "141", optional: true }], new Set(["999"])).length).toBeGreaterThan(0);
     for (const lesson of hardLessons) expect(lessonText(lesson, "2026-11-02")).toContain("Std");
   });
@@ -84,15 +89,11 @@ const realFile = (name) => JSON.parse(readFileSync(`${realDir}/${name}`, "utf8")
 
 describe.skipIf(!realDir || !existsSync(`${realDir}/weeks.json`))("настоящие данные прода", () => {
   it("все недели и дни рисуются без ошибок", () => {
-    const { meta, courses } = realFile("base.json");
-    const clock = createSchoolClock(meta.serverTime);
-    usePlanStore.setState({ clock, now: clock.now(), meta, courses: courses.courses, exams: [] });
-
     for (const week of Object.values(realFile("weeks.json"))) expect(drawWeek(week.days)).toContain("<");
     for (const day of Object.values(realFile("days.json"))) {
       expect(drawDay(day)).toBeTypeOf("string");
       for (const lesson of [...day.lessons, ...day.expectedLessons]) expect(lessonText(lesson, day.date)).toContain("Std");
-      lessonState(day.lessons, clock.now());
+      lessonState(day.lessons, NOW);
     }
   });
 });

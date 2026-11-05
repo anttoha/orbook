@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { changedText, standText, subjectCode, subjectName, updatedAgoText } from "./format";
+import { changedLabel, planMomentText, standText, subjectCode, subjectName, updatedAgoText } from "./format";
 
 describe("standText", () => {
   it("сегодня, вчера и другой день", () => {
@@ -47,24 +47,38 @@ describe("предмет может быть null", () => {
   });
 });
 
-describe("changedText", () => {
-  const day = { date: "2026-11-05", status: "ok", changedAt: "2026-11-05T07:06:00+01:00", publishedAt: "2026-11-04T20:01:00+01:00" };
+describe("changedLabel", () => {
+  const day = { date: "2026-11-05", status: "ok", changedAt: "2026-11-05T07:08:00+01:00", publishedAt: "2026-11-04T20:01:00+01:00" };
 
   it("в тот же день: только время", () => {
-    expect(changedText(day)).toBe("geändert 07:06");
+    expect(changedLabel(day)).toBe("07:08");
   });
 
-  it("в другой день: день недели и время", () => {
-    expect(changedText({ ...day, changedAt: "2026-11-04T20:01:00+01:00" })).toBe("geändert Mi 20:01");
+  it("раньше: день недели и время", () => {
+    expect(changedLabel({ ...day, changedAt: "2026-11-04T15:15:00+01:00" })).toBe("Mi 15:15");
   });
 
   it("changedAt = null: берём publishedAt", () => {
-    expect(changedText({ ...day, changedAt: null })).toBe("geändert Mi 20:01");
+    expect(changedLabel({ ...day, changedAt: null })).toBe("Mi 20:01");
   });
 
   it("нет времени или плана: строки нет", () => {
-    expect(changedText({ ...day, changedAt: null, publishedAt: null })).toBeNull();
-    expect(changedText({ ...day, status: "not_published" })).toBeNull();
-    expect(changedText(null)).toBeNull();
+    expect(changedLabel({ ...day, changedAt: null, publishedAt: null })).toBeNull();
+    expect(changedLabel({ ...day, status: "not_published" })).toBeNull();
+    expect(changedLabel(null)).toBeNull();
+  });
+});
+
+describe("planMomentText", () => {
+  const today = "2026-11-05";
+
+  it("сегодня, вчера и другой день", () => {
+    expect(planMomentText("2026-11-05T07:08:00+01:00", today)).toBe("heute 07:08");
+    expect(planMomentText("2026-11-04T18:30:00+01:00", today)).toBe("gestern 18:30");
+    expect(planMomentText("2026-11-02T15:15:00+01:00", today)).toBe("Mo, 2.11. 15:15");
+  });
+
+  it("null: прочерк", () => {
+    expect(planMomentText(null, today)).toBe("—");
   });
 });

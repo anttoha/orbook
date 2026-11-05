@@ -96,15 +96,25 @@ export function standText(moment, nowIso) {
   return `Stand von ${numericDate(day)} ${time}`;
 }
 
-// Рядок під днем: коли план цього дня востаннє змінився.
-// Той самий день — «geändert 07:06», інший — «geändert Mi 20:01». Дати в API — час школи (+01:00),
+// Другий рядок у плашці дня: коли план цього дня востаннє змінився.
+// Той самий день — «07:08», інший — «Mi 15:15». Дати в API вже в часі школи (+01:00),
 // тому беремо їх із рядка, а не через Date. Немає плану або часу — null.
-export function changedText(day) {
+export function changedLabel(day) {
   const moment = day?.changedAt ?? day?.publishedAt;
   if (!moment || day.status !== "ok") return null;
   const date = moment.slice(0, 10);
   const time = moment.slice(11, 16);
-  return date === day.date ? `geändert ${time}` : `geändert ${weekdayShort(date)} ${time}`;
+  return date === day.date ? time : `${weekdayShort(date)} ${time}`;
+}
+
+// Час у вікні «Info zum Tag»: «heute 07:08», «gestern 18:30», «Mi, 4.11. 15:15». null → «—»
+export function planMomentText(moment, today) {
+  if (!moment) return "—";
+  const date = moment.slice(0, 10);
+  const time = moment.slice(11, 16);
+  if (date === today) return `heute ${time}`;
+  if (date === addDays(today, -1)) return `gestern ${time}`;
+  return `${weekdayShort(date)}, ${numericDate(date)} ${time}`;
 }
 
 // «aktualisiert vor 3 Min.»: коли сервер востаннє перевіряв план.
