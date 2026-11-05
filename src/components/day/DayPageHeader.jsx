@@ -29,7 +29,7 @@ const DayPageHeader = ({ date, today, search = "" }) => {
           {weekdayLong(date)}
           {word && ` · ${word}`}
         </p>
-        <h1 className="truncate text-[27px] leading-[1.1] font-black text-ink">{longDate(date)}</h1>
+        <h1 className="truncate text-title text-ink">{longDate(date)}</h1>
       </div>
 
       {/* гортати дні (вихідні та канікули пропускаються) */}

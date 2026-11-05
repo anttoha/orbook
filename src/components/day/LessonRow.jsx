@@ -91,7 +91,7 @@ const LessonRow = ({ lesson, exam, date, isPast, live, note, overrides, onOpen, 
       onClick={onOpen}
       disabled={!onOpen}
       className={cn(
-        "relative flex w-full gap-4 overflow-hidden rounded-[18px] px-3.5 py-3 text-left transition-shadow outline-none select-none hover:shadow-md focus-visible:ring-2 focus-visible:ring-accent/60",
+        "relative flex w-full gap-4 overflow-hidden rounded-box px-3.5 py-3 text-left transition-shadow outline-none select-none hover:shadow-raise focus-visible:ring-2 focus-visible:ring-accent/60",
         colors,
         live && "pb-4.5", // місце під смужку прогресу
         isPast && "opacity-50",
@@ -107,12 +107,12 @@ const LessonRow = ({ lesson, exam, date, isPast, live, note, overrides, onOpen, 
       type="button"
       onClick={onOpen}
       disabled={!onOpen}
-      className="flex w-full gap-3 rounded-2xl text-left outline-none select-none [-webkit-touch-callout:none] focus-visible:ring-2 focus-visible:ring-accent/60"
+      className="flex w-full gap-3 rounded-field text-left outline-none select-none [-webkit-touch-callout:none] focus-visible:ring-2 focus-visible:ring-accent/60"
     >
       {time}
       <div
         className={cn(
-          "relative flex min-w-0 flex-1 overflow-hidden rounded-2xl px-3.5 py-3",
+          "relative flex min-w-0 flex-1 overflow-hidden rounded-field px-3.5 py-3",
           colors,
           isChanged && "ring-2 ring-accent ring-inset", // рамка у зміни
           live && "ring-2 ring-accent", // урок, що йде, теж виділяємо

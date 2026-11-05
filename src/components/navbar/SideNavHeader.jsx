@@ -9,13 +9,13 @@ const SideNavHeader = ({ isHidden, onChangeIsHidden }) => {
   const demo = usePlanStore((s) => s.meta?.demo); // демо-сервер з вигаданими даними
 
   return (
-    <header className="flex h-[43px] w-full shrink-0 items-center">
+    <header className="flex h-10.75 w-full shrink-0 items-center">
       {/* логотип + клас; при згортанні плавно від'їжджають (max-width → 0) */}
       <div
         className={cn(
           "flex min-w-0 items-center gap-2.25 overflow-hidden whitespace-nowrap",
           "transition-[max-width,opacity] duration-300 ease-out",
-          isHidden ? "max-w-0 opacity-0" : "max-w-[180px] opacity-100",
+          isHidden ? "max-w-0 opacity-0" : "max-w-45 opacity-100",
         )}
         aria-hidden={isHidden}
       >
@@ -29,7 +29,7 @@ const SideNavHeader = ({ isHidden, onChangeIsHidden }) => {
         type="button"
         onClick={() => onChangeIsHidden((prev) => !prev)}
         aria-label={isHidden ? "Seitenleiste ausklappen" : "Seitenleiste einklappen"}
-        className="ml-auto grid size-[43px] shrink-0 cursor-pointer place-items-center rounded-full text-faint transition-colors hover:bg-sand"
+        className="ml-auto grid size-10.75 shrink-0 cursor-pointer place-items-center rounded-full text-faint transition-colors hover:bg-sand"
       >
         <PanelLeft className="size-4.5" />
       </button>

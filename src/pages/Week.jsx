@@ -77,7 +77,7 @@ const Week = () => {
   // Сітка або її стан: скелет / помилка
   const gridState = (grid) => {
     if (week.status === "error") return <PlanError resource={week} onRetry={reload} />;
-    if (!days) return <Skeleton className={isDesktop ? "h-[560px]" : "h-[420px]"} />;
+    if (!days) return <Skeleton className={isDesktop ? "h-140" : "h-105"} />;
     return grid;
   };
 
@@ -151,7 +151,7 @@ const Week = () => {
       {/* клік по уроку → шторка уроку; клік по дню — посилання всередині сітки */}
       {gridState(<WeekGrid days={days} onLessonClick={openLesson} />)}
 
-      <div className="flex flex-col divide-y divide-hair rounded-[22px] bg-card px-3.5 text-faint">
+      <div className="flex flex-col divide-y divide-hair rounded-card bg-card px-3.5 text-faint">
         {/* найближча Klausur → сторінка цього дня */}
         {nextExam && (
           <Link to={`/tag/${nextExam.date}`} className="flex items-center gap-3 py-2">

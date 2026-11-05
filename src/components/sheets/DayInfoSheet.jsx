@@ -40,7 +40,7 @@ const DayInfoSheet = ({ open, onClose, sheet }) => {
         ))}
       </div>
       {/* звідки інформація: «Stand 11:26» — коли школа опублікувала план */}
-      <p className="flex items-center gap-2 rounded-2xl bg-sand px-3.5 py-3 text-caption font-bold text-muted lg:text-label lg:font-medium">
+      <p className="flex items-center gap-2 rounded-field bg-sand px-3.5 py-3 text-caption font-bold text-muted lg:text-label lg:font-medium">
         <Info className="size-4 shrink-0" /> Aus dem Vertretungsplan der Schule{day.publishedAt && `, Stand ${day.publishedAt.slice(11, 16)}`}.
       </p>
     </Sheet>

@@ -71,7 +71,7 @@ const LessonSheet = ({ open, onClose, sheet }) => {
       }
     >
       {/* dl — список «назва: значення» */}
-      <dl className="divide-y divide-hair rounded-2xl bg-card px-4 lg:rounded-none lg:bg-transparent lg:px-0">
+      <dl className="divide-y divide-hair rounded-field bg-card px-4 lg:rounded-none lg:bg-transparent lg:px-0">
         {lesson.status === "cancelled" ? (
           <Row label="Status">fällt aus</Row>
         ) : (
@@ -91,7 +91,7 @@ const LessonSheet = ({ open, onClose, sheet }) => {
 
       {/* своя нотатка до уроку, якщо є */}
       {note && (
-        <div className="rounded-2xl bg-tint p-4 text-body-sm font-bold whitespace-pre-wrap text-ink">
+        <div className="rounded-field bg-tint p-4 text-body-sm font-bold whitespace-pre-wrap text-ink">
           <p className="mb-1 text-small font-extrabold text-accent-ink uppercase">Meine Notiz</p>
           {note.text}
         </div>

@@ -15,7 +15,7 @@ const NowLine = ({ row, progress, todayIndex, dayCount = 5 }) => {
         {todayIndex >= 0 && (
           <div className="absolute inset-x-0 top-0 grid gap-1" style={{ gridTemplateColumns: `repeat(${dayCount}, minmax(0, 1fr))` }}>
             <div className="relative" style={{ gridColumn: todayIndex + 1 }}>
-              <div className="absolute inset-x-0 top-0 h-[3px] -translate-y-1/2 rounded-full bg-accent" />
+              <div className="absolute inset-x-0 top-0 h-0.75 -translate-y-1/2 rounded-full bg-accent" />
               <div className="absolute top-0 -left-1 size-2.5 -translate-y-1/2 rounded-full bg-accent" />
             </div>
           </div>

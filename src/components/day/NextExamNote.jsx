@@ -11,7 +11,7 @@ const NextExamNote = () => {
 
   const when = daysLeftText(exam.daysLeft); // «in 2 Tagen»
   return (
-    <Link to={`/tag/${exam.date}`} className="flex items-center gap-3 rounded-2xl bg-tint px-4 py-3.5 text-label font-bold text-accent-ink">
+    <Link to={`/tag/${exam.date}`} className="flex items-center gap-3 rounded-field bg-tint px-4 py-3.5 text-label font-bold text-accent-ink">
       <Flag className="size-4.5 shrink-0" />
       <span>
         {/* перша літера велика: «In 2 Tagen:» */}

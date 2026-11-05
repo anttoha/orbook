@@ -28,7 +28,7 @@ const NotesSection = ({ date, lessons = [], variant = "list" }) => {
   };
 
   return (
-    <section className={cn("flex flex-col", isCard ? "rounded-[24px] bg-card p-4" : "gap-2.5")}>
+    <section className={cn("flex flex-col", isCard ? "rounded-card bg-card p-4" : "gap-2.5")}>
       <header className={cn("flex items-center justify-between", !isCard && "px-1")}>
         <h2 className={cn("font-extrabold", isCard ? "text-label text-faint" : "text-body-sm text-muted")}>Meine Notizen</h2>
         {/* нова нотатка на день */}
@@ -37,12 +37,12 @@ const NotesSection = ({ date, lessons = [], variant = "list" }) => {
         </button>
       </header>
 
-      {notes.length === 0 && <p className={cn("text-label font-bold text-faint", isCard ? "mt-2.5" : "rounded-2xl bg-card px-4 py-3.5")}>Noch keine Notizen für diesen Tag.</p>}
+      {notes.length === 0 && <p className={cn("text-label font-bold text-faint", isCard ? "mt-2.5" : "rounded-field bg-card px-4 py-3.5")}>Noch keine Notizen für diesen Tag.</p>}
 
       {/* на ПК нотатки йдуть списком із лініями-розділювачами всередині картки */}
       <div className={cn("flex flex-col", isCard ? "mt-1 divide-y divide-hair" : "gap-2.5")}>
         {notes.map((note) => (
-          <button key={note.id} type="button" onClick={() => open(note)} className={cn("flex flex-col gap-1 text-left", isCard ? "py-3" : "rounded-2xl bg-card px-4 py-3.5")}>
+          <button key={note.id} type="button" onClick={() => open(note)} className={cn("flex flex-col gap-1 text-left", isCard ? "py-3" : "rounded-field bg-card px-4 py-3.5")}>
             <span className="text-body font-medium whitespace-pre-wrap text-ink">{note.text}</span>
             <span className="flex items-center gap-1.5 text-caption font-semibold text-faint">
               <Lock className="size-3" /> {meta(note)}

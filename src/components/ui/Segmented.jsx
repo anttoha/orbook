@@ -27,7 +27,7 @@ const Segmented = ({ options, value, onChange, label, className, variant = "card
               active
                 ? variant === "accent"
                   ? "bg-accent text-on-accent" // ПК: фіолетова «пігулка»
-                  : "bg-card text-ink shadow-sm" // телефон: біла «пігулка»
+                  : "bg-card text-ink shadow-lift" // телефон: біла «пігулка»
                 : "text-muted hover:text-ink",
             )}
           >

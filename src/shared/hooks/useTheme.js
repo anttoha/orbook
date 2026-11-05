@@ -33,6 +33,7 @@ export const useTheme = () => {
         try {
             localStorage.setItem(STORAGE_KEY, next);
         } catch {
+            // localStorage заборонено (приватний режим): тема діє до перезавантаження
         }
         setThemeState(next);
     }, []);

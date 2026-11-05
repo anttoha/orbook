@@ -28,7 +28,7 @@ const LessonTooltip = ({ lesson, children, ...props }) => {
         <Tooltip.Content
           side="top"
           sideOffset={6}
-          className="z-50 max-w-64 rounded-xl bg-ink px-3 py-2 text-caption font-semibold text-paper shadow-lg data-[state=closed]:animate-fade-out data-[state=delayed-open]:animate-fade-in"
+          className="z-50 max-w-64 rounded-tile bg-ink px-3 py-2 text-caption font-semibold text-paper shadow-menu data-[state=closed]:animate-fade-out data-[state=delayed-open]:animate-fade-in"
         >
           <p className="text-body-sm font-extrabold">
             {subjectName(lesson.subject)} · {lesson.period}. Std

@@ -70,7 +70,7 @@ const NoteForm = ({ note, noteId, date, period, onDone }) => {
           placeholder="z. B. Sportsachen mitnehmen"
           rows={4}
           autoFocus // одразу можна друкувати
-          className="w-full resize-none rounded-2xl bg-card p-3.5 text-body font-bold text-ink outline-none placeholder:text-faint focus:ring-2 focus:ring-accent/30"
+          className="w-full resize-none rounded-field bg-card p-3.5 text-body font-bold text-ink outline-none placeholder:text-faint focus:ring-2 focus:ring-accent/30"
         />
       </label>
       <div className="flex gap-2.5">

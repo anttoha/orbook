@@ -44,7 +44,7 @@ const ColorSheet = ({ open, onClose, sheet }) => {
             type="button"
             aria-pressed={key === current} // чи вибраний цей колір
             onClick={() => choose(key)}
-            className="flex flex-col items-center gap-1.5 rounded-2xl py-2 transition-colors hover:bg-sand"
+            className="flex flex-col items-center gap-1.5 rounded-field py-2 transition-colors hover:bg-sand"
           >
             <span className={cn("grid size-11 place-items-center rounded-full text-white", palette.solid, key === current && "ring-3 ring-accent ring-offset-2 ring-offset-paper")}>
               {key === current && <Check className="size-5" strokeWidth={3} />}

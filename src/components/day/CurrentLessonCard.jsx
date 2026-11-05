@@ -18,7 +18,7 @@ const CurrentLessonCard = ({ live, onOpen }) => {
   const footer = isRunning ? afterText(live.current, live.next, subjectName) : `Beginn ${lesson.start} · bis ${lesson.end}`;
 
   return (
-    <button type="button" onClick={() => onOpen(lesson)} className="flex flex-col gap-2.5 rounded-[22px] bg-accent p-4 text-left text-on-accent">
+    <button type="button" onClick={() => onOpen(lesson)} className="flex flex-col gap-2.5 rounded-card bg-accent p-4 text-left text-on-accent">
       {/* верхній рядок */}
       <div className="flex items-baseline gap-2">
         <span className="text-caption font-extrabold opacity-75">{isRunning ? "Jetzt" : "Gleich"}</span>

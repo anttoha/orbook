@@ -13,7 +13,7 @@ const NavigationLink = ({ active, tab, isHidden = false, badge = null, className
       aria-current={active ? "page" : undefined}
       title={isHidden ? tab.label : undefined} // підказка в згорнутому вигляді
       className={cn(
-        "flex h-[42px] items-center gap-3 overflow-hidden rounded-full px-3 text-body font-semibold transition-colors",
+        "flex h-10.5 items-center gap-3 overflow-hidden rounded-full px-3 text-body font-semibold transition-colors",
         active ? "bg-accent font-bold text-on-accent" : "text-ink/80 hover:bg-sand",
         className,
       )}

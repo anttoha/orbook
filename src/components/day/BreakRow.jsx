@@ -2,7 +2,7 @@
 // inline — варіант для ПК: підпис зліва, далі пунктирна лінія (як на макеті)
 const BreakRow = ({ minutes, inline = false }) =>
   inline ? (
-    <div className="flex items-center gap-3 pl-[68px] text-micro font-bold text-faint">
+    <div className="flex items-center gap-3 pl-17 text-micro font-bold text-faint">
       Pause · {minutes} min
       <span className="h-0 flex-1 border-t border-dashed border-rule" />
     </div>

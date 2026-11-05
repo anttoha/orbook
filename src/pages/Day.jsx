@@ -104,7 +104,7 @@ const Day = () => {
 
   // День без плану: вихідний, свято, план ще не вийшов, школа не відповідає
   const freeState = free && (
-    <div className="flex flex-col items-center gap-1 rounded-[22px] bg-card px-4 py-10 text-center">
+    <div className="flex flex-col items-center gap-1 rounded-card bg-card px-4 py-10 text-center">
       {day.status === "holiday" ? (
         <>
           <p className="text-subhead text-ink">{day.freeReason === "weekend" ? "Wochenende" : date === today ? "Heute ist frei" : "Kein Unterricht"}</p>
@@ -138,7 +138,7 @@ const Day = () => {
     day && day.status !== "ok" && day.exams.length > 0 && (
       <div className="flex flex-col gap-2">
         {day.exams.map((exam) => (
-          <p key={exam.id} className="flex items-center gap-3 rounded-2xl bg-tint px-4 py-3 text-label font-bold text-accent-ink">
+          <p key={exam.id} className="flex items-center gap-3 rounded-field bg-tint px-4 py-3 text-label font-bold text-accent-ink">
             <Flag className="size-4 shrink-0" /> {exam.type}: {subjectName(exam.subject)}
             {exam.lesson && `, ${exam.lesson}. Stunde`}
           </p>
@@ -156,7 +156,7 @@ const Day = () => {
 
   // План є, але всі уроки сховані
   const allHidden = day?.status === "ok" && lessons.length === 0 && (
-    <div className="rounded-[22px] bg-card px-4 py-10 text-center">
+    <div className="rounded-card bg-card px-4 py-10 text-center">
       <p className="text-subhead text-ink">Kein Unterricht</p>
       <p className="mt-1 text-label font-bold text-faint">{hiddenHere > 0 ? "Alle Kurse ausgeblendet" : "Keine Stunden"}</p>
     </div>

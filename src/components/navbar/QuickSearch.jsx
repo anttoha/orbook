@@ -127,7 +127,7 @@ const QuickSearch = ({ collapsed, onExpand }) => {
       {/* Anchor — до чого «прикріплений» список результатів */}
       <Popover.Anchor asChild>
         <div className="relative h-10 shrink-0">
-          <Search className="pointer-events-none absolute top-1/2 left-[13.5px] size-4 -translate-y-1/2 text-faint" />
+          <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-faint" />
           <input
             ref={inputRef}
             type="text"
@@ -159,7 +159,7 @@ const QuickSearch = ({ collapsed, onExpand }) => {
           sideOffset={8}
           onOpenAutoFocus={(e) => e.preventDefault()} // фокус лишається в полі вводу
           onInteractOutside={() => setQuery("")} // клік повз — закрити
-          className="z-50 w-[340px] rounded-2xl border border-hair bg-card p-1.5 shadow-xl shadow-ink/10 data-[state=open]:animate-pop-in"
+          className="z-50 w-search rounded-field border border-hair bg-card p-1.5 shadow-menu data-[state=open]:animate-pop-in"
         >
           {results.length === 0 && <p className="px-3 py-2.5 text-body-sm font-bold text-faint">Nichts gefunden</p>}
           <ul role="listbox">
@@ -170,7 +170,7 @@ const QuickSearch = ({ collapsed, onExpand }) => {
                   onMouseEnter={() => setActive(i)} // наведення мишкою теж підсвічує
                   onClick={() => choose(item)}
                   className={cn(
-                    "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left",
+                    "flex w-full items-center gap-3 rounded-tile px-3 py-2 text-left",
                     i === active && "bg-sand",
                   )}
                 >

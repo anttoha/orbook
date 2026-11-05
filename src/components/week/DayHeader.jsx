@@ -9,7 +9,7 @@ const DayHeader = ({ day, isToday, style }) => {
       to={`/tag/${day.date}`}
       style={style}
       aria-label={`${weekdayLong(day.date)}, ${longDate(day.date)}`}
-      className={cn("relative flex flex-col items-center rounded-2xl py-1 transition-colors", isToday ? "bg-accent text-on-accent" : "text-ink hover:bg-sand")}
+      className={cn("relative flex flex-col items-center rounded-field py-1 transition-colors", isToday ? "bg-accent text-on-accent" : "text-ink hover:bg-sand")}
     >
       <span className={cn("mb-px text-caption leading-4 font-extrabold uppercase", isToday ? "text-today-sub" : "text-faint")}>{day.weekday}</span>
       <span className="text-number leading-6 font-black">{dayNumber(day.date)}</span>

@@ -69,7 +69,7 @@ const Timeline = ({ day, lessons, onOpen }) => {
               type="button"
               onClick={() => onOpen(lesson)}
               className={cn(
-                "absolute flex flex-col justify-between overflow-hidden rounded-2xl px-3 py-2 text-left select-none [-webkit-touch-callout:none]",
+                "absolute flex flex-col justify-between overflow-hidden rounded-field px-3 py-2 text-left select-none [-webkit-touch-callout:none]",
                 isCancelled ? "border-[1.5px] border-dashed border-faint2 bg-paper text-faint" : fachClasses(lesson.subject.code, overrides),
                 !isCancelled && lesson.status !== "normal" && "ring-2 ring-accent ring-inset",
                 isLessonPast(lesson, day.date, now) && "opacity-50",
@@ -98,7 +98,7 @@ const Timeline = ({ day, lessons, onOpen }) => {
       {/* лінія «зараз»: час у фіолетовій плашці + лінія */}
       {showNow && (
         <div className="pointer-events-none absolute inset-x-0 z-10 flex -translate-y-1/2 items-center" style={{ top: y(nowMin) }}>
-          <span className="rounded-md bg-accent px-1.5 py-0.5 text-micro font-extrabold text-on-accent">{hhmm}</span>
+          <span className="rounded-chip bg-accent px-1.5 py-0.5 text-micro font-extrabold text-on-accent">{hhmm}</span>
           <span className="size-2 shrink-0 rounded-full bg-accent" />
           <span className="h-0.5 flex-1 bg-accent" />
         </div>

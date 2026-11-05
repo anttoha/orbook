@@ -33,7 +33,7 @@ const PeriodGrid = ({ days, selectedDay, onSelectDay, onLessonClick }) => {
     >
       {/* рамка + фон вибраного дня (під уроками, на всю висоту колонки) */}
       {selectedIndex >= 0 && (
-        <div aria-hidden className="pointer-events-none -m-1.25 rounded-[20px] bg-sand/60 ring-2 ring-accent" style={{ gridRow: "1 / -1", gridColumn: selectedIndex + 2 }} />
+        <div aria-hidden className="pointer-events-none -m-1.25 rounded-box bg-sand/60 ring-2 ring-accent" style={{ gridRow: "1 / -1", gridColumn: selectedIndex + 2 }} />
       )}
 
       {/* ── шапка: дні (клік вибирає день) ── */}
@@ -68,7 +68,7 @@ const PeriodGrid = ({ days, selectedDay, onSelectDay, onLessonClick }) => {
             <div
               key={day.date}
               style={{ gridRow: `2 / span ${Math.max(rows.length, 1)}`, gridColumn: di + 2 }}
-              className="relative grid min-h-26 place-items-center rounded-[14px] border-[1.5px] border-dashed border-rule text-label font-bold text-faint"
+              className="relative grid min-h-26 place-items-center rounded-cell border-[1.5px] border-dashed border-rule text-label font-bold text-faint"
             >
               {free}
             </div>
@@ -82,7 +82,7 @@ const PeriodGrid = ({ days, selectedDay, onSelectDay, onLessonClick }) => {
           // Вільний урок — пунктирна клітинка «frei»
           if (lessons.length === 0) {
             return (
-              <div key={`${day.date}-${row.period}`} style={place} className="relative grid place-items-center rounded-[14px] border-[1.5px] border-dashed border-rule text-caption font-semibold text-faint">
+              <div key={`${day.date}-${row.period}`} style={place} className="relative grid place-items-center rounded-cell border-[1.5px] border-dashed border-rule text-caption font-semibold text-faint">
                 frei
               </div>
             );

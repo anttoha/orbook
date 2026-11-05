@@ -4,7 +4,7 @@ import { cn } from "../../shared/utils/cn";
 const Kbd = ({ className, children }) => (
   <kbd
     className={cn(
-      "inline-grid h-5.5 min-w-5.5 shrink-0 place-items-center rounded-md border border-rule bg-card px-1.5 font-sans text-micro font-bold text-muted",
+      "inline-grid h-5.5 min-w-5.5 shrink-0 place-items-center rounded-chip border border-rule bg-card px-1.5 font-sans text-micro font-bold text-muted",
       className,
     )}
   >

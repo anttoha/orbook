@@ -28,7 +28,7 @@ const UpcomingCard = ({ days, today }) => {
   return (
     <section className="flex flex-col gap-2.5">
       <h2 className="px-1 text-label font-extrabold text-faint">Kommt noch</h2>
-      <div className="flex flex-col divide-y divide-hair rounded-[24px] bg-card px-4">
+      <div className="flex flex-col divide-y divide-hair rounded-card bg-card px-4">
         {changes.map(({ date, weekday, lesson }) => {
           const Icon = lesson.status === "cancelled" ? CircleSlash : RefreshCw; // значок
           return (

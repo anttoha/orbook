@@ -61,7 +61,7 @@ const WeekGrid = ({ days, onLessonClick }) => {
             <div
               key={day.date}
               style={{ gridRow: `2 / span ${Math.max(rows.length, 1)}`, gridColumn: di + 2 }}
-              className="grid min-h-16 place-items-center rounded-[14px] bg-sand/60 text-tiny font-extrabold text-faint [writing-mode:vertical-rl]"
+              className="grid min-h-16 place-items-center rounded-cell bg-sand/60 text-tiny font-extrabold text-faint [writing-mode:vertical-rl]"
             >
               {free}
             </div>
@@ -71,7 +71,7 @@ const WeekGrid = ({ days, onLessonClick }) => {
         return rows.map((row, ri) => {
           const lessons = day.lessons.filter((l) => l.period === row.period); // уроки в цій клітинці (паралельні — кілька)
           const style = { gridRow: ri + 2, gridColumn: di + 2 }; // місце в сітці
-          if (lessons.length === 0) return <div key={`${day.date}-${row.period}`} style={style} className="min-h-12 rounded-[14px] bg-sand/60" />;
+          if (lessons.length === 0) return <div key={`${day.date}-${row.period}`} style={style} className="min-h-12 rounded-cell bg-sand/60" />;
 
           return (
             // кілька паралельних курсів — стовпчиком в одній клітинці

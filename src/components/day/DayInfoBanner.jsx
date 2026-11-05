@@ -5,7 +5,7 @@ import { infoParagraphs } from "../../shared/utils/format";
 // info — day.info з сервера (рядки; текст школи для всієї школи)
 const DayInfoBanner = ({ info, onClick }) => {
   return (
-    <button type="button" onClick={onClick} className="flex items-center gap-3 rounded-2xl bg-sand px-3.5 py-3 text-left text-label font-bold text-ink">
+    <button type="button" onClick={onClick} className="flex items-center gap-3 rounded-field bg-sand px-3.5 py-3 text-left text-label font-bold text-ink">
       <Info className="size-4.5 shrink-0 text-muted" />
       {/* перший абзац, максимум два рядки */}
       <p className="line-clamp-2 min-w-0 flex-1">

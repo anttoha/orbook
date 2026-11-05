@@ -16,7 +16,7 @@ import { cn } from "../../shared/utils/cn";
 // ─────────────────────────────────────────────────────────────
 
 // Сірий прямокутник-заглушка. className задає розмір і форму
-export const Skeleton = ({ className }) => <div className={cn("animate-pulse rounded-2xl bg-skeleton", className)} />;
+export const Skeleton = ({ className }) => <div className={cn("animate-pulse rounded-field bg-skeleton", className)} />;
 
 // Маленька кнопка в плашці
 const RetryButton = ({ onClick, children }) => (
@@ -35,7 +35,7 @@ export const PlanBanner = ({ resource, onRetry, className }) => {
 
   if (resource.status === "offline") {
     return (
-      <div role="status" className={cn("flex items-center gap-3 rounded-2xl bg-sand px-3.5 py-2.5 text-label font-bold text-ink", className)}>
+      <div role="status" className={cn("flex items-center gap-3 rounded-field bg-sand px-3.5 py-2.5 text-label font-bold text-ink", className)}>
         <CloudOff className="size-4.5 shrink-0 text-muted" />
         <span className="min-w-0 flex-1">Offline · {stand}</span>
         <RetryButton onClick={onRetry}>Neu laden</RetryButton>
@@ -44,7 +44,7 @@ export const PlanBanner = ({ resource, onRetry, className }) => {
   }
 
   return (
-    <div role="status" className={cn("flex flex-col gap-2 rounded-2xl bg-danger-tint px-3.5 py-3 text-label font-bold text-ink", className)}>
+    <div role="status" className={cn("flex flex-col gap-2 rounded-field bg-danger-tint px-3.5 py-3 text-label font-bold text-ink", className)}>
       <p className="flex items-center gap-2 font-black text-danger">
         <TriangleAlert className="size-4.5 shrink-0" /> Plan kommt gerade nicht an
       </p>
@@ -58,7 +58,7 @@ export const PlanBanner = ({ resource, onRetry, className }) => {
 
 // Даних немає зовсім
 export const PlanError = ({ resource, onRetry }) => (
-  <div role="alert" className="flex flex-col items-center gap-3 rounded-[22px] bg-card px-5 py-10 text-center">
+  <div role="alert" className="flex flex-col items-center gap-3 rounded-card bg-card px-5 py-10 text-center">
     <TriangleAlert className="size-7 text-danger" />
     <p className="text-subhead text-ink">Plan konnte nicht geladen werden</p>
     {/* текст помилки від сервера (німецькою) або від api.js («Keine Verbindung…») */}

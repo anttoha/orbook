@@ -33,62 +33,184 @@
        Один клас = розмір + висота рядка (+ жирність у заголовків).
        Використання: <h1 class="text-hero">…</h1>
        Висоту рядка можна перебити: text-body leading-none
+       Розміри й жирність взяті з SVG «ORBook Soft». У великих заголовків
+       letter-spacing -0.015em, теж як у SVG.
        ┌──────────────┬───────┬──────────────────────────────────────┐
        │ клас         │ px    │ де використовується                  │
        ├──────────────┼───────┼──────────────────────────────────────┤
        │ text-display │ 50/900│ «ORBook» на сторінці входу           │
-       │ text-hero    │ 36/900│ заголовок сторінки на ПК             │
+       │ text-hero    │ 38/900│ заголовок сторінки на ПК             │
+       │ text-welcome │ 36/900│ «Anmelden» на ПК                     │
+       │ text-stat    │ 32/900│ великі числа в статистиці            │
+       │ text-sheet   │ 30/900│ заголовок панелі справа на ПК        │
        │ text-title   │ 29/900│ заголовок сторінки на телефоні       │
+       │ text-panel   │ 28/900│ дата в панелі дня, діалог на ПК      │
        │ text-heading │ 26/900│ заголовок шторки / панелі            │
+       │ text-state   │ 25/900│ «Heute ist frei», порожні стани      │
+       │ text-dialog  │ 23/900│ «Klausur löschen?» на телефоні       │
        │ text-logo    │ 22/900│ «ORBook» у сайдбарі                  │
        │ text-number  │ 20/900│ числа днів у сітці                   │
-       │ text-subhead │ 17/900│ «Physik · 301», місяць у календарі   │
+       │ text-cell    │ 19/900│ число дня на ПК, дата Klausur        │
+       │ text-cell-sm │ 18/900│ число дня на телефоні                │
+       │ text-subhead │ 17/900│ місяць у календарі                   │
        │ text-input   │ 16    │ поля вводу (iOS не зумить з 16px)    │
+       │ text-lead    │ 15.5  │ «Physik · 301» у шторці              │
        │ text-body    │ 15    │ основний текст, назви предметів      │
+       │ text-row     │ 14.5  │ рядки списків, кнопки «Fertig»       │
        │ text-body-sm │ 14    │ текст у картках, пункти меню         │
+       │ text-nav     │ 13.5  │ меню на ПК, сповіщення               │
        │ text-label   │ 13    │ підписи, «KW 41 · …», кнопки         │
+       │ text-hint    │ 12.5  │ «9b · September», перемикачі         │
        │ text-caption │ 12    │ другорядний текст «T25 · Raum 305»   │
+       │ text-note    │ 11.5  │ «Mathe · 1. Std», дрібні примітки    │
        │ text-small   │ 11    │ час «08:15», дрібні підписи          │
-       │ text-micro   │ 10    │ бейджі VERTRETUNG, «Pause · 20 min»  │
-       │ text-tiny    │ 9     │ час у сітці тижня на телефоні        │
+       │ text-axis    │ 10.5  │ години на шкалі дня                  │
+       │ text-micro   │ 10    │ бейджі VERTRETUNG, дні тижня         │
+       │ text-room    │ 9.5   │ кабінет у клітинці тижня             │
+       │ text-tiny    │ 9     │ «Pause · 20 min», дні в сітці        │
+       │ text-nano    │ 8.5   │ час і «fällt aus» у сітці            │
        └──────────────┴───────┴──────────────────────────────────────┘ */
     --text-display: 50px;
     --text-display--line-height: 1.1;
     --text-display--font-weight: 900;
-    --text-hero: 36px;
+    --text-display--letter-spacing: -0.015em;
+    --text-hero: 38px;
     --text-hero--line-height: 1.15;
     --text-hero--font-weight: 900;
+    --text-hero--letter-spacing: -0.015em;
+    --text-welcome: 36px;
+    --text-welcome--line-height: 1.15;
+    --text-welcome--font-weight: 900;
+    --text-welcome--letter-spacing: -0.015em;
+    --text-stat: 32px;
+    --text-stat--line-height: 1.15;
+    --text-stat--font-weight: 900;
+    --text-stat--letter-spacing: -0.015em;
+    --text-sheet: 30px;
+    --text-sheet--line-height: 1.15;
+    --text-sheet--font-weight: 900;
+    --text-sheet--letter-spacing: -0.015em;
     --text-title: 29px;
     --text-title--line-height: 1.1;
     --text-title--font-weight: 900;
+    --text-title--letter-spacing: -0.015em;
+    --text-panel: 28px;
+    --text-panel--line-height: 1.15;
+    --text-panel--font-weight: 900;
+    --text-panel--letter-spacing: -0.015em;
     --text-heading: 26px;
     --text-heading--line-height: 1.15;
     --text-heading--font-weight: 900;
+    --text-heading--letter-spacing: -0.015em;
+    --text-state: 25px;
+    --text-state--line-height: 1.15;
+    --text-state--font-weight: 900;
+    --text-state--letter-spacing: -0.015em;
+    --text-dialog: 23px;
+    --text-dialog--line-height: 1.2;
+    --text-dialog--font-weight: 900;
+    --text-dialog--letter-spacing: -0.015em;
     --text-logo: 22px;
     --text-logo--line-height: 1.1;
     --text-logo--font-weight: 900;
+    --text-logo--letter-spacing: -0.015em;
     --text-number: 20px;
     --text-number--line-height: 1.2;
     --text-number--font-weight: 900;
+    --text-number--letter-spacing: -0.015em;
+    --text-cell: 19px;
+    --text-cell--line-height: 1.2;
+    --text-cell--font-weight: 900;
+    --text-cell--letter-spacing: -0.015em;
+    --text-cell-sm: 18px;
+    --text-cell-sm--line-height: 1.2;
+    --text-cell-sm--font-weight: 900;
+    --text-cell-sm--letter-spacing: -0.015em;
     --text-subhead: 17px;
     --text-subhead--line-height: 1.3;
     --text-subhead--font-weight: 900;
+    --text-subhead--letter-spacing: -0.015em;
     --text-input: 16px;
     --text-input--line-height: 1.4;
+    --text-lead: 15.5px;
+    --text-lead--line-height: 1.35;
     --text-body: 15px;
     --text-body--line-height: 1.35;
+    --text-row: 14.5px;
+    --text-row--line-height: 1.35;
     --text-body-sm: 14px;
     --text-body-sm--line-height: 1.35;
+    --text-nav: 13.5px;
+    --text-nav--line-height: 1.35;
     --text-label: 13px;
     --text-label--line-height: 1.3;
+    --text-hint: 12.5px;
+    --text-hint--line-height: 1.3;
     --text-caption: 12px;
     --text-caption--line-height: 1.35;
+    --text-note: 11.5px;
+    --text-note--line-height: 1.35;
     --text-small: 11px;
     --text-small--line-height: 1.3;
+    --text-axis: 10.5px;
+    --text-axis--line-height: 1.3;
     --text-micro: 10px;
     --text-micro--line-height: 1.2;
+    --text-room: 9.5px;
+    --text-room--line-height: 1.2;
     --text-tiny: 9px;
     --text-tiny--line-height: 1.2;
+    --text-nano: 8.5px;
+    --text-nano--line-height: 1.2;
+
+    /* ── Радіуси (з SVG Soft) ──────────────────────────────────
+       --radius-*: initial вимикає стандартну шкалу Tailwind (rounded-xl …),
+       щоб у коді були тільки значення дизайну.
+       rounded-full і rounded-none працюють завжди.
+       ┌───────────────┬────┬────────────────────────────────────┐
+       │ rounded-tick  │ 2  │ дрібні позначки                    │
+       │ rounded-mark  │ 3  │ чекбокс                            │
+       │ rounded-tag   │ 4  │ маленький бейдж                    │
+       │ rounded-chip  │ 8  │ номер уроку на ПК, клавіша ⌘K      │
+       │ rounded-tile  │ 12 │ клітинка дати, пункт меню          │
+       │ rounded-cell  │ 14 │ урок у сітці тижня                 │
+       │ rounded-field │ 16 │ поле вводу, простий список         │
+       │ rounded-box   │ 20 │ урок у списку дня, блок            │
+       │ rounded-card  │ 22 │ картка                             │
+       │ rounded-panel │ 28 │ сайдбар, шторка, вікно             │
+       └───────────────┴────┴────────────────────────────────────┘ */
+    --radius-*: initial;
+    --radius-tick: 2px;
+    --radius-mark: 3px;
+    --radius-tag: 4px;
+    --radius-chip: 8px;
+    --radius-tile: 12px;
+    --radius-cell: 14px;
+    --radius-field: 16px;
+    --radius-box: 20px;
+    --radius-card: 22px;
+    --radius-panel: 28px;
+
+    /* ── Тіні: значення лежать у --soft-shadow-* (див. :root і .dark нижче).
+       Tailwind вставляє значення тіні прямо в клас, тому без var()
+       темна тема не змогла б їх замінити. */
+    --shadow-*: initial;
+    --shadow-lift: var(--soft-shadow-lift); /* кнопка-«пігулка» в перемикачі */
+    --shadow-raise: var(--soft-shadow-raise); /* картка під курсором */
+    --shadow-menu: var(--soft-shadow-menu); /* меню, випадний список */
+    --shadow-sheet: var(--soft-shadow-sheet); /* шторка, вікно */
+
+    /* ── Відступи. Решта — звичайна шкала: p-4 = 16px, gap-1.5 = 6px (крок 4px) ── */
+    --spacing-gutter: 18px; /* край екрана телефона: контент 354 із 390 */
+    --spacing-gutter-auth: 28px; /* край на екрані входу */
+
+    /* ── Ширини на ПК: w-sidebar, w-sheet … ── */
+    --container-sidebar: 232px;
+    --container-sidebar-mini: 71px;
+    --container-search: 340px; /* результати швидкого пошуку */
+    --container-popover: 360px; /* «Woche wählen» */
+    --container-sheet: 440px; /* панель справа */
+    --container-dialog: 520px; /* вікно посередині */
 
     --color-overlay: #2a243366; /* затемнення під вікнами і панелями */
     --color-paper: #fbf7f2;
@@ -135,7 +257,7 @@
 
     --color-kunst-tint: #f1d8ea;
     --color-kunst-text: #7b397e;
-    --color-kunst-solid: #c75cc8;
+    --color-kunst-solid: #c75ccb;
 
     --color-sport-tint: #dfdfe2;
     --color-sport-text: #444f63;
@@ -146,8 +268,22 @@
     --color-biologie-solid: #3fb173;
 }
 
+/* Світлі тіні (feDropShadow з SVG: blur у CSS = stdDeviation × 2) */
+:root {
+    --soft-shadow-lift: 0 1px 4px #0f121c14;
+    --soft-shadow-raise: 0 2px 8px #0f121c0f;
+    --soft-shadow-menu: 0 12px 32px #0f121c24;
+    --soft-shadow-sheet: 0 24px 64px #0f121c2e;
+}
+
 .dark {
     color-scheme: dark;
+
+    /* У темних макетах дрібних тіней немає, великі сильніші */
+    --soft-shadow-lift: 0 0 #0000;
+    --soft-shadow-raise: 0 0 #0000;
+    --soft-shadow-menu: 0 12px 32px #0000008c;
+    --soft-shadow-sheet: 0 24px 64px #00000099;
 
     --color-overlay: #0000008c;
     --color-paper: #16131c;

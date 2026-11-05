@@ -22,7 +22,7 @@ const WeekPickerPopover = ({ monday, onPick, buttonClassName }) => {
           align="center"
           sideOffset={8}
           collisionPadding={16} // не вилазити за край екрана
-          className="z-50 flex w-[360px] flex-col gap-4 rounded-[24px] bg-card p-4.5 shadow-2xl shadow-ink/15 outline-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
+          className="z-50 flex w-popover flex-col gap-4 rounded-card bg-card p-4.5 shadow-sheet shadow-ink/15 outline-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
         >
           {/* key — при кожному відкритті календар починається з показаного тижня */}
           <WeekPicker

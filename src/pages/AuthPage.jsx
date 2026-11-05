@@ -95,7 +95,7 @@ const AuthPage = () => {
           }}
           placeholder="Passwort eingeben"
           className={cn(
-            "w-full rounded-2xl bg-card h-12.5 px-4.25 text-input font-normal text-ink placeholder:text-faint outline-none focus:ring-2 focus:ring-accent/30 mb-1.5 transition disabled:opacity-60",
+            "w-full rounded-field bg-card h-12.5 px-4.25 text-input font-normal text-ink placeholder:text-faint outline-none focus:ring-2 focus:ring-accent/30 mb-1.5 transition disabled:opacity-60",
             isPasswordValid ? "border border-transparent" : "border border-danger focus:ring-danger/30",
           )}
         />

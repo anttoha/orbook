@@ -63,7 +63,7 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
             {eyebrow || title}
           </Description>
           <div className="flex flex-wrap items-center gap-2">
-            <Title className={cn("text-heading font-black text-ink", isPanel && "text-[30px]")}>{title}</Title>
+            <Title className={cn("text-heading font-black text-ink", isPanel && "text-sheet")}>{title}</Title>
             {titleAside}
           </div>
         </div>
@@ -89,12 +89,12 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
           <Dialog.Overlay className="fixed inset-0 z-40 bg-overlay data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in" />
           <Dialog.Content
             className={cn(
-              "fixed z-50 overflow-y-auto bg-paper p-6.5 shadow-2xl outline-none",
+              "fixed z-50 overflow-y-auto bg-paper p-6.5 shadow-sheet outline-none",
               isPanel
                 ? // панель: праворуч, відступ 16px від країв екрана, ширина 440px (як на макеті)
-                  "top-4 right-4 bottom-4 w-[440px] max-w-[calc(100%-2rem)] rounded-[28px] data-[state=closed]:animate-slide-out-right data-[state=open]:animate-slide-in-right"
+                  "top-4 right-4 bottom-4 w-sheet max-w-[calc(100%-2rem)] rounded-panel data-[state=closed]:animate-slide-out-right data-[state=open]:animate-slide-in-right"
                 : // вікно: по центру, ширина 520px
-                  "top-1/2 left-1/2 max-h-[85dvh] w-[520px] max-w-[calc(100%-2rem)] -translate-1/2 rounded-[28px] data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in",
+                  "top-1/2 left-1/2 max-h-[85dvh] w-dialog max-w-[calc(100%-2rem)] -translate-1/2 rounded-panel data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in",
             )}
           >
             {renderHeader(Dialog.Title, Dialog.Description, Dialog.Close)}
@@ -112,7 +112,7 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
         {/* затемнення фону */}
         <Drawer.Overlay className="fixed inset-0 z-40 bg-overlay" />
         {/* шторка притиснута донизу; vaul сам анімує виїзд і змах */}
-        <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-[28px] bg-paper outline-none">
+        <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-panel bg-paper outline-none">
           {/* «ручка» зверху — за неї зручно тягнути */}
           <div aria-hidden className="mx-auto mt-2.5 h-1.5 w-10 shrink-0 rounded-full bg-faint2" />
           {/* прокручувана частина; знизу враховуємо смужку жестів iPhone */}

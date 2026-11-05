@@ -21,9 +21,9 @@ const SoonList = () => {
       <ul className="mt-2.5 flex flex-col gap-1">
         {exams.map((exam, i) => (
           <li key={exam.id}>
-            <Link to={`/tag/${exam.date}`} className="flex items-center gap-2.5 rounded-xl px-2 py-1.5 transition-colors hover:bg-sand">
+            <Link to={`/tag/${exam.date}`} className="flex items-center gap-2.5 rounded-tile px-2 py-1.5 transition-colors hover:bg-sand">
               {/* дата в кольорі предмета */}
-              <span className={cn("flex h-8.5 w-8 shrink-0 flex-col items-center justify-center rounded-lg", fachClasses(exam.subject.code, overrides))}>
+              <span className={cn("flex h-8.5 w-8 shrink-0 flex-col items-center justify-center rounded-chip", fachClasses(exam.subject.code, overrides))}>
                 <span className="text-label leading-none font-black">{dayNumber(exam.date)}</span>
                 <span className="text-tiny leading-none font-extrabold uppercase">{weekdayShort(exam.date)}</span>
               </span>

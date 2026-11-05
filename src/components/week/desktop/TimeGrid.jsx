@@ -84,7 +84,7 @@ const TimeGrid = ({ days, onLessonClick }) => {
           <div
             key={day.date}
             // сьогоднішня колонка — пісочний фон під уроками (як на макеті)
-            className={cn("relative rounded-2xl", di === todayIndex && "bg-sand/70", free && "grid place-items-center border-[1.5px] border-dashed border-rule")}
+            className={cn("relative rounded-field", di === todayIndex && "bg-sand/70", free && "grid place-items-center border-[1.5px] border-dashed border-rule")}
             style={{ gridRow: 2, gridColumn: di + 2, height }}
           >
             {free && <span className="text-label font-bold text-faint">{free}</span>}
@@ -113,13 +113,13 @@ const TimeGrid = ({ days, onLessonClick }) => {
         <div className="pointer-events-none relative z-10" style={{ gridRow: 2, gridColumn: "1 / -1", height }}>
           <div className="absolute inset-x-0" style={{ top: y(nowMin) }}>
             {/* час у фіолетовій плашці зліва */}
-            <span className="absolute left-0 -translate-y-1/2 rounded-md bg-accent px-1.75 py-0.5 text-small font-extrabold text-on-accent">{berlinParts(now).hhmm}</span>
+            <span className="absolute left-0 -translate-y-1/2 rounded-chip bg-accent px-1.75 py-0.5 text-small font-extrabold text-on-accent">{berlinParts(now).hhmm}</span>
             {/* тонка лінія через усі дні */}
             <span className="absolute right-0 h-px -translate-y-1/2 bg-accent/60" style={{ left: LABEL_COL }} />
             {/* товстий відрізок + кружечок у колонці сьогоднішнього дня (та сама сітка колонок) */}
             <div className="absolute inset-x-0 grid" style={columns}>
               <div className="relative" style={{ gridColumn: todayIndex + 2 }}>
-                <span className="absolute inset-x-0 h-[3px] -translate-y-1/2 rounded-full bg-accent" />
+                <span className="absolute inset-x-0 h-0.75 -translate-y-1/2 rounded-full bg-accent" />
                 <span className="absolute -left-1.25 size-2.5 -translate-y-1/2 rounded-full bg-accent" />
               </div>
             </div>

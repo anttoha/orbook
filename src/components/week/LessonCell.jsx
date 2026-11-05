@@ -11,7 +11,7 @@ import { fachClasses } from "../../shared/utils/lessons";
 const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
   // Спільні класи клітинки; кнопка: текст зліва, без виділення тексту і системного меню iOS
   const base =
-    "relative flex min-h-0 flex-1 flex-col justify-between gap-1 overflow-hidden rounded-[14px] px-2 py-1.75 text-left leading-none select-none [-webkit-touch-callout:none] transition-transform active:scale-[0.97]";
+    "relative flex min-h-0 flex-1 flex-col justify-between gap-1 overflow-hidden rounded-cell px-2 py-1.75 text-left leading-none select-none [-webkit-touch-callout:none] transition-transform active:scale-[0.97]";
   const label = [subjectName(lesson.subject), lessonBadge(lesson)].filter(Boolean).join(", "); // для скрінрідера
 
   // Скасований урок: пунктирна рамка, закреслений код
@@ -45,7 +45,7 @@ const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
 
       {/* прапорець Klausur у куті */}
       {lesson.examId && (
-        <span className="absolute top-px right-px grid place-items-center rounded-tr-[14px] rounded-bl-md bg-accent p-1.25 text-on-accent">
+        <span className="absolute top-px right-px grid place-items-center rounded-tr-cell rounded-bl-chip bg-accent p-1.25 text-on-accent">
           <Flag className="size-2.5" strokeWidth={3} />
         </span>
       )}

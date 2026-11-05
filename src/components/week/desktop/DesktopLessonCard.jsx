@@ -22,8 +22,8 @@ const DesktopLessonCard = ({ lesson, isPast, overrides, className, ...props }) =
       aria-label={[subjectName(lesson.subject), badge].filter(Boolean).join(", ")}
       {...props}
       className={cn(
-        "flex min-h-0 flex-col items-start overflow-hidden rounded-[14px] px-2.75 py-2.25 text-left select-none",
-        "transition-[transform,box-shadow] outline-none hover:shadow-md focus-visible:ring-2 focus-visible:ring-accent/60 active:scale-[0.98]",
+        "flex min-h-0 flex-col items-start overflow-hidden rounded-cell px-2.75 py-2.25 text-left select-none",
+        "transition-[transform,box-shadow] outline-none hover:shadow-raise focus-visible:ring-2 focus-visible:ring-accent/60 active:scale-[0.98]",
         isCancelled ? "border-[1.5px] border-dashed border-faint2 text-faint" : fachClasses(lesson.subject.code, overrides),
         isChanged && "bg-tint ring-2 ring-accent ring-inset", // зміна: фіолетовий фон і рамка
         lesson.examId && "ring-2 ring-accent ring-inset", // Klausur: фіолетова рамка

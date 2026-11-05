@@ -71,10 +71,10 @@ const ShareOptions = ({ sheet }) => {
         <Checkbox label="Klausuren" checked={includeExams} onChange={change(setIncludeExams)} />
       </div>
 
-      {nothing && <p className="rounded-2xl bg-sand px-3.5 py-3 text-label font-bold text-muted">Wähle mindestens eins aus.</p>}
+      {nothing && <p className="rounded-field bg-sand px-3.5 py-3 text-label font-bold text-muted">Wähle mindestens eins aus.</p>}
       {!nothing && result.status === "loading" && <Skeleton className="h-36" />}
       {!nothing && result.status === "error" && (
-        <div className="flex flex-col items-start gap-2 rounded-2xl bg-danger-tint px-3.5 py-3 text-label font-bold text-ink">
+        <div className="flex flex-col items-start gap-2 rounded-field bg-danger-tint px-3.5 py-3 text-label font-bold text-ink">
           <p>Text konnte nicht geladen werden. {result.error.message}</p>
           <button
             type="button"
@@ -96,7 +96,7 @@ const ShareOptions = ({ sheet }) => {
 
 // Галочка з підписом
 const Checkbox = ({ label, checked, onChange }) => (
-  <label className="flex cursor-pointer items-center gap-2.5 rounded-2xl bg-card px-3.5 py-3 text-body-sm font-bold text-ink">
+  <label className="flex cursor-pointer items-center gap-2.5 rounded-field bg-card px-3.5 py-3 text-body-sm font-bold text-ink">
     <input
       type="checkbox"
       checked={checked}
@@ -118,7 +118,7 @@ const Composer = ({ initialText }) => {
         onChange={(e) => setText(e.target.value)}
         rows={6}
         aria-label="Nachricht"
-        className="w-full resize-none rounded-2xl bg-ok-tint p-3.5 text-body-sm leading-relaxed font-bold text-ink outline-none focus:ring-2 focus:ring-ok/40"
+        className="w-full resize-none rounded-field bg-ok-tint p-3.5 text-body-sm leading-relaxed font-bold text-ink outline-none focus:ring-2 focus:ring-ok/40"
       />
       <p className="-mt-2 px-1 text-caption font-bold text-faint">Du kannst den Text vor dem Senden noch ändern.</p>
 

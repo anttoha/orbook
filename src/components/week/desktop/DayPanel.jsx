@@ -33,7 +33,7 @@ const DayPanel = ({ date }) => {
   const openLesson = (lesson) => openSheet("stunde", { datum: date, stunde: lesson.period, fach: lesson.subject.code });
 
   return (
-    <section className="flex flex-col gap-3.5 rounded-[24px] bg-card p-4.5">
+    <section className="flex flex-col gap-3.5 rounded-card bg-card p-4.5">
       <header className="flex items-end justify-between gap-3">
         <div className="min-w-0">
           <p className="text-label font-extrabold text-accent">
@@ -41,7 +41,7 @@ const DayPanel = ({ date }) => {
             {word && ` · ${word}`}
           </p>
           {/* посилання на сторінку дня */}
-          <Link to={`/tag/${date}`} className="block truncate text-[28px] leading-tight font-black text-ink hover:underline">
+          <Link to={`/tag/${date}`} className="block truncate text-panel leading-tight font-black text-ink hover:underline">
             {longDate(date)}
           </Link>
         </div>

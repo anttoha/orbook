@@ -9,7 +9,7 @@ const DayInfoCard = ({ day, onOpen }) => {
   const paragraphs = infoParagraphs(day.info); // абзаци тексту школи
 
   return (
-    <section className="rounded-[24px] bg-card p-4">
+    <section className="rounded-card bg-card p-4">
       <header className="flex items-center justify-between">
         <h2 className="text-label font-extrabold text-faint">Info zum Tag</h2>
         <button type="button" onClick={onOpen} className="text-label font-extrabold text-accent">

@@ -20,7 +20,7 @@ const WeekStatsCard = ({ days }) => {
   if (rooms.count) rows.push({ icon: ArrowLeftRight, text: `${rooms.count} Raumwechsel`, ...rooms });
 
   return (
-    <div className="flex flex-col divide-y divide-hair rounded-[20px] bg-card px-3.5">
+    <div className="flex flex-col divide-y divide-hair rounded-box bg-card px-3.5">
       {rows.map((row) => {
         // Вміст рядка однаковий — посиланням або просто блоком
         const inner = (

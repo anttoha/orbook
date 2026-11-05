@@ -25,9 +25,9 @@ const SideNav = () => {
     <aside
       className={cn(
         // sticky: сайдбар лишається на місці при прокручуванні; висота = екран − 2×16px
-        "sticky top-4 my-4 hidden h-[calc(100dvh-2rem)] shrink-0 flex-col overflow-hidden rounded-[24px] bg-card px-3.5 pt-4 pb-3.5 lg:flex print:hidden",
+        "sticky top-4 my-4 hidden h-[calc(100dvh-2rem)] shrink-0 flex-col overflow-hidden rounded-panel bg-card px-3.5 pt-4 pb-3.5 lg:flex print:hidden",
         "transition-[width] duration-300 ease-out",
-        isHidden ? "w-[71px]" : "w-[232px]",
+        isHidden ? "w-sidebar-mini" : "w-sidebar",
       )}
     >
       <SideNavHeader isHidden={isHidden} onChangeIsHidden={setIsHidden} />

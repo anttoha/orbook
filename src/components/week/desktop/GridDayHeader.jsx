@@ -14,7 +14,7 @@ const GridDayHeader = ({ as: Component = "button", day, isToday, className, ...p
     <Component
       {...props}
       aria-label={`${weekdayLong(day.date)}, ${longDate(day.date)}`}
-      className={cn("flex h-13 items-center gap-2 rounded-[14px] px-3 text-left transition-colors", isToday ? "bg-accent text-on-accent" : "text-ink hover:bg-sand", className)}
+      className={cn("flex h-13 items-center gap-2 rounded-cell px-3 text-left transition-colors", isToday ? "bg-accent text-on-accent" : "text-ink hover:bg-sand", className)}
     >
       <span className="text-heading leading-none">{dayNumber(day.date)}</span>
       <span className={cn("text-small font-extrabold uppercase", isToday ? "text-today-sub" : "text-faint")}>{day.weekday}</span>

@@ -16,11 +16,11 @@ const ExamCard = ({ exam, overrides, highlight }) => {
   return (
     <Link
       to={`/tag/${exam.date}`}
-      className={cn("flex items-center gap-3 rounded-[20px] bg-card p-3 transition-shadow hover:shadow-md", highlight && "ring-[1.5px] ring-accent")}
+      className={cn("flex items-center gap-3 rounded-box bg-card p-3 transition-shadow hover:shadow-raise", highlight && "ring-[1.5px] ring-accent")}
     >
       {/* дата в кольорі предмета */}
-      <span className={cn("flex h-11 w-9.5 shrink-0 flex-col items-center justify-center rounded-xl", fachClasses(exam.subject.code, overrides))}>
-        <span className="text-[19px] leading-none font-black">{dayNumber(exam.date)}</span>
+      <span className={cn("flex h-11 w-9.5 shrink-0 flex-col items-center justify-center rounded-tile", fachClasses(exam.subject.code, overrides))}>
+        <span className="text-cell leading-none font-black">{dayNumber(exam.date)}</span>
         <span className="mt-0.5 text-tiny font-extrabold uppercase">{weekdayShort(exam.date)}</span>
       </span>
 
