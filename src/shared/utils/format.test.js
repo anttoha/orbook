@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { standText, updatedAgoText } from "./format";
+import { standText, subjectCode, subjectName, updatedAgoText } from "./format";
 
 describe("standText", () => {
   it("сегодня, вчера и другой день", () => {
@@ -31,5 +31,18 @@ describe("updatedAgoText", () => {
   it("null и мусор не ломают экран", () => {
     expect(updatedAgoText(null, now)).toBeNull();
     expect(updatedAgoText("kaputt", now)).toBeNull();
+  });
+});
+
+describe("предмет может быть null", () => {
+  it("subjectName: название, код, запасной текст", () => {
+    expect(subjectName({ code: "Ma", name: "Mathe" })).toBe("Mathe");
+    expect(subjectName({ code: "Sk", name: null })).toBe("Sk");
+    expect(subjectName(null)).toBe("Ohne Fach");
+  });
+
+  it("subjectCode: код или прочерк", () => {
+    expect(subjectCode({ code: "Ma", name: "Mathe" })).toBe("Ma");
+    expect(subjectCode(null)).toBe("–");
   });
 });

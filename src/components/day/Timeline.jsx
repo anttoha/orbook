@@ -70,7 +70,7 @@ const Timeline = ({ day, lessons, onOpen }) => {
               onClick={() => onOpen(lesson)}
               className={cn(
                 "absolute flex flex-col justify-between overflow-hidden rounded-field px-3 py-2 text-left select-none [-webkit-touch-callout:none]",
-                isCancelled ? "border-[1.5px] border-dashed border-faint2 bg-paper text-faint" : fachClasses(lesson.subject.code, overrides),
+                isCancelled ? "border-[1.5px] border-dashed border-faint2 bg-paper text-faint" : fachClasses(lesson.subject?.code, overrides),
                 !isCancelled && lesson.status !== "normal" && "ring-2 ring-accent ring-inset",
                 isLessonPast(lesson, day.date, now) && "opacity-50",
               )}

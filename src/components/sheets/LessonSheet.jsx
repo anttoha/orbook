@@ -3,7 +3,7 @@ import { useDay } from "../../shared/hooks/usePlan";
 import { useSheet } from "../../shared/hooks/useSheet";
 import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
-import { subjectName } from "../../shared/utils/format";
+import { subjectCode, subjectName } from "../../shared/utils/format";
 import { fachClasses, findLesson, lessonExam, lessonNote } from "../../shared/utils/lessons";
 import { lessonText, shareText } from "../../shared/utils/share";
 import Button from "../ui/Button";
@@ -54,8 +54,8 @@ const LessonSheet = ({ open, onClose, sheet }) => {
       titleAside={<StatusBadge lesson={lesson} exam={exam} />}
       // кружечок з кодом предмета в його кольорі
       icon={
-        <span className={cn("grid size-11 shrink-0 place-items-center rounded-full text-body-sm font-black", fachClasses(lesson.subject.code, overrides))}>
-          {lesson.subject.code}
+        <span className={cn("grid size-11 shrink-0 place-items-center rounded-full text-body-sm font-black", fachClasses(lesson.subject?.code, overrides))}>
+          {subjectCode(lesson.subject)}
         </span>
       }
       footer={

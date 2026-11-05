@@ -16,6 +16,7 @@ const PALETTE_KEYS = Object.keys(PALETTES); // ["deutsch", "mathe", …]
 // Палітра предмета: свій колір користувача → колір із дизайну → «випадковий», але завжди
 // той самий для коду (сума кодів букв), щоб і невідомі предмети були кольоровими
 export function paletteOf(code, overrides) {
+  if (!code) return "sport"; // урок без предмета: нейтральний сірий, щоб не вдавав якийсь предмет
   if (overrides?.[code]) return overrides[code];
   if (DEFAULT_PALETTE[code]) return DEFAULT_PALETTE[code];
   const sum = [...code].reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
@@ -26,11 +27,15 @@ export function paletteOf(code, overrides) {
 export const fachClasses = (code, overrides) => PALETTES[paletteOf(code, overrides)].tint;
 
 // Унікальний ключ уроку в межах дня (у одного period буває кілька уроків — паралельні курси)
-export const lessonKey = (lesson) => `${lesson.period}-${lesson.subject.code}-${lesson.course?.nr ?? ""}`;
+export const lessonKey = (lesson) => `${lesson.period}-${lesson.subject?.code ?? ""}-${lesson.course?.nr ?? ""}`;
 
 // Знайти урок дня за номером і кодом предмета (так його записано в адресі шторки)
-export const findLesson = (lessons, period, code) =>
-  lessons.find((l) => l.period === Number(period) && (!code || l.subject.code === code)) ?? null;
+export const findLesson = (lessons, period, code) => {
+  const inPeriod = lessons.filter((l) => l.period === Number(period));
+  // Без коду шукаємо урок без предмета (subject: null): саме він не має коду в адресі
+  const match = code ? inPeriod.find((l) => l.subject?.code === code) : (inPeriod.find((l) => !l.subject) ?? inPeriod[0]);
+  return match ?? null;
+};
 
 // Klausur цього уроку (з day.exams за lesson.examId) або null
 export const lessonExam = (day, lesson) => (lesson.examId ? day?.exams.find((e) => e.id === lesson.examId) ?? null : null);

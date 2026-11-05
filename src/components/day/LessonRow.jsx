@@ -75,7 +75,7 @@ const LessonRow = ({ lesson, exam, date, isPast, live, note, overrides, onOpen, 
   );
 
   // Класи кольору картки
-  const colors = isCancelled ? cn("border-[1.5px] border-dashed text-faint", inline ? "border-rule bg-sand/40" : "border-faint2") : fachClasses(lesson.subject.code, overrides);
+  const colors = isCancelled ? cn("border-[1.5px] border-dashed text-faint", inline ? "border-rule bg-sand/40" : "border-faint2") : fachClasses(lesson.subject?.code, overrides);
 
   // Смужка прогресу в уроку, що йде
   const progress = live && (

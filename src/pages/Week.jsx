@@ -84,7 +84,7 @@ const Week = () => {
   const goToday = () => setWeek(currentMonday(today)); // поточний тиждень
 
   // Клік по уроку → шторка уроку (fach — бо паралельних курсів буває кілька)
-  const openLesson = (day, lesson) => openSheet("stunde", { datum: day.date, stunde: lesson.period, fach: lesson.subject.code });
+  const openLesson = (day, lesson) => openSheet("stunde", { datum: day.date, stunde: lesson.period, fach: lesson.subject?.code });
 
   // Гарячі клавіші тижня: ← → тиждень, T сьогодні, D Tagesansicht, R Plan neu laden
   useHotkeys({

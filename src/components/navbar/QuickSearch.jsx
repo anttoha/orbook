@@ -28,12 +28,12 @@ const buildIndex = (days, exams, notes, { openSheet, navigate }) => {
     day.lessons.forEach((lesson) => {
       const name = subjectName(lesson.subject);
       items.push({
-        id: `l-${day.date}-${lesson.period}-${lesson.subject.code}-${lesson.course?.nr ?? ""}`,
+        id: `l-${day.date}-${lesson.period}-${lesson.subject?.code ?? ""}-${lesson.course?.nr ?? ""}`,
         icon: CalendarDays,
         title: `${name} · ${day.weekday} ${lesson.period}. Std`,
         subtitle: [lesson.teacher, lesson.room && `Raum ${lesson.room}`, lesson.course?.label].filter(Boolean).join(" · "),
-        haystack: [name, lesson.subject.code, lesson.teacher, lesson.room, lesson.course?.label, weekdayLong(day.date)].join(" "),
-        action: () => openSheet("stunde", { datum: day.date, stunde: lesson.period, fach: lesson.subject.code }), // відкрити урок
+        haystack: [name, lesson.subject?.code, lesson.teacher, lesson.room, lesson.course?.label, weekdayLong(day.date)].join(" "),
+        action: () => openSheet("stunde", { datum: day.date, stunde: lesson.period, fach: lesson.subject?.code }), // відкрити урок
       });
     });
   });

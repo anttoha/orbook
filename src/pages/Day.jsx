@@ -87,7 +87,7 @@ const Day = () => {
   if (!valid) return <Navigate to="/heute" replace />;
 
   const reload = () => loadWeek(mondayOf(date)); // завантажити тиждень ще раз
-  const openLesson = (lesson) => openSheet("stunde", { datum: date, stunde: lesson.period, fach: lesson.subject.code });
+  const openLesson = (lesson) => openSheet("stunde", { datum: date, stunde: lesson.period, fach: lesson.subject?.code });
 
   const lessons = day?.status === "ok" ? filter(day.lessons) : []; // уроки без прихованих курсів
   const expected = day && day.status !== "ok" ? filter(day.expectedLessons) : []; // «vorläufig», поки плану немає

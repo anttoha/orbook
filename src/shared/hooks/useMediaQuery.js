@@ -10,6 +10,7 @@ export const useMediaQuery = (query) =>
       return () => media.removeEventListener("change", onChange); // відписка
     },
     () => window.matchMedia(query).matches, // поточне значення
+    () => false, // без браузера (рендер у тестах): вигляд телефона
   );
 
 // Комп'ютерний вигляд (сайдбар, панелі праворуч) — з 1024px (брейкпоінт lg)

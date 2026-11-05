@@ -27,7 +27,7 @@ const LessonContextMenu = ({ lesson, date, children }) => {
   const hideCourse = useUserStore((s) => s.hideCourse); // сховати курс
   const setPicked = useUserStore((s) => s.setPicked); // повернути вибір
 
-  const params = { datum: date, stunde: lesson.period, fach: lesson.subject.code }; // параметри шторок цього уроку
+  const params = { datum: date, stunde: lesson.period, fach: lesson.subject?.code }; // параметри шторок цього уроку
   // Сховати можна лише курс за вибором (Wahl); обов'язкові («immer») — ні
   const course = courses.find((c) => c.nr === lesson.course?.nr);
   const canHide = Boolean(course?.optional);
@@ -80,9 +80,12 @@ const LessonContextMenu = ({ lesson, date, children }) => {
 
           <ContextMenu.Separator className={menuSeparatorClass} />
 
-          <ContextMenu.Item className={menuItemClass} onSelect={() => openSheet("farbe", { fach: lesson.subject.code })}>
-            <Palette className={menuIconClass} /> Fachfarbe ändern
-          </ContextMenu.Item>
+          {/* у уроку без предмета (subject: null) немає кольору, який можна змінити */}
+          {lesson.subject && (
+            <ContextMenu.Item className={menuItemClass} onSelect={() => openSheet("farbe", { fach: lesson.subject.code })}>
+              <Palette className={menuIconClass} /> Fachfarbe ändern
+            </ContextMenu.Item>
+          )}
           {canHide && (
             <ContextMenu.Item className={menuItemClass} onSelect={handleHide}>
               <EyeOff className={menuIconClass} /> Kurs ausblenden

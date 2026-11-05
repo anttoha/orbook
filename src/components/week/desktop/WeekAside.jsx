@@ -29,7 +29,7 @@ const WeekAside = ({ days }) => {
 
   return (
     <aside className="grid content-start gap-4 lg:grid-cols-2 desktop:grid-cols-1 print:hidden">
-      {showLive && <CurrentLessonCard live={live} onOpen={(lesson) => openSheet("stunde", { datum: today, stunde: lesson.period, fach: lesson.subject.code })} />}
+      {showLive && <CurrentLessonCard live={live} onOpen={(lesson) => openSheet("stunde", { datum: today, stunde: lesson.period, fach: lesson.subject?.code })} />}
       {todayDay?.info.length > 0 && <DayInfoBanner info={todayDay.info} onClick={() => openSheet("info", { datum: today })} />}
 
       {/* Nächste Klausuren */}

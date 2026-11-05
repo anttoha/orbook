@@ -33,9 +33,9 @@ const UpcomingCard = ({ days, today }) => {
           const Icon = lesson.status === "cancelled" ? CircleSlash : RefreshCw; // значок
           return (
             <button
-              key={`${date}-${lesson.period}-${lesson.subject.code}`}
+              key={`${date}-${lesson.period}-${lesson.subject?.code ?? ""}`}
               type="button"
-              onClick={() => openSheet("stunde", { datum: date, stunde: lesson.period, fach: lesson.subject.code })}
+              onClick={() => openSheet("stunde", { datum: date, stunde: lesson.period, fach: lesson.subject?.code })}
               className="flex items-center gap-3 py-3 text-left"
             >
               <Icon className="size-4.5 shrink-0 text-muted" />

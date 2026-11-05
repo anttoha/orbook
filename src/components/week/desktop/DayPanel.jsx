@@ -30,7 +30,7 @@ const DayPanel = ({ date }) => {
 
   const lessons = day ? filter(day.lessons) : []; // уроки дня
   const word = relativeDayWord(date, today); // heute / morgen / gestern
-  const openLesson = (lesson) => openSheet("stunde", { datum: date, stunde: lesson.period, fach: lesson.subject.code });
+  const openLesson = (lesson) => openSheet("stunde", { datum: date, stunde: lesson.period, fach: lesson.subject?.code });
 
   return (
     <section className="flex flex-col gap-3.5 rounded-card bg-card p-4.5">

@@ -1,6 +1,6 @@
 import { Flag } from "lucide-react";
 import { cn } from "../../shared/utils/cn";
-import { lessonBadge, subjectName } from "../../shared/utils/format";
+import { lessonBadge, subjectCode, subjectName } from "../../shared/utils/format";
 import { fachClasses } from "../../shared/utils/lessons";
 
 // ─────────────────────────────────────────────────────────────
@@ -18,7 +18,7 @@ const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
   if (lesson.status === "cancelled") {
     return (
       <button type="button" aria-label={label} {...props} className={cn(base, "border border-dashed border-faint2", isPast && "opacity-50", className)}>
-        <span className="text-hint font-semibold text-faint line-through">{lesson.subject.code}</span>
+        <span className="text-hint font-semibold text-faint line-through">{subjectCode(lesson.subject)}</span>
         <span className="truncate text-nano font-bold text-muted">fällt aus</span>
       </button>
     );
@@ -33,13 +33,13 @@ const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
       {...props}
       className={cn(
         base,
-        fachClasses(lesson.subject.code, overrides), // колір предмета (з урахуванням свого кольору)
+        fachClasses(lesson.subject?.code, overrides), // колір предмета (з урахуванням свого кольору)
         isChanged && "ring-2 ring-accent ring-inset", // рамка у зміни
         isPast && "opacity-45", // минулий урок блідіший
         className,
       )}
     >
-      <span className="truncate text-hint font-black">{lesson.subject.code}</span>
+      <span className="truncate text-hint font-black">{subjectCode(lesson.subject)}</span>
       <span className={cn("truncate", lesson.examId ? "text-nano font-extrabold text-accent-ink" : "text-room", isChanged && !lesson.examId && "font-extrabold text-accent-ink", !isChanged && !lesson.examId && "font-semibold opacity-85")}>
         {lesson.examId ? "Klausur" : lesson.room}
       </span>

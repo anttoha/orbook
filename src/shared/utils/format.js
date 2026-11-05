@@ -148,8 +148,14 @@ export function visibleLessons(lessons, courses, picked) {
   return lessons.filter((l) => !l.course || !optional.has(l.course.nr) || picked.has(l.course.nr));
 }
 
+const NO_SUBJECT_NAME = "Ohne Fach";
+const NO_SUBJECT_CODE = "–";
+
 // Назва предмета: з відповіді, інакше код (так у TW, Spr, SF, HS)
-export const subjectName = (subject) => subject.name ?? subject.code;
+export const subjectName = (subject) => subject?.name ?? subject?.code ?? NO_SUBJECT_NAME;
+
+// Код предмета в клітинці. subject буває null: так школа записує заміну чи захід без предмета.
+export const subjectCode = (subject) => subject?.code ?? NO_SUBJECT_CODE;
 
 // Пояснення школи до уроку (lesson.info). Стандартні фрази («En (T25) fällt aus», «für En (T25)»,
 // «verlegt von St.7 …») дублюють бейдж — їх не показуємо, решту («Sporttheorie») — як є.

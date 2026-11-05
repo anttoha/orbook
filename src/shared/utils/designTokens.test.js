@@ -6,7 +6,7 @@ const SRC = new URL("../../", import.meta.url);
 const css = readFileSync(new URL("index.css", SRC), "utf8");
 
 const codeFiles = readdirSync(SRC, { recursive: true })
-  .filter((name) => /\.jsx?$/.test(name) && !name.endsWith(".test.js"))
+  .filter((name) => /\.jsx?$/.test(name) && !/\.test\.jsx?$/.test(name))
   .map((name) => ({ name, text: readFileSync(new URL(name, SRC), "utf8") }));
 
 // Все совпадения шаблона в коде, вместе с именем файла
