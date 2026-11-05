@@ -2,7 +2,7 @@
 description: Закрыть часть — полные проверки, сверка с дизайном, выкладка на демо, путь для проверки пользователем
 argument-hint: <часть, напр. 02-tag>
 ---
-1. **Полные проверки один раз:** `make lint test` в `/opt/orbook-be` (если трогали бэкенд), `npm run lint`, `npm test`, `npm run build` в корне этой копии.
+1. **Полные проверки один раз:** `make lint test` в `/opt/orbook-be` (если трогали бэкенд), `npm run lint`, `npm test`, `npm run build` в корне этой копии (с `NODE_ENV=development` для lint/test, см. `CLAUDE.md`). Проверь, что в изменённых файлах нет hex-цветов и `[...]`-значений: `git diff main -- src | grep -E "#[0-9a-fA-F]{3,8}\b|-\[#"`.
 2. **Сверка с дизайном:** открой собранную страницу в headless-браузере (Playwright, если он уже установлен; не ставь тяжёлые пакеты без спроса — диск сервера почти полный), сделай скриншоты телефона 390×844 и ПК 1440×900, светлая и тёмная тема, и сравни с SVG из `/opt/orbook-be/design/ORBook Soft/` и `design/neu/`. Перечисли расхождения и исправь заметные.
 3. **Выкладка на демо:** коммит и `git push origin main` (deploy key `orbook-fe_deploy` уже настроен через `core.sshCommand`). Таймер на сервере сам выложит `main` на демо за ~2 минуты; проверь `journalctl --namespace=orbook -u orbook-fe-sync -n 20` и открой демо. Вручную не выкладывай. На прод — **только** если пользователь написал «на прод»: тогда нужен новый GitHub Release (попроси владельца опубликовать, сам не публикуй). Откат: `/opt/orbook-be/scripts/deploy-frontend.sh --rollback --site orbook-demo`.
 4. **Пользователю:**

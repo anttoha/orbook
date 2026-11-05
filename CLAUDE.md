@@ -8,23 +8,31 @@
 - Тексты интерфейса — **по-немецки**, как в дизайне. Общение с пользователем — по-русски.
 
 ## Стек
-Vite + React, **JavaScript (не TypeScript)**, React Router, CSS-модули или обычный CSS с переменными. Новые зависимости — только с объяснением, зачем, и если без них правда сложно.
+Vite + React 19, **JavaScript (не TypeScript)**, **Tailwind CSS v4** (плагин `@tailwindcss/vite`), React Router, Zustand, Radix UI, Vitest. Новые зависимости — только с объяснением, зачем, и если без них правда сложно.
 
-## Структура
+## Структура (оставляем как есть)
 ```
 src/
-  ui/        общие компоненты (Button, Card, Chip, Sheet, Toast, Icon) — только они рисуют «кирпичики»
-  styles/    tokens.css (все цвета Soft как CSS-переменные, светлая+тёмная), fonts
-  api/       api.js из /opt/orbook-be/docs/examples, по файлу на раздел API
-  features/  zugang, woche, tag, klausuren, notizen, mehr, statistik, admin, lehrkraft …
-  app/       роутер, errorElement, провайдеры
+  components/ui/   общие «кирпичики» (Button, Badge, Sheet, Section, Segmented …) — только они рисуют базовые элементы
+  components/      week, day, lesson, sheets, navbar — составные части экранов
+  pages/           экраны (Week, Day, Tests, Statistic, More, Admin, AuthPage …)
+  shared/api/      api.js (за основу — /opt/orbook-be/docs/examples/api.js), offlineCache.js
+  shared/utils/    чистые функции (lessons.js, format.js …) — их и тестируем
+  shared/{hooks,store,router,constants}/
+  index.css        Tailwind + ВСЕ токены Soft в @theme (см. ниже)
 ```
+Новый экран — `pages/` + части в `components/<раздел>/`. Логику без React — в `shared/utils/` с тестом рядом (`*.test.js`).
+
+## Токены (Tailwind v4: «конфиг» = блок `@theme` в `src/index.css`)
+- **Цвета Soft** — переменные `--color-*` в `@theme` (светлая тема), а тёмные значения тех же имён — в `.dark { … }` в том же файле. Переключение темы = класс `dark` на корне, поэтому компонент пишет один класс (`bg-card text-ink`) и работает в обеих темах.
+- В компонентах — **только классы токенов** (`bg-paper`, `text-muted`, `bg-mathe-tint`). Никаких hex (`#6C4DF6`), `rgb()`, `text-[#…]`, произвольных значений `bg-[…]` для цветов. Нужного цвета нет — сначала добавь токен в `@theme` **и** в `.dark`, взяв значение из дизайна.
+- **Шрифт** Nunito — `font-sans` / `font-nunito` (`@font-face` в `index.css`). Размеры и жирность текста — готовые классы `text-display`, `text-title`, `text-body`, `text-caption` … (таблица в `index.css`), не `text-[13px]`.
+- **Радиусы и отступы** — тоже токены `@theme` (`--radius-*`, `--spacing`/`--container-*`) и классы `rounded-*`, `p-*`, `gap-*` от них. Значения берём из дизайна Soft. Пока токенов радиусов нет, их заведёт часть 01; до этого не придумывай значения — смотри в дизайне.
 
 ## Правила кода
-- Цвета, радиусы, отступы — **только** через переменные из `tokens.css`. Никаких `#6C4DF6` в компонентах.
-- Шрифт Nunito, иконки — контурные SVG как в дизайне.
-- API — только через `src/api/`, пути относительные (`/api/...`), **без домена**.
-- Любое поле, которое в `/opt/orbook-be/docs/API.md` может быть `null`, обрабатывать (`?.` и запасной текст).
+- Иконки — контурные SVG как в дизайне (lucide-react подходит, если вид совпадает с дизайном).
+- API — только через `src/shared/api/`, пути относительные (`/api/...`), **без домена**.
+- Любое поле, которое в `/opt/orbook-be/docs/API.md` может быть `null`, обрабатывать (`?.` и запасной текст). Для таких случаев — тест в `shared/utils`.
 - Правка Klausur — с `If-Match`, ответы 409/428 — как в `/opt/orbook-be/docs/frontend/`.
 - Sync-шифрование — только эталон `/opt/orbook-be/docs/examples/sync-crypto.mjs`, не переписывать.
 - `useEffect` — только когда правда нужно, с очисткой.
@@ -32,7 +40,7 @@ src/
 - «Stand von …»: под названием дня мелкая серая строка из `publishedAt` дня; в шапке «aktualisiert vor N Min.» из `fetchedAt`. Ненавязчиво.
 
 ## Проверки
-`npm run lint`, `npm test` (Vitest на логику), `npm run build`. Разработка — против демо (`vite.config.js`: proxy `/api` → `https://orbook-demo.orbitium.net`).
+`npm run lint`, `npm test` (Vitest), `npm run build`. В окружении сервера стоит `NODE_ENV=production`, из-за чего `npm install` пропускает dev-зависимости: ставь `npm install --include=dev`, а тесты/линтер запускай с `NODE_ENV=development`. Разработка — против демо (`vite.config.js`: proxy `/api` → `https://orbook-demo.orbitium.net`).
 Выкладка: `git push` в `main` → таймер на сервере сам выкладывает демо (до ~2 минут). Прод — только по слову пользователя «на прод» (публикуется GitHub Release).
 
 ## Где что лежит (источники правды лежат в репозитории бэкенда)
@@ -41,5 +49,5 @@ src/
 - **Бэкенд** (новые эндпоинты, поля, миграции) делается только в `/opt/orbook-be` по его `CLAUDE.md` (план → «ок» владельца, `make lint test`, обновление `docs/API.md`, `docs/FRONTEND.md`, `docs/openapi.json`), выкладка — `scripts/update.sh`. Не правь бэкенд отсюда.
 - Прогресс: `docs/PROGRESS.md`, части: `docs/specs/README.md`, команды: `.claude/commands/`.
 
-## Состояние репозитория (расхождение, решить в части 01)
-Сейчас в коде Tailwind и другая структура (`src/components/ui`, `src/shared/api`, `src/pages`), а правила выше описывают `src/ui`, `src/api`, `src/features`, `tokens.css`. Часть 01 («Каркас») должна сначала согласовать это с владельцем, а не молча переписывать.
+## Состояние репозитория
+Решение владельца: **остаёмся на Tailwind и текущих папках**, структуру не переделываем. Токены Soft цвета/шрифта уже в `index.css`; радиусы и отступы токенами и линтер-замечания (6 старых ошибок `npm run lint`) приведёт в порядок часть 01.
