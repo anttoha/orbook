@@ -18,12 +18,13 @@
 
 - **10 Statistik** (2026-11-05): карточки с «ggü.», столбики «Diese Woche nach Tag», «Fällt am häufigsten aus», «Klausuren nach Fach», экран «Noch zu wenig Daten», офлайн из кеша. Учитывает «Meine Kurse» (`courses=`). Вкладка прячется, если школа выключила статистику. ПК — в части 12.
 
-## Дальше
-- **Nutzbarkeit** (2026-11-05, «ок дизайн» владельца): у всего, что нажимается, есть курсор-«рука», ховер (фон темнее/светлее), «проседание» при нажатии и фиолетовая рамка для Tab. Общие правила лежат в `index.css` (`@layer base`), строкам без фона добавлен `hover:bg-paper`. Переходы между страницами: `shared/utils/pageMotion.js` + `usePageAnimation`. В Fachfarben выбранный предмет выделен фоном и галочкой. Любой курс можно скрыть: обязательные лежат в `userStore.hiddenRequired`, фильтр `visibleLessons`/`isCourseVisible`. Статистика шлёт `hidden=<nr,…>`.
+- **Переключатели и значки** (2026-11-05): кружок переключателя плавно едет (`Switch.jsx`, `translate`). Значок предмета — общий `ui/SubjectBadge.jsx`, длинные коды («AGTan») режутся до 3 букв (`badgeCode`).
+- **Бэкенд, вариант А** (2026-11-05, «ок» владельца): `GET /api/stats` понимает `hidden=<nr,…>` — скрытые курсы любого типа не считаются (коммит `20be54a` в `/opt/orbook-be`, тесты зелёные, docs и openapi обновлены). **Ещё не выложен**: `scripts/update.sh` запускает владелец (у Claude нет права на выкладку прода).
 
 ## Дальше
-1. Бэкенд, вариант А: `GET /api/stats` учитывает параметр `hidden`. План показан владельцу, ждём «ок». Пока сервер этот параметр пропускает, и скрытый обязательный курс в статистике ещё считается.
-2. 11 Notizen + Sync.
+1. Проверить, что владелец выложил бэкенд: `curl -s https://orbook-demo.orbitium.net/api/health`, затем на демо «Meine Kurse» → скрыть Mathe → Statistik меньше.
+2. `/orb-design` нового экрана **«Admin · Kurse und Fächer»** (владелец попросил экраны): курс Pflicht ↔ Wahl (`courses.optional`), названия предметов (`subjects.names`), с какого дня считать статистику (`stats.since`). Всё уже есть в `PATCH /api/admin/settings`. Телефон+ПК, светлая+тёмная, в стиле «47 Admin · Einstellungen». Остановиться на «ок дизайн».
+3. Потом 11 Notizen + Sync; 13 Admin (вместе с новым экраном).
 
 Замечено для части 12: страница «Einstellungen» на ПК пока одна колонка без левого меню, в ней нет «Tastenkürzel». В части 11 вернуть в Mehr строку «Notizen synchronisieren», в части 17 — «Mitteilungen».
 
