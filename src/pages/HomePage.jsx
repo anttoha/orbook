@@ -4,17 +4,20 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import { Toaster } from "sonner";
 import { TriangleAlert } from "lucide-react";
 import AuthPage from "./AuthPage";
+import CourseStart from "./CourseStart";
 import Container from "../components/ui/Container";
 import SideNav from "../components/navbar/SideNav";
 import BottomNav from "../components/navbar/BottomNav";
 import SheetHost from "../components/sheets/SheetHost";
 import { usePlanStore } from "../shared/store/planStore";
+import { useUserStore } from "../shared/store/userStore";
 
 // ─────────────────────────────────────────────────────────────
 // Оболонка застосунку. Вирішує, що показати:
 //   me === undefined → ще питаємо сервер «хто я» (порожній екран)
 //   startError       → немає мережі і нічого не збережено → «Erneut versuchen»
 //   me === null      → екран входу (AuthPage)
+//   курси не вибрані → перший запуск (CourseStart)
 //   інакше           → сайдбар / нижнє меню + сторінка (Outlet) + шторки
 // ─────────────────────────────────────────────────────────────
 const HomePage = () => {
@@ -24,6 +27,7 @@ const HomePage = () => {
   const tick = usePlanStore((s) => s.tick); // оновити «зараз»
   const checkStatus = usePlanStore((s) => s.checkStatus); // чи змінився план
   const demo = usePlanStore((s) => s.meta?.demo); // демо-сервер?
+  const coursesChosen = useUserStore((s) => s.coursesChosen); // чи пройдено вибір курсів
 
   // Один раз при відкритті: дізнатись, чи ми увійшли
   useEffect(() => {
@@ -56,6 +60,7 @@ const HomePage = () => {
   }
 
   if (!me) return <AuthPage />; // не увійшли — екран входу
+  if (!coursesChosen) return <CourseStart />; // перший запуск на цьому пристрої
 
   return (
     // Tooltip.Provider — спільний «пульт» для спливаючих підказок (затримка 300 мс)

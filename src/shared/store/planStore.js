@@ -28,6 +28,7 @@ export const usePlanStore = create((set, get) => ({
   loginNotice: null, // «Bitte erneut anmelden.» — коли сесія закінчилась
   meta: null,
   courses: [],
+  coursesStatus: "loading", // "loading" | "ready" | "error": екрану курсів треба відрізняти «ще вантажимо» від «порожньо»
   exams: [],
   status: null,
   weeks: {},
@@ -59,7 +60,7 @@ export const usePlanStore = create((set, get) => ({
   logout: async () => {
     await api("/auth/logout", { method: "POST" }).catch(() => {}); // без мережі — виходимо локально
     cache.clearAll(); // кеш відповідей особистий — стираємо
-    set({ me: null, meta: null, courses: [], exams: [], status: null, weeks: {} });
+    set({ me: null, meta: null, courses: [], coursesStatus: "loading", exams: [], status: null, weeks: {} });
   },
 
   // ── Після входу: паралельно meta, курси, Klausuren, стан плану ──
@@ -79,10 +80,21 @@ export const usePlanStore = create((set, get) => ({
         const clock = createSchoolClock(fromCache ? null : data.serverTime);
         set({ meta: data, clock, now: clock.now() });
       }),
-      load("courses", "/courses", ({ data }) => set({ courses: data.courses })),
+      get().loadCourses(),
       load("exams", "/exams", ({ data }) => set({ exams: data.exams })),
       load("status", "/plan/status", ({ data }) => set({ status: data })),
     ]);
+  },
+
+  // ── Курси класу. Окремо від loadBasics, щоб кнопка «Erneut versuchen» могла вантажити лише їх ──
+  loadCourses: async () => {
+    set({ coursesStatus: "loading" });
+    try {
+      const { data } = await loadWithCache("courses", () => api("/courses"));
+      set({ courses: data?.courses ?? [], coursesStatus: "ready" });
+    } catch {
+      set({ coursesStatus: "error" });
+    }
   },
 
   // ── Тиждень (Mo–Fr), monday — "2026-10-05". silent: не показувати скелет, якщо дані вже є ──

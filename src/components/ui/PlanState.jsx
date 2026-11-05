@@ -19,8 +19,8 @@ import { cn } from "../../shared/utils/cn";
 export const Skeleton = ({ className }) => <div className={cn("animate-pulse rounded-field bg-skeleton", className)} />;
 
 // Маленька кнопка в плашці
-const RetryButton = ({ onClick, children }) => (
-  <button type="button" onClick={onClick} className="flex shrink-0 items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-label font-extrabold text-ink">
+const RetryButton = ({ onClick, children, className }) => (
+  <button type="button" onClick={onClick} className={cn("flex shrink-0 items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-label font-extrabold text-ink", className)}>
     <RefreshCw className="size-3.5" /> {children}
   </button>
 );
@@ -57,12 +57,15 @@ export const PlanBanner = ({ resource, onRetry, className }) => {
 };
 
 // Даних немає зовсім
-export const PlanError = ({ resource, onRetry }) => (
+export const PlanError = ({ resource, onRetry, title = "Plan konnte nicht geladen werden" }) => (
   <div role="alert" className="flex flex-col items-center gap-3 rounded-card bg-card px-5 py-10 text-center">
     <TriangleAlert className="size-7 text-danger" />
-    <p className="text-subhead text-ink">Plan konnte nicht geladen werden</p>
+    <p className="text-subhead text-ink">{title}</p>
     {/* текст помилки від сервера (німецькою) або від api.js («Keine Verbindung…») */}
     <p className="text-label font-semibold text-muted">{resource.error?.message}</p>
-    <RetryButton onClick={onRetry}>Erneut versuchen</RetryButton>
+    {/* плашка стоїть на картці, тому кнопці потрібен інший фон, інакше її не видно */}
+    <RetryButton onClick={onRetry} className="bg-sand">
+      Erneut versuchen
+    </RetryButton>
   </div>
 );

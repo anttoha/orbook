@@ -248,6 +248,8 @@
     --color-danger-tint: #fce7eb;
     --color-ok: #1f9d6b;
     --color-skeleton: #eee7de;
+    --color-switch-off: #c0b8c6;
+    --color-switch-thumb: #ffffff;
 
     /* fach */
     --color-deutsch-tint: #f6d7da;
@@ -321,6 +323,8 @@
     --color-danger-tint: #3a1d25;
     --color-ok: #5fd3a2;
     --color-skeleton: #27222f;
+    --color-switch-off: #352f40;
+    --color-switch-thumb: #16131c;
 
     /* fach */
     --color-deutsch-tint: #482836;

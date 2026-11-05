@@ -16,6 +16,8 @@ export const useUserStore = create(
       picked: [], // «Meine Kurse»: номери вибраних курсів за вибором (course.nr). [] — показувати все
       colorOverrides: {}, // свої кольори: { Ma: "kunst" } — Mathe малюється палітрою Kunst
       showWeekend: false, // показувати Sa/So у сітці тижня
+      // Чи пройдено екран «Welche Kurse hast du?». Окремий прапорець, бо picked: [] теж законний вибір
+      coursesChosen: false,
 
       // ── нотатки ──
 
@@ -43,6 +45,9 @@ export const useUserStore = create(
 
       // Повернути попередній вибір (кнопка «Rückgängig» у сповіщенні)
       setPicked: (picked) => set({ picked }),
+
+      // «Weiter» на екрані першого запуску: зберегти вибір і більше не питати
+      finishCourseChoice: (picked) => set({ picked, coursesChosen: true }),
 
       // Показати всі курси знову
       showAllCourses: () => set({ picked: [] }),
