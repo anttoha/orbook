@@ -11,6 +11,7 @@ import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
 import { longDate, subjectName, weekdayLong, weekdayShort } from "../../shared/utils/format";
 import { currentMonday } from "../../shared/utils/lessons";
+import { visibleNotes } from "../../shared/utils/notes";
 import Kbd from "../ui/Kbd";
 
 // Скільки результатів показувати максимум
@@ -52,7 +53,7 @@ const buildIndex = (days, exams, notes, { openSheet, navigate }) => {
   });
 
   // Свої нотатки
-  notes.forEach((note) => {
+  visibleNotes(notes).forEach((note) => {
     items.push({
       id: `n-${note.id}`,
       icon: NotebookPen,

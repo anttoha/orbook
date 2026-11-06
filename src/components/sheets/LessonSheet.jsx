@@ -6,6 +6,7 @@ import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { subjectName } from "../../shared/utils/format";
 import { fachTextClass, findLesson, lessonExam, lessonNote } from "../../shared/utils/lessons";
+import { findNote } from "../../shared/utils/notes";
 import { lessonText, shareText } from "../../shared/utils/share";
 import ChangedValue from "../lesson/ChangedValue";
 import Button from "../ui/Button";
@@ -28,7 +29,7 @@ const Row = ({ label, children }) => (
 const LessonSheet = ({ open, onClose, sheet }) => {
   const { openSheet } = useSheet(); // щоб відкрити шторку нотатки
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
-  const note = useUserStore((s) => s.notes.find((n) => n.id === `${sheet.datum}#${sheet.stunde}`)); // нотатка до уроку
+  const note = useUserStore((s) => findNote(s.notes, `${sheet.datum}#${sheet.stunde}`)); // нотатка до уроку
   const { day } = useDay(sheet.datum); // день із тижня
   const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // адмін міг вимкнути «Teilen»
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { deleteNote, editNote, findNote, fitsInBlock, mergeNotes, newNote, noteMeta, noteSubjects, syncErrorText, syncNotes, upgradeNote, visibleNotes } from "./notes";
+import { deleteNote, editNote, findNote, fitsInBlock, mergeNotes, newNote, noteMeta, noteSubjects, syncedText, syncErrorText, syncNotes, upgradeNote, visibleNotes } from "./notes";
 
 const at = (iso) => new Date(iso);
 const note = (id, updatedAt, extra = {}) => ({ id, text: id, date: "2026-11-06", subject: null, period: null, updatedAt, ...extra });
@@ -119,5 +119,14 @@ describe("підписи", () => {
     expect(syncErrorText(new Error("wrong_code"))).toBe("Code passt nicht zu den Notizen");
     expect(syncErrorText({ code: "offline" })).toBe("Nicht synchronisiert — keine Verbindung");
     expect(syncErrorText({ code: "sync_full", message: "x" })).toBe("Der Sync-Speicher ist voll.");
+  });
+});
+
+describe("syncedText", () => {
+  it("сьогодні — тільки час, ще не було — «Noch nicht»", () => {
+    const now = new Date(2026, 10, 6, 9, 0);
+    expect(syncedText(new Date(2026, 10, 6, 7, 40).toISOString(), 6, now)).toBe("Zuletzt synchronisiert heute 07:40 · 6 Notizen");
+    expect(syncedText(new Date(2026, 10, 5, 18, 5).toISOString(), 1, now)).toBe("Zuletzt synchronisiert gestern 18:05 · 1 Notiz");
+    expect(syncedText(null, 0, now)).toBe("Noch nicht synchronisiert · 0 Notizen");
   });
 });

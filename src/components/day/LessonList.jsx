@@ -3,6 +3,7 @@ import { useNow } from "../../shared/hooks/useNow";
 import { useUserStore } from "../../shared/store/userStore";
 import { berlinParts, isLessonNow, isLessonPast, toMinutes } from "../../shared/utils/lessonClock";
 import { lessonExam, lessonKey } from "../../shared/utils/lessons";
+import { findNote } from "../../shared/utils/notes";
 import BreakRow from "./BreakRow";
 import LessonRow from "./LessonRow";
 
@@ -42,7 +43,7 @@ const LessonList = ({ day, lessons, onOpen, preliminary = false }) => {
               date={day.date}
               isPast={preliminary || isLessonPast(lesson, day.date, now)}
               live={live}
-              note={notes.find((n) => n.id === `${day.date}#${lesson.period}`)} // нотатка до цього уроку
+              note={findNote(notes, `${day.date}#${lesson.period}`)} // нотатка до цього уроку
               overrides={overrides}
               onOpen={preliminary ? undefined : () => onOpen(lesson)}
             />

@@ -4,6 +4,8 @@
 // Нотатка: { id, text, date: "2026-10-07", subject: "Ma" | null, period: 2 | null, updatedAt: ISO, deleted?: true }
 // ─────────────────────────────────────────────────────────────
 
+import { planMomentText } from "./format";
+
 const TOMBSTONE_DAYS = 30; // видалена нотатка живе як «надгробок», щоб видалення дійшло до інших пристроїв
 const MAX_PLAIN_BYTES = 48 * 1024; // блок ≤ 64 КБ у base64: відкритий JSON — не більше ~48 КБ
 
@@ -93,4 +95,17 @@ export function syncErrorText(error) {
   if (error?.code === "sync_full") return "Der Sync-Speicher ist voll.";
   if (error?.code === "offline" || error?.code === "timeout") return "Nicht synchronisiert — keine Verbindung";
   return error?.message || "Nicht synchronisiert";
+}
+
+// Місцевий час пристрою як "2026-11-06T07:40" (синхронізація — це час телефона, а не школи)
+const localMoment = (date) => {
+  const two = (n) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${two(date.getMonth() + 1)}-${two(date.getDate())}T${two(date.getHours())}:${two(date.getMinutes())}`;
+};
+
+// «Zuletzt synchronisiert heute 07:40 · 6 Notizen» / «Noch nicht synchronisiert · 1 Notiz»
+export function syncedText(lastSyncAt, count, now = new Date()) {
+  const notes = `${count} ${count === 1 ? "Notiz" : "Notizen"}`;
+  if (!lastSyncAt) return `Noch nicht synchronisiert · ${notes}`;
+  return `Zuletzt synchronisiert ${planMomentText(localMoment(new Date(lastSyncAt)), localMoment(now).slice(0, 10))} · ${notes}`;
 }

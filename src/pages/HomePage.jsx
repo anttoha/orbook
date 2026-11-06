@@ -11,6 +11,7 @@ import BottomNav from "../components/navbar/BottomNav";
 import SheetHost from "../components/sheets/SheetHost";
 import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { usePageAnimation } from "../shared/hooks/usePageAnimation";
+import { useNotesSync } from "../shared/hooks/useNotesSync";
 import { usePlanPolling } from "../shared/hooks/usePlanPolling";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
@@ -42,6 +43,7 @@ const HomePage = () => {
   }, [start]);
 
   usePlanPolling(Boolean(me)); // кожні 10 секунд питаємо, чи змінився план
+  useNotesSync(Boolean(me) && me.features?.notesSync !== false); // нотатки на інших пристроях (якщо є Sync-Code)
 
   // Раз на хвилину: оновити час школи (рядок «зараз» і «noch 27 min»)
   useEffect(() => {

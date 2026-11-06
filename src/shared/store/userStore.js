@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { toggleCourse, togglePicked } from "../utils/courses";
+import { deleteNote, editNote, newNote, upgradeNote } from "../utils/notes";
 
 // ─────────────────────────────────────────────────────────────
 // userStore — те, що користувач налаштовує САМ і що живе тільки на пристрої
@@ -9,11 +10,19 @@ import { toggleCourse, togglePicked } from "../utils/courses";
 // тому після перезавантаження сторінки дані лишаються.
 // ─────────────────────────────────────────────────────────────
 
+// Перехід зі старої версії сховища. Налаштування з тестових даних (до версії 2) не підходять —
+// лишаємо тільки нотатки і вихідні. Нотатки старших версій отримують предмет і час ISO
+export function migrateUser(old, from) {
+  const notes = (old?.notes ?? []).map(upgradeNote);
+  if (from < 2) return { notes, picked: [], hiddenRequired: [], colorOverrides: {}, showWeekend: old?.showWeekend ?? false };
+  return { ...old, notes };
+}
+
 export const useUserStore = create(
   persist(
     (set, get) => ({
       // ── стан ──
-      notes: [], // нотатки: { id, date: "2026-10-07", period: 2 | null, text, updatedAt }
+      notes: [], // нотатки (shared/utils/notes.js): { id, text, date, subject, period, updatedAt, deleted? }
       picked: [], // «Meine Kurse»: номери вибраних курсів за вибором (course.nr). [] — показувати все
       hiddenRequired: [], // номери прихованих обов'язкових курсів: учень сам вирішує, що бачити
       colorOverrides: {}, // свої кольори: { Ma: "kunst" } — Mathe малюється палітрою Kunst
@@ -28,17 +37,22 @@ export const useUserStore = create(
 
       // ── нотатки ──
 
-      // Створити або оновити нотатку. period — номер уроку або null (нотатка на день)
-      saveNote: ({ id, date, period = null, text }) => {
-        // id: у нотатки до уроку він сталий («дата#урок»), у нотатки на день — випадковий
-        const noteId = id ?? (period ? `${date}#${period}` : `${date}#${crypto.randomUUID()}`);
-        const note = { id: noteId, date, period, text, updatedAt: Date.now() };
-        set({ notes: [...get().notes.filter((n) => n.id !== noteId), note] }); // замінюємо стару версію
-        return noteId;
+      // Створити або оновити нотатку. id — є у нотатки, яку змінюємо; period — номер уроку або null
+      saveNote: ({ id, date, period = null, subject = null, text }) => {
+        const old = get().notes.find((n) => n.id === (id ?? (period ? `${date}#${period}` : null)));
+        const note = old ? editNote(old, { date, subject, text, deleted: undefined }) : newNote(text, { date, subject, period });
+        set({ notes: [...get().notes.filter((n) => n.id !== note.id), note] }); // замінюємо стару версію
+        return note.id;
       },
 
-      // Видалити нотатку
-      deleteNote: (id) => set({ notes: get().notes.filter((n) => n.id !== id) }),
+      // Видалити: лишається «надгробок», щоб видалення дійшло до інших пристроїв
+      deleteNote: (id) => set({ notes: get().notes.map((n) => (n.id === id ? deleteNote(n) : n)) }),
+
+      // «Rückgängig»: повернути стару версію (з новим часом — щоб вона перемогла надгробок)
+      restoreNote: (note) => set({ notes: [...get().notes.filter((n) => n.id !== note.id), editNote(note, {})] }),
+
+      // Результат синхронізації: злитий список
+      setNotes: (notes) => set({ notes }),
 
       // ── курси ──
 
@@ -88,9 +102,8 @@ export const useUserStore = create(
     }),
     {
       name: "orbook-user", // ключ у localStorage
-      version: 2, // версія 2: дані з сервера (коди предметів замість «mathe», курси за номером)
-      // Старі налаштування (з тестових даних) не підходять — лишаємо тільки нотатки і вихідні
-      migrate: (old) => ({ notes: old?.notes ?? [], picked: [], hiddenRequired: [], colorOverrides: {}, showWeekend: old?.showWeekend ?? false }),
+      version: 3, // 2: дані з сервера замість тестових; 3: нотатки з предметом і часом ISO (синхронізація)
+      migrate: migrateUser,
     },
   ),
 );
