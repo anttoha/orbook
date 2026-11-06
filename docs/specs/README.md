@@ -23,6 +23,6 @@
 | 13 | Admin | Admin · … + «Kurse und Fächer» (`design/neu/13-admin-kurse`, дизайн ок 2026-11-06) | да (`/api/admin/courses`, выложен) | ✅ готово (2026-11-06) |
 | 14 | Lehrkräfte: вход по коду, Tests/Hausaufgaben | `design/neu/14-lehrkraefte` (дизайн ок 2026-11-06) | **да** (выложен 2026-11-06) | ✅ готово (2026-11-06) |
 | 14b | Admin · Zugang: отдельный раздел «Passwörter» как у Editor-Codes — сменить пароль класса (уже есть карточкой в Einstellungen), **сгенерировать** пароль класса (показ один раз), сменить пароль админа, видно «Seit …» и сколько устройств выйдет | `design/neu/14b-passwoerter` (дизайн ок 2026-11-06) | нет (`POST /api/admin/class-password` с `generate`, `POST /api/admin/admin-password` уже есть) | ✅ готово (2026-11-06) |
-| 15 | Материалы: ссылки Google Drive/OneDrive | **новые** | **да** | |
+| 15 | Материалы: ссылки Google Drive/OneDrive | `design/neu/15-materialien` (дизайн ок 2026-11-06) | **да** | в работе |
 | 16 | Einladen: ссылка + QR | **новые** | **да** | |
 | 17 | PWA + Web Push (этап 8) | Mitteilungen | да | |

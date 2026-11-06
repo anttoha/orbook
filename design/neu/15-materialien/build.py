@@ -37,7 +37,7 @@ SECTIONS = [
     ("liste", "Список «Materialien»", "Открывается из «Mehr» (телефон) или из левого меню (компьютер). Ссылки сгруппированы по предметам, сверху фильтр по предмету. У каждой строки — плитка в цвете предмета (папка или файл), название, откуда ссылка и кто добавил. Нажатие сразу открывает Google Drive / OneDrive в новой вкладке (значок ↗ справа). Долгое нажатие (на ПК — правая кнопка или «⋯») открывает действия.",
      [("handy-01-materialien", "Materialien"), ("handy-02-aktionen", "Lange drücken → Aktionen")],
      [("pc-01-materialien", "Computer · Materialien (новый пункт меню)"), ("pc-02-menue", "Computer · Rechtsklick-Menü")]),
-    ("neu", "Добавить ссылку", "Кнопка «+» / «Link teilen». Выбрать предмет (учитель видит только свои предметы из плана), вставить ссылку, написать название. Приложение само узнаёт, что это за ссылка («Erkannt: Google Drive · Ordner»). Ссылки других сайтов (Dropbox и т. п.) не принимаются — красная рамка и подсказка. Две подсказки: открыть доступ «Jeder mit dem Link» и не выкладывать файлы с именами и оценками.",
+    ("neu", "Добавить ссылку", "Кнопка «+» / «Link teilen». Выбрать предмет (учитель видит только свои предметы из плана), вставить ссылку, написать название. Приложение само узнаёт, что это за ссылка («Erkannt: Google Drive · Ordner»). Ссылки других сайтов (Dropbox и т. п.) не принимаются — красная рамка и подсказка. Под полем всегда видно, какие сайты разрешены: «Erlaubt: Google Drive · OneDrive». Две подсказки: открыть доступ «Jeder mit dem Link» и не выкладывать файлы с именами и оценками.",
      [("handy-03-neu", "Neuer Link"), ("handy-04-link-falsch", "Link nicht erlaubt")],
      [("pc-03-neu", "Computer · Neuer Link (Fenster)"), ("pc-04-link-falsch", "Computer · Link nicht erlaubt")]),
     ("zustaende", "Сохранено, удаление, пусто, загрузка", "После сохранения — тост внизу и метка «NEU» у новой строки. Удаление — с вопросом: исчезает только ссылка, сами файлы в Drive не трогаем. Пустой список объясняет, что здесь будет и кто может добавлять. Загрузка — серые полоски (skeleton), как на других экранах.",
@@ -46,6 +46,9 @@ SECTIONS = [
     ("weg", "Где ещё видно", "Главное место в течение дня: в окне урока («Stunde · Details») под «Info» появляется блок «Materialien · Mathe» — ссылки этого предмета, «Alle» ведёт в полный список с фильтром. В «Mehr» — новая секция «Klasse» со строкой «Materialien · 6 Links». В админке у Editor-Codes и Lehrer-Codes новое право «Materialien teilen».",
      [("handy-09-stunde", "Stunde · Details + Materialien"), ("handy-10-mehr", "Mehr · Klasse → Materialien"), ("handy-11-code-recht", "Admin · neues Recht")],
      [("pc-08-stunde", "Computer · Stunde · Details + Materialien")]),
+    ("seiten", "Разрешённые сайты видны на сайте", "Как вы просили: список разрешённых сайтов виден не только в форме, но и у админа в «Einstellungen» — новая карточка «Materialien»: Google Drive и OneDrive с меткой «ERLAUBT» и адресами, которые принимаются. Пока только просмотр; если позже захотите добавить другие сайты, переключатели появятся здесь.",
+     [("handy-12-admin-seiten", "Admin · Einstellungen (Ausschnitt)")],
+     [("pc-09-admin-seiten", "Computer · Admin · Einstellungen")]),
 ]
 OLD = [(("1 Handy Hell", "2 Handy Dunkel", "07 Stunde · Details (Blatt)"), "Soft 07 · Stunde · Details", "phone"),
        (("1 Handy Hell", "2 Handy Dunkel", "22 Mehr"), "Soft 22 · Mehr", "phone"),
@@ -111,15 +114,15 @@ def page():
     out.append('<section id="vergleich"><h2>Для сравнения: старые экраны Soft</h2><p>Откуда взяты шторка, строки меню, список и левое меню.</p><div class="row">')
     out += [orig(pth, cap, kind) for pth, cap, kind in OLD]
     out.append('</div></section></div>')
-    out.append('''<div class="box"><h2>Нужно ваше решение</h2><ol>
-<li><b>Кто может добавлять ссылки?</b> <span>Предлагаю: учителя (только по своим предметам), админ и Editor-Codes с новым правом «Materialien teilen». Обычные ученики — только смотрят.</span></li>
-<li><b>Кто может удалять?</b> <span>Предлагаю: автор и админ. Учитель — ещё и чужие ссылки своего предмета.</span></li>
-<li><b>Какие сайты разрешить?</b> <span>Предлагаю: только Google Drive/Docs и OneDrive/SharePoint (так в названии части). Dropbox, YouTube и прочее — нет.</span></li>
+    out.append('''<div class="box"><h2>Ваши ответы (учтены)</h2><ol>
+<li><b>Добавляют:</b> <span>учителя (свои предметы), админ, Editor-Codes с правом «Materialien teilen».</span></li>
+<li><b>Удаляют:</b> <span>автор, админ, учитель этого предмета.</span></li>
+<li><b>Сайты:</b> <span>пока только Google Drive/Docs и OneDrive/SharePoint, список виден в форме и в настройках админа.</span></li>
 </ol><h2 style="margin-top:20px">Решил сам (скажите, если не так)</h2><ul style="margin:0;padding-left:20px">
 <li>файлы в ORBook не загружаются — только ссылка и название (до 80 знаков), без предпросмотра: так ни одна чужая страница не грузится в приложение;</li>
 <li>ссылки живут, пока их не удалят (без автоудаления, как Klausuren);</li>
 <li>раздел — в «Mehr» и в окне урока, а не новой вкладкой внизу: там уже 4 кнопки.</li>
-</ul><p style="margin-top:12px">Ответ: «ок дизайн» (и ответы на 1–3) или что поменять.</p></div>''')
+</ul><p style="margin-top:12px">Ответ: «ок» или что поменять.</p></div>''')
     out.append(f'</div><script>{JS}</script>')
     return "\n".join(out)
 

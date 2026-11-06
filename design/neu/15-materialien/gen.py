@@ -182,6 +182,15 @@ def link_field(x, y, w, c, state, h=52):
         out.append(T(x, y + h + 22, "Nur Links von Google Drive oder OneDrive.", 12.5, 400, c["danger"]))
     else:
         out.append(T(x, y + h + 22, "Aus Google Drive oder OneDrive: „Teilen“ → „Link kopieren“.", 12, 400, c["faint"]))
+    out.append(allowed_line(x, y + h + 36, c))
+    return "".join(out)
+
+def allowed_line(x, y, c):
+    """«Erlaubt: Google Drive · OneDrive» — всегда видно, какие сайты принимаются."""
+    out = [T(x, y + 13, "Erlaubt:", 12, 700, c["faint"])]
+    x += 58
+    for name in ("Google Drive", "OneDrive"):
+        bd, bw = badge(x, y, name.upper(), c, "sand"); out.append(bd); x += bw + 6
     return "".join(out)
 
 def p_form(c, theme, sub, state="ok"):
@@ -194,7 +203,7 @@ def p_form(c, theme, sub, state="ok"):
     y = 205
     b.append(label(18, y, "Link", c))
     b.append(link_field(18, y + 10, 354, c, state))
-    y += 116
+    y += 140
     b.append(label(18, y, "Titel", c))
     b.append(R(18, y + 10, 354, 52, 16, c["field"]))
     b.append(T(35, y + 41.5, "Arbeitsblätter Analysis" if state != "leer" else "z. B. Arbeitsblätter Analysis", 16, 400, c["ink"] if state != "leer" else c["faint2"]))
@@ -255,6 +264,31 @@ def p_codes(c, theme, sub):
     bd, _ = badge(22 + 34 + 136, 366.81, "NEU", c, "tint")
     b.append(checkbox(22, 366.31, True, c) + T(56, 380.81, "Materialien teilen", 14.5, 400, c["ink"]) + bd)
     return svg(w, h + dy, c, "".join(b))
+
+SITES = [("Google Drive", "drive.google.com · docs.google.com"), ("OneDrive", "onedrive.live.com · 1drv.ms · SharePoint")]
+
+def sites_card(x, y, w, c):
+    """Карточка в «Einstellungen» админа: какие сайты разрешены (пока только просмотр)."""
+    bd, _ = badge(x + 92, y - 13.5, "NEU", c, "tint")
+    out = [label(x, y, "Materialien", c), bd]
+    y += 14
+    out.append(R(x, y, w, 134, 22, c["card"]))
+    for i, (name, hosts) in enumerate(SITES):
+        ry = y + i * 67
+        if i: out.append(f'<line x1="{x + 14}" y1="{ry}" x2="{x + w - 14}" y2="{ry}" stroke="{c["hair"]}" stroke-width="1"/>')
+        out.append(T(x + 14, ry + 30, name, 15, 400, c["ink"]) + T(x + 14, ry + 49, hosts, 12, 400, c["faint"]))
+        b2, bw = badge(0, 0, "ERLAUBT", c, "ok")
+        out.append(f'<g transform="translate({x + w - 14 - bw} {ry + 24})">{b2}</g>')
+    out.append(T(x, y + 134 + 24, "Andere Seiten (Dropbox, YouTube …) werden abgelehnt.", 12, 400, c["faint"]))
+    out.append(T(x, y + 134 + 41, "Die Liste sieht jeder unter „Neuer Link“.", 12, 400, c["faint"]))
+    return "".join(out)
+
+def p_admin_sites(c, theme, sub):
+    """45 «Admin · Einstellungen» (Ausschnitt): vor «Funktionen» neue Karte «Materialien»."""
+    inner, w, h = base("45 Admin · Einstellungen", theme)
+    dy, cut = 214, 1110
+    body = g.split_shift(inner, cut, dy, w, h) + R(0, cut, 390, dy, 0, c["paper"]) + sites_card(18, cut + 20.66, 354, c)
+    return svg(390, 844, c, f'<g transform="translate(0 -760)">{body}</g>')
 
 # ════════════════ Computer ════════════════
 SIDE_ITEMS_Y = 330  # neuer Menüpunkt unter «Statistik»
@@ -343,11 +377,11 @@ def pc_form(c, theme, sub, state="ok"):
     y += 80
     b.append(label(L, y, "Link", c))
     b.append(link_field(L, y + 10, W - 52, c, state))
-    y += 116
+    y += 136
     b.append(label(L, y, "Titel", c))
     b.append(R(L, y + 10, W - 52, 52, 16, c["field"]) + T(L + 17, y + 41.5, "Arbeitsblätter Analysis", 16, 400, c["ink"]))
     b.append(T(L, y + 82, "23 von 80 Zeichen", 12, 400, c["faint"]))
-    y += 100
+    y += 96
     b.append(note_box(L, y, W - 52, ["Freigabe in Drive: „Jeder mit dem Link“ – sonst sehen Schüler nur „Zugriff anfordern“.",
                                       "Keine Dateien mit Namen oder Noten von Schülern."], c, INFO))
     y = Y + H - 78
@@ -373,6 +407,26 @@ def pc_stunde(c, theme, sub):
         b.append(ICON(1366, ry + 21, 0.67, c["faint"], EXT, 2))
     return svg(w, h, c, "".join(b))
 
+def pc_admin_sites(c, theme, sub):
+    """47 «Admin · Einstellungen»: rechte Spalte — zwischen «Aktualisierung» und «Funktionen» neue Karte «Materialien».
+    Karten hier sind wie im Original: Überschrift innen, Zeilen mit feiner Linie."""
+    inner, w, h = base("47 Admin · Einstellungen", theme, "PC")
+    X, Y, W, H = 854, 422.03, 550, 250
+    dy, cut = H + 18, 413
+    b = [g.split_shift(inner, cut, dy, w, h, 840, 1440), R(840, cut, 600, dy, 0, c["paper"]), R(X, Y, W, H, 22, c["card"])]
+    bd, _ = badge(X + 112, Y + 20, "NEU", c, "tint")
+    b.append(label(X + 20, Y + 33.5, "Materialien", c) + bd)
+    for i, (name, hosts) in enumerate(SITES):
+        ry = Y + 48 + i * 67
+        if i: b.append(f'<line x1="{X + 20}" y1="{ry}" x2="{X + W - 20}" y2="{ry}" stroke="{c["hair"]}" stroke-width="1"/>')
+        b.append(T(X + 20, ry + 30, name, 14.5, 400, c["ink"]) + T(X + 20, ry + 49, hosts, 12, 400, c["faint"]))
+        b2, bw = badge(0, 0, "ERLAUBT", c, "ok")
+        b.append(f'<g transform="translate({X + W - 20 - bw} {ry + 24})">{b2}</g>')
+    b.append(f'<line x1="{X + 20}" y1="{Y + 182}" x2="{X + W - 20}" y2="{Y + 182}" stroke="{c["hair"]}" stroke-width="1"/>')
+    b.append(ICON(X + 20, Y + 198, 0.54, c["faint"], INFO) + T(X + 38, Y + 209, "Andere Seiten (Dropbox, YouTube …) werden abgelehnt.", 12, 400, c["faint"]))
+    b.append(T(X + 38, Y + 226, "Die Liste sieht jeder unter „Neuer Link“.", 12, 400, c["faint"]))
+    return svg(1440, 900, c, "".join(b))
+
 SCREENS = {
     "handy-01-materialien": p_list,
     "handy-02-aktionen": lambda c, t, s: p_list(c, t, s, "aktionen"),
@@ -385,6 +439,7 @@ SCREENS = {
     "handy-09-stunde": p_stunde,
     "handy-10-mehr": p_mehr,
     "handy-11-code-recht": p_codes,
+    "handy-12-admin-seiten": p_admin_sites,
     "pc-01-materialien": pc_page,
     "pc-02-menue": lambda c, t, s: pc_page(c, t, s, "menu"),
     "pc-03-neu": pc_form,
@@ -393,6 +448,7 @@ SCREENS = {
     "pc-06-loeschen": lambda c, t, s: pc_page(c, t, s, "loeschen"),
     "pc-07-leer": lambda c, t, s: pc_page(c, t, s, "leer"),
     "pc-08-stunde": pc_stunde,
+    "pc-09-admin-seiten": pc_admin_sites,
 }
 if __name__ == "__main__":
     n = 0
