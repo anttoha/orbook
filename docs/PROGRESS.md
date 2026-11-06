@@ -24,7 +24,7 @@
 
 ## Дальше
 1. Проверить на демо руками: «Meine Kurse» → скрыть Mathe → Statistik меньше. Sync на двух устройствах: Mehr → Notizen synchronisieren → Code erzeugen → на втором устройстве ввести код.
-2. `/orb-design` нового экрана **«Admin · Kurse und Fächer»** (владелец попросил экраны): курс Pflicht ↔ Wahl (`courses.optional`), названия предметов (`subjects.names`), с какого дня считать статистику (`stats.since`). Всё уже есть в `PATCH /api/admin/settings`. Телефон+ПК, светлая+тёмная, в стиле «47 Admin · Einstellungen». Остановиться на «ок дизайн».
+2. **Ждёт «ок дизайн»:** макет «Admin · Kurse und Fächer» готов в `design/neu/13-admin-kurse/` (`index.html`, генератор `gen.py`; `courses.optional` может только добавить Wahl — группы и параллельные курсы «Immer Wahl»). Было: `/orb-design` нового экрана (владелец попросил экраны): курс Pflicht ↔ Wahl (`courses.optional`), названия предметов (`subjects.names`), с какого дня считать статистику (`stats.since`). Всё уже есть в `PATCH /api/admin/settings`. Телефон+ПК, светлая+тёмная, в стиле «47 Admin · Einstellungen». Остановиться на «ок дизайн».
 3. Потом 13 Admin (вместе с новым экраном), 12 ПК-раскладка.
 
 Замечено для части 12: страница «Einstellungen» на ПК пока одна колонка без левого меню, в ней нет «Tastenkürzel». В части 17 вернуть в Mehr строку «Mitteilungen». В части 12: страница Notizen-Sync в левом меню «Einstellungen», кнопка «Jetzt synchronisieren».
