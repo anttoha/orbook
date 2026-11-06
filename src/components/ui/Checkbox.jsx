@@ -3,7 +3,7 @@ import { cn } from "../../shared/utils/cn";
 
 // Галочка з підписом (права коду: «Klausuren eintragen» …). Справжній <input>, тому працює з клавіатури
 const Checkbox = ({ checked, onChange, label, disabled = false }) => (
-  <label className={cn("flex h-11 cursor-pointer items-center gap-3.5 text-row text-ink", disabled && "cursor-default opacity-50")}>
+  <label className={cn("flex min-h-11 cursor-pointer items-center gap-3.5 text-row text-ink", disabled && "cursor-default opacity-50")}>
     <input type="checkbox" className="peer sr-only" checked={checked} disabled={disabled} onChange={(event) => onChange(event.target.checked)} />
     <span
       aria-hidden="true"

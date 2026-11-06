@@ -67,3 +67,27 @@ export const SecurityCard = ({ className, ...props }) => (
     </div>
   </SettingsCard>
 );
+
+// «Hausaufgaben» (частина 14, макет handy-12): коли видаляти після строку здачі. 0 — у кінці навчального року
+const HOMEWORK_KEEP = [
+  { value: 7, label: "nach 7 Tagen" },
+  { value: 14, label: "nach 14 Tagen" },
+  { value: 30, label: "nach 30 Tagen" },
+  { value: 90, label: "nach 90 Tagen" },
+  { value: 0, label: "zum Schuljahresende" },
+];
+
+// Старі сервери не мають розділу homework у settings — тоді картки немає
+export const HomeworkCard = ({ className, onPurge, purging, ...props }) =>
+  props.form.homework ? (
+    <SettingsCard title="Hausaufgaben" className={className}>
+      <div className={divided}>
+        <SelectRow label="Automatisch löschen" hint="nach dem Abgabetag" section="homework" field="keepDays" options={HOMEWORK_KEEP} {...props} />
+        <OptionRow label="Hausaufgaben jetzt aufräumen" hint="Abgelaufene nach dieser Regel löschen">
+          <button type="button" disabled={purging} onClick={onPurge} className="h-8.5 rounded-full bg-sand px-3.5 text-hint font-bold text-ink disabled:opacity-50">
+            Aufräumen
+          </button>
+        </OptionRow>
+      </div>
+    </SettingsCard>
+  ) : null;

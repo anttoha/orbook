@@ -6,9 +6,12 @@ import {
   classPasswordText,
   codeChip,
   courseState,
+  editableRights,
+  entriesCount,
   errorHours,
   eventTime,
   hasRight,
+  isTeacherCode,
   labelError,
   lastUsedText,
   optionalPatch,
@@ -169,5 +172,21 @@ describe("Kurse und Fächer", () => {
     expect(subjectNamesPatch(names, subjects, edited)).toEqual({ Alt: "bleibt", Ma: "Mathematik", SF: "Seminarfach" });
     expect(subjectNamesPatch(names, subjects, {})).toEqual(names);
     expect(shownName(subjects[3])).toBe("");
+  });
+});
+
+describe("Lehrer-Codes (Teil 14)", () => {
+  it("Rechte-Text", () => {
+    expect(rightsText({ create: true, homework: true }, "teacher")).toBe("Klausuren · Hausaufgaben");
+    expect(rightsText({ create: true, homework: false }, "teacher")).toBe("Nur Klausuren");
+    expect(rightsText({ create: true, editOwn: true, homework: true })).toBe("Eintragen · eigene bearbeiten · Hausaufgaben");
+    expect(rightsText({ homework: true })).toBe("Hausaufgaben");
+  });
+  it("Hausaufgaben zählen als Recht", () => expect(hasRight({ homework: true })).toBe(true));
+  it("Einträge und änderbare Rechte", () => {
+    expect(entriesCount({ examCount: 2, homeworkCount: 4 })).toBe(6);
+    expect(entriesCount({ examCount: 2 })).toBe(2);
+    expect(isTeacherCode({ kind: "teacher" })).toBe(true);
+    expect(editableRights({ kind: "teacher" }, { create: true, editOwn: true, homework: false })).toEqual({ create: true, homework: false });
   });
 });

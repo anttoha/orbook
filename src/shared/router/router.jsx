@@ -17,6 +17,7 @@ import Day from "../../pages/Day";
 import Admin from "../../pages/Admin";
 import AdminOverview from "../../pages/AdminOverview";
 import AdminCodes from "../../pages/AdminCodes";
+import AdminTeacherCodes from "../../pages/AdminTeacherCodes";
 import AdminExams from "../../pages/AdminExams";
 import AdminCourses from "../../pages/AdminCourses";
 import AdminLog from "../../pages/AdminLog";
@@ -46,6 +47,7 @@ export const router = createBrowserRouter([
         children: [
           page({ index: true, Component: AdminOverview }),
           page({ path: "codes", Component: AdminCodes }),
+          page({ path: "lehrer", Component: AdminTeacherCodes }), // Lehrer-Codes (частина 14)
           page({ path: "klausuren", Component: AdminExams }),
           page({ path: "kurse", Component: AdminCourses }),
           page({ path: "protokoll", Component: AdminLog }),

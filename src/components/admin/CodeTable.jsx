@@ -1,4 +1,4 @@
-import { lastUsedDay, rightsText, validText } from "../../shared/utils/admin";
+import { entriesCount, lastUsedDay, rightsText, validText } from "../../shared/utils/admin";
 import { cn } from "../../shared/utils/cn";
 import Switch from "../ui/Switch";
 import CodeChip from "./CodeChip";
@@ -6,14 +6,16 @@ import CodeMenu from "./CodeMenu";
 
 const th = "pb-3 text-left text-hint font-extrabold text-faint";
 
-// Таблиця кодів на ПК (макети 43 і 42). compact — на Übersicht: без «Gültig bis»
-const CodeTable = ({ codes, today, compact = false, onToggle, onAction }) => (
+// Таблиця кодів на ПК (макети 43 і 42). compact — на Übersicht: без «Gültig bis».
+// subjectsOf(code) — Lehrer-Codes (pc-04): колонки «Lehrkraft · Fächer · … · Darf»
+const CodeTable = ({ codes, today, compact = false, onToggle, onAction, subjectsOf = null }) => (
   <table className="w-full border-collapse">
     <thead className="border-b border-hair">
       <tr>
-        <th className={th}>Name</th>
+        <th className={th}>{subjectsOf ? "Lehrkraft" : "Name"}</th>
+        {subjectsOf && <th className={th}>Fächer</th>}
         <th className={th}>Code</th>
-        <th className={th}>Rechte</th>
+        <th className={th}>{subjectsOf ? "Darf" : "Rechte"}</th>
         {!compact && <th className={th}>Gültig bis</th>}
         <th className={th}>Zuletzt</th>
         <th className={th}>Einträge</th>
@@ -27,11 +29,12 @@ const CodeTable = ({ codes, today, compact = false, onToggle, onAction }) => (
       {codes.map((code) => (
         <tr key={code.id} className={cn("text-body-sm text-muted", !code.active && "opacity-60")}>
           <td className="py-4 pr-3 font-extrabold text-ink">{code.label}</td>
+          {subjectsOf && <td className="pr-3">{subjectsOf(code)}</td>}
           <td className="pr-3 whitespace-nowrap text-ink">{code.masked}</td>
-          <td className="pr-3">{rightsText(code.rights)}</td>
+          <td className="pr-3">{rightsText(code.rights, code.kind)}</td>
           {!compact && <td className="pr-3">{validText(code)}</td>}
           <td className="pr-3">{lastUsedDay(code.lastUsedAt, today)}</td>
-          <td className="pr-3 text-ink">{code.examCount}</td>
+          <td className="pr-3 text-ink">{entriesCount(code)}</td>
           <td className="pr-3">
             <CodeChip code={code} />
           </td>

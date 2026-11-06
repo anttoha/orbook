@@ -1,4 +1,4 @@
-import { Ellipsis, FileText, House, List, Palette, Server, Sun, Table2 } from "lucide-react";
+import { Ellipsis, FileText, House, List, Palette, Server, Sun, Table2, UserRound } from "lucide-react";
 import { FlagIcon, KeyIcon, ShieldIcon, StatsIcon, SyncIcon } from "../../components/ui/icons";
 
 // Масштаб «Schriftgröße» (ті самі відсотки, що в index.css): шкали часу множать на нього пікселі
@@ -16,7 +16,9 @@ export const navTabs = [
 // count — лічильник праворуч: "codes" (усі Editor-Codes) або "exams" (найближчі Klausuren)
 export const adminTabs = [
   { to: "/admin", label: "Übersicht", icon: House, exact: true, mobile: true, desktop: true },
+  // Lehrer-Codes: на ПК — окремий пункт, на телефоні — друга половина вкладки «Codes» (перемикач, Admin.jsx)
   { to: "/admin/codes", label: "Editor-Codes", short: "Codes", icon: KeyIcon, mobile: true, desktop: true, count: "codes" },
+  { to: "/admin/lehrer", label: "Lehrer-Codes", icon: UserRound, desktop: true, count: "teachers" },
   { to: "/admin/klausuren", label: "Klausuren", icon: FlagIcon, mobile: true, desktop: true, count: "exams" },
   { to: "/admin/kurse", label: "Kurse & Fächer", icon: Table2, desktop: true },
   { to: "/admin/protokoll", label: "Protokoll", icon: FileText, desktop: true },

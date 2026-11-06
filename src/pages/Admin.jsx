@@ -10,7 +10,8 @@ import "../shared/hooks/useTheme"; // тема (світла/темна) з на
 import { useAdminStore } from "../shared/store/adminStore";
 import AdminLogin from "./AdminLogin";
 
-const MOBILE_TABS = adminTabs.filter((tab) => tab.mobile);
+// На телефоні «Codes» світиться і на /admin/lehrer: там перемикач «Editor-Codes · Lehrer-Codes»
+const MOBILE_TABS = adminTabs.filter((tab) => tab.mobile).map((tab) => (tab.to === "/admin/codes" ? { ...tab, activeOn: ["/admin/lehrer"] } : tab));
 // Підсторінки з кнопкою «назад»: на телефоні без нижнього меню (макет 46)
 const SUB_PAGES = ["/admin/protokoll", "/admin/kurse"];
 

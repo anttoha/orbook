@@ -3,7 +3,7 @@ import { ChevronRight, Info } from "lucide-react";
 import { useCodeActions } from "../../shared/hooks/useCodeActions";
 import { useNow } from "../../shared/hooks/useNow";
 import { useAdminStore } from "../../shared/store/adminStore";
-import { hasRight, labelError, lastUsedText, rightsText, validText, validUntilFor } from "../../shared/utils/admin";
+import { editableRights, entriesCount, hasRight, labelError, lastUsedText, rightsText, validText, validUntilFor } from "../../shared/utils/admin";
 import { cn } from "../../shared/utils/cn";
 import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog";
@@ -16,7 +16,7 @@ import RightsFields from "./RightsFields";
 import ValidFields from "./ValidFields";
 
 // Значення праворуч у шторці телефона: «Eintragen, eigene», «31. Juli»
-const hintOf = (kind, code) => ({ rights: rightsText(code.rights), validity: validText(code) })[kind];
+const hintOf = (kind, code) => ({ rights: rightsText(code.rights, code.kind), validity: validText(code) })[kind];
 
 // Шторка «Code-Aktionen» на телефоні (макет 43)
 const ActionsSheet = ({ code, onAction, onClose }) => {
@@ -24,7 +24,7 @@ const ActionsSheet = ({ code, onAction, onClose }) => {
   return (
     <Sheet open onClose={onClose} desktop="dialog" eyebrow={`${code.masked} · ${code.active ? "aktiv" : "gesperrt"}`} title={code.label}>
       <p className="-mt-2 text-body-sm text-muted">
-        {code.examCount} Einträge · {lastUsedText(code.lastUsedAt, today)}
+        {entriesCount(code)} Einträge · {lastUsedText(code.lastUsedAt, today)}
       </p>
       <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
         {codeActions(code).map((item) => (
@@ -87,11 +87,11 @@ const RightsSheet = ({ code, actions, onClose }) => {
   const [error, setError] = useState(null);
   const save = () => {
     setError(hasRight(rights) ? null : "Mindestens ein Recht auswählen.");
-    return hasRight(rights) ? actions.setRights(code, rights) : false;
+    return hasRight(rights) ? actions.setRights(code, editableRights(code, rights)) : false;
   };
   return (
     <FormSheet code={code} title="Rechte ändern" onClose={onClose} onSave={save}>
-      <RightsFields value={rights} onChange={setRights} error={error} />
+      <RightsFields value={rights} onChange={setRights} error={error} kind={code.kind} />
     </FormSheet>
   );
 };

@@ -94,16 +94,36 @@ export function storageText(storage) {
 
 // ── Editor-Codes ──
 
-// Права коду → підпис як у макеті
-export function rightsText(rights) {
-  if (rights?.editAll) return "Alle bearbeiten";
-  if (rights?.create && rights?.editOwn) return "Eintragen · eigene bearbeiten";
-  if (rights?.create) return "Eintragen";
-  return rights?.editOwn ? "Eigene bearbeiten" : "—";
+// Lehrer-Code (частина 14): kind = "teacher", label = Kürzel
+export const isTeacherCode = (code) => code?.kind === "teacher";
+
+// Права Lehrer-Code → «Klausuren · Hausaufgaben» / «Nur Klausuren» / «Nur Hausaufgaben» (макет handy-10)
+function teacherRightsText(rights) {
+  if (rights?.create && rights?.homework) return "Klausuren · Hausaufgaben";
+  if (rights?.create) return "Nur Klausuren";
+  return rights?.homework ? "Nur Hausaufgaben" : "—";
+}
+
+// Права коду → підпис як у макеті. Hausaufgaben у Editor-Code — додатком у кінці
+export function rightsText(rights, kind = "editor") {
+  if (kind === "teacher") return teacherRightsText(rights);
+  let text = "—";
+  if (rights?.editAll) text = "Alle bearbeiten";
+  else if (rights?.create && rights?.editOwn) text = "Eintragen · eigene bearbeiten";
+  else if (rights?.create) text = "Eintragen";
+  else if (rights?.editOwn) text = "Eigene bearbeiten";
+  if (!rights?.homework) return text;
+  return text === "—" ? "Hausaufgaben" : `${text} · Hausaufgaben`;
 }
 
 // Хоч одне право має лишитись (інакше сервер відповість 422)
-export const hasRight = (rights) => Boolean(rights.create || rights.editOwn || rights.editAll);
+export const hasRight = (rights) => Boolean(rights.create || rights.editOwn || rights.editAll || rights.homework || rights.editTeacher);
+
+// Скільки записів зробив код: Klausuren + Hausaufgaben (homeworkCount буває відсутнім у старого сервера)
+export const entriesCount = (code) => (code.examCount ?? 0) + (code.homeworkCount ?? 0);
+
+// Права, які можна міняти: у Lehrer-Code — лише create і homework (решту сервер не приймає)
+export const editableRights = (code, rights) => (isTeacherCode(code) ? { create: Boolean(rights.create), homework: Boolean(rights.homework) } : rights);
 
 // status коду → чип: AKTIV / GESPERRT / ABGELAUFEN
 export const codeChip = (code) => ({ ok: "AKTIV", locked: "GESPERRT", expired: "ABGELAUFEN" })[code.status] ?? "";

@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { LogOut, Table2 } from "lucide-react";
 import { adminTabs } from "../../shared/constants/constants";
 import { useAdminStore } from "../../shared/store/adminStore";
-import { clock, HEALTH, planHealth } from "../../shared/utils/admin";
+import { clock, HEALTH, isTeacherCode, planHealth } from "../../shared/utils/admin";
 import { isTabActive } from "../../shared/utils/isTabActive";
 import NavigationLink from "../navbar/NavigationLink";
 import Logo from "../ui/Logo";
@@ -36,7 +36,12 @@ const AdminSideNav = () => {
   const overview = useAdminStore((s) => s.overview.data);
   const codes = useAdminStore((s) => s.codes.data?.codes);
   const logout = useAdminStore((s) => s.logout);
-  const counts = { codes: codes?.length ?? null, exams: overview?.counts.examsUpcoming ?? null };
+  // Editor-Codes і Lehrer-Codes лежать в одному списку /admin/codes (поле kind)
+  const counts = {
+    codes: codes ? codes.filter((code) => !isTeacherCode(code)).length : null,
+    teachers: codes ? codes.filter(isTeacherCode).length : null,
+    exams: overview?.counts.examsUpcoming ?? null,
+  };
 
   return (
     <aside className="sticky top-4 my-4 hidden h-[calc(100dvh-2rem)] w-sidebar shrink-0 flex-col rounded-panel bg-card px-3.5 pt-4 pb-3.5 lg:flex print:hidden">

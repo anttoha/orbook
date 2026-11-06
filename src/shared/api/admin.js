@@ -24,6 +24,16 @@ export const updateCode = (id, changes) => api(`/admin/codes/${id}`, { method: "
 export const regenerateCode = (id) => api(`/admin/codes/${id}/regenerate`, { method: "POST" });
 export const deleteCode = (id) => api(`/admin/codes/${id}`, { method: "DELETE" });
 
+// ── Lehrer-Codes (частина 14) ──
+// → { teachers: [{ short, subjects: ["Ma"], codeId }] }: Kürzel із плану класу; codeId — діючий Lehrer-Code або null
+export const loadTeachers = () => api("/admin/teachers");
+// Один Kürzel — один діючий код: другий → 409 teacher_exists. → { code, item }, код ORB-L-… лише тут
+export const createTeacherCode = ({ teacher, rights, valid }) => api("/admin/codes", { method: "POST", body: { kind: "teacher", teacher, rights, valid } });
+
+// ── Hausaufgaben ──
+// «Hausaufgaben jetzt aufräumen»: за строком homework.keepDays → { removed }
+export const purgeHomework = () => api("/admin/homework/purge", { method: "POST" });
+
 // ── Klausuren ──
 export function loadAdminExams({ scope, q = "" }) {
   const params = new URLSearchParams({ scope });

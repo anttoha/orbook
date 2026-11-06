@@ -1,9 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import AdminHeader from "../components/admin/AdminHeader";
 import { AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import ClassPasswordCard from "../components/admin/settings/ClassPasswordCard";
 import DangerZone from "../components/admin/settings/DangerZone";
-import { FeaturesCard, SecurityCard, UpdateCard } from "../components/admin/settings/OptionCards";
+import { FeaturesCard, HomeworkCard, SecurityCard, UpdateCard } from "../components/admin/settings/OptionCards";
+import { purgeHomework } from "../shared/api/admin";
 import PrivacyCard from "../components/admin/settings/PrivacyCard";
 import SaveButton from "../components/admin/settings/SaveButton";
 import SchoolCard from "../components/admin/settings/SchoolCard";
@@ -23,6 +25,20 @@ const SettingsForm = ({ data }) => {
   const draft = useSettingsForm(data.settings);
   const { form, set, bad } = draft;
   const rows = { form, set, bad }; // для рядків з перемикачами і списками
+  const [purging, setPurging] = useState(false);
+
+  // «Hausaufgaben jetzt aufräumen»: за ЗБЕРЕЖЕНИМ правилом keepDays (незбережену зміну сервер ще не знає)
+  const purge = async () => {
+    setPurging(true);
+    try {
+      const { removed } = await purgeHomework();
+      toast.success(removed === 1 ? "1 Hausaufgabe gelöscht" : `${removed} Hausaufgaben gelöscht`);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setPurging(false);
+    }
+  };
 
   return (
     <section className="flex flex-col gap-4 lg:gap-5">
@@ -46,6 +62,7 @@ const SettingsForm = ({ data }) => {
           <UpdateCard className="order-3" {...rows} />
           <FeaturesCard className="order-4" {...rows} />
           <SecurityCard className="order-5" {...rows} />
+          <HomeworkCard className="order-5" {...rows} onPurge={purge} purging={purging} />
         </div>
       </div>
       <DangerZone onDone={reloadOverview} />
