@@ -75,7 +75,8 @@ const HomeworkForm = ({ item }) => {
   const picked = useUserStore((s) => s.picked);
   const overrides = useUserStore((s) => s.colorOverrides);
   const teacher = isTeacher(me);
-  const [fields, setFields] = useState(() => homeworkToForm(item));
+  // нова Hausaufgabe — за замовчуванням «bis morgen» (як у макеті handy-06)
+  const [fields, setFields] = useState(() => (item ? homeworkToForm(item) : { ...homeworkToForm(null), due: addDays(today, 1) }));
   const [localErrors, setLocalErrors] = useState({});
   const flow = useExamSave(item, HOMEWORK_OPS);
 

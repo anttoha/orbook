@@ -53,9 +53,11 @@ const HomeworkSheet = ({ open, onClose, sheet }) => {
       footer={
         <div className="flex w-full flex-col gap-3.5">
           {shareEnabled && (
-            <Button onClick={() => shareText(homeworkText(item))}>
-              <Share className="size-4" /> Teilen
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={() => shareText(homeworkText(item))}>
+                <Share className="size-4" /> Teilen
+              </Button>
+            </div>
           )}
           {item.canEdit && (
             <Button variant="primary" className="flex-none" onClick={() => navigate(`/testen/hausaufgaben/${item.id}/bearbeiten`)}>
