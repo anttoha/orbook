@@ -90,3 +90,9 @@
 
 ## Neuer Plan (2026-11-05)
 Сравнение идёт с тем, что ученик видел последним: `seenWeeks` в `planStore.js` запоминается до первого запроса недели, потому что ответ перезаписывает и экран, и кеш. «Ansehen» и «Plan neu laden» переносят эту точку на свежие данные. В `localStorage` лежит только `orbook.seenChange`, при выходе он стирается.
+
+## Часть 14 — фронт готов (2026-11-06)
+Spec: `docs/specs/14-lehrkraefte/spec.md`. Сделано: вход учителя (`/?zugang=lehrkraft`, `POST /api/auth/teacher`, «Abmelden», без Editor-Code и без выбора курсов), Hausaufgaben (переключатель `?liste=hausaufgaben` во вкладке Klausuren, окно `?sheet=hausaufgabe`, форма `/testen/hausaufgaben/neu`, «fällig heute» в Tag), автор/«Ändern: …»/«Verlauf» в окнах Klausur и Hausaufgabe, «Schüler dürfen ändern» в формах учителя, админка: `/admin/lehrer` (телефон — переключатель на «Codes»), новые права Editor-Code, карточка «Hausaufgaben» в Einstellungen (`homework.keepDays`, «Aufräumen»).
+Скриншоты: `/root/work/orbook-compare/14-lehrkraefte/` (`cmp-handy-*.png`, `shots/`), скрипт `_tools/teach.mjs`.
+Не сделано (следующие шаги, не блокируют): список Hausaufgaben в админке (`/api/admin/homework`: правка/удаление админом) — сейчас админ меняет только Klausuren; предметы учителя в Lehrer-Codes показываются кодами («Ma, Ph»), а не названиями.
+На настоящем демо вход учителя не проверяли: Lehrer-Code создаёт админ (пароль админа есть только у владельца).
