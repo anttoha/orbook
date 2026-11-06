@@ -21,7 +21,7 @@
 | 11 | Notizen + Sync | 20–21 | нет | ✅ готово (ПК с левым меню и «Jetzt synchronisieren» — в части 12) |
 | 12 | ПК-раскладка | Computer 01–53 | нет | ✅ готово (2026-11-06) |
 | 13 | Admin | Admin · … + «Kurse und Fächer» (`design/neu/13-admin-kurse`, дизайн ок 2026-11-06) | да (`/api/admin/courses`, выложен) | ✅ готово (2026-11-06) |
-| 14 | Lehrkräfte: вход по коду, Tests/Hausaufgaben | **новые** (`/orb-design`) | **да** | |
+| 14 | Lehrkräfte: вход по коду, Tests/Hausaufgaben | `design/neu/14-lehrkraefte` (дизайн ок 2026-11-06) | **да** (сделан, ждёт выкладки `update.sh`) | ⏳ фронт |
 | 15 | Материалы: ссылки Google Drive/OneDrive | **новые** | **да** | |
 | 16 | Einladen: ссылка + QR | **новые** | **да** | |
 | 17 | PWA + Web Push (этап 8) | Mitteilungen | да | |
