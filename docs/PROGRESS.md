@@ -98,3 +98,8 @@ Spec: `docs/specs/14-lehrkraefte/spec.md`. Сделано: вход учител
 На настоящем демо вход учителя не проверяли: Lehrer-Code создаёт админ (пароль админа есть только у владельца).
 
 **Дальше (новый чат, `/orb-auto`):** часть 15 «Материалы» — экранов нет, сначала `/orb-design` и «ок дизайн» владельца.
+
+## Часть 14b — макеты ждут «ок дизайн» (2026-11-06)
+Макеты: `design/neu/14b-passwoerter/` (`gen.py` берёт помощники из `14-lehrkraefte/gen.py`, `build.py` собирает `index.html`), артефакт https://claude.ai/artifact/Fv6TA6PNVUuUL3d9ULCCGp.
+Решено в макетах: раздел `/admin/passwoerter` (ПК — пункт меню после «Lehrer-Codes», телефон — из Einstellungen и Übersicht → Schnell); карточка пароля класса в Einstellungen заменяется ссылками; «Erzeugen» с вопросом, пароль показывается один раз (как `CodeReveal`), «Für die Klassengruppe kopieren»; пароль админа: текущий + новый (мин. 12), ошибка `wrong_password` с `attemptsLeft`, тост `otherSessionsEnded`. Число устройств до смены API не даёт — показываем только после.
+**Дальше (после «ок дизайн»):** `/orb-spec` → `/orb-build` → `/orb-check` для 14b, потом часть 15 (тоже сначала `/orb-design`).
