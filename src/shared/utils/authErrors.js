@@ -21,3 +21,14 @@ export function lockDuration(error) {
   if (error.code !== "locked") return 0;
   return (error.retryAfter ?? error.details?.retryAfter ?? LOCK_MINUTES * 60) * 1000;
 }
+
+// Текст під полем «Admin-Passwort» (docs/frontend/09-admin.md): блокування адміна — 30 хвилин
+export function adminLoginErrorText(error) {
+  if (error.code === "wrong_password") {
+    const left = error.details?.attemptsLeft;
+    return left > 0 ? `${error.message} Noch ${left} ${left === 1 ? "Versuch" : "Versuche"}.` : error.message;
+  }
+  if (error.status === 429) return retryText(error);
+  if (error.code === "not_configured") return "Das Admin-Passwort ist noch nicht gesetzt.";
+  return error.message;
+}

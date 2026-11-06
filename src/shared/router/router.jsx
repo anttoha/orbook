@@ -14,6 +14,12 @@ import StartPage from "../../pages/StartPage";
 import Week from "../../pages/Week";
 import Day from "../../pages/Day";
 import Admin from "../../pages/Admin";
+import AdminOverview from "../../pages/AdminOverview";
+import AdminCodes from "../../pages/AdminCodes";
+import AdminExams from "../../pages/AdminExams";
+import AdminCourses from "../../pages/AdminCourses";
+import AdminLog from "../../pages/AdminLog";
+import AdminSettings from "../../pages/AdminSettings";
 import RouteError from "../../pages/RouteError";
 import Datenschutz from "../../pages/Datenschutz";
 
@@ -30,6 +36,20 @@ export const router = createBrowserRouter([
     children: [
       // поза HomePage: цю сторінку можна відкрити без входу, з екрана «Zugang»
       page({ path: "datenschutz", Component: Datenschutz }),
+      // Адмінка: свій вхід і своє меню, вхід класу їй не потрібен (docs/frontend/09-admin.md)
+      {
+        path: "admin",
+        Component: Admin,
+        errorElement: <RouteError />,
+        children: [
+          page({ index: true, Component: AdminOverview }),
+          page({ path: "codes", Component: AdminCodes }),
+          page({ path: "klausuren", Component: AdminExams }),
+          page({ path: "kurse", Component: AdminCourses }),
+          page({ path: "protokoll", Component: AdminLog }),
+          page({ path: "einstellungen", Component: AdminSettings }),
+        ],
+      },
       {
         Component: HomePage,
         errorElement: <RouteError />,
@@ -48,7 +68,6 @@ export const router = createBrowserRouter([
           page({ path: "mehr/darstellung", Component: Appearance }),
           page({ path: "mehr/fachfarben", Component: SubjectColors }),
           page({ path: "mehr/sync", Component: NotesSync }), // Notizen synchronisieren
-          page({ path: "admin", Component: Admin }), // поки заглушка
         ],
       },
     ],

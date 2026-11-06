@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ApiError } from "../api/api";
-import { lockDuration, loginErrorText } from "./authErrors";
+import { adminLoginErrorText, lockDuration, loginErrorText } from "./authErrors";
 
 const wrong = (details) => new ApiError(401, "wrong_password", "Passwort stimmt nicht.", details);
 
@@ -41,5 +41,14 @@ describe("lockDuration", () => {
   it("другие ошибки кнопку не отключают", () => {
     expect(lockDuration(wrong({ attemptsLeft: 2 }))).toBe(0);
     expect(lockDuration(new ApiError(429, "rate_limited", "x", {}, 30))).toBe(0);
+  });
+});
+
+describe("adminLoginErrorText", () => {
+  it("Versuche, Sperre, nicht eingerichtet", () => {
+    expect(adminLoginErrorText(wrong({ attemptsLeft: 2 }))).toBe("Passwort stimmt nicht. Noch 2 Versuche.");
+    expect(adminLoginErrorText(wrong({}))).toBe("Passwort stimmt nicht.");
+    expect(adminLoginErrorText(new ApiError(429, "locked", "x", {}, 1800))).toBe("Bitte in 30 Minuten erneut versuchen.");
+    expect(adminLoginErrorText(new ApiError(503, "not_configured", "x"))).toBe("Das Admin-Passwort ist noch nicht gesetzt.");
   });
 });

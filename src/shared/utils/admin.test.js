@@ -10,14 +10,15 @@ import {
   eventTime,
   hasRight,
   labelError,
-  optionalList,
+  lastUsedText,
+  optionalPatch,
   planHealth,
   planTimesText,
   rightsText,
   schoolYearEnd,
   serverLine,
   settingsPatch,
-  subjectCodes,
+  shownName,
   subjectNamesPatch,
   validText,
   validUntilFor,
@@ -96,6 +97,13 @@ describe("Editor-Codes", () => {
     expect(validUntilFor("date", { todayIso: "2026-11-06", date: "2027-01-10" })).toBe("2027-01-10");
   });
 
+  it("lastUsedText: heute, gestern, Wochen, nie", () => {
+    expect(lastUsedText("2026-11-06T09:12:00+01:00", "2026-11-06")).toBe("zuletzt heute");
+    expect(lastUsedText("2026-11-05T09:12:00+01:00", "2026-11-06")).toBe("zuletzt gestern");
+    expect(lastUsedText("2026-10-14T09:12:00+02:00", "2026-11-06")).toBe("zuletzt vor 3 Wochen");
+    expect(lastUsedText(null, "2026-11-06")).toBe("noch nie benutzt");
+  });
+
   it("labelError: keine Kontaktdaten", () => {
     expect(labelError("Code A")).toBeNull();
     expect(labelError("  ")).not.toBeNull();
@@ -126,33 +134,40 @@ describe("Einstellungen", () => {
 });
 
 describe("Kurse und Fächer", () => {
+  const course = (nr, label, extra = {}) => ({ nr, label, group: null, parallel: false, parallelWith: null, automatic: false, forced: false, ...extra });
   const courses = [
-    { nr: "131", label: "Ma", group: null, optional: false, subject: { code: "Ma", name: "Mathe" } },
-    { nr: "150", label: "Bi", group: null, optional: true, subject: { code: "Bi", name: "Biologie" } },
-    { nr: "141", label: "SpJu", group: "SpJu", optional: true, subject: { code: "Sp", name: "Sport" } },
-    { nr: "160", label: "Ku", group: null, optional: true, subject: { code: "Ku", name: "Kunst" } },
-    { nr: "170", label: "TW", group: null, optional: false, subject: null },
+    course("131", "Ma"),
+    course("150", "Bi", { forced: true }),
+    course("141", "SpJu", { group: "SpJu", automatic: true }),
+    course("160", "Ku", { parallel: true, parallelWith: "Mu", automatic: true }),
+    course("167", "Fr", { parallel: true, automatic: true }),
   ];
 
   it("courseState: Pflicht, Wahl vom Admin, Gruppe, parallel", () => {
-    expect(courseState(courses[0], ["150"])).toBe("pflicht");
-    expect(courseState(courses[1], ["150"])).toBe("wahl");
-    expect(courseState(courses[2], [])).toEqual({ locked: "Gruppe SpJu" });
-    expect(courseState(courses[3], [])).toEqual({ locked: "läuft parallel" });
+    expect(courseState(courses[0])).toBe("pflicht");
+    expect(courseState(courses[1])).toBe("wahl");
+    expect(courseState(courses[2])).toEqual({ locked: "Gruppe SpJu" });
+    expect(courseState(courses[3])).toEqual({ locked: "parallel zu Mu" });
+    expect(courseState(courses[4])).toEqual({ locked: "läuft parallel" });
   });
 
-  it("optionalList nimmt nur vom Admin gewählte", () => {
-    expect(optionalList(courses, { 131: "pflicht", 150: "wahl", 141: { locked: "x" } })).toEqual(["150"]);
+  it("optionalPatch: Pflicht entfernt nr und Label, Wahl fügt nr hinzu, Fremdes bleibt", () => {
+    const states = { 131: "wahl", 150: "pflicht" };
+    expect(optionalPatch(["Bi", "150", "999"], courses, states)).toEqual(["999", "131"]);
+    expect(optionalPatch(["Ma"], courses, { 131: "wahl" })).toEqual(["Ma"]);
   });
 
-  it("subjectCodes ohne Doppelte, Kurs ohne Fach übersprungen", () => {
-    expect(subjectCodes(courses, { SF: "Seminarfach", Ma: "Mathe" })).toEqual(["Ma", "Bi", "Sp", "Ku", "SF"]);
-  });
-
-  it("subjectNamesPatch: ändern, leeren, unverändert", () => {
-    const names = { TW: "Technik", Ku: "Kunst & Musik" };
-    const shown = { Ma: "Mathe", TW: "Technik", Ku: "Kunst & Musik", SF: "" };
-    const edited = { Ma: "Mathe", TW: "", Ku: "Kunst & Musik", SF: " Seminarfach " };
-    expect(subjectNamesPatch(names, shown, edited)).toEqual({ Ku: "Kunst & Musik", SF: "Seminarfach" });
+  it("subjectNamesPatch: ändern, leeren, Standardname, unverändert", () => {
+    const subjects = [
+      { code: "Ma", defaultName: "Mathe", name: null },
+      { code: "TW", defaultName: null, name: "Technik" },
+      { code: "Ku", defaultName: "Kunst", name: "Kunst & Musik" },
+      { code: "SF", defaultName: null, name: null },
+    ];
+    const names = { TW: "Technik", Ku: "Kunst & Musik", Alt: "bleibt" };
+    const edited = { Ma: "Mathematik", TW: "", Ku: "Kunst", SF: " Seminarfach " };
+    expect(subjectNamesPatch(names, subjects, edited)).toEqual({ Alt: "bleibt", Ma: "Mathematik", SF: "Seminarfach" });
+    expect(subjectNamesPatch(names, subjects, {})).toEqual(names);
+    expect(shownName(subjects[3])).toBe("");
   });
 });

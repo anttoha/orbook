@@ -7,6 +7,9 @@ const variants = {
   exam: "bg-accent text-on-accent", // KLAUSUR
   soft: "bg-sand text-muted", // TEST, ABGABE
   live: "bg-accent text-on-accent", // LÄUFT · 27 MIN
+  ok: "bg-ok-tint text-ok", // AKTIV, OK (адмінка)
+  off: "bg-sand text-faint", // GESPERRT
+  danger: "bg-danger-tint text-danger", // ABGELAUFEN, FEHLER
 };
 
 // Маленький бейдж великими літерами: <Badge variant="changed">Vertretung</Badge>

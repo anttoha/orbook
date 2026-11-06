@@ -1,0 +1,82 @@
+import { useEffect } from "react";
+import AdminHeader from "../components/admin/AdminHeader";
+import { AdminError, AdminSkeleton } from "../components/admin/AdminState";
+import ClassPasswordCard from "../components/admin/settings/ClassPasswordCard";
+import DangerZone from "../components/admin/settings/DangerZone";
+import { FeaturesCard, SecurityCard, UpdateCard } from "../components/admin/settings/OptionCards";
+import PrivacyCard from "../components/admin/settings/PrivacyCard";
+import SaveButton from "../components/admin/settings/SaveButton";
+import SchoolCard from "../components/admin/settings/SchoolCard";
+import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
+import { useSettingsForm } from "../shared/hooks/useSettingsForm";
+import { useAdminStore } from "../shared/store/adminStore";
+
+// Колонки ПК: ліва (пароль, школа, контакт) і права (оновлення, функції, безпека).
+// На телефоні колонок немає (max-lg:contents), і блоки стають в один ряд у порядку order-* з макета 45
+const column = "flex flex-col gap-4 max-lg:contents";
+
+// Форма. Сторінка створює її заново (key), коли приходять свіжі налаштування
+const SettingsForm = ({ data }) => {
+  const isDesktop = useMediaQuery(DESKTOP_QUERY);
+  const demo = useAdminStore((s) => s.overview.data?.demo ?? false);
+  const reloadOverview = useAdminStore((s) => s.reloadOverview);
+  const draft = useSettingsForm(data.settings);
+  const { form, set, bad } = draft;
+  const rows = { form, set, bad }; // для рядків з перемикачами і списками
+
+  return (
+    <section className="flex flex-col gap-4 lg:gap-5">
+      <AdminHeader title="Einstellungen" actions={isDesktop && <SaveButton {...draft} onSave={draft.save} />} />
+      <div className="flex flex-col gap-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4">
+        <div className={column}>
+          <ClassPasswordCard className="order-1" changedAt={data.classPasswordChangedAt} />
+          <SchoolCard
+            className="order-2"
+            school={form.school}
+            onChange={(field, value) => set("school", field, value)}
+            schoolPassword={draft.schoolPassword}
+            onSchoolPassword={draft.setSchoolPassword}
+            passwordSet={data.schoolPasswordSet}
+            demo={demo}
+            bad={bad}
+          />
+          <PrivacyCard className="order-6" privacy={form.privacy} onChange={(field, value) => set("privacy", field, value)} bad={bad} />
+        </div>
+        <div className={column}>
+          <UpdateCard className="order-3" {...rows} />
+          <FeaturesCard className="order-4" {...rows} />
+          <SecurityCard className="order-5" {...rows} />
+        </div>
+      </div>
+      <DangerZone onDone={reloadOverview} />
+      {/* місце під плаваючою кнопкою телефона */}
+      {draft.dirty && <div className="h-14 lg:hidden" />}
+      <SaveButton {...draft} onSave={draft.save} floating />
+    </section>
+  );
+};
+
+// ─────────────────────────────────────────────────────────────
+// «Einstellungen» адмінки (макети 45 телефон, 47 ПК)
+// ─────────────────────────────────────────────────────────────
+const AdminSettings = () => {
+  const settings = useAdminStore((s) => s.settings);
+  const reloadSettings = useAdminStore((s) => s.reloadSettings);
+
+  // Щоразу при відкритті — свіжі налаштування (їх міг змінити інший пристрій)
+  useEffect(() => {
+    reloadSettings();
+  }, [reloadSettings]);
+
+  if (settings.status === "loading" || settings.status === "error") {
+    return (
+      <section className="flex flex-col gap-4">
+        <AdminHeader title="Einstellungen" />
+        {settings.status === "loading" ? <AdminSkeleton rows={5} /> : <AdminError error={settings.error} onRetry={reloadSettings} />}
+      </section>
+    );
+  }
+  return <SettingsForm key={JSON.stringify(settings.data)} data={settings.data} />;
+};
+
+export default AdminSettings;

@@ -1,15 +1,14 @@
 import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { Toaster } from "sonner";
-import { Check, TriangleAlert } from "lucide-react";
+import { TriangleAlert } from "lucide-react";
 import AuthPage from "./AuthPage";
 import CourseStart from "./CourseStart";
+import AppToaster from "../components/ui/AppToaster";
 import Container from "../components/ui/Container";
 import SideNav from "../components/navbar/SideNav";
 import BottomNav from "../components/navbar/BottomNav";
 import SheetHost from "../components/sheets/SheetHost";
-import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { usePageAnimation } from "../shared/hooks/usePageAnimation";
 import { useNotesSync } from "../shared/hooks/useNotesSync";
 import { usePlanPolling } from "../shared/hooks/usePlanPolling";
@@ -35,7 +34,6 @@ const HomePage = () => {
   const coursesChosen = useUserStore((s) => s.coursesChosen); // чи пройдено вибір курсів
   const fullScreen = isFullScreenPage(useLocation().pathname); // форма: без меню, кнопки притиснуті донизу
   const page = usePageAnimation(); // перехід між сторінками: справа, зліва або плавно
-  const isDesktop = useMediaQuery(DESKTOP_QUERY); // сповіщення: на телефоні над меню, на ПК внизу праворуч
 
   // Один раз при відкритті: дізнатись, чи ми увійшли
   useEffect(() => {
@@ -94,24 +92,7 @@ const HomePage = () => {
           Лежать поза Container: інакше flex додав би їм зайвий відступ праворуч */}
       <SheetHost />
       {/* спливаючі сповіщення (toast) */}
-      <Toaster
-        position={isDesktop ? "bottom-right" : "bottom-center"}
-        offset={isDesktop ? { bottom: 28, right: 28 } : { bottom: 96 }}
-        mobileOffset={{ bottom: 96, left: 16, right: 16 }}
-        style={{ "--width": "400px" }}
-        visibleToasts={1} // один тост за раз: новий замінює старий
-        icons={{ success: <Check className="size-4" />, error: <TriangleAlert className="size-4" /> }}
-        toastOptions={{
-          unstyled: true,
-          classNames: {
-            // колір помилки через data-type: окремий клас програв би bg-ink за порядком у CSS
-            toast: "flex w-full items-center gap-2.5 rounded-field bg-ink px-3.5 py-3 font-sans text-nav font-semibold text-paper shadow-menu data-[type=error]:bg-danger data-[type=error]:text-white",
-            title: "min-w-0",
-            icon: "shrink-0",
-            actionButton: "ml-auto shrink-0 text-label font-bold underline",
-          },
-        }}
-      />
+      <AppToaster />
     </Tooltip.Provider>
   );
 };

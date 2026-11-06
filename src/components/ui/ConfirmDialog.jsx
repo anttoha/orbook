@@ -2,9 +2,9 @@ import * as Dialog from "@radix-ui/react-dialog";
 
 // ─────────────────────────────────────────────────────────────
 // Діалог посередині екрана: «Klausur löschen?». Esc і клік по фону закривають.
-// icon — іконка над заголовком, children — кнопки
+// icon — іконка над заголовком, body — поля під текстом (необов'язково), children — кнопки
 // ─────────────────────────────────────────────────────────────
-const ConfirmDialog = ({ open, onClose, icon, title, text, children }) => (
+const ConfirmDialog = ({ open, onClose, icon, title, text, body, children }) => (
   <Dialog.Root open={open} onOpenChange={(next) => !next && onClose()}>
     <Dialog.Portal>
       <Dialog.Overlay className="fixed inset-0 z-40 bg-overlay data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in" />
@@ -12,6 +12,7 @@ const ConfirmDialog = ({ open, onClose, icon, title, text, children }) => (
         {icon}
         <Dialog.Title className="mt-3 text-dialog text-ink">{title}</Dialog.Title>
         <Dialog.Description className="mt-2.5 text-body-sm leading-5.5 text-muted">{text}</Dialog.Description>
+        {body && <div className="mt-4 flex flex-col gap-3.5">{body}</div>}
         <div className="mt-5.5 flex flex-wrap gap-2">{children}</div>
       </Dialog.Content>
     </Dialog.Portal>

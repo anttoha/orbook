@@ -9,6 +9,9 @@ import { addDays, daysBetween, daysLeftText, shortDate } from "./format";
 // Сьогодні в Берліні: "2026-11-06" (шведський формат дати якраз YYYY-MM-DD)
 export const berlinToday = (date = new Date()) => new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Berlin" }).format(date);
 
+// Зараз у Берліні: "16:40" (час перевірки «Verbindung testen»)
+export const berlinClock = (date = new Date()) => new Intl.DateTimeFormat("de-DE", { timeZone: "Europe/Berlin", hour: "2-digit", minute: "2-digit" }).format(date);
+
 // "2026-10-07T16:40:00+02:00" → "16:40"; null → null
 export const clock = (iso) => iso?.slice(11, 16) ?? null;
 
@@ -105,11 +108,28 @@ export const hasRight = (rights) => Boolean(rights.create || rights.editOwn || r
 // status коду → чип: AKTIV / GESPERRT / ABGELAUFEN
 export const codeChip = (code) => ({ ok: "AKTIV", locked: "GESPERRT", expired: "ABGELAUFEN" })[code.status] ?? "";
 
+// День останнього використання: «heute», «gestern», «vor 5 Tagen», «vor 3 Wochen», «noch nie»
+export function lastUsedDay(iso, todayIso) {
+  if (!iso) return "noch nie";
+  const days = daysBetween(iso.slice(0, 10), todayIso);
+  return days >= 14 ? `vor ${Math.round(days / 7)} Wochen` : daysLeftText(-days);
+}
+
+// Підпис у картці телефона: «zuletzt heute» або «noch nie benutzt»
+export const lastUsedText = (iso, todayIso) => (iso ? `zuletzt ${lastUsedDay(iso, todayIso)}` : "noch nie benutzt");
+
 // «Gültig bis»: «31. Juli» або «abgelaufen»; дати немає — «—»
 export function validText(code) {
   if (code.status === "expired") return "abgelaufen";
   return code.validUntil ? shortDate(code.validUntil) : "—";
 }
+
+// Варіанти «Gültig bis». yearEnd — settings.school.yearEnd ("07-31"); null — без «Schuljahresende»
+export const validChoices = (yearEnd) => [
+  { value: "30d", label: "30 Tage" },
+  ...(yearEnd ? [{ value: "schuljahresende", label: "Schuljahresende" }] : []),
+  { value: "date", label: "Datum" },
+];
 
 // Кінець навчального року: найближче yearEnd ("07-31") від сьогодні. null — не задано
 export function schoolYearEnd(todayIso, yearEnd) {
@@ -158,34 +178,36 @@ export const invalidKeys = (error) => (error?.details?.fields ?? []).map((f) => 
 // Варіанти випадаючих списків. Поточне значення, якого немає в списку, теж показуємо
 export const withCurrent = (options, value) => (options.some((o) => o.value === value) ? options : [...options, { value, label: String(value) }]);
 
-// ── Kurse und Fächer ──
+// ── Kurse und Fächer (GET /api/admin/courses) ──
 
-// Стан курсу на екрані: "pflicht" | "wahl" (вибрав адмін) | { locked: "Gruppe SpJu" | "läuft parallel" }
-export function courseState(course, optionalList) {
-  const forced = optionalList.includes(course.nr) || optionalList.includes(course.label);
+// Стан курсу на екрані: "pflicht" | "wahl" (вибрав адмін) | { locked: "Gruppe SpJu" | "parallel zu Musik" }.
+// automatic — група або паралельний курс: такий завжди Wahl, адмін це не змінить
+export function courseState(course) {
+  if (!course.automatic) return course.forced ? "wahl" : "pflicht";
   if (course.group) return { locked: `Gruppe ${course.group}` };
-  if (course.optional && !forced) return { locked: "läuft parallel" };
-  return forced ? "wahl" : "pflicht";
+  return { locked: course.parallelWith ? `parallel zu ${course.parallelWith}` : "läuft parallel" };
 }
 
-// Новий courses.optional: курси, які адмін зробив «Wahl» (групи й паралельні сервер і так рахує Wahl)
-export const optionalList = (courses, states) => courses.filter((c) => states[c.nr] === "wahl").map((c) => c.nr);
-
-// Коди предметів для «Fächer»: з курсів класу і з уже заданих назв, без повторів
-export function subjectCodes(courses, names = {}) {
-  const codes = courses.map((c) => c.subject?.code).filter(Boolean);
-  return [...new Set([...codes, ...Object.keys(names)])];
+// Новий courses.optional. «Pflicht» прибирає і nr, і мітку курсу; «Wahl» додає nr.
+// Чужі записи (курсів, яких зараз немає в плані) лишаємо як були
+export function optionalPatch(current, courses, states) {
+  const pflicht = courses.filter((c) => states[c.nr] === "pflicht");
+  const drop = new Set(pflicht.flatMap((c) => [c.nr, c.label]));
+  const kept = current.filter((entry) => !drop.has(entry));
+  const added = courses.filter((c) => states[c.nr] === "wahl" && !kept.includes(c.nr) && !kept.includes(c.label)).map((c) => c.nr);
+  return [...kept, ...added];
 }
 
-// Нові subjects.names. shown — назва, яку бачить клас (вбудована або від адміна), edited — з полів.
-// Змінили — пишемо; стерли власну назву — ключ прибираємо (знову діє вбудована)
-export function subjectNamesPatch(names, shown, edited) {
+// Назва предмета в полі: своя від адміна, інакше вбудована; немає — порожньо (підказка «Kein Name — „TW“»)
+export const shownName = (subject) => subject.name ?? subject.defaultName ?? "";
+
+// Нові subjects.names з полів. Порожнє поле або вбудована назва — ключ прибираємо (діє вбудована/код)
+export function subjectNamesPatch(names, subjects, edited) {
   const result = { ...names };
-  for (const [code, value] of Object.entries(edited)) {
-    const text = value.trim();
-    if (text === (shown[code] ?? "")) continue; // не міняли
-    if (text) result[code] = text;
-    else delete result[code];
+  for (const subject of subjects) {
+    const text = (edited[subject.code] ?? shownName(subject)).trim();
+    if (!text || text === subject.defaultName) delete result[subject.code];
+    else result[subject.code] = text;
   }
   return result;
 }

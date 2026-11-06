@@ -1,8 +1,9 @@
 import { matchPath } from "react-router-dom";
 
+// exact — пункт світиться тільки на своїй адресі («Übersicht» /admin, а не /admin/codes)
 export const isTabActive = (tab, pathname) =>
   [tab.to, ...(tab.activeOn ?? [])].some((path) =>
-    matchPath({ path, end: path === "/" }, pathname),
+    matchPath({ path, end: path === "/" || (tab.exact && path === tab.to) }, pathname),
   );
 
 // Пункт меню, який школа може вимкнути (tab.feature = "statistics"), ховаємо за me.features.
