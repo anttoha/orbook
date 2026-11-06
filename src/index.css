@@ -247,7 +247,6 @@
     /* ── Ширини на ПК: w-sidebar, w-sheet … ── */
     --container-sidebar: 232px;
     --container-sidebar-mini: 71px;
-    --container-search: 340px; /* результати швидкого пошуку */
     --container-popover: 360px; /* «Woche wählen» */
     --container-filter: 390px; /* фільтр Klausuren під кнопкою (макет 16) */
     --container-exams: 744px; /* список Klausuren на ПК (макет 14) */
@@ -255,6 +254,7 @@
     --container-sheet: 440px; /* панель справа */
     --container-dialog: 520px; /* вікно посередині */
     --container-dialog-wide: 760px; /* широке вікно: «Tastenkürzel» у дві колонки */
+    --container-palette: 640px; /* пошук ⌘K (макет 51) */
     --container-settings-nav: 230px; /* меню розділів «Einstellungen» на ПК */
     --container-settings: 680px; /* праворуч від нього: дві плитки по 334 + 12 */
 

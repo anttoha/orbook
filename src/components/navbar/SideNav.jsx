@@ -37,7 +37,7 @@ const SideNav = () => {
       <SideNavHeader isHidden={isHidden} onChangeIsHidden={setIsHidden} />
 
       <div className="mt-4">
-        <QuickSearch collapsed={isHidden} onExpand={() => setIsHidden(false)} />
+        <QuickSearch collapsed={isHidden} />
       </div>
 
       <nav className="mt-5 space-y-1">
