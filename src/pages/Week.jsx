@@ -3,6 +3,7 @@ import { ChartNoAxesColumn, ChevronLeft, ChevronRight } from "lucide-react";
 import WeekGrid from "../components/week/WeekGrid";
 import WeekMenu from "../components/week/WeekMenu";
 import WeekUpdated from "../components/week/WeekUpdated";
+import RefreshButton from "../components/week/RefreshButton";
 import DayPanel from "../components/week/desktop/DayPanel";
 import PeriodGrid from "../components/week/desktop/PeriodGrid";
 import TimeGrid from "../components/week/desktop/TimeGrid";
@@ -109,11 +110,15 @@ const Week = () => {
     if (week.status === "error") return <PlanError resource={week} onRetry={reload} />;
     if (!days) return isDesktop ? <Skeleton className="h-140" /> : <WeekSkeleton />;
     if (isWeekEmpty(week.data?.days)) {
+      // одна обгортка: на ПК це ОДНА клітинка сітки сторінки (інакше підпис і сітка розʼїжджаються по колонках)
       return (
-        <>
-          <p className="text-body-sm text-muted">Noch kein Plan für diese Woche</p>
+        <div className="flex min-w-0 flex-col gap-3">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-card bg-card px-4 py-3">
+            <p className="text-body-sm text-muted">Noch kein Plan für diese Woche. Die Schule veröffentlicht ihn meist kurz vorher.</p>
+            <RefreshButton className="ml-auto" />
+          </div>
           {grid}
-        </>
+        </div>
       );
     }
     return grid;
