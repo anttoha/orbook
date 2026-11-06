@@ -52,8 +52,14 @@ export const saveSettings = (patch, schoolPassword = "") =>
   api("/admin/settings", { method: "PATCH", body: { settings: patch, ...(schoolPassword ? { schoolPassword } : {}) } });
 // Нічого не зберігає: лише пробує завантажити Klassen.xml з цими даними
 export const testConnection = (values) => api("/admin/plan/test-connection", { method: "POST", body: values });
+
+// ── Passwörter (частина 14b) ──
 // Усі пристрої класу вийдуть. → { devicesSignedOut, password: null }
 export const changeClassPassword = (password) => api("/admin/class-password", { method: "POST", body: { password } });
+// Пароль придумує сервер. → { devicesSignedOut, password }: пароль є ТІЛЬКИ в цій відповіді
+export const generateClassPassword = () => api("/admin/class-password", { method: "POST", body: { generate: true } });
+// Цей пристрій лишається в адмінці, інші виходять. → { otherSessionsEnded }; 403 wrong_password рахується в ліміт входу
+export const changeAdminPassword = (currentPassword, newPassword) => api("/admin/admin-password", { method: "POST", body: { currentPassword, newPassword } });
 
 // ── Protokoll ──
 export function loadEvents({ kind = "all", q = "", before = null }) {
