@@ -9,8 +9,10 @@ import { examCountdown } from "../../shared/utils/exams";
 import { longDate, subjectName, weekdayLong } from "../../shared/utils/format";
 import { examText, shareText } from "../../shared/utils/share";
 import ExamBadge from "../exams/ExamBadge";
+import AuthorNote from "../homework/AuthorNote";
+import HistoryList from "../homework/HistoryList";
 import Button from "../ui/Button";
-import { PencilIcon, ShieldIcon } from "../ui/icons";
+import { PencilIcon } from "../ui/icons";
 import { Skeleton } from "../ui/PlanState";
 import Sheet from "../ui/Sheet";
 
@@ -41,6 +43,7 @@ const ExamPlaceholder = ({ open, onClose, status, error }) => (
 // ─────────────────────────────────────────────────────────────
 // Вікно Klausur. Адреса: ?sheet=klausur&id=12 (посилання можна переслати).
 // «Bearbeiten» — лише коли ця сесія може міняти запис (exam.canEdit).
+// Автор-учитель, хто може міняти і «Verlauf» — частина 14 (AuthorNote, HistoryList).
 // ─────────────────────────────────────────────────────────────
 const ExamSheet = ({ open, onClose, sheet }) => {
   const { exam, status, error } = useExam(sheet.id);
@@ -86,10 +89,8 @@ const ExamSheet = ({ open, onClose, sheet }) => {
     >
       <Countdown exam={exam} />
 
-      <div className="flex gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-muted">
-        <ShieldIcon className="size-4 shrink-0" />
-        <p>Nur Fach, Datum, Stunde und Thema — ohne Namen.</p>
-      </div>
+      <AuthorNote entry={exam} privacyText="Nur Fach, Datum, Stunde und Thema — ohne Namen." />
+      <HistoryList kind="exams" entry={exam} noun="Klausur" />
     </Sheet>
   );
 };

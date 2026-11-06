@@ -5,6 +5,7 @@ import DayInfoSheet from "./DayInfoSheet";
 import EditorCodeSheet from "./EditorCodeSheet";
 import ExamFilterSheet from "./ExamFilterSheet";
 import ExamSheet from "./ExamSheet";
+import HomeworkSheet from "./HomeworkSheet";
 import LessonSheet from "./LessonSheet";
 import NoteSheet from "./NoteSheet";
 import ShareSheet from "./ShareSheet";
@@ -21,6 +22,7 @@ const SHEETS = {
   kalender: WeekPickerSheet, // Woche wählen
   klausur: ExamSheet, // деталі Klausur
   klausurfilter: ExamFilterSheet, // Filter
+  hausaufgabe: HomeworkSheet, // деталі Hausaufgabe (частина 14)
   editorcode: EditorCodeSheet, // код посеред запису: форма лишається під вікном
   tasten: ShortcutsSheet, // Tastenkürzel (клавіша «?»)
 };

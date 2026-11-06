@@ -49,6 +49,12 @@ export function examText(exam) {
   return `${exam.type} ${subjectName(exam.subject)} am ${day}.${month}.${lesson}${topic}\n\nvia ORBook`;
 }
 
+// Текст про одну Hausaufgabe (кнопка «Teilen» у її вікні). Без автора: учням потрібне саме завдання
+export function homeworkText(item) {
+  const [, month, day] = item.due.split("-");
+  return `Hausaufgabe ${subjectName(item.subject)} bis ${day}.${month}.\n${item.text ?? ""}\n\nvia ORBook`;
+}
+
 // Текст про один урок (кнопка «Teilen» у шторці уроку і в меню) — готується на пристрої.
 // Без імен — лише предмет, час, кабінет і що змінилось.
 export function lessonText(lesson, dateIso) {

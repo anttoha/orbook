@@ -6,6 +6,7 @@ import ExamRow from "../components/exams/ExamRow";
 import ExamSkeleton from "../components/exams/ExamSkeleton";
 import ExamsAside from "../components/exams/ExamsAside";
 import ExamsToolbar from "../components/exams/ExamsToolbar";
+import ListSwitch from "../components/homework/ListSwitch";
 import Button from "../components/ui/Button";
 import { FilterIcon, FlagIcon, KeyIcon } from "../components/ui/icons";
 import { PlanBanner, PlanError } from "../components/ui/PlanState";
@@ -13,6 +14,7 @@ import Segmented from "../components/ui/Segmented";
 import StateScreen from "../components/ui/StateScreen";
 import { usePastExams } from "../shared/hooks/useExams";
 import { useHotkeys } from "../shared/hooks/useHotkeys";
+import { useListMode } from "../shared/hooks/useListMode";
 import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useNow } from "../shared/hooks/useNow";
 import { useSheet } from "../shared/hooks/useSheet";
@@ -20,6 +22,7 @@ import { useExamFilter } from "../shared/store/examFilterStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { addExamTarget } from "../shared/utils/examRules";
+import Homework from "./Homework";
 import { filterExams, groupExams, isFilterActive, searchExams, subjectChips, toggleSubject } from "../shared/utils/exams";
 
 // «Ab heute · 5 geplant». Поки записів немає — без числа
@@ -38,7 +41,7 @@ const withCount = (label, count) => (count > 0 ? `${label} · ${count}` : label)
 // ПК (макет 14): пошук, фільтр під кнопкою і «Klausur eintragen» у шапці, «Kommend | Vergangen»,
 // а на ширині від 1440px праворуч картка «2 Tage bis» і календар.
 // ─────────────────────────────────────────────────────────────
-const Tests = () => {
+const ExamList = () => {
   const { today } = useNow();
   const { openSheet } = useSheet();
   const navigate = useNavigate();
@@ -116,7 +119,7 @@ const Tests = () => {
     <Segmented
       label="Zeitraum"
       size="form"
-      className="ml-auto hidden shrink-0 lg:grid"
+      className="shrink-0"
       value={filter.past ? "past" : "upcoming"}
       options={[
         { value: "upcoming", label: withCount("Kommend", upcoming.length) },
@@ -146,9 +149,10 @@ const Tests = () => {
 
       <div className="flex items-start gap-9">
         <div className="flex min-w-0 flex-1 flex-col gap-5.5 lg:max-w-exams">
+          <ListSwitch className="lg:hidden" />
           {/* без записів і без фільтра чипам нічого показувати (макет «Klausuren · leer») */}
-          {(list.length > 0 || filterActive) && (
-            <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
+            {(list.length > 0 || filterActive) && (
               <ExamChips
                 codes={subjectChips(list, filter.subjects)}
                 selected={filter.subjects}
@@ -157,9 +161,13 @@ const Tests = () => {
                 onToggle={(code) => setFilter({ ...filter, subjects: toggleSubject(filter.subjects, code) })}
                 onOpenFilter={isDesktop ? null : () => openSheet("klausurfilter")}
               />
-              {scope}
+            )}
+            {/* ПК: «Kommend | Vergangen» і «Klausuren | Hausaufgaben» праворуч від чипів */}
+            <div className="ml-auto hidden gap-2 lg:flex">
+              {(list.length > 0 || filterActive) && scope}
+              <ListSwitch />
             </div>
-          )}
+          </div>
 
           <PlanBanner resource={resource} onRetry={reload} />
           {body()}
@@ -170,5 +178,8 @@ const Tests = () => {
     </section>
   );
 };
+
+// Вкладка Klausuren: два списки під одним перемикачем (частина 14). Окремі компоненти — у них різні хуки
+const Tests = () => (useListMode() === "homework" ? <Homework /> : <ExamList />);
 
 export default Tests;

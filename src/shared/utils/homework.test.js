@@ -74,3 +74,10 @@ describe("homeworkToForm", () => {
     expect(homeworkToForm(item("2025-09-18", { subject: null })).subject).toBeNull();
   });
 });
+
+describe("homeworkText", async () => {
+  const { homeworkText } = await import("./share");
+  it("ohne Autor, mit Text", () => {
+    expect(homeworkText(item("2025-09-18", { text: "Buch S. 54", author: { short: "Mü" } }))).toBe("Hausaufgabe Mathe bis 18.09.\nBuch S. 54\n\nvia ORBook");
+  });
+});
