@@ -24,21 +24,21 @@
 
 - **13 Admin** (2026-11-06): отдельная ветка `/admin` со своим входом и меню (телефон — 4 вкладки снизу, ПК — свой сайдбар). Übersicht (карточка плана с 24 столбиками, плитки, Speicher, последние события), Editor-Codes (таблица/карточки, «Neuer Code» с кодом один раз, меню «⋮»), Alle Klausuren (правка с `If-Match`, удаление с «Rückgängig», «Alte löschen»), Kurse und Fächer (через `GET /api/admin/courses`), Protokoll с фильтрами и «Mehr laden», Einstellungen (сохраняется только изменённое, Gefahrenzone со словом LÖSCHEN и паролем). При проверке исправлены: бесконечная перерисовка Übersicht (новый `[]` в селекторе Zustand) и срок «30 Tage» вместо «Schuljahresende» в новом коде (форма открывалась раньше, чем приходили настройки).
 
+- **12 ПК-раскладка** (2026-11-06): Einstellungen с левым меню разделов и плитками «Übersicht», окно Tastenkürzel (`?`) и общие клавиши `W D N K R` и `⌘B` (`useAppHotkeys`). Klausuren ПК: поиск, фильтр под кнопкой (`F`), «Kommend | Vergangen», справа «N Tage bis» и календарь месяца (общий `ui/MonthGrid`, им же пользуется «Woche wählen»). Statistik ПК: «Halbjahr», «Ausfallquote», «<Monat> nach Woche», «Ausfall nach Stunde», раскладка 4 + 2 + 3. Suche ⌘K — окно посередине (`SearchPalette`, отбор в `utils/search.js`). Прямой флажок из макета везде. Сверка: `/root/work/orbook-compare/12-pc/`.
+
 ## Дальше
 1. Проверить на демо руками: «Meine Kurse» → скрыть Mathe → Statistik меньше. Sync на двух устройствах: Mehr → Notizen synchronisieren → Code erzeugen → на втором устройстве ввести код.
 2. **Дизайн «Admin · Kurse und Fächer» утверждён владельцем (2026-11-06, «ок»).** Макет: `design/neu/13-admin-kurse/` (`index.html`, генератор `gen.py`), он же в артефакте https://claude.ai/artifact/Re2LjgRyZCgcLynq57YKCM. `courses.optional` может только добавить Wahl, поэтому у групп и параллельных курсов плашка «Immer Wahl». На ПК новый пункт меню «Kurse & Fächer» между «Klausuren» и «Protokoll».
-3. **Часть 12 ПК-раскладка — начата, черновик НЕ закоммичен** (2026-11-06, сессия закрылась на середине). 24 файла лежат в рабочей копии (`git status`): spec `docs/specs/12-pc/spec.md`, меню Einstellungen на ПК (`SettingsLayout`, `components/settings/*`, `useSettingsPanel`, `utils/settings.js`), окно Tastenkürzel (`ShortcutsSheet`), `isTabActive`. На 12:00 lint, тесты (237) и сборка зелёные. **Продолжать с этого черновика, не начинать заново и не делать `git checkout`/`stash`.** Ещё не сделаны по spec: Klausuren ПК (14, 16), Statistik ПК (20), Suche ⌘K (51) и сверка скриншотами. Копия черновика: `/root/work/orbook-backup/part12-20261106-1200/` (`tracked.patch` + `untracked.tar.gz`, база `d15f53a`).
-   Коммитить только свои файлы явными путями (`git add <файлы>`), не `git add -A`: в этой папке иногда работают две сессии сразу.
-   Раньше здесь было: **Следующая часть — 12 ПК-раскладка** (самая большая, начинать в свежем чате). Ловушка Zustand 5: селектор не должен возвращать новый `[]`/`{}` — брать постоянную пустую константу.
+3. **Следующая часть — 14 Lehrkräfte** (новые экраны: сначала `/orb-design` и «ок дизайн» владельца, бэкенд тоже нужен).
+   Коммитить только свои файлы явными путями (`git add <файлы>`), не `git add -A`: в этой папке иногда работают две сессии сразу (одно сообщение, отправленное в два окна CloudCLI, запускает две копии чата).
+   Ловушка Zustand 5: селектор не должен возвращать новый `[]`/`{}` — брать постоянную пустую константу.
 4. Проверить админку на демо руками: нужен пароль админа (есть только у владельца).
 
-Замечено для части 12: страница «Einstellungen» на ПК пока одна колонка без левого меню, в ней нет «Tastenkürzel». В части 17 вернуть в Mehr строку «Mitteilungen». В части 12: страница Notizen-Sync в левом меню «Einstellungen», кнопка «Jetzt synchronisieren».
+В части 17 вернуть в Mehr (и в меню Einstellungen на ПК, `settingsSections`) строку «Mitteilungen».
 
 Замечено на A++: заголовок «Diese Woche» на телефоне обрезается до «Diese Woc…» рядом с тремя кнопками.
 
 Запись Klausuren проверена на подставном сервере, поля сверены с кодом бэкенда (`exams/schemas.py`). На настоящем демо запись ещё не пробовали: нужны пароль класса и Editor-Code, они есть только у владельца.
-
-Замечено для части 12: в сетке недели, поиске и панелях ПК прапорец ещё из lucide (с волной), а в макете прямой (`LessonCell`, `WeekPreview`, `QuickSearch`, `DayStrip`, `UpcomingCard`). В меню уже прямой. Новый лежит в `src/components/ui/icons.jsx`.
 
 Браузер на горизонтальный свайп сам уходит «назад» в истории. Теперь это отключено для всего приложения (`overscroll-behavior-x` в `index.css`). Проверять свайп надо настоящими касаниями (CDP `Input.dispatchTouchEvent`): подставные `TouchEvent` этого не показывают.
 
@@ -49,7 +49,7 @@
 Пароль класса демо есть только у владельца, поэтому экраны за входом проверяются локально, на подставных ответах API. На самом демо без пароля виден только экран входа и Datenschutz.
 
 1. `npm run build`, затем `npx vite preview --port 4179 --strictPort`. Порт 4173 на `127.0.0.1` занят чужим сервисом другого проекта, его не трогать. Адрес страницы в скриптах: `http://localhost:4179`.
-2. Скопировать `tools/screens/` во временную папку вне репозитория и там выполнить `npm init -y` и `NODE_ENV=development npm i playwright-core`. Браузер уже есть в `~/.cache/ms-playwright`, тяжёлый пакет не нужен.
+2. Скопировать `tools/screens/` в папку вне репозитория (уже лежит готовая: `/root/work/orbook-compare/_tools/`, там же `exams.mjs`, `search.mjs`) и там выполнить `npm init -y` и `NODE_ENV=development npm i playwright-core`. Браузер уже есть в `~/.cache/ms-playwright`, тяжёлый пакет не нужен.
 3. `mock.mjs`: `open(browser, { width, height, theme, storage: chosen, api })` открывает страницу с той же CSP, что на сервере, и подставляет ответы по образцу `docs/API.md`. `side.mjs` ставит картинки рядом (PIL и ImageMagick на сервере нет).
 
 Макеты в PNG: `rsvg-convert -w 780 "<файл>.svg" -o out.png`. `rsvg` рисует их другим шрифтом, поэтому длина текста в макете не сравнивается с точностью до пикселя.
