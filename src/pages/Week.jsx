@@ -1,5 +1,5 @@
 import { Link, useSearchParams } from "react-router-dom";
-import { ChartNoAxesColumn, ChevronLeft, ChevronRight, Flag } from "lucide-react";
+import { ChartNoAxesColumn, ChevronLeft, ChevronRight } from "lucide-react";
 import WeekGrid from "../components/week/WeekGrid";
 import WeekMenu from "../components/week/WeekMenu";
 import WeekUpdated from "../components/week/WeekUpdated";
@@ -22,6 +22,7 @@ import { useUserStore } from "../shared/store/userStore";
 import { cn } from "../shared/utils/cn";
 import { addDays, examWhen, isIsoDate, mondayOf, subjectName, weekHeading, weekSummaryText, weekTitle, weekdayShort } from "../shared/utils/format";
 import { currentMonday, isWeekEmpty, weekDays, isPlanDown } from "../shared/utils/lessons";
+import { FlagIcon } from "../components/ui/icons";
 
 // Кругла кнопка в шапці
 const roundButton = "flex size-9.5 items-center justify-center rounded-full bg-card outline-none focus-visible:ring-2 focus-visible:ring-accent/50";
@@ -200,7 +201,7 @@ const Week = () => {
           {/* найближча Klausur → сторінка цього дня */}
           {nextExam && (
             <Link to={`/tag/${nextExam.date}`} className="flex items-center gap-3 py-2">
-              <Flag className="size-4.75 shrink-0" />
+              <FlagIcon className="size-4.75 shrink-0" />
               <div className="min-w-0 flex-1">
                 <h3 className="text-row leading-5 font-medium text-ink">
                   {weekdayShort(nextExam.date)} · {subjectName(nextExam.subject)}

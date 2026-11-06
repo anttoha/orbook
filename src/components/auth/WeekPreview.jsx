@@ -1,6 +1,6 @@
-import { Flag } from "lucide-react";
 import { cn } from "../../shared/utils/cn";
 import { fachClasses } from "../../shared/utils/lessons";
+import { FlagIcon } from "../ui/icons";
 
 // Картинка-приклад на екрані входу (ПК): тиждень із макета. Це не дані школи:
 // людина ще не ввійшла, тому малюємо статичний зразок і ховаємо його від скрінрідера.
@@ -44,7 +44,7 @@ const Cell = ({ cell, past }) => {
       <span className={cn(special ? "font-extrabold text-accent-ink" : "font-semibold", kind === "exam" ? "text-nano" : "text-room")}>{room}</span>
       {kind === "exam" && (
         <span className="absolute top-0 right-0 grid size-4.5 place-items-center rounded-tr-cell rounded-bl-chip bg-accent text-on-accent">
-          <Flag className="size-2.5" strokeWidth={3} />
+          <FlagIcon className="size-2.5" strokeWidth={3} />
         </span>
       )}
     </span>

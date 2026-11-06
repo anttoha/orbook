@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { CircleDashed, Flag } from "lucide-react";
+import { CircleDashed } from "lucide-react";
 import { cn } from "../../../shared/utils/cn";
+import { FlagIcon } from "../../ui/icons";
 
 // ─────────────────────────────────────────────────────────────
 // Смуга днів тижня над списком (макет «Tag · Liste»):
@@ -36,7 +37,7 @@ const DayStrip = ({ days, date, today }) => {
 
             {/* значок праворуч */}
             <span className={cn("ml-auto", active ? "text-today-sub" : "text-accent")}>
-              {marker === "exam" && <Flag className="size-3.5" />}
+              {marker === "exam" && <FlagIcon className="size-3.5" />}
               {marker === "changed" && <span className="block size-2 rounded-full bg-current" />}
               {marker === "cancelled" && <CircleDashed className="size-3.5 text-faint" />}
             </span>

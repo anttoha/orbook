@@ -1,7 +1,7 @@
-import { Flag } from "lucide-react";
 import { cn } from "../../shared/utils/cn";
 import { lessonBadge, subjectCode, subjectName } from "../../shared/utils/format";
 import { fachClasses } from "../../shared/utils/lessons";
+import { FlagIcon } from "../ui/icons";
 
 // ─────────────────────────────────────────────────────────────
 // Клітинка уроку в сітці тижня (телефон): код предмета + кабінет.
@@ -47,7 +47,7 @@ const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
       {/* прапорець Klausur у куті */}
       {lesson.examId && (
         <span className="absolute top-px right-px grid place-items-center rounded-tr-cell rounded-bl-chip bg-accent p-1.25 text-on-accent">
-          <Flag className="size-2.5" strokeWidth={3} />
+          <FlagIcon className="size-2.5" strokeWidth={3} />
         </span>
       )}
     </button>

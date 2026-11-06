@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
-import { ChevronRight, CircleSlash, Flag, RefreshCw } from "lucide-react";
+import { ChevronRight, CircleSlash, RefreshCw } from "lucide-react";
 import { useSheet } from "../../../shared/hooks/useSheet";
 import { usePlanStore } from "../../../shared/store/planStore";
 import { examWhen, lessonBadge, subjectName, weekdayShort } from "../../../shared/utils/format";
 import { upcomingChanges } from "../../../shared/utils/lessons";
+import { FlagIcon } from "../../ui/icons";
 
 // Бейдж уроку → слово праворуч у рядку
 const CHANGE_WORDS = { VERTRETUNG: "Vertretung", "FÄLLT AUS": "fällt aus", RAUM: "Raumwechsel", KLAUSUR: "Klausur" };
@@ -59,7 +60,7 @@ const UpcomingCard = ({ days, today }) => {
 
         {exam && (
           <Link to={`/tag/${exam.date}`} className="flex items-center gap-3 py-3 text-left">
-            <Flag className="size-4.5 shrink-0 text-muted" />
+            <FlagIcon className="size-4.5 shrink-0 text-muted" />
             <span className="min-w-0 flex-1 truncate text-body font-semibold text-ink">
               {weekdayShort(exam.date)} · {exam.type} {subjectName(exam.subject)}
             </span>

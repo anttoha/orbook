@@ -1,6 +1,7 @@
 // Контурні іконки з макета, яких немає в lucide (там такі самі за ідеєю, але інші на вигляд).
-const Outline = ({ d, className }) => (
-  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+// strokeWidth — товщина лінії (у маленьких значках у клітинці тижня товща, щоб не губилась)
+const Outline = ({ d, className, strokeWidth = 2 }) => (
+  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}>
     <path d={d} />
   </svg>
 );
@@ -9,7 +10,7 @@ const Outline = ({ d, className }) => (
 export const TimelineIcon = ({ className }) => <Outline d="M4 4v16M4 7h9M4 12h14M4 17h7" className={className} />;
 
 // Klausur: прямий прапорець
-export const FlagIcon = ({ className }) => <Outline d="M5 21V4h12l-2 4 2 4H5" className={className} />;
+export const FlagIcon = ({ className, strokeWidth }) => <Outline d="M5 21V4h12l-2 4 2 4H5" className={className} strokeWidth={strokeWidth} />;
 
 // Кнопка фільтра: воронка
 export const FilterIcon = ({ className }) => <Outline d="M4 5h16l-6 8v6l-4-2v-4z" className={className} />;
