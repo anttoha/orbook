@@ -66,13 +66,25 @@ export function formSubjects(courses, picked, metaSubjects, current) {
   return [...subjects.values()];
 }
 
-// Чи можна створювати: є право в коді або адмін дозволив усім
-export const canCreateExam = (me) => Boolean(me?.editor?.canCreate || me?.features?.examsWithoutCode);
+// Учитель увійшов своїм Lehrer-Code (частина 14). Старий сервер role не надсилав — тоді це клас
+export const isTeacher = (me) => me?.role === "teacher";
 
-// Куди веде «+». Код є, але без права створювати — кнопки немає (null)
+// Чи можна створювати: право в коді вчителя чи Editor-Code, або адмін дозволив усім
+export const canCreateExam = (me) => Boolean(me?.teacher?.canCreate || me?.editor?.canCreate || (!isTeacher(me) && me?.features?.examsWithoutCode));
+
+// Hausaufgaben: лише з правом canHomework (examsWithoutCode тут не діє)
+export const canCreateHomework = (me) => Boolean(me?.teacher?.canHomework || me?.editor?.canHomework);
+
+// Куди веде «+». Код є (або це вчитель), але без права — кнопки немає (null)
 export function addExamTarget(me) {
   if (canCreateExam(me)) return "/testen/neu";
-  return me?.editor ? null : "/editor-code?weiter=neu";
+  return me?.editor || isTeacher(me) ? null : "/editor-code?weiter=neu";
+}
+
+// «+» у Hausaufgaben: учню без коду — спершу Editor-Code
+export function addHomeworkTarget(me) {
+  if (canCreateHomework(me)) return "/hausaufgaben/neu";
+  return me?.editor || isTeacher(me) ? null : "/editor-code?weiter=hausaufgabe";
 }
 
 // Текст помилки коду: сервер пише по-німецьки, до неправильного коду додаємо, скільки спроб лишилось

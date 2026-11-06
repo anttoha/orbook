@@ -19,6 +19,7 @@ import { planChanges } from "../utils/planDiff";
 //   exams    — найближчі Klausuren (GET /api/exams)
 //   examsState — стан цього списку: { status, savedAt, error }, status як у weeks
 //   pastExams  — минулі Klausuren: { status, exams, savedAt, error }, вантажаться лише на вимогу
+//   homework   — Hausaufgaben з сьогоднішнього терміну (GET /api/homework), homeworkState — як examsState
 //   status   — стан плану: «Stand 07:12», stale (GET /api/plan/status)
 //   weeks    — завантажені тижні: { "2026-10-05": { status, data, savedAt, error } }
 //              status: "loading" | "ready" | "offline" | "unavailable" | "error"
@@ -35,6 +36,7 @@ let statusRequest = null; // запит /plan/status, що зараз викон
 // Запити Klausuren, що зараз виконуються: екран і старт просять їх одночасно, запит потрібен один
 let examsRequest = null;
 let pastExamsRequest = null;
+let homeworkRequest = null;
 // Скільки днів тому збережено відповідь. Обидва моменти — за годинником пристрою
 const daysSince = (savedAt) => daysBetween(berlinParts(new Date(savedAt)).date, berlinParts(new Date()).date);
 const NO_PAST_EXAMS = { status: "idle", exams: [], savedAt: null, error: null };
@@ -73,6 +75,8 @@ export const usePlanStore = create((set, get) => ({
   exams: [],
   examsState: { status: "loading", savedAt: null, error: null },
   pastExams: NO_PAST_EXAMS,
+  homework: [],
+  homeworkState: { status: "loading", savedAt: null, error: null },
   status: null,
   weeks: {},
   clock: createSchoolClock(null), // поки meta немає — звичайний час пристрою
@@ -101,13 +105,20 @@ export const usePlanStore = create((set, get) => ({
     await get().start();
   },
 
+  // ── Вхід учителя Lehrer-Code (без пароля класу). Помилку показує форма ──
+  loginTeacher: async (code) => {
+    await api("/auth/teacher", { method: "POST", body: { code } });
+    set({ loginNotice: null, weeks: {} });
+    await get().start();
+  },
+
   // ── «Klasse verlassen»: вихід на цьому пристрої ──
   logout: async () => {
     await api("/auth/logout", { method: "POST" }).catch(() => {}); // без мережі — виходимо локально
     cache.clearAll(); // кеш відповідей особистий — стираємо
     seenChange.save(null);
     seenWeeks = {};
-    set({ me: null, meta: null, courses: [], coursesStatus: "loading", exams: [], examsState: { status: "loading", savedAt: null, error: null }, pastExams: NO_PAST_EXAMS, status: null, weeks: {}, newPlan: null, lastStandShown: false });
+    set({ me: null, meta: null, courses: [], coursesStatus: "loading", exams: [], examsState: { status: "loading", savedAt: null, error: null }, pastExams: NO_PAST_EXAMS, homework: [], homeworkState: { status: "loading", savedAt: null, error: null }, status: null, weeks: {}, newPlan: null, lastStandShown: false });
   },
 
   // ── Після входу: паралельно meta, курси, Klausuren, стан плану ──
@@ -129,6 +140,7 @@ export const usePlanStore = create((set, get) => ({
       }),
       get().loadCourses(),
       get().loadExams(),
+      get().loadHomework(),
       load("status", "/plan/status", ({ data }) => set({ status: data })),
     ]);
     // Після meta: «сьогодні» вже за годинником школи
@@ -161,6 +173,22 @@ export const usePlanStore = create((set, get) => ({
     }
   },
 
+  // ── Hausaufgaben: так само, як Klausuren. Прострочені за збереженим списком прибираємо (freshenExams теж рахує daysLeft) ──
+  loadHomework: async () => {
+    if (homeworkRequest) return;
+    if (get().homeworkState.status === "error") set({ homeworkState: { status: "loading", savedAt: null, error: null } });
+    try {
+      homeworkRequest = loadWithCache("homework", () => api("/homework"));
+      const { data, fromCache, status, savedAt, error } = await homeworkRequest;
+      const items = data?.homework ?? [];
+      set({ homework: fromCache ? freshenExams(items, daysSince(savedAt)) : items, homeworkState: { status, savedAt, error: error ?? null } });
+    } catch (error) {
+      set({ homeworkState: { status: "error", savedAt: null, error } });
+    } finally {
+      homeworkRequest = null;
+    }
+  },
+
   // ── Минулі Klausuren: лише коли учень увімкнув «Vergangene anzeigen» ──
   loadPastExams: async () => {
     if (pastExamsRequest) return;
@@ -188,11 +216,13 @@ export const usePlanStore = create((set, get) => ({
     const { editor } = await api("/editor/unlock", { method: "POST", body: { code } });
     set((s) => ({ me: { ...s.me, editor } }));
     get().examsChanged(); // canEdit у записах залежить від коду
+    get().loadHomework();
   },
   lockEditor: async () => {
     await api("/editor/lock", { method: "POST" });
     get().dropEditor();
     get().examsChanged();
+    get().loadHomework();
   },
   // Сервер сказав, що коду більше немає (адмін заблокував, строк минув)
   dropEditor: () => set((s) => ({ me: { ...s.me, editor: null } })),

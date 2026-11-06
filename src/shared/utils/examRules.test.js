@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addExamTarget, canCreateExam, examLabel, examToForm, formSubjects, fullDate, TOPIC_MAX, unlockErrorText, validateExamDate, validateExamForm, validateTopic } from "./examRules";
+import { addExamTarget, addHomeworkTarget, canCreateExam, canCreateHomework, examLabel, examToForm, formSubjects, fullDate, TOPIC_MAX, unlockErrorText, validateExamDate, validateExamForm, validateTopic } from "./examRules";
 
 const TODAY = "2026-09-17";
 
@@ -106,6 +106,23 @@ describe("права", () => {
     expect(addExamTarget({ editor: null })).toBe("/editor-code?weiter=neu");
     expect(addExamTarget({ editor: editor(false) })).toBeNull();
     expect(addExamTarget({ editor: editor(false), features: { examsWithoutCode: true } })).toBe("/testen/neu");
+  });
+
+  it("Lehrkraft: Rechte aus me.teacher, nie zum Editor-Code", () => {
+    const teacher = (canCreate, canHomework) => ({ role: "teacher", editor: null, teacher: { short: "Mü", canCreate, canHomework }, features: { examsWithoutCode: true } });
+    expect(canCreateExam(teacher(true, false))).toBe(true);
+    expect(canCreateExam(teacher(false, true))).toBe(false); // examsWithoutCode gilt nur für die Klasse
+    expect(addExamTarget(teacher(false, true))).toBeNull();
+    expect(canCreateHomework(teacher(false, true))).toBe(true);
+    expect(addHomeworkTarget(teacher(true, false))).toBeNull();
+  });
+
+  it("Hausaufgaben: nur mit canHomework", () => {
+    expect(canCreateHomework({ editor: { canHomework: true } })).toBe(true);
+    expect(canCreateHomework({ editor: null, features: { examsWithoutCode: true } })).toBe(false);
+    expect(addHomeworkTarget({ editor: null })).toBe("/editor-code?weiter=hausaufgabe");
+    expect(addHomeworkTarget({ editor: { canHomework: false } })).toBeNull();
+    expect(addHomeworkTarget({ editor: { canHomework: true } })).toBe("/hausaufgaben/neu");
   });
 });
 
