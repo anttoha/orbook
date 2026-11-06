@@ -1,8 +1,12 @@
-import { Lock, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
+import { useSyncOn } from "../../shared/hooks/useNotesSync";
 import { useSheet } from "../../shared/hooks/useSheet";
+import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
 import { subjectName } from "../../shared/utils/format";
+import { noteMeta, visibleNotes } from "../../shared/utils/notes";
+import { LockIcon, SyncIcon } from "../ui/icons";
 
 // ─────────────────────────────────────────────────────────────
 // «Meine Notizen»: нотатки до уроків і на день (живуть тільки на пристрої, userStore).
@@ -15,19 +19,27 @@ const NotesSection = ({ date, lessons = [], variant = "list", hideEmpty = false 
   const { openSheet } = useSheet(); // відкрити шторку нотатки
   const allNotes = useUserStore((s) => s.notes); // усі нотатки (фільтр нижче)
   const isCard = variant === "card"; // варіант для ПК?
+  const subjectNames = usePlanStore((s) => s.meta?.subjects); // назви предметів { Ma: "Mathe" }
+  const synced = useSyncOn(); // є Sync-Code і школа не вимкнула синхронізацію
+  const NoteIcon = synced ? SyncIcon : LockIcon; // значок під нотаткою: синхронізується чи лише на пристрої
 
   // Нотатки цього дня: спочатку до уроків по порядку, потім на день за часом
-  const notes = allNotes.filter((n) => n.date === date).sort((a, b) => (a.period ?? 99) - (b.period ?? 99) || a.updatedAt - b.updatedAt);
+  const notes = visibleNotes(allNotes)
+    .filter((n) => n.date === date)
+    .sort((a, b) => (a.period ?? 99) - (b.period ?? 99) || a.updatedAt.localeCompare(b.updatedAt));
 
   if (hideEmpty && notes.length === 0) return null;
 
   // Відкрити нотатку: до уроку — за номером уроку, на день — за id
   const open = (note) => openSheet("notiz", note.period ? { datum: date, stunde: note.period } : { datum: date, id: note.id });
 
-  // Підпис під нотаткою: «Sport · 6. Std · nur für dich»
+  // Підпис під нотаткою (макет): телефон — «synchronisiert · nur für dich», ПК — «Sport · 6. Std · nur für dich».
+  // Предмет — з уроку (до уроку) або вибраний у нотатці; без синхронізації і на телефоні показуємо предмет
   const meta = (note) => {
-    const lesson = note.period ? lessons.find((l) => l.period === note.period) : null; // урок нотатки
-    return lesson ? `${subjectName(lesson.subject)} · ${note.period}. Std · nur für dich` : "nur für dich";
+    if (synced && !isCard) return "synchronisiert · nur für dich";
+    const lesson = note.period ? lessons.find((l) => l.period === note.period) : null;
+    const label = lesson ? subjectName(lesson.subject) : note.subject ? (subjectNames?.[note.subject] ?? note.subject) : null;
+    return noteMeta(label, note.period);
   };
 
   return (
@@ -48,7 +60,7 @@ const NotesSection = ({ date, lessons = [], variant = "list", hideEmpty = false 
           <button key={note.id} type="button" onClick={() => open(note)} className={cn("flex flex-col gap-1.5 text-left", isCard ? "py-3" : "rounded-card bg-card px-3.5 py-3")}>
             <span className={cn("whitespace-pre-wrap text-ink", isCard ? "text-body font-medium" : "text-body-sm")}>{note.text}</span>
             <span className={cn("flex items-center gap-1.5 text-faint", isCard ? "text-caption font-semibold" : "text-note")}>
-              <Lock className="size-3" /> {meta(note)}
+              <NoteIcon className="size-3 shrink-0" /> {meta(note)}
             </span>
           </button>
         ))}

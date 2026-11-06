@@ -1,90 +1,155 @@
-import { useState } from "react";
-import { Trash2 } from "lucide-react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { useSyncOn } from "../../shared/hooks/useNotesSync";
 import { useDay } from "../../shared/hooks/usePlan";
 import { useUserStore } from "../../shared/store/userStore";
-import { isIsoDate, longDate, numericDate, subjectName, weekdayLong, weekdayShort } from "../../shared/utils/format";
+import { isIsoDate, longDate, weekdayLong } from "../../shared/utils/format";
+import { findNote, noteSubjects } from "../../shared/utils/notes";
+import SubjectToggle from "../exams/SubjectToggle";
 import Button from "../ui/Button";
+import Field from "../ui/Field";
+import { CalendarIcon, CheckIcon, LockIcon, TrashIcon } from "../ui/icons";
 import Sheet from "../ui/Sheet";
 
 // ─────────────────────────────────────────────────────────────
-// Шторка нотатки (нотатки живуть тільки на пристрої — userStore).
+// Шторка «Notiz» (макет 20 — телефон, 21 — вікно на ПК). Нотатки живуть на пристрої (userStore),
+// з Sync-Code їх підхоплює синхронізація (useNotesSync).
 //   ?sheet=notiz&datum=…&stunde=2  — нотатка до уроку
 //   ?sheet=notiz&datum=…&id=…      — змінити нотатку на день
 //   ?sheet=notiz&datum=…           — нова нотатка на день
 // ─────────────────────────────────────────────────────────────
 const NoteSheet = ({ open, onClose, sheet }) => {
   const valid = isIsoDate(sheet.datum); // чи правильна дата в адресі
-  const { day } = useDay(valid ? sheet.datum : null); // день (для назви уроку)
   const period = sheet.stunde ? Number(sheet.stunde) : null; // номер уроку (якщо нотатка до уроку)
-  const lesson = period ? day?.lessons.find((l) => l.period === period) : null; // сам урок
-
-  // id нотатки: до уроку — «дата#урок», на день — з адреси (або нова)
-  const noteId = period ? `${sheet.datum}#${period}` : sheet.id;
-  const note = useUserStore((s) => s.notes.find((n) => n.id === noteId)); // уже збережена нотатка
+  const noteId = period ? `${sheet.datum}#${period}` : sheet.id; // до уроку — «дата#урок», на день — з адреси
+  const note = useUserStore((s) => (noteId ? findNote(s.notes, noteId) : null)); // уже збережена нотатка
 
   if (!valid) return null; // крива адреса
 
-  // Підпис над заголовком: «2. Std · Mathe · Mi, 7.10.» або «Mittwoch, 7. Oktober»
-  const eyebrow = period
-    ? `${period}. Std${lesson ? ` · ${subjectName(lesson.subject)}` : ""} · ${weekdayShort(sheet.datum)}, ${numericDate(sheet.datum)}`
-    : `${weekdayLong(sheet.datum)}, ${longDate(sheet.datum)}`;
-
   return (
-    <Sheet open={open} onClose={onClose} panelLabel="Notiz" eyebrow={eyebrow} title={note ? "Notiz bearbeiten" : "Neue Notiz"}>
+    <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow="Nur für dich" title="Notiz">
       {/* key — при зміні нотатки форма створюється заново з її текстом */}
       <NoteForm key={noteId ?? "neu"} note={note} noteId={noteId} date={sheet.datum} period={period} onDone={onClose} />
     </Sheet>
   );
 };
 
-// Форма з полем вводу і кнопками
-const NoteForm = ({ note, noteId, date, period, onDone }) => {
-  const [text, setText] = useState(note?.text ?? ""); // текст у полі
-  const saveNote = useUserStore((s) => s.saveNote); // зберегти
-  const deleteNote = useUserStore((s) => s.deleteNote); // видалити
+// Форма: текст, предмет, дата, кнопки
+const NoteForm = ({ note, noteId, date: openedOn, period, onDone }) => {
+  const { day } = useDay(openedOn); // уроки дня — для чіпів предметів
+  const lesson = period ? day?.lessons.find((l) => l.period === period) : null; // урок нотатки
+  const [text, setText] = useState(note?.text ?? "");
+  const [subject, setSubject] = useState(note ? note.subject : (lesson?.subject?.code ?? null)); // до уроку — предмет уроку
+  const [date, setDate] = useState(note?.date ?? openedOn);
+  const saveNote = useUserStore((s) => s.saveNote);
+  const deleteNote = useUserStore((s) => s.deleteNote);
+  const restoreNote = useUserStore((s) => s.restoreNote);
 
-  // Збереження
+  const subjects = noteSubjects(day?.lessons, subject);
+
   const handleSubmit = (e) => {
     e.preventDefault(); // не перезавантажувати сторінку
     if (!text.trim()) return; // порожню не зберігаємо
-    saveNote({ id: noteId, date, period, text: text.trim() });
+    try {
+      saveNote({ id: noteId, date, period, subject, text: text.trim() });
+    } catch {
+      toast.error("Notiz konnte nicht gespeichert werden"); // localStorage переповнений або заборонений
+      return;
+    }
     toast.success("Notiz gespeichert");
     onDone();
   };
 
-  // Видалення
+  // Видалення без питання: у сповіщенні є «Rückgängig» (docs/frontend/06-notizen.md)
   const handleDelete = () => {
     deleteNote(noteId);
-    toast("Notiz gelöscht");
+    toast("Notiz gelöscht", { duration: 6000, action: { label: "Rückgängig", onClick: () => restoreNote(note) } });
     onDone();
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <label className="flex flex-col gap-1.5">
-        <span className="px-1 text-label font-bold text-muted">Nur für dich sichtbar</span>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <Field label="Notiz">
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
+          aria-label="Notiz"
           placeholder="z. B. Sportsachen mitnehmen"
           rows={4}
           autoFocus // одразу можна друкувати
-          className="w-full resize-none rounded-field bg-card p-3.5 text-body font-bold text-ink outline-none placeholder:text-faint focus:ring-2 focus:ring-accent/30"
+          className="h-31 w-full resize-none rounded-field bg-card px-4.25 py-3.5 text-input text-ink outline-none placeholder:text-faint focus:ring-2 focus:ring-accent/30"
         />
-      </label>
-      <div className="flex gap-2.5">
-        {/* «Löschen» тільки для вже збереженої нотатки */}
-        {note && (
-          <Button onClick={handleDelete} className="text-danger">
-            <Trash2 className="size-4.5" /> Löschen
+      </Field>
+
+      {subjects.length > 0 && (
+        <Field label="Zu Fach · optional">
+          <div className="flex flex-wrap gap-2">
+            {subjects.map((code) => (
+              // повторне натискання знімає предмет: він необов'язковий
+              <SubjectToggle key={code} code={code} label={code} selected={subject === code} onClick={() => setSubject(subject === code ? null : code)} />
+            ))}
+          </div>
+        </Field>
+      )}
+
+      <DateRow date={date} period={period} onChange={setDate} />
+
+      <div className="flex flex-col gap-3.5">
+        <StorageHint />
+        <div className="flex gap-2">
+          {/* «Löschen» тільки для вже збереженої нотатки */}
+          {note && (
+            <Button variant="danger" onClick={handleDelete} className="flex-none px-4.5">
+              <TrashIcon className="size-4" /> Löschen
+            </Button>
+          )}
+          <Button type="submit" variant="primary" disabled={!text.trim()}>
+            <CheckIcon className="size-4" /> Speichern
           </Button>
-        )}
-        <Button type="submit" variant="primary" disabled={!text.trim()}>
-          Speichern
-        </Button>
+        </div>
       </div>
     </form>
+  );
+};
+
+// «Mittwoch, 17. September · Ändern». У нотатки до уроку дату не міняємо: вона прив'язана до уроку
+const DateRow = ({ date, period, onChange }) => {
+  const picker = useRef(null); // приховане поле дати: «Ändern» відкриває його календар
+  const label = `${weekdayLong(date)}, ${longDate(date)}${period ? ` · ${period}. Std` : ""}`;
+
+  const openPicker = () => {
+    try {
+      picker.current.showPicker(); // календар браузера
+    } catch {
+      picker.current.focus(); // старі браузери: хоча б фокус на полі
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-3">
+      <CalendarIcon className="size-4.5 shrink-0 text-muted" />
+      <span className="min-w-0 flex-1 text-row text-ink">{label}</span>
+      {!period && (
+        <>
+          <button type="button" onClick={openPicker} className="text-label font-bold text-accent-ink">
+            Ändern
+          </button>
+          <input ref={picker} type="date" value={date} onChange={(e) => isIsoDate(e.target.value) && onChange(e.target.value)} aria-label="Datum" tabIndex={-1} className="sr-only" />
+        </>
+      )}
+    </div>
+  );
+};
+
+// Де живе нотатка: з Sync-Code — ще й на сервері (зашифровано), без — тільки тут
+const StorageHint = () => {
+  const syncOn = useSyncOn();
+
+  return (
+    <p className="flex items-center gap-1.5 text-caption text-faint">
+      <LockIcon className="size-3.25 shrink-0" />
+      {syncOn ? "Nur für dich. Wird mit deinem Sync-Code gespeichert." : "Nur für dich. Bleibt auf diesem Gerät."}
+    </p>
   );
 };
 

@@ -37,3 +37,21 @@ export const PencilIcon = ({ className }) => <Outline d="M4 20h4L19 9l-4-4L4 16v
 
 // Три стовпчики: «Statistik» (меню і екран «Noch zu wenig Daten»)
 export const StatsIcon = ({ className }) => <Outline d="M5 20V11M12 20V5M19 20v-8" className={className} />;
+
+// Дві стрілки по колу: «synchronisiert», кнопка «Verbinden»
+export const SyncIcon = ({ className }) => <Outline d="M4 12a8 8 0 0 1 14-5.3M20 4v5h-5M20 12a8 8 0 0 1-14 5.3M4 20v-5h5" className={className} />;
+
+// Одна стрілка по колу: «Neuen Code erzeugen»
+export const RenewIcon = ({ className }) => <Outline d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6" className={className} />;
+
+// Два аркуші: «Code kopieren»
+export const CopyIcon = ({ className }) => <Outline d="M11 9h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2zM5 15V6a1 1 0 0 1 1-1h9" className={className} />;
+
+// Трикутник зі знаком оклику: «Code weg = Notizen weg»
+export const WarningIcon = ({ className }) => <Outline d="M12 4l9 16H3zM12 10v4M12 17h.01" className={className} />;
+
+// Замочок: «Nur für dich …»
+export const LockIcon = ({ className }) => <Outline d="M7 11h10a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zM8 11V8a4 4 0 0 1 8 0v3" className={className} />;
+
+// Календар: дата нотатки
+export const CalendarIcon = ({ className }) => <Outline d="M6 5h12a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3zM8 3v4M16 3v4M3 10h18" className={className} />;

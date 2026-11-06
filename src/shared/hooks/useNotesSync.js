@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { usePlanStore } from "../store/planStore";
 import { useSyncStore } from "../store/syncStore";
 import { useUserStore } from "../store/userStore";
 
@@ -34,4 +35,18 @@ export function useNotesSync(enabled) {
       clearTimeout(timer);
     };
   }, [enabled]);
+}
+
+// Чи синхронізуються нотатки зараз: є код і школа не вимкнула (me.features.notesSync, 403 feature_disabled)
+export function useSyncOn() {
+  const hasCode = useSyncStore((s) => Boolean(s.code) && !s.disabled);
+  const allowed = useSyncAllowed();
+  return hasCode && allowed;
+}
+
+// Чи дозволена синхронізація школою (без коду теж): тоді показуємо рядок у «Mehr» і кнопку в Datenschutz
+export function useSyncAllowed() {
+  const disabled = useSyncStore((s) => s.disabled);
+  const allowed = usePlanStore((s) => s.me?.features?.notesSync !== false);
+  return allowed && !disabled;
 }
