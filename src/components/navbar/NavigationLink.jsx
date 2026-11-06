@@ -5,8 +5,9 @@ import { cn } from "../../shared/utils/cn";
 // Пункт меню сайдбара: іконка + підпис (+ лічильник праворуч).
 // isHidden — сайдбар згорнутий: підпис прозорий, видно тільки іконку
 // badge — число праворуч (наприклад, 5 у «Testen»); null — без лічильника
+// index — номер пункту: підписи від'їжджають і повертаються по черзі (сходинкою), а не всі разом
 // ─────────────────────────────────────────────────────────────
-const NavigationLink = ({ active, tab, isHidden = false, badge = null, className = "", iconClassName = "", textClassName = "" }) => {
+const NavigationLink = ({ active, tab, isHidden = false, badge = null, index = 0, className = "", iconClassName = "", textClassName = "" }) => {
   return (
     <Link
       to={tab.to}
@@ -21,10 +22,11 @@ const NavigationLink = ({ active, tab, isHidden = false, badge = null, className
       <tab.icon className={cn("size-5 shrink-0", iconClassName)} />
       <span
         className={cn(
-          "flex-1 whitespace-nowrap transition-opacity ease-out",
-          isHidden ? "opacity-0 duration-150" : "opacity-100 delay-150 duration-200",
+          "flex-1 whitespace-nowrap transition-[opacity,translate] ease-soft motion-reduce:transition-none",
+          isHidden ? "-translate-x-3 opacity-0 duration-200" : "translate-x-0 opacity-100 duration-500",
           textClassName,
         )}
+        style={{ transitionDelay: `${isHidden ? index * 25 : 150 + index * 45}ms` }}
       >
         {tab.label}
       </span>

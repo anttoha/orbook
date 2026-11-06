@@ -9,9 +9,20 @@ import { FlagIcon } from "../../ui/icons";
 // Значки праворуч: ◌ — щось скасовано, • — зміна (Vertretung, Raum), ⚑ — Klausur.
 // days — дні тижня з сервера; date — відкритий день
 // ─────────────────────────────────────────────────────────────
+// Вибраний день — одна фіолетова «пігулка» під кнопками, яка плавно їде до нового дня (як у Segmented).
+// Кнопки однакової ширини (flex-1), тому зсув = номер × (ширина + проміжок 4px)
 const DayStrip = ({ days, date, today }) => {
+  const index = days.findIndex((day) => day.date === date);
+
   return (
-    <nav aria-label="Wochentage" className="flex h-13 gap-1 rounded-full bg-sand p-1">
+    <nav aria-label="Wochentage" className="relative flex h-13 gap-1 rounded-full bg-sand p-1">
+      {index >= 0 && (
+        <span
+          aria-hidden="true"
+          className="absolute inset-y-1 left-1 rounded-full bg-accent transition-[translate] duration-300 ease-soft motion-reduce:transition-none"
+          style={{ width: `calc((100% - 0.5rem - ${days.length - 1} * 0.25rem) / ${days.length})`, translate: `calc(${index} * (100% + 0.25rem)) 0` }}
+        />
+      )}
       {days.map((day) => {
         const active = day.date === date; // відкритий день
         // найважливіша подія дня
@@ -29,7 +40,7 @@ const DayStrip = ({ days, date, today }) => {
             key={day.date}
             to={`/tag/${day.date}`}
             aria-current={active ? "page" : undefined}
-            className={cn("flex min-w-0 flex-1 items-center gap-2 rounded-full px-4 transition-colors", active ? "bg-accent text-on-accent" : "text-ink hover:bg-card/60")}
+            className={cn("relative flex min-w-0 flex-1 items-center gap-2 rounded-full px-4 transition-colors duration-300", active ? "text-on-accent" : "text-ink hover:bg-card/60")}
           >
             <span className={cn("text-caption font-extrabold uppercase", active ? "text-today-sub" : "text-faint")}>{day.weekday}</span>
             <span className="text-body font-black">{Number(day.date.slice(8))}.</span>

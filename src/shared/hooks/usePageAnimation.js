@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigationType } from "react-router-dom";
 import { pageAnimation, pageKey } from "../utils/pageMotion";
+import { DESKTOP_QUERY, useMediaQuery } from "./useMediaQuery";
 
 // Повні рядки класів, щоб Tailwind їх знайшов. motion-safe: без анімації, якщо в системі «менше руху»
 const CLASSES = {
@@ -14,12 +15,13 @@ const CLASSES = {
 export function usePageAnimation() {
   const { pathname } = useLocation();
   const navigationType = useNavigationType();
+  const desktop = useMediaQuery(DESKTOP_QUERY);
   const [seen, setSeen] = useState({ path: pathname, animation: "" });
 
   let animation = seen.animation;
   if (seen.path !== pathname) {
-    animation = pageAnimation(seen.path, pathname, navigationType);
+    animation = pageAnimation(seen.path, pathname, navigationType, { desktop });
     setSeen({ path: pathname, animation });
   }
-  return { key: pageKey(pathname), className: CLASSES[animation] ?? "" };
+  return { key: pageKey(pathname, { desktop }), className: CLASSES[animation] ?? "" };
 }

@@ -469,6 +469,8 @@
 
 /* Анімації для вікон і меню (animate-fade-in, animate-pop-in тощо) */
 @theme {
+    /* М'яка крива руху: швидкий старт, довге плавне гальмування (клас ease-soft) */
+    --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
     --animate-fade-in: fade-in 0.15s ease-out;
     --animate-fade-out: fade-out 0.12s ease-in;
     --animate-pop-in: pop-in 0.16s ease-out;
@@ -479,6 +481,8 @@
     --animate-page-forward: page-forward 0.22s ease-out;
     --animate-page-back: page-back 0.22s ease-out;
     --animate-page-fade: fade-in 0.16s ease-out;
+    /* Розділ «Einstellungen» на ПК: як вкладка — проявляється і трохи підіймається */
+    --animate-panel-in: panel-in 0.26s var(--ease-soft);
 
     @keyframes fade-in { from { opacity: 0; } }
     @keyframes fade-out { to { opacity: 0; } }
@@ -488,4 +492,5 @@
     @keyframes slide-out-right { to { opacity: 0; translate: 24px 0; } }
     @keyframes page-forward { from { opacity: 0; translate: 24px 0; } }
     @keyframes page-back { from { opacity: 0; translate: -24px 0; } }
+    @keyframes panel-in { from { opacity: 0; translate: 0 8px; } }
 }

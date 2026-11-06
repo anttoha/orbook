@@ -12,3 +12,12 @@ describe("pageAnimation", () => {
   });
   it("дні мають один ключ", () => expect(pageKey("/tag/2026-10-05")).toBe("/tag"));
 });
+
+describe("Einstellungen auf dem PC", () => {
+  it("eine Seite mit Tabs: die ganze Seite fährt nicht", () => {
+    expect(pageKey("/mehr/kurse", { desktop: true })).toBe("/mehr");
+    expect(pageAnimation("/mehr", "/mehr/kurse", "PUSH", { desktop: true })).toBe("");
+    expect(pageAnimation("/mehr/kurse", "/woche", "PUSH", { desktop: true })).toBe("animate-page-back");
+  });
+  it("Handy wie bisher", () => expect(pageAnimation("/mehr", "/mehr/kurse", "PUSH")).toBe("animate-page-forward"));
+});

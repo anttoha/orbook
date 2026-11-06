@@ -109,7 +109,7 @@ const Homework = () => {
       </header>
 
       <div className="flex min-w-0 flex-col gap-5.5 lg:max-w-exams">
-        <ListSwitch className="lg:hidden" />
+        <ListSwitch className="lg:w-90 lg:self-start" />
         <div className="flex items-center gap-3">
           {(items.length > 0 || filterActive) && (
             <ExamChips
@@ -121,7 +121,6 @@ const Homework = () => {
               onOpenFilter={null}
             />
           )}
-          <ListSwitch className="ml-auto hidden lg:grid" />
         </div>
 
         <PlanBanner resource={resource} onRetry={loadHomework} />

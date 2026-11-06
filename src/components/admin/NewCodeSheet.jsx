@@ -45,10 +45,12 @@ const TeacherPicker = ({ value, onChange, disabled, error }) => {
             className={cn(chip, value === teacher.short ? "border-accent bg-tint text-accent-ink" : "border-rule text-ink")}
           >
             {teacher.short}
+            {/* предмети з плану: «T03 · Ma, Ph» — щоб було видно, хто це (у демо Kürzel вигадані: T01, T02 …) */}
+            {teacher.subjects?.length > 0 && <span className="font-normal text-muted"> · {teacher.subjects.join(", ")}</span>}
           </button>
         ))}
       </div>
-      <p className="mt-1.5 text-caption text-faint">Kürzel aus dem Plan der Klasse.{taken.length > 0 && ` ${taken.join(", ")} ${taken.length === 1 ? "hat" : "haben"} schon einen Code.`}</p>
+      <p className="mt-1.5 text-caption text-faint">Kürzel der Lehrkraft aus dem Plan der Klasse, dahinter ihre Fächer.{taken.length > 0 && ` ${taken.join(", ")} ${taken.length === 1 ? "hat" : "haben"} schon einen Code.`}</p>
     </Field>
   );
 };

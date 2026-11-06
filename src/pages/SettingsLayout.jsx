@@ -34,7 +34,10 @@ const SettingsLayout = () => {
             Заголовок розділу виходить за відступ сам (PageHeader, -ml-4.5) */}
         <div className={cn("max-w-settings min-w-0 flex-1", !isOverview(pathname) && "px-4.5")}>
           <SettingsPanelContext value>
-            <Outlet />
+            {/* новий розділ — нова обгортка (key): він м'яко проявляється, як вкладка, а меню стоїть на місці */}
+            <div key={pathname} className="motion-safe:animate-panel-in">
+              <Outlet />
+            </div>
           </SettingsPanelContext>
         </div>
       </div>

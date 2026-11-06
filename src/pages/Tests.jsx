@@ -149,7 +149,7 @@ const ExamList = () => {
 
       <div className="flex items-start gap-9">
         <div className="flex min-w-0 flex-1 flex-col gap-5.5 lg:max-w-exams">
-          <ListSwitch className="lg:hidden" />
+          <ListSwitch className="lg:w-90 lg:self-start" />
           {/* без записів і без фільтра чипам нічого показувати (макет «Klausuren · leer») */}
           <div className="flex items-center gap-3">
             {(list.length > 0 || filterActive) && (
@@ -162,11 +162,8 @@ const ExamList = () => {
                 onOpenFilter={isDesktop ? null : () => openSheet("klausurfilter")}
               />
             )}
-            {/* ПК: «Kommend | Vergangen» і «Klausuren | Hausaufgaben» праворуч від чипів */}
-            <div className="ml-auto hidden gap-2 lg:flex">
-              {(list.length > 0 || filterActive) && scope}
-              <ListSwitch />
-            </div>
+            {/* ПК: «Kommend | Vergangen» праворуч від чипів */}
+            {(list.length > 0 || filterActive) && <div className="ml-auto hidden lg:block">{scope}</div>}
           </div>
 
           <PlanBanner resource={resource} onRetry={reload} />

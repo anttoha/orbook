@@ -22,23 +22,43 @@ const RANGES = [
 // ─────────────────────────────────────────────────────────────
 const ShareSheet = ({ open, onClose, sheet }) => {
   return (
-    <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow="Nachricht auf Deutsch" title="Teilen">
+    <Sheet
+      open={open}
+      onClose={onClose}
+      desktop="dialog"
+      eyebrow="Nachricht auf Deutsch"
+      title="Teilen"
+    >
       {/* key — при новому відкритті з іншими параметрами налаштування починаються заново */}
-      <ShareOptions key={`${sheet.bereich}-${sheet.datum}-${sheet.kw}`} sheet={sheet} />
+      <ShareOptions
+        key={`${sheet.bereich}-${sheet.datum}-${sheet.kw}`}
+        sheet={sheet}
+      />
     </Sheet>
   );
 };
 
 // Перемикач + галочки + текст
 const ShareOptions = ({ sheet }) => {
-  const [range, setRange] = useState(RANGES.some((r) => r.value === sheet.bereich) ? sheet.bereich : "heute"); // період
+  const [range, setRange] = useState(
+    RANGES.some((r) => r.value === sheet.bereich) ? sheet.bereich : "heute",
+  ); // період
   const [includeChanges, setIncludeChanges] = useState(true); // галочка «Vertretungen»
   const [includeExams, setIncludeExams] = useState(true); // галочка «Klausuren»
-  const [result, setResult] = useState({ status: "loading", text: "", error: null }); // відповідь сервера
+  const [result, setResult] = useState({
+    status: "loading",
+    text: "",
+    error: null,
+  }); // відповідь сервера
   const [attempt, setAttempt] = useState(0); // «Erneut versuchen» збільшує → запит ще раз
 
   // Що включити: «Vertretungen» = заміни + скасування + кабінети, «Klausuren» = exams
-  const include = [...(includeChanges ? ["substitutions", "cancellations", "roomChanges"] : []), ...(includeExams ? ["exams"] : [])];
+  const include = [
+    ...(includeChanges
+      ? ["substitutions", "cancellations", "roomChanges"]
+      : []),
+    ...(includeExams ? ["exams"] : []),
+  ];
   const nothing = include.length === 0; // обидві галочки вимкнені
   const includeKey = include.join(","); // рядок — щоб ефект бачив зміну
 
@@ -49,9 +69,18 @@ const ShareOptions = ({ sheet }) => {
   useEffect(() => {
     if (!includeKey) return undefined; // нічого не вибрано — не питаємо сервер
     let cancelled = false; // налаштування змінились, поки чекали — стара відповідь не потрібна
-    loadShareText(RANGES.find((r) => r.value === range).range, { date: date ?? undefined, include: includeKey.split(",") })
-      .then((text) => !cancelled && setResult({ status: "ready", text, error: null }))
-      .catch((error) => !cancelled && setResult({ status: "error", text: "", error }));
+    loadShareText(RANGES.find((r) => r.value === range).range, {
+      date: date ?? undefined,
+      include: includeKey.split(","),
+    })
+      .then(
+        (text) =>
+          !cancelled && setResult({ status: "ready", text, error: null }),
+      )
+      .catch(
+        (error) =>
+          !cancelled && setResult({ status: "error", text: "", error }),
+      );
     return () => {
       cancelled = true;
     };
@@ -65,16 +94,35 @@ const ShareOptions = ({ sheet }) => {
 
   return (
     <>
-      <Segmented label="Zeitraum" size="form" options={RANGES} value={range} onChange={change(setRange)} />
+      <Segmented
+        label="Zeitraum"
+        size="form"
+        options={RANGES}
+        value={range}
+        onChange={change(setRange)}
+      />
 
       {/* галочки */}
       <div className="grid grid-cols-2 gap-2">
-        <Checkbox label="Vertretungen" checked={includeChanges} onChange={change(setIncludeChanges)} />
-        <Checkbox label="Klausuren" checked={includeExams} onChange={change(setIncludeExams)} />
+        <Checkbox
+          label="Vertretungen"
+          checked={includeChanges}
+          onChange={change(setIncludeChanges)}
+        />
+        <Checkbox
+          label="Klausuren"
+          checked={includeExams}
+          onChange={change(setIncludeExams)}
+        />
       </div>
 
-      {nothing && <p className="rounded-field bg-sand px-3.5 py-3 text-label font-bold text-muted">Wähle mindestens eins aus.</p>}
-      {!nothing && result.status === "loading" && <Skeleton className="h-36" />}
+      {nothing && (
+        <p className="rounded-field bg-sand px-3.5 py-3 text-label font-bold text-muted">
+          Wähle mindestens eins aus.
+        </p>
+      )}
+      {/* поки йде новий текст — той самий блок, тільки скелет замість тексту: вікно не стрибає по висоті */}
+      {!nothing && result.status === "loading" && <Composer loading />}
       {!nothing && result.status === "error" && (
         <div className="flex flex-col items-start gap-2 rounded-field bg-danger-tint px-3.5 py-3 text-label font-bold text-ink">
           <p>Text konnte nicht geladen werden. {result.error.message}</p>
@@ -91,7 +139,9 @@ const ShareOptions = ({ sheet }) => {
         </div>
       )}
       {/* key — новий текст із сервера → поле вводу отримує його заново */}
-      {!nothing && result.status === "ready" && <Composer key={result.text} initialText={result.text} />}
+      {!nothing && result.status === "ready" && (
+        <Composer key={result.text} initialText={result.text} />
+      )}
     </>
   );
 };
@@ -100,37 +150,61 @@ const ShareOptions = ({ sheet }) => {
 const Checkbox = ({ label, checked, onChange }) => (
   <label className="flex h-10 cursor-pointer items-center gap-3.25 px-1 text-body-sm text-ink">
     {/* справжня галочка лишається для клавіатури і скрінрідера, видно намальовану */}
-    <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="peer sr-only" />
-    <span className={cn("grid size-4.5 shrink-0 place-items-center rounded-mark peer-focus-visible:ring-2 peer-focus-visible:ring-accent/50", checked ? "bg-accent text-on-accent" : "border-2 border-faint2")}>
+    <input
+      type="checkbox"
+      checked={checked}
+      onChange={(e) => onChange(e.target.checked)}
+      className="peer sr-only"
+    />
+    <span
+      className={cn(
+        "grid size-4.5 shrink-0 place-items-center rounded-mark peer-focus-visible:ring-2 peer-focus-visible:ring-accent/50",
+        checked ? "bg-accent text-on-accent" : "border-2 border-faint2",
+      )}
+    >
       {checked && <CheckIcon className="size-3.5" />}
     </span>
     {label}
   </label>
 );
 
-// Поле з текстом (можна правити) + кнопки надсилання
-const Composer = ({ initialText }) => {
+// Поле з текстом (можна правити) + кнопки надсилання.
+// loading — текст ще вантажиться: на місці поля скелет такої самої висоти, кнопки неактивні
+const Composer = ({ initialText = "", loading = false }) => {
   const [text, setText] = useState(initialText); // текст, який надішлемо
 
   return (
     <>
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        rows={5}
-        aria-label="Nachricht"
-        className="w-full resize-none rounded-cell bg-ok-tint px-3.5 py-3 text-body-sm leading-5.25 text-ink outline-none focus:ring-2 focus:ring-ok/40"
-      />
-      <p className="text-caption text-faint">Du kannst den Text vor dem Senden noch ändern.</p>
+      {loading ? (
+        <Skeleton className="h-36 rounded-cell" />
+      ) : (
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          rows={5}
+          aria-label="Nachricht"
+          className="h-36 w-full resize-none rounded-cell bg-ok-tint px-3.5 py-3 text-body-sm leading-5.25 text-ink outline-none motion-safe:animate-fade-in focus:ring-2 focus:ring-ok/40"
+        />
+      )}
+      <p className="text-caption text-faint">
+        Du kannst den Text vor dem Senden noch ändern.
+      </p>
 
       <div className="-mt-1 flex gap-2">
-        <Button onClick={() => copyText(text)}>
+        <Button onClick={() => copyText(text)} disabled={loading}>
           <Copy className="size-4" /> Kopieren
         </Button>
         {/* звичайне посилання в новій вкладці: відкриє WhatsApp (застосунок або web) */}
-        <Button variant="primary" href={whatsappUrl(text)} target="_blank" rel="noreferrer">
+        <Button
+          variant="primary"
+          href={loading ? undefined : whatsappUrl(text)}
+          disabled={loading}
+          target="_blank"
+          rel="noreferrer"
+        >
           {/* на ПК відкриється WhatsApp Web, тому й підпис такий (як на макеті) */}
-          <WhatsappIcon className="size-4" /> WhatsApp<span className="hidden lg:inline"> Web</span>
+          <WhatsappIcon className="size-4" /> WhatsApp
+          <span className="hidden lg:inline"> Web</span>
         </Button>
       </div>
     </>

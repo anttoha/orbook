@@ -2,6 +2,7 @@ import { useState } from "react";
 import { updateAdminExam } from "../../shared/api/admin";
 import { examLabel, TOPIC_MAX, validateTopic } from "../../shared/utils/examRules";
 import Button from "../ui/Button";
+import Select from "../ui/Select";
 import Field from "../ui/Field";
 import { CheckIcon } from "../ui/icons";
 import Segmented from "../ui/Segmented";
@@ -44,13 +45,7 @@ const ExamEditForm = ({ exam, types, onSaved }) => {
       </Field>
       <TextField id="admin-exam-date" label="Datum" type="date" value={form.date} onChange={(event) => change({ date: event.target.value })} />
       <Field label="Stunde">
-        <select value={form.lesson ?? ""} onChange={(event) => change({ lesson: event.target.value ? Number(event.target.value) : null })} className="h-12.5 w-full rounded-field bg-card px-4 text-input text-ink outline-none focus:ring-2 focus:ring-accent/30">
-          {LESSONS.map((lesson) => (
-            <option key={lesson ?? "none"} value={lesson ?? ""}>
-              {lesson ? `${lesson}. Stunde` : "—"}
-            </option>
-          ))}
-        </select>
+        <Select variant="field" label="Stunde" value={form.lesson ?? ""} options={LESSONS.map((lesson) => ({ value: lesson ?? "", label: lesson ? `${lesson}. Stunde` : "—" }))} onChange={(value) => change({ lesson: value === "" ? null : value })} />
       </Field>
       <TextField id="admin-exam-topic" label="Thema" value={form.topic} maxLength={TOPIC_MAX} error={error} hint={`${form.topic.length} von ${TOPIC_MAX} Zeichen · keine Namen`} onChange={(event) => change({ topic: event.target.value })} autoComplete="off" />
       <Button type="submit" variant="primary" disabled={busy} className="flex-none">

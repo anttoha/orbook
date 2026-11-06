@@ -44,7 +44,8 @@ const SideNavFooter = ({ collapsed }) => {
           {!collapsed && <span className={cn("truncate", status?.stale && "text-danger")}>{text}</span>}
         </p>
 
-        <div className={cn("mt-2.5 flex items-center", collapsed ? "flex-col gap-2" : "justify-between")}>
+        {/* розкладка міняється (рядок ↔ стовпчик) — нова обгортка м'яко проявляється замість стрибка */}
+        <div key={collapsed ? "mini" : "full"} className={cn("mt-2.5 flex items-center motion-safe:animate-panel-in", collapsed ? "flex-col gap-2" : "justify-between")}>
           {/* перемикач теми: ☀ / ☾ */}
           <div role="group" aria-label="Darstellung" className={cn("relative flex rounded-full bg-sand p-0.75", collapsed && "flex-col")}>
             {/* фіолетова пігулка їде до вибраної теми: вбік, а в згорнутому сайдбарі — вниз */}

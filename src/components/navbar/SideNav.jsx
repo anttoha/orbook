@@ -30,7 +30,7 @@ const SideNav = () => {
       className={cn(
         // sticky: сайдбар лишається на місці при прокручуванні; висота = екран − 2×16px
         "sticky top-4 my-4 hidden h-[calc(100dvh-2rem)] shrink-0 flex-col overflow-hidden rounded-panel bg-card px-3.5 pt-4 pb-3.5 lg:flex print:hidden",
-        "transition-[width] duration-300 ease-out",
+        "transition-[width] duration-500 ease-soft motion-reduce:transition-none",
         isHidden ? "w-sidebar-mini" : "w-sidebar",
       )}
     >
@@ -43,9 +43,10 @@ const SideNav = () => {
       <nav className="mt-5 space-y-1">
         {navTabs
           .filter((t) => t.desktop && isTabEnabled(t, features))
-          .map((tab) => (
+          .map((tab, index) => (
             <NavigationLink
               key={tab.to}
+              index={index} // підписи ховаються й з'являються по черзі
               active={isTabActive(tab, pathname)}
               tab={tab}
               isHidden={isHidden}
@@ -54,8 +55,15 @@ const SideNav = () => {
           ))}
       </nav>
 
-      {/* «Bald» тільки в розгорнутому вигляді */}
-      {!isHidden && <SoonList />}
+      {/* «Bald» тільки в розгорнутому вигляді: не зникає одразу, а від'їжджає вліво і тане.
+          Ширина фіксована (сайдбар мінус відступи), щоб текст не переносився, поки сайдбар звужується */}
+      <div
+        inert={isHidden}
+        aria-hidden={isHidden}
+        className={cn("w-51 transition-[opacity,translate] ease-soft motion-reduce:transition-none", isHidden ? "pointer-events-none -translate-x-6 opacity-0 duration-200" : "translate-x-0 opacity-100 delay-200 duration-500")}
+      >
+        <SoonList />
+      </div>
 
       <SideNavFooter collapsed={isHidden} />
     </aside>
