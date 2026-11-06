@@ -461,6 +461,50 @@ def p_klausur_lehrer(c, theme, sub):
     b.append(T(18, 670, "An: Schüler mit Freigabe dürfen Datum, Stunde und Thema ändern.", 12, 400, c["faint"]))
     return svg(w, h, c, "".join(b))
 
+HISTORY_ICON = '<circle cx="12" cy="12" r="9"/>' + P("M12 7v5l3 2")
+
+def hw_sheet_verlauf(c, sub):
+    """Blatt mit «Verlauf»: wer wann was geändert hat. Schüler ohne Namen, Lehrkraft mit Kürzel."""
+    top = 150
+    solid, tint, text = sub["Ma"]
+    b = [overlay(c, 390, 844),
+         f'<path d="M30,{top} H360 A30,30 0 0 1 390,{top + 30} V844 H0 V{top + 30} A30,30 0 0 1 30,{top} Z" fill="{c["paper"]}"/>',
+         R(176, top + 10, 38, 4, 2, c["faint2"])]
+    b.append(R(18, top + 30.45, 44, 44, 22, tint) + T(40, top + 56.45, "Ma", 11.5, 900, text, "middle"))
+    bd, bw = badge(74, top + 28, "HAUSAUFGABE", c, "sand"); b.append(bd)
+    b.append(T(74 + bw + 8, top + 42, "Mathe", 12.5, 400, c["faint"]))
+    b.append(title(74, top + 71, "Bis Fr 19.9.", c, 24))
+    y = top + 91
+    b.append(R(18, y, 354, 70, 22, c["card"]))
+    for i, ln in enumerate(["Buch S. 54, Nr. 3 a–d.", "Rechenweg aufschreiben."]):
+        b.append(T(33, y + 28 + i * 22, ln, 15, 400, c["ink"]))
+    y += 84
+    b.append(note_box(18, y, 354, [S("Eingetragen von ", 400, c["muted"]) + S("Mü", 800, c["ink"]) + S(" · geändert von Schüler", 400, c["muted"]),
+                                   "Ändern: Mü, Admin und Schüler mit Freigabe."], c, USER))
+    y += 59.69 + 26
+    b.append(T(18, y, "Verlauf", 12.5, 800, c["faint"]))
+    y += 12
+    rows = [("Mi 15:15", "Schüler mit Freigabe", "Abgabe: Do 18.9. → Fr 19.9."),
+            ("Di 08:20", "Mü", "Text: „… Ergebnisse unterstreichen“ entfernt"),
+            ("Di 08:12", "Mü", "Eingetragen")]
+    b.append(R(18, y, 354, 12 + 58 * len(rows), 22, c["card"]))
+    for i, (when, who, what) in enumerate(rows):
+        ry = y + 6 + i * 58
+        if i: b.append(f'<line x1="32" y1="{ry}" x2="358" y2="{ry}" stroke="{c["hair"]}" stroke-width="1"/>')
+        b.append(R(32, ry + 14, 8, 8, 4, c["accent"] if i == 0 else c["faint2"]))
+        b.append(T(50, ry + 23, S(f"{when} · ", 700, c["ink"]) + S(who, 700, c["accink"] if who != "Mü" else c["ink"]), 13, 700, c["ink"], raw=True))
+        b.append(T(50, ry + 43, what, 12.5, 400, c["muted"]))
+    y += 12 + 58 * len(rows) + 10
+    b.append(T(18, y + 12, "Der Verlauf wird mit der Hausaufgabe gelöscht.", 12, 400, c["faint"]))
+    b.append(button(18, 766, 173, "Kalender", c, "sand", CAL) + button(199, 766, 173, "Teilen", c, "sand", SHARE))
+    return "".join(b)
+
+def p_verlauf(c, theme, sub):
+    b = [p_list_head(c, "Hausaufgaben", "Ab heute · 4 offen", 5, 4, 1)]
+    rows, y = hw_rows(18, 186, 354, c, sub); b.append(rows)
+    b.append(nav_only(theme)); b.append(hw_sheet_verlauf(c, sub))
+    return svg(390, 844, c, "".join(b))
+
 # ════════════════ Computer ════════════════
 def cover_main(c, H=900):
     return R(256, 0, 1440 - 256, H, 0, c["paper"])
@@ -641,6 +685,7 @@ SCREENS = {
     "handy-12-admin-einstellungen": p_admin_settings,
     "handy-13-admin-neuer-editor-code": p_editor_new,
     "handy-14-klausur-lehrkraft": p_klausur_lehrer,
+    "handy-15-verlauf": p_verlauf,
     "pc-01-zugang-lehrkraft": pc_zugang,
     "pc-02-hausaufgaben": pc_hausaufgaben,
     "pc-03-hausaufgabe-eintragen": pc_form,
