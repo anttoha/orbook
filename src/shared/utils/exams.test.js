@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EMPTY_FILTER, examCountdown, filterExams, filterSubjects, freshenExams, groupExams, isExamId, isFilterActive, subjectChips, toggleSubject, withDaysLeft } from "./exams";
+import { EMPTY_FILTER, examCountdown, nextExamCard, searchExams, filterExams, filterSubjects, freshenExams, groupExams, isExamId, isFilterActive, subjectChips, toggleSubject, withDaysLeft } from "./exams";
 import { examWhen } from "./format";
 import { examText } from "./share";
 
@@ -138,5 +138,38 @@ describe("isExamId", () => {
   it("пропускає лише додатні числа", () => {
     expect(isExamId("12")).toBe(true);
     for (const bad of ["0", "-1", "../admin", "1a", "", null, undefined]) expect(isExamId(bad)).toBe(false);
+  });
+});
+
+describe("nextExamCard", () => {
+  it("як на макеті 14", () => {
+    expect(nextExamCard(exam("2026-09-18", { daysLeft: 2 }))).toEqual({ number: 2, eyebrow: "Tage bis", title: "Klausur Mathe", when: "Fr, 18. Sept · 1. Stunde" });
+  });
+
+  it("один день, сьогодні, без уроку і без предмета", () => {
+    expect(nextExamCard(exam(TODAY, { daysLeft: 1 })).eyebrow).toBe("Tag bis");
+    expect(nextExamCard(exam(TODAY, { daysLeft: 0 }))).toMatchObject({ number: null, eyebrow: "Heute" });
+    const card = nextExamCard(exam(TODAY, { daysLeft: 3, lesson: null, subject: null, type: "Test" }));
+    expect(card.title).toBe("Test Ohne Fach");
+    expect(card.when).toBe("Do, 17. Sept");
+  });
+});
+
+describe("searchExams", () => {
+  const list = [exam("2026-09-18", { id: 1, topic: "Quadratische Funktionen" }), exam("2026-09-23", { id: 2, topic: "Weimarer Republik", subject: { code: "Ge", name: "Geschichte" }, type: "Test" }), exam("2026-09-24", { id: 3, topic: null, subject: null })];
+
+  it("порожній запит — усе", () => {
+    expect(searchExams(list, "  ")).toBe(list);
+  });
+
+  it("тема, предмет, код і вид, без різниці регістру", () => {
+    expect(searchExams(list, "funktion").map((e) => e.id)).toEqual([1]);
+    expect(searchExams(list, "geschichte").map((e) => e.id)).toEqual([2]);
+    expect(searchExams(list, "ge test").map((e) => e.id)).toEqual([2]);
+    expect(searchExams(list, "mathe").map((e) => e.id)).toEqual([1]);
+  });
+
+  it("без теми і предмета не падає", () => {
+    expect(searchExams(list, "klausur").map((e) => e.id)).toEqual([1, 3]);
   });
 });

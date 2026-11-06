@@ -9,13 +9,14 @@ const chipOff = "border-rule text-muted";
 
 // ─────────────────────────────────────────────────────────────
 // Ряд над списком: Alle · Ma · De · En … і кнопка фільтра в кінці (гортається пальцем).
-// codes — коди предметів, selected — вибрані, filterActive — у фільтрі щось вибрано
+// codes — коди предметів, selected — вибрані, filterActive — у фільтрі щось вибрано.
+// Без onOpenFilter кнопки фільтра немає (на ПК вона в шапці сторінки)
 // ─────────────────────────────────────────────────────────────
 const ExamChips = ({ codes, selected, filterActive, onAll, onToggle, onOpenFilter }) => {
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори предметів
 
   return (
-    <div className="no-scrollbar -mx-gutter flex items-center gap-1.75 overflow-x-auto px-gutter py-px lg:mx-0 lg:px-0">
+    <div className="no-scrollbar -mx-gutter flex min-w-0 items-center gap-1.75 overflow-x-auto px-gutter py-px lg:mx-0 lg:px-0">
       <button type="button" aria-pressed={selected.length === 0} onClick={onAll} className={cn(chip, selected.length === 0 ? chipOn : chipOff)}>
         Alle
       </button>
@@ -29,14 +30,16 @@ const ExamChips = ({ codes, selected, filterActive, onAll, onToggle, onOpenFilte
         );
       })}
       {/* вид і період у ряду не видно, тому кнопка сама показує, що фільтр увімкнено */}
-      <button
-        type="button"
-        aria-label="Filter"
-        onClick={onOpenFilter}
-        className={cn("grid size-8.5 shrink-0 place-items-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent/50", filterActive ? "bg-tint text-accent-ink" : "bg-card text-ink")}
-      >
-        <FilterIcon className="size-4.25" />
-      </button>
+      {onOpenFilter && (
+        <button
+          type="button"
+          aria-label="Filter"
+          onClick={onOpenFilter}
+          className={cn("grid size-8.5 shrink-0 place-items-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent/50", filterActive ? "bg-tint text-accent-ink" : "bg-card text-ink")}
+        >
+          <FilterIcon className="size-4.25" />
+        </button>
+      )}
     </div>
   );
 };

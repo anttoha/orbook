@@ -2,7 +2,7 @@
 // exams.js — логіка екрана Klausuren без React: групи, фільтр, зворотний відлік.
 // Основа — гайд orbook-be, docs/frontend/04-klausuren.md.
 // ─────────────────────────────────────────────────────────────
-import { addDays, mondayOf } from "./format";
+import { addDays, mondayOf, shortDate, subjectName, weekdayShort } from "./format";
 
 // Фільтр за замовчуванням: показати все, що попереду
 export const EMPTY_FILTER = { type: null, subjects: [], range: null, past: false };
@@ -74,6 +74,29 @@ export function examCountdown(exam) {
   if (n === 0) return { number: null, label: "Heute" };
   if (n < 0) return { number: null, label: `vor ${-n} ${n === -1 ? "Tag" : "Tagen"}` };
   return { number: n, label: `${n === 1 ? "Tag" : "Tage"} bis ${UNTIL[exam.type] ?? "zum Termin"}` };
+}
+
+// Картка «2 Tage bis · Klausur Mathe · Fr, 19. Sept · 1. Stunde» над календарем на ПК (макет 14).
+// Сьогодні — без числа: «Heute». subject буває null — тоді «Ohne Fach»
+export function nextExamCard(exam) {
+  const n = exam.daysLeft;
+  const lesson = exam.lesson ? ` · ${exam.lesson}. Stunde` : "";
+  return {
+    number: n > 0 ? n : null,
+    eyebrow: n > 0 ? `${n === 1 ? "Tag" : "Tage"} bis` : "Heute",
+    title: `${exam.type} ${subjectName(exam.subject)}`,
+    when: `${weekdayShort(exam.date)}, ${shortDate(exam.date)}${lesson}`,
+  };
+}
+
+// Пошук «Thema oder Fach suchen» (ПК): кожне слово має бути в темі, предметі або виді
+export function searchExams(exams, query) {
+  const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return exams;
+  return exams.filter((exam) => {
+    const text = [exam.topic, exam.subject?.name, exam.subject?.code, exam.type].filter(Boolean).join(" ").toLowerCase();
+    return words.every((word) => text.includes(word));
+  });
 }
 
 // Id з адреси йде прямо в шлях запиту, тому пропускаємо тільки цифри

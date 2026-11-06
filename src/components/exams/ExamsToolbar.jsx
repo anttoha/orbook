@@ -1,0 +1,33 @@
+import { Plus, Search } from "lucide-react";
+import { Link } from "react-router-dom";
+import ExamFilterPopover from "./ExamFilterPopover";
+
+// ─────────────────────────────────────────────────────────────
+// Праворуч від заголовка на ПК (макет 14): пошук · фільтр · «+ Klausur eintragen».
+// query / onQuery — текст пошуку; filter — { open, onOpenChange, active } для вікна фільтра;
+// addTarget — куди веде «eintragen» (null — кнопки немає, див. addExamTarget)
+// ─────────────────────────────────────────────────────────────
+const ExamsToolbar = ({ query, onQuery, filter, addTarget }) => (
+  <div className="flex items-center gap-2">
+    <label className="flex h-9.5 w-57.5 items-center gap-2 rounded-full border border-hair bg-card px-3.5 focus-within:border-accent">
+      <Search className="size-3.75 shrink-0 text-faint" />
+      <input
+        type="search"
+        value={query}
+        onChange={(event) => onQuery(event.target.value)}
+        onKeyDown={(event) => event.key === "Escape" && onQuery("")}
+        placeholder="Thema oder Fach suchen"
+        aria-label="Thema oder Fach suchen"
+        className="min-w-0 flex-1 bg-transparent text-body-sm text-ink outline-none placeholder:text-faint2"
+      />
+    </label>
+    <ExamFilterPopover open={filter.open} onOpenChange={filter.onOpenChange} active={filter.active} />
+    {addTarget && (
+      <Link to={addTarget} className="ml-0.5 flex h-12 items-center gap-2 rounded-full bg-accent px-5 text-row font-bold text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
+        <Plus className="size-4" /> Klausur eintragen
+      </Link>
+    )}
+  </div>
+);
+
+export default ExamsToolbar;

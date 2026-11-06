@@ -1,21 +1,26 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import ExamChips from "../components/exams/ExamChips";
 import ExamRow from "../components/exams/ExamRow";
 import ExamSkeleton from "../components/exams/ExamSkeleton";
+import ExamsAside from "../components/exams/ExamsAside";
+import ExamsToolbar from "../components/exams/ExamsToolbar";
 import Button from "../components/ui/Button";
 import { FilterIcon, FlagIcon, KeyIcon } from "../components/ui/icons";
 import { PlanBanner, PlanError } from "../components/ui/PlanState";
+import Segmented from "../components/ui/Segmented";
 import StateScreen from "../components/ui/StateScreen";
 import { usePastExams } from "../shared/hooks/useExams";
+import { useHotkeys } from "../shared/hooks/useHotkeys";
+import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useNow } from "../shared/hooks/useNow";
 import { useSheet } from "../shared/hooks/useSheet";
 import { useExamFilter } from "../shared/store/examFilterStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { addExamTarget } from "../shared/utils/examRules";
-import { filterExams, groupExams, isFilterActive, subjectChips, toggleSubject } from "../shared/utils/exams";
+import { filterExams, groupExams, isFilterActive, searchExams, subjectChips, toggleSubject } from "../shared/utils/exams";
 
 // «Ab heute · 5 geplant». Поки записів немає — без числа
 const eyebrowText = (past, count) => {
@@ -23,10 +28,15 @@ const eyebrowText = (past, count) => {
   return count > 0 ? `Ab heute · ${count} geplant` : "Ab heute";
 };
 
+// «Kommend · 5» — число, тільки коли список уже прийшов
+const withCount = (label, count) => (count > 0 ? `${label} · ${count}` : label);
+
 // ─────────────────────────────────────────────────────────────
 // Сторінка Klausuren. /testen
-// Дані: GET /api/exams (planStore), минулі — лише з «Vergangene anzeigen».
-// Фільтр рахується на пристрої (shared/utils/exams.js).
+// Дані: GET /api/exams (planStore), минулі — з «Vergangene anzeigen» (на ПК одразу: для числа «Vergangen · 12»).
+// Фільтр і пошук рахуються на пристрої (shared/utils/exams.js).
+// ПК (макет 14): пошук, фільтр під кнопкою і «Klausur eintragen» у шапці, «Kommend | Vergangen»,
+// а на ширині від 1440px праворуч картка «2 Tage bis» і календар.
 // ─────────────────────────────────────────────────────────────
 const Tests = () => {
   const { today } = useNow();
@@ -42,18 +52,22 @@ const Tests = () => {
   const filter = useExamFilter((s) => s.filter);
   const setFilter = useExamFilter((s) => s.setFilter);
   const resetFilter = useExamFilter((s) => s.resetFilter);
+  const isDesktop = useMediaQuery(DESKTOP_QUERY);
+  const [query, setQuery] = useState(""); // пошук (ПК)
+  const [filterOpen, setFilterOpen] = useState(false); // випадне вікно фільтра (ПК)
 
   // Запис могли додати однокласники: при кожному вході питаємо сервер, старий список лишається на екрані
   useEffect(() => {
     loadExams();
   }, [loadExams]);
-  usePastExams(filter.past);
+  usePastExams(filter.past || isDesktop);
+  useHotkeys({ f: () => setFilterOpen(true) }, isDesktop); // F — фільтр (на ПК)
 
   const list = filter.past ? pastExams.exams : upcoming; // що показуємо: минулі або майбутні
   const resource = filter.past ? pastExams : examsState; // стан цього списку
   const reload = filter.past ? loadPastExams : loadExams;
-  const shown = filterExams(list, filter, today);
-  const filterActive = isFilterActive(filter);
+  const shown = searchExams(filterExams(list, filter, today), query);
+  const filterActive = isFilterActive(filter) || query.trim() !== "";
   const addTarget = addExamTarget(me); // куди веде «+»
   // минулі йдуть однією групою: поділ на тижні в них не працює
   const groups = filter.past ? [{ title: "Vergangen", exams: shown }] : groupExams(shown, today);
@@ -75,7 +89,13 @@ const Tests = () => {
     if (shown.length === 0) {
       return (
         <StateScreen icon={FilterIcon} title="Nichts gefunden" text="Für diesen Filter gibt es keine Einträge." fill={false}>
-          <Button onClick={resetFilter} className="flex-none">
+          <Button
+            onClick={() => {
+              resetFilter();
+              setQuery("");
+            }}
+            className="flex-none"
+          >
             Filter zurücksetzen
           </Button>
         </StateScreen>
@@ -91,35 +111,62 @@ const Tests = () => {
     ));
   };
 
+  // «Kommend | Vergangen» праворуч від чипів (ПК)
+  const scope = (
+    <Segmented
+      label="Zeitraum"
+      size="form"
+      className="ml-auto hidden shrink-0 lg:grid"
+      value={filter.past ? "past" : "upcoming"}
+      options={[
+        { value: "upcoming", label: withCount("Kommend", upcoming.length) },
+        { value: "past", label: withCount("Vergangen", pastExams.exams.length) },
+      ]}
+      onChange={(value) => setFilter({ ...filter, past: value === "past" })}
+    />
+  );
+
   return (
-    <section className="flex flex-col gap-5.5 lg:max-w-186">
-      <header className="flex flex-col gap-3.5">
-        <div className="flex items-end justify-between gap-3">
-          <div className="min-w-0 space-y-1">
-            <p className="text-hint font-extrabold text-faint">{eyebrowText(filter.past, list.length)}</p>
-            <h1 className="text-title text-ink lg:text-hero">Klausuren</h1>
-          </div>
-          {addTarget && (
+    <section className="flex flex-col gap-5.5">
+      <header className="flex items-end justify-between gap-3">
+        <div className="min-w-0 space-y-1">
+          <p className="text-hint font-extrabold text-faint">{eyebrowText(filter.past, list.length)}</p>
+          <h1 className="text-title text-ink lg:text-hero">Klausuren</h1>
+        </div>
+        {isDesktop ? (
+          <ExamsToolbar query={query} onQuery={setQuery} filter={{ open: filterOpen, onOpenChange: setFilterOpen, active: isFilterActive(filter) }} addTarget={addTarget} />
+        ) : (
+          addTarget && (
             <Link to={addTarget} aria-label="Klausur eintragen" className="grid size-9.5 shrink-0 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
               <Plus className="size-4.25" />
             </Link>
-          )}
-        </div>
-        {/* без записів і без фільтра чипам нічого показувати (макет «Klausuren · leer») */}
-        {(list.length > 0 || filterActive) && (
-          <ExamChips
-            codes={subjectChips(list, filter.subjects)}
-            selected={filter.subjects}
-            filterActive={filterActive}
-            onAll={() => setFilter({ ...filter, subjects: [] })}
-            onToggle={(code) => setFilter({ ...filter, subjects: toggleSubject(filter.subjects, code) })}
-            onOpenFilter={() => openSheet("klausurfilter")}
-          />
+          )
         )}
       </header>
 
-      <PlanBanner resource={resource} onRetry={reload} />
-      {body()}
+      <div className="flex items-start gap-9">
+        <div className="flex min-w-0 flex-1 flex-col gap-5.5 lg:max-w-exams">
+          {/* без записів і без фільтра чипам нічого показувати (макет «Klausuren · leer») */}
+          {(list.length > 0 || filterActive) && (
+            <div className="flex items-center gap-3">
+              <ExamChips
+                codes={subjectChips(list, filter.subjects)}
+                selected={filter.subjects}
+                filterActive={isFilterActive(filter)}
+                onAll={() => setFilter({ ...filter, subjects: [] })}
+                onToggle={(code) => setFilter({ ...filter, subjects: toggleSubject(filter.subjects, code) })}
+                onOpenFilter={isDesktop ? null : () => openSheet("klausurfilter")}
+              />
+              {scope}
+            </div>
+          )}
+
+          <PlanBanner resource={resource} onRetry={reload} />
+          {body()}
+        </div>
+
+        <ExamsAside next={upcoming[0] ?? null} all={[...upcoming, ...pastExams.exams]} />
+      </div>
     </section>
   );
 };

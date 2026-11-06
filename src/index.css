@@ -50,6 +50,7 @@
        │ text-lobby   │ 40/900│ «Klasse öffnen» (ПК)                 │
        │ text-hero    │ 38/900│ заголовок сторінки на ПК             │
        │ text-welcome │ 36/900│ «Anmelden» на ПК                     │
+       │ text-countdown-pc│ 54/900│ «2 Tage bis» над календарем (ПК) │
        │ text-countdown│ 46/900│ число днів у вікні Klausur          │
        │ text-stat    │ 32/900│ великі числа в статистиці            │
        │ text-sheet   │ 30/900│ заголовок панелі справа на ПК        │
@@ -105,6 +106,10 @@
     --text-countdown--line-height: 1;
     --text-countdown--font-weight: 900;
     --text-countdown--letter-spacing: -0.015em;
+    --text-countdown-pc: 3.375rem; /* «2» у картці «Tage bis» на ПК (макет 14) */
+    --text-countdown-pc--line-height: 1;
+    --text-countdown-pc--font-weight: 900;
+    --text-countdown-pc--letter-spacing: -0.015em;
     --text-stat: 2rem;
     --text-stat--line-height: 1.15;
     --text-stat--font-weight: 900;
@@ -244,6 +249,9 @@
     --container-sidebar-mini: 71px;
     --container-search: 340px; /* результати швидкого пошуку */
     --container-popover: 360px; /* «Woche wählen» */
+    --container-filter: 390px; /* фільтр Klausuren під кнопкою (макет 16) */
+    --container-exams: 744px; /* список Klausuren на ПК (макет 14) */
+    --container-exams-aside: 340px; /* праворуч: «2 Tage bis» і календар */
     --container-sheet: 440px; /* панель справа */
     --container-dialog: 520px; /* вікно посередині */
     --container-dialog-wide: 760px; /* широке вікно: «Tastenkürzel» у дві колонки */
