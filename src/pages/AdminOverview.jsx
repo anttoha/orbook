@@ -47,9 +47,12 @@ const QuickLinks = ({ overview, baseUrl, today }) => (
   </ListCard>
 );
 
+// Один і той самий порожній список: новий [] у селекторі Zustand щоразу — нескінченний перерендер
+const NO_CODES = [];
+
 // Таблиця кодів на ПК (ті самі дії, що на сторінці Editor-Codes)
 const CodesPanel = ({ today }) => {
-  const codes = useAdminStore((s) => s.codes.data?.codes ?? []);
+  const codes = useAdminStore((s) => s.codes.data?.codes ?? NO_CODES);
   const { toggle } = useCodeActions();
   const [action, setAction] = useState(null);
   return (

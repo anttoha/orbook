@@ -1,6 +1,6 @@
 # 13 · Admin
 
-**Статус:** в работе
+**Статус:** готово (2026-11-06)
 **Источники:** дизайн «39–46 Admin · …» (телефон), «41–49 Admin · …» (ПК), утверждённый `design/neu/13-admin-kurse/` («Kurse und Fächer», ок 2026-11-06); `/opt/orbook-be/docs/frontend/09-admin.md`, `docs/API.md` → «Вход админа», «Admin»; пример `docs/examples/admin-client.js`; настройки в коде бэкенда `src/orbook/appsettings.py` (2026-11-06).
 
 ## Зачем
@@ -45,7 +45,7 @@
 | Codes | `GET /admin/codes` → `label`, `masked`, `rights`, `validUntil`, `status`, `lastUsedAt`, `examCount` | `lastUsedAt` `null` → «noch nie»; `validUntil` `null` → «—» |
 | Klausuren | `GET /admin/exams?scope=…&q=` → `date`, `type`, `subject`, `lesson`, `topic`, `createdBy`, `createdAt` | `subject` `null` → «Ohne Fach»; `lesson` `null` → «—»; `createdBy` `null` → «unbekannt» |
 | Einstellungen | `GET/PATCH /admin/settings`, `POST /admin/plan/test-connection`, `POST /admin/class-password` | `school.number` `null` → пустое поле |
-| Kurse | `GET /api/courses` и `GET /api/meta` (вход **класса**), `settings.courses.optional`, `settings.subjects.names`, `settings.stats.since` | `group` `null`; `subject` `null` → курс без строки в «Fächer» |
+| Kurse | `GET /api/admin/courses` (без входа класса), `settings.courses.optional`, `settings.subjects.names`, `settings.stats.since` | `group` `null`; `parallelWith` `null` → «läuft parallel»; `defaultName` `null` → «Kein Name — „TW“» |
 
 ## Решения (технические, принял сам)
 - Сохранение настроек — как `saveSettings` из примера: в `PATCH` уходит только изменённое, 422 → подсветить поля из `details.fields`.
@@ -54,7 +54,7 @@
 - «Zugang Schüler/Lehrer» и пресеты «Std/Z1/Z2/Eigen» убраны (решение владельца 11.10.2026): одно поле «Server».
 - Демо-сервер (`overview.demo`): поля доступа к школе выключены с подписью «Im Demo-Betrieb gibt es keinen Schulzugang».
 - Gefahrenzone: слово LÖSCHEN **и** пароль админа; вместо «Das lässt sich nicht rückgängig machen» — «Vorher wird automatisch ein Backup angelegt»; после — тост с именем бэкапа.
-- **Kurse und Fächer (временно, пока нет бэкенда):** список курсов берём из `/api/courses` — у админки своего списка нет. Значит, на этом устройстве нужен ещё и вход класса. Если его нет, экран пишет «Für die Kursliste bitte zuerst in der App anmelden» и даёт ссылку. Почему курс «Immer Wahl»: `group` → «Gruppe SpJu»; если курс Wahl, а в `courses.optional` его нет, значит, он идёт параллельно с другим → «läuft parallel». С кем именно, API не говорит.
+- **Kurse und Fächer:** курсы и предметы — из `GET /api/admin/courses` (бэкенд сделан после «ок» владельца, коммит `9c4a5ee` в `/opt/orbook-be`). Вход класса не нужен. Группа → «Gruppe SpJu», параллельный → «parallel zu …», у обоих плашка «Immer Wahl».
 - Названия предметов: в поле — текущее название (встроенное или от админа). Изменили — уходит в `subjects.names`; стерли своё — ключ удаляется, снова встроенное.
 - Правка Klausur в админке — окно (Art, Datum, Stunde, Thema) с `If-Match`, предмет не меняется (у админки нет списка предметов класса). 409 → «Die Klausur wurde inzwischen geändert», список перезагружается.
 
@@ -66,7 +66,7 @@
 - Вход: `wrong_password` → «Noch N Versuche», `locked` → кнопка выключена на `retryAfter`, `503 not_configured` → «Das Admin-Passwort ist noch nicht gesetzt.»
 
 ## Бэкенд
-Для экранов 39–49 не нужен. Для «Kurse und Fächer» лучше бы `GET /api/admin/courses`: курсы с признаком «группа/параллельный» и предметы с названиями по умолчанию. Тогда экран работает без входа класса и может писать «parallel zu Musik». Это решает владелец: бэкенд делаем только после его «ок».
+Для экранов 39–49 не нужен. Для «Kurse und Fächer» добавлен `GET /api/admin/courses` (владелец дал «ок», выложен 2026-11-06).
 
 ## Чего здесь НЕТ
 - Смена пароля админа (`/admin/admin-password`): в дизайне её нет.
@@ -81,6 +81,7 @@
 - «Protokoll · 24 Std» в «Schnell» — без числа: сервер его не отдаёт.
 - Тексты протокола берём с сервера как есть (в макете только примеры).
 - Строка «Speicher» на Übersicht — новая (её просит документация).
+- «Zählen ab» — системное поле даты, а не пилюля «22. Sept».
 
 ## Слова
 - **Editor-Code** — код, с которым можно вносить Klausuren; выдаёт админ, полный код виден только один раз.
@@ -91,4 +92,4 @@
 - **PATCH** — запрос «поменяй только эти поля».
 
 ## Открытые вопросы
-- [ ] `GET /api/admin/courses` для «Kurse und Fächer» — делать ли бэкенд (решает владелец). До решения экран работает через вход класса.
+Нет.

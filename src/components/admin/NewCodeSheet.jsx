@@ -69,6 +69,8 @@ const NewCodeForm = ({ yearEnd, onDone }) => {
 // Список оновлюємо при закритті: новий код у ньому з'явиться вже замаскованим
 const NewCodeSheet = ({ open, onClose }) => {
   const yearEnd = useAdminStore((s) => s.settings.data?.settings.school.yearEnd ?? null);
+  // Форма запам'ятовує строк один раз — чекаємо налаштувань, щоб за замовчуванням був «Schuljahresende»
+  const settingsReady = useAdminStore((s) => s.settings.status !== "loading");
   const reloadCodes = useAdminStore((s) => s.reloadCodes);
   const reloadOverview = useAdminStore((s) => s.reloadOverview);
 
@@ -81,7 +83,7 @@ const NewCodeSheet = ({ open, onClose }) => {
   return (
     <Sheet open={open} onClose={close} desktop="dialog" eyebrow="Admin · Editor-Codes" title="Neuer Editor-Code">
       {/* поки вікно закрите, форми немає: кожне відкриття — нова порожня форма */}
-      {open && <NewCodeForm yearEnd={yearEnd} onDone={close} />}
+      {open && settingsReady && <NewCodeForm yearEnd={yearEnd} onDone={close} />}
     </Sheet>
   );
 };
