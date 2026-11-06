@@ -135,6 +135,12 @@ def date_tile(x, y, day, wd, code, sub, w=38, h=44):
     return (R(x, y, w, h, 12, tint) + T(x + w / 2, y + 21.5, day, 19, 900, text, "middle", -0.28)
             + T(x + w / 2, y + 34.5, wd, 9, 700, text, "middle", 0.54))
 
+def checkbox(x, y, on, c):
+    """Häkchen wie in 42 «Neuer Code» (in beiden Themen gleich)."""
+    if on:
+        return R(x, y, 19, 19, 3, c["accent"]) + f'<path d="M{x + 4.18},{y + 9.88} L{x + 7.98},{y + 13.68} L{x + 14.82},{y + 5.7}" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+    return R(x + .5, y + .5, 18, 18, 3, "#FFFFFF", "#8A8A92")
+
 def switch(x, y, on, c):
     return R(x, y, 42, 24, 12, c["accent"] if on else c["soff"]) + R(x + (20 if on else 2), y + 2, 20, 20, 10, c["thumb"] if on else c["card"])
 
@@ -142,9 +148,12 @@ def switch(x, y, on, c):
 HOMEWORK = [  # (Abschnitt, Tag, Wochentag, Fach, Kürzel, Aufgabe, rechts)
     ("Bis morgen", "18", "DO", "Ma", "Mü", "Buch S. 54, Nr. 3 a–d", "morgen"),
     ("Diese Woche", "19", "FR", "De", "Kle", "Gedicht lernen, Strophe 1–2", "in 2 Tagen"),
-    (None, "19", "FR", "En", "Sch", "Workbook p. 23, ex. 4", "in 2 Tagen"),
+    (None, "19", "FR", "En", None, "Workbook p. 23, ex. 4", "in 2 Tagen"),  # per Editor-Code → ohne Namen
     ("Nächste Woche", "23", "DI", "Ph", "Ric", "Protokoll Federpendel fertig", "in 6 Tagen"),
 ]
+
+def byline(code, who):  # «Mathe · von Mü»; Einträge per Editor-Code bleiben ohne Namen
+    return f"{NAMES[code]} · von {who}" if who else NAMES[code]
 
 def hw_rows(x, y, w, c, sub, first_selected=True, gap_section=34):
     """Liste der Hausaufgaben wie die Klausuren-Liste 13: Datumsfeld in Fachfarbe, Fach · von Kürzel, Aufgabe."""
@@ -157,7 +166,7 @@ def hw_rows(x, y, w, c, sub, first_selected=True, gap_section=34):
         out.append(R(x, y, w, 64, 22, c["card"]))
         if sel: out.append(R(x + .5, y + .5, w - 1, 63, 21.5, "none", c["accent"]))
         out.append(date_tile(x + 12, y + 10, day, wd, code, sub))
-        out.append(T(x + 62, y + 24, f"{NAMES[code]} · von {who}", 11.5, 400, c["faint"]))
+        out.append(T(x + 62, y + 24, byline(code, who), 11.5, 400, c["faint"]))
         out.append(T(x + 62, y + 48.5, text, 14.5, 800, c["ink"]))
         out.append(T(x + w - 14, y + 37, right, 12, 700, c["accink"] if sel else c["faint"], "end"))
         y += 72
@@ -276,7 +285,7 @@ def p_tag(c, theme, sub):
     y = 907.06
     b.append(T(18, y, "Hausaufgaben · fällig heute", 12.5, 800, c["faint"]))
     y += 16.5
-    items = [("Ma", "Buch S. 54, Nr. 3 a–d", "Mü"), ("En", "Workbook p. 23, ex. 4", "Sch")]
+    items = [("Ma", "Buch S. 54, Nr. 3 a–d", "Mü"), ("En", "Workbook p. 23, ex. 4", None)]
     b.append(R(18, y, 354, 12 + 60 * len(items), 22, c["card"]))
     for i, (code, text, who) in enumerate(items):
         solid, tint, tx = sub[code]
@@ -284,7 +293,7 @@ def p_tag(c, theme, sub):
         if i: b.append(f'<line x1="32" y1="{ry}" x2="358" y2="{ry}" stroke="{c["hair"]}" stroke-width="1"/>')
         b.append(R(32, ry + 12, 36, 36, 12, tint) + T(50, ry + 34.5, code, 11.5, 900, tx, "middle"))
         b.append(T(80, ry + 27, text, 14, 600, c["ink"]))
-        b.append(T(80, ry + 45, f"{NAMES[code]} · von {who}", 11.5, 400, c["faint"]))
+        b.append(T(80, ry + 45, byline(code, who), 11.5, 400, c["faint"]))
         b.append(ICON(340, ry + 23, 0.58, c["faint2"], CHEV_R, 2.2))
     y += 12 + 60 * len(items) + 34
     # «Meine Notizen» wie im Original, nur weiter unten
@@ -314,9 +323,9 @@ def p_leer(c, theme, sub):
 
 # ── Admin (Telefon) ──
 TEACHERS = [  # Kürzel, Fächer, Code-Ende, Einträge, zuletzt, aktiv, gültig
-    ("Mü", "Mathe, Physik", "K2", 6, "heute", True, "Schuljahresende"),
-    ("Kle", "Deutsch", "R8", 2, "vor 3 Tagen", True, "Schuljahresende"),
-    ("Sch", "Englisch", "T5", 0, "vor 2 Wochen", False, "abgelaufen"),
+    ("Mü", "Mathe, Physik", "K2", 6, "heute", True, "Schuljahresende", "Klausuren · Hausaufgaben"),
+    ("Kle", "Deutsch", "R8", 2, "vor 3 Tagen", True, "Schuljahresende", "Nur Klausuren"),
+    ("Sch", "Englisch", "T5", 0, "vor 2 Wochen", False, "abgelaufen", "Klausuren · Hausaufgaben"),
 ]
 
 def p_admin_codes(c, theme, sub):
@@ -326,12 +335,12 @@ def p_admin_codes(c, theme, sub):
     b.append(segmented(18, 85.31, 354, ["Editor-Codes · 4", "Lehrer-Codes · 3"], 1, c))
     b.append(note_box(18, 133.31, 354, ["Ein Code pro Lehrkraft. Die Klasse sieht das", "Kürzel aus dem Plan: „eingetragen von Mü“."], c, USER))
     y = 203
-    for who, subj, end, n, last, active, _ in TEACHERS:
+    for who, subj, end, n, last, active, _, rights in TEACHERS:
         g = [R(18, y, 354, 114.36, 22, c["card"]), T(32, y + 33, who, 15, 700, c["ink"])]
         bd, bw = badge(32 + tw(who, 15) + 10, y + 18.5, "AKTIV" if active else "GESPERRT", c, "ok" if active else "off"); g.append(bd)
         g.append(T(32 + tw(who, 15) + 10 + bw + 8, y + 32, subj, 12.5, 400, c["faint"]))
         g.append(R(326, y + 12, 32, 32, 16, c["card"]) + ICON(333.5, y + 19.5, 0.71, c["ink"], DOTS_V).replace('fill="none"', f'fill="{c["ink"]}"'))
-        g.append(T(32, y + 66, f"••••-{end}", 17, 900, c["ink"], ls=-0.25) + T(108, y + 65.67, "Klausuren · Hausaufgaben", 12.5, 400, c["muted"]))
+        g.append(T(32, y + 66, f"••••-{end}", 17, 900, c["ink"], ls=-0.25) + T(108, y + 65.67, rights, 12.5, 400, c["muted"]))
         g.append(T(32, y + 94.36, f"zuletzt {last} · {n} Einträge", 12, 400, c["faint"]))
         g.append(switch(316, y + 78.36, active, c))
         b.append(f'<g opacity="{1 if active else 0.55}">' + "".join(g) + "</g>")
@@ -351,10 +360,11 @@ def p_admin_new(c, theme, sub):
         x += w + 8
     b.append(T(18, y + 58, "Kürzel aus dem Plan der 9b. „Sch“ hat schon einen Code.", 12, 400, c["faint"]))
     y = 205
-    b.append(label(18, y, "Darf", c))
-    for i, t in enumerate(["Klausuren und Tests eintragen", "Hausaufgaben eintragen", "Nur eigene Einträge ändern und löschen"]):
-        b.append(ICON(20, y + 18 + i * 34, 0.79, c["accent"], CHECK, 2.4) + T(52, y + 34 + i * 34, t, 14.5, 400, c["ink"]))
-    y += 136
+    b.append(label(18, y, "Rechte", c))
+    for i, t in enumerate(["Klausuren und Tests eintragen", "Hausaufgaben eintragen"]):
+        b.append(checkbox(22, y + 18 + i * 46, True, c) + T(56, y + 32.5 + i * 46, t, 14.5, 400, c["ink"]))
+    b.append(ICON(22, y + 108, 0.67, c["faint"], LOCK) + T(56, y + 120, "Ändern und löschen: nur eigene Einträge", 13, 400, c["faint"]))
+    y += 162
     b.append(label(18, y, "Gültig bis", c))
     b.append(segmented(18, y + 12, 354, ["Immer", "30 Tage", "Schuljahresende"], 2, c, 35))
     y += 63
@@ -405,6 +415,30 @@ def p_admin_settings(c, theme, sub):
         b.append(T(mx + 18, oy + 25, o, 14, 700 if o == "nach 30 Tagen" else 400, c["accink"] if o == "nach 30 Tagen" else c["ink"]))
         if o == "nach 30 Tagen": b.append(ICON(mx + mw - 34, oy + 11, 0.71, c["accink"], CHECK, 2.4))
     return svg(390, 844, c, "".join(b))
+
+def split_shift(inner, cut, dy, W, H, x0=0, x1=None):
+    """Original zweimal: oben bis cut, darunter (nur Spalte x0..x1) um dy nach unten — Platz für eine neue Zeile."""
+    x1 = W if x1 is None else x1
+    return (f'<clipPath id="xtop"><rect x="0" y="0" width="{W}" height="{cut}"/><rect x="0" y="0" width="{x0}" height="{H}"/>'
+            f'<rect x="{x1}" y="0" width="{W - x1}" height="{H}"/></clipPath>'
+            f'<clipPath id="xbot"><rect x="{x0}" y="{cut}" width="{x1 - x0}" height="{H}"/></clipPath>'
+            f'<g clip-path="url(#xtop)">{inner}</g><g transform="translate(0 {dy})"><g clip-path="url(#xbot)">{inner}</g></g>')
+
+def new_right(x, y, c):
+    bd, _ = badge(x + 34 + 166, y + 0.5, "NEU", c, "tint")
+    return checkbox(x, y, False, c) + T(x + 34, y + 14.5, "Hausaufgaben eintragen", 14.5, 400, c["ink"]) + bd
+
+def p_editor_new(c, theme, sub):
+    inner, w, h = base("42 Admin · neuer Code", theme)
+    b = [split_shift(inner, 352, 46, w, h)]
+    b.append(new_right(22, 366.31, c))
+    return svg(w, h + 46, c, "".join(b))
+
+def pc_editor_new(c, theme, sub):
+    inner, w, h = base("44 Admin · neuer Code (Fenster)", theme, "PC")
+    b = [split_shift(inner, 428, 46, w, h, 450, 990), R(450, 428, 540, 46, 0, c["paper"])]
+    b.append(new_right(498, 435.23, c))
+    return svg(w, h, c, "".join(b))
 
 # ════════════════ Computer ════════════════
 def cover_main(c, H=900):
@@ -554,12 +588,12 @@ def pc_admin_codes(c, theme, sub):
     cols = [("Lehrkraft", 304), ("Fächer", 420), ("Code", 560), ("Darf", 660), ("Gültig bis", 880), ("Zuletzt", 1020), ("Einträge", 1140), ("Status", 1230)]
     b.append(R(284, ty, 1120, 46 + 57 * len(TEACHERS), 22, c["card"]))
     for name, cx in cols: b.append(T(cx, ty + 30, name, 12, 800, c["faint"]))
-    for i, (who, subj, end, n, last, active, valid) in enumerate(TEACHERS):
+    for i, (who, subj, end, n, last, active, valid, rights) in enumerate(TEACHERS):
         ry = ty + 46 + i * 57
         b.append(f'<line x1="304" y1="{ry}" x2="1384" y2="{ry}" stroke="{c["hair"]}" stroke-width="1"/>')
         dim = c["ink"] if active else c["faint"]
         g = [T(304, ry + 33, who, 14, 800, dim), T(420, ry + 33, subj, 13, 400, c["muted"] if active else c["faint"]),
-             T(560, ry + 33, f"••••-{end}", 13, 700, dim), T(660, ry + 33, "Klausuren · Hausaufgaben", 13, 400, c["muted"] if active else c["faint"]),
+             T(560, ry + 33, f"••••-{end}", 13, 700, dim), T(660, ry + 33, rights, 13, 400, c["muted"] if active else c["faint"]),
              T(880, ry + 33, valid, 13, 400, c["muted"] if active else c["faint"]), T(1020, ry + 33, last, 13, 400, c["muted"] if active else c["faint"]),
              T(1140, ry + 33, str(n), 13, 700, dim)]
         bd, _ = badge(1230, ry + 19, "AKTIV" if active else "GESPERRT", c, "ok" if active else "off"); g.append(bd)
@@ -583,10 +617,12 @@ SCREENS = {
     "handy-10-admin-lehrer-codes": p_admin_codes,
     "handy-11-admin-neuer-lehrer-code": p_admin_new,
     "handy-12-admin-einstellungen": p_admin_settings,
+    "handy-13-admin-neuer-editor-code": p_editor_new,
     "pc-01-zugang-lehrkraft": pc_zugang,
     "pc-02-hausaufgaben": pc_hausaufgaben,
     "pc-03-hausaufgabe-eintragen": pc_form,
     "pc-04-admin-lehrer-codes": pc_admin_codes,
+    "pc-05-admin-neuer-editor-code": pc_editor_new,
 }
 if __name__ == "__main__":
     n = 0

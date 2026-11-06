@@ -25,11 +25,11 @@ SECTIONS = [
     ("hausaufgaben", "Hausaufgaben", "Hausaufgaben живут во вкладке «Klausuren»: сверху переключатель «Klausuren · Hausaufgaben», нижняя навигация остаётся из 4 кнопок. Список устроен как список Klausuren: дата сдачи цветом предмета, «Mathe · von Mü», текст. Окно задания показывает весь текст и автора. Форма учителя: предмет, «Abgabe bis» с подсказками «Nächste Stunde» и «In 1 Woche», текст до 300 знаков.",
      [("handy-04-hausaufgaben", "Hausaufgaben · Liste"), ("handy-05-hausaufgabe-details", "Hausaufgabe · Details (Blatt)"), ("handy-06-hausaufgabe-eintragen", "Neue Hausaufgabe (Lehrkraft)"), ("handy-09-hausaufgaben-leer", "Hausaufgaben · leer")],
      [("pc-02-hausaufgaben", "Computer · Liste + Panel (eigener Eintrag → Bearbeiten)"), ("pc-03-hausaufgabe-eintragen", "Computer · Neue Hausaufgabe (Fenster)")]),
-    ("tag", "Hausaufgaben в дне и автор в Klausur", "В дне под уроками — блок «Hausaufgaben · fällig heute» (задания, которые сдают в этот день), над «Meine Notizen». В окне Klausur вместо «ohne Namen» стоит «Eingetragen von Mü · Lehrkraft». Записи учеников с Editor-Code остаются без автора, как сейчас.",
+    ("tag", "Hausaufgaben в дне и автор в Klausur", "В дне под уроками — блок «Hausaufgaben · fällig heute» (задания, которые сдают в этот день), над «Meine Notizen». В окне Klausur вместо «ohne Namen» стоит «Eingetragen von Mü · Lehrkraft». Записи с Editor-Code (в том числе Hausaufgaben старосты) остаются без автора, как сейчас — в списке просто «Englisch» без «von …».",
      [("handy-07-tag", "Tag · Liste mit Hausaufgaben"), ("handy-08-klausur-autor", "Klausur · Details mit Autor")], []),
-    ("admin", "Админка", "Телефон: во вкладке «Codes» переключатель «Editor-Codes · Lehrer-Codes». Компьютер: отдельный пункт меню «Lehrer-Codes». Новый код: учителя выбирают из Kürzel в плане класса (без настоящих имён), права фиксированные. В Einstellungen новый блок «Hausaufgaben»: срок автоудаления (по умолчанию 30 дней после сдачи) и кнопка «Alte löschen».",
-     [("handy-10-admin-lehrer-codes", "Admin · Lehrer-Codes"), ("handy-11-admin-neuer-lehrer-code", "Admin · Neuer Lehrer-Code"), ("handy-12-admin-einstellungen", "Admin · Einstellungen · Hausaufgaben")],
-     [("pc-04-admin-lehrer-codes", "Computer · Admin · Lehrer-Codes")]),
+    ("admin", "Админка", "Телефон: во вкладке «Codes» переключатель «Editor-Codes · Lehrer-Codes». Компьютер: отдельный пункт меню «Lehrer-Codes». Права теперь галочками: у Editor-Code новая галочка «Hausaufgaben eintragen» (по умолчанию выключена — включаете, например, старосте), у Lehrer-Code — «Klausuren und Tests» и «Hausaufgaben» (обе включены, можно снять). Менять и удалять учитель может только свои записи. Учителя выбираются по Kürzel из плана, без настоящих имён. В Einstellungen новый блок «Hausaufgaben»: срок автоудаления (по умолчанию 30 дней после сдачи) и кнопка «Alte löschen».",
+     [("handy-10-admin-lehrer-codes", "Admin · Lehrer-Codes"), ("handy-11-admin-neuer-lehrer-code", "Admin · Neuer Lehrer-Code"), ("handy-13-admin-neuer-editor-code", "Admin · Neuer Editor-Code (neues Recht)"), ("handy-12-admin-einstellungen", "Admin · Einstellungen · Hausaufgaben")],
+     [("pc-04-admin-lehrer-codes", "Computer · Admin · Lehrer-Codes"), ("pc-05-admin-neuer-editor-code", "Computer · Neuer Editor-Code (Fenster)")]),
 ]
 
 CSS = """
@@ -88,10 +88,12 @@ def page():
         out += [shot(nm, cap, "pc") for nm, cap in pcs]
         out.append('</div></section>')
     out.append('</div>')
-    out.append('''<div class="box"><h2>Что решить вам</h2><ol>
-<li>Могут ли ученики с Editor-Code тоже записывать Hausaufgaben? <span>Предлагаю: нет, только учителя — так у каждого задания есть понятный автор.</span></li>
-<li>Учитель входит только по своему коду, без пароля класса. <span>Если код заблокирован, вход сразу закрывается. Так удобнее учителю, и админ полностью управляет доступом.</span></li>
-</ol><p style="margin-top:12px">Ответ: «ок дизайн» (можно с правками и ответами на два вопроса). После этого — план бэкенда в <code>/opt/orbook-be</code> на ваше «ок», затем фронт.</p></div>''')
+    out.append('''<div class="box"><h2>Решено и что осталось</h2><ol>
+<li>Hausaufgaben с Editor-Code — <b>по галочке у кода</b>, по умолчанию выключено. <span>Решено 06.11.</span></li>
+<li>Учитель входит только по своему коду, без пароля класса. <span>Решено 06.11.</span></li>
+<li>У нового Lehrer-Code обе галочки (Klausuren и Hausaufgaben) включены сразу? <span>Предлагаю: да, снять можно.</span></li>
+<li>Editor-Code с правом «Alle Klausuren bearbeiten» может менять записи учителей? <span>Предлагаю: нет — записи учителя меняют только он сам и админ.</span></li>
+</ol><p style="margin-top:12px">Ответ: «ок дизайн» (и да/нет на пункты 3–4). Потом — план бэкенда в <code>/opt/orbook-be</code> на ваше «ок», затем фронт.</p></div>''')
     out.append(f'</div><script>{JS}</script>')
     return "\n".join(out)
 
