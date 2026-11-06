@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { barRows, changedCount, compareWith, statsEyebrow, statsPath, tooLittleText, untilText, weekdayBars } from "./stats";
+import { barRows, byWeekTitle, cancelRateText, changedCount, compareWith, lessonsText, periodBars, statsEyebrow, statsPath, tooLittleText, untilText, weekBars, weekdayBars } from "./stats";
 
 const month = {
   range: "month",
@@ -68,6 +68,7 @@ describe("weekdayBars", () => {
     ]);
     expect(bars[0].cancelledPct).toBe(25);
     expect(bars[1].cancelledPct + bars[1].substitutionsPct).toBe(100);
+    expect(bars.map((b) => [b.label, b.total])).toEqual([["Mo", 1], ["Do", 4]]);
   });
   it("тиждень без змін — нулі, без ділення на нуль", () => {
     expect(weekdayBars([{ weekday: "Mo", cancelled: 0, substitutions: 0 }])[0].cancelledPct).toBe(0);
@@ -80,5 +81,40 @@ describe("barRows", () => {
     const rows = barRows([{ subject: { code: "En", name: "Englisch" }, cancelled: 4 }, { subject: null, cancelled: 2 }], "cancelled");
     expect(rows.map((r) => r.pct)).toEqual([100, 50]);
     expect(rows[1].subject).toBeNull();
+  });
+});
+
+const half = { range: "halfyear", period: { from: "2025-04-01", to: "2025-09-30" }, previous: { from: "2024-10-01", daysCounted: 40 } };
+
+describe("ПК: Halbjahr і повні підписи", () => {
+  it("eyebrow і порівняння для Halbjahr", () => {
+    expect(statsEyebrow("9b", half)).toBe("9b · April–September");
+    expect(compareWith(5, 2, half).text).toBe("+3 ggü. Vorhalbjahr");
+  });
+  it("повна назва місяця і дати", () => {
+    expect(compareWith(11, 8, month, { long: true }).text).toBe("+3 ggü. August");
+    expect(untilText(month, { long: true })).toBe("bis 30. September");
+  });
+  it("частка відмін і кількість уроків", () => {
+    expect(cancelRateText(0.0591)).toBe("6 %");
+    expect(cancelRateText(0)).toBe("0 %");
+    expect(cancelRateText(undefined)).toBe("0 %");
+    expect(lessonsText(186)).toBe("von 186 Stunden");
+    expect(lessonsText(1)).toBe("von 1 Stunde");
+  });
+  it("заголовок графіка по тижнях", () => {
+    expect(byWeekTitle(month)).toBe("September nach Woche");
+    expect(byWeekTitle(half)).toBe("Halbjahr nach Woche");
+  });
+});
+
+describe("weekBars і periodBars", () => {
+  it("тижні підписані номером KW", () => {
+    const bars = weekBars([{ week: "2025-W36", from: "2025-09-01", cancelled: 3, substitutions: 2 }]);
+    expect(bars[0]).toMatchObject({ label: "KW 36", total: 5, cancelledPct: 60, substitutionsPct: 40 });
+  });
+  it("уроки: «1.», висота від найбільшого, порожньо без даних", () => {
+    expect(periodBars([{ period: 1, cancelled: 1 }, { period: 3, cancelled: 3 }]).map((b) => [b.label, Math.round(b.pct)])).toEqual([["1.", 33], ["3.", 100]]);
+    expect(periodBars(null)).toEqual([]);
   });
 });

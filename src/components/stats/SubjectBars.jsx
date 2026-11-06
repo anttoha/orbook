@@ -1,3 +1,4 @@
+import { cn } from "../../shared/utils/cn";
 import { useUserStore } from "../../shared/store/userStore";
 import { subjectCode, subjectName } from "../../shared/utils/format";
 import { fachDotClass } from "../../shared/utils/lessons";
@@ -16,14 +17,14 @@ const SubjectRow = ({ row, colorClass }) => (
 );
 
 // Список «Fällt am häufigsten aus» або «Klausuren nach Fach». valueKey — яке поле рахувати.
-// Порожній список не показуємо зовсім
-const SubjectBars = ({ title, items, valueKey }) => {
+// Порожній список не показуємо зовсім. На ПК — окрема картка (макет 20); className — місце в сітці
+const SubjectBars = ({ title, items, valueKey, className }) => {
   const overrides = useUserStore((s) => s.colorOverrides);
   const rows = barRows(items, valueKey);
   if (rows.length === 0) return null;
 
   return (
-    <section>
+    <section className={cn("lg:rounded-card lg:bg-card lg:px-4.5 lg:pt-4.5 lg:pb-5", className)}>
       <h2 className="text-hint font-extrabold text-faint">{title}</h2>
       <ul className="mt-3.5 flex flex-col gap-2.25">
         {rows.map((row) => (

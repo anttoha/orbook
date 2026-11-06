@@ -6,7 +6,7 @@ import { statsPath } from "../utils/stats";
 
 // ─────────────────────────────────────────────────────────────
 // Статистика для екрана Statistik (гайд docs/frontend/05-statistik.md).
-// Два запити разом: вибраний період (main) і поточний тиждень (week) для стовпчиків «nach Tag».
+// Два запити разом: вибраний період (main: month або halfyear) і поточний тиждень (week) для стовпчиків «nach Tag».
 // У режимі «Woche» це той самий запит, тому він один.
 // Результат: { status, main, week, savedAt, error, reload }
 //   status як у loadWithCache: "loading" | "ready" | "offline" | "unavailable" | "error"
@@ -25,7 +25,7 @@ export function useStats(range) {
     const [courses, hidden] = coursesKey.split("|").map((part) => (part ? part.split(",") : []));
     // кеш окремо для кожного вибору курсів: цифри в них різні
     const load = (r) => loadWithCache(`stats:${r}:${coursesKey}`, () => api(statsPath(r, courses, hidden), { signal: controller.signal }));
-    const requests = range === "week" ? [load("week")] : [load("month"), load("week")];
+    const requests = range === "week" ? [load("week")] : [load(range), load("week")];
 
     Promise.all(requests)
       .then(([main, week = main]) => {
