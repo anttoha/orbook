@@ -135,6 +135,13 @@ def date_tile(x, y, day, wd, code, sub, w=38, h=44):
     return (R(x, y, w, h, 12, tint) + T(x + w / 2, y + 21.5, day, 19, 900, text, "middle", -0.28)
             + T(x + w / 2, y + 34.5, wd, 9, 700, text, "middle", 0.54))
 
+def switch_row(x, y, w, title_text, sub_text, on, c, card=True):
+    """Weiße Karte mit Titel, Unterzeile und Schalter rechts — wie die Zeilen in 45 «Einstellungen»."""
+    out = R(x, y, w, 67, 22, c["card"]) if card else ""
+    return out + T(x + 14, y + 30, title_text, 15, 400, c["ink"]) + T(x + 14, y + 49, sub_text, 12, 400, c["faint"]) + switch(x + w - 56, y + 21.5, on, c)
+
+TEACHER_SWITCH = ("Schüler dürfen ändern", "nur Editor-Codes mit „Lehrer-Einträge ändern“")
+
 def checkbox(x, y, on, c):
     """Häkchen wie in 42 «Neuer Code» (in beiden Themen gleich)."""
     if on:
@@ -245,7 +252,7 @@ def hw_sheet(c, sub):
         b.append(T(33, y + 28 + i * 22, ln, 15, 400, c["ink"]))
     y += 106
     b.append(note_box(18, y, 354, [S("Eingetragen von ", 400, c["muted"]) + S("Mü", 800, c["ink"]) + S(" · Lehrkraft", 400, c["muted"]),
-                                   "Wird 30 Tage nach der Abgabe gelöscht."], c, USER))
+                                   "Ändern dürfen nur Mü und der Admin."], c, USER))
     y += 59.69 + 14
     b.append(button(18, y, 173, "Kalender", c, "sand", CAL) + button(199, y, 173, "Teilen", c, "sand", SHARE))
     return "".join(b)
@@ -272,9 +279,9 @@ def p_hausaufgabe_form(c, theme, sub):
     for i, ln in enumerate(["Buch S. 54, Nr. 3 a–d.", "Rechenweg aufschreiben, Ergebnisse", "unterstreichen."]):
         b.append(T(35, y + 38 + i * 23, ln, 16, 400, c["ink"]))
     b.append(T(18, y + 144, "71 von 300 Zeichen · keine Namen von Schülern", 12, 400, c["faint"]))
-    y += 176
-    b.append(note_box(18, y, 354, ["Die Klasse sieht „eingetragen von Mü“. Ändern", "und löschen können nur Sie und der Admin."], c, USER))
-    b.append(note_box(18, y + 70, 354, ["Wird 30 Tage nach der Abgabe gelöscht."], c, TRASH))
+    y += 168
+    b.append(switch_row(18, y, 354, *TEACHER_SWITCH, False, c))
+    b.append(note_box(18, y + 79, 354, ["Die Klasse sieht „eingetragen von Mü“. Wird 30 Tage", "nach der Abgabe gelöscht."], c, USER))
     b.append(button(18, 764, 354, "Speichern", c))
     return svg(390, 844, c, "".join(b))
 
@@ -309,7 +316,7 @@ def p_klausur_autor(c, theme, sub):
     inner, w, h = base("14 Klausur · Details (Blatt)", theme)
     b = [inner, R(18, 630.31, 354, 59.69, 16, c["paper"])]
     b.append(note_box(18, 630.31, 354, [S("Eingetragen von ", 400, c["muted"]) + S("Mü", 800, c["ink"]) + S(" · Lehrkraft", 400, c["muted"]),
-                                        "Nur Fach, Datum, Stunde und Thema."], c, USER))
+                                        "Ändern: Mü, Admin und Schüler mit Freigabe."], c, USER))
     return svg(w, h, c, "".join(b))
 
 def p_leer(c, theme, sub):
@@ -424,20 +431,34 @@ def split_shift(inner, cut, dy, W, H, x0=0, x1=None):
             f'<clipPath id="xbot"><rect x="{x0}" y="{cut}" width="{x1 - x0}" height="{H}"/></clipPath>'
             f'<g clip-path="url(#xtop)">{inner}</g><g transform="translate(0 {dy})"><g clip-path="url(#xbot)">{inner}</g></g>')
 
-def new_right(x, y, c):
-    bd, _ = badge(x + 34 + 166, y + 0.5, "NEU", c, "tint")
-    return checkbox(x, y, False, c) + T(x + 34, y + 14.5, "Hausaufgaben eintragen", 14.5, 400, c["ink"]) + bd
+def new_rights(x, y, c):
+    """Zwei neue Rechte für Editor-Codes, beide aus: Hausaufgaben und (mit Freigabe) Einträge von Lehrkräften."""
+    out = []
+    for i, (t, w, sub) in enumerate([("Hausaufgaben eintragen", 166, None), ("Lehrer-Einträge ändern", 162, "nur wenn die Lehrkraft es beim Eintrag erlaubt")]):
+        yy = y + i * 46
+        bd, _ = badge(x + 34 + w, yy + 0.5, "NEU", c, "tint")
+        out.append(checkbox(x, yy, False, c) + T(x + 34, yy + 14.5, t, 14.5, 400, c["ink"]) + bd)
+        if sub: out.append(T(x + 34, yy + 33, sub, 12, 400, c["faint"]))
+    return "".join(out)
+SHIFT = 108
 
 def p_editor_new(c, theme, sub):
     inner, w, h = base("42 Admin · neuer Code", theme)
-    b = [split_shift(inner, 352, 46, w, h)]
-    b.append(new_right(22, 366.31, c))
-    return svg(w, h + 46, c, "".join(b))
+    b = [split_shift(inner, 352, SHIFT, w, h)]
+    b.append(new_rights(22, 366.31, c))
+    return svg(w, h + SHIFT, c, "".join(b))
 
 def pc_editor_new(c, theme, sub):
     inner, w, h = base("44 Admin · neuer Code (Fenster)", theme, "PC")
-    b = [split_shift(inner, 428, 46, w, h, 450, 990), R(450, 428, 540, 46, 0, c["paper"])]
-    b.append(new_right(498, 435.23, c))
+    b = [split_shift(inner, 428, SHIFT, w, h, 450, 990), R(450, 428, 540, SHIFT, 0, c["paper"])]
+    b.append(new_rights(498, 435.23, c))
+    return svg(w, h, c, "".join(b))
+
+def p_klausur_lehrer(c, theme, sub):
+    inner, w, h = base("16 Klausur eintragen (Editor)", theme)
+    b = [inner, R(60, 18, 200, 20, 0, c["paper"]), eyebrow(66, 33, "Lehrkraft · Mü", c, accent=True)]
+    b.append(switch_row(18, 584, 354, *TEACHER_SWITCH, True, c))
+    b.append(T(18, 670, "An: Schüler mit Freigabe dürfen Datum, Stunde und Thema ändern.", 12, 400, c["faint"]))
     return svg(w, h, c, "".join(b))
 
 # ════════════════ Computer ════════════════
@@ -491,7 +512,7 @@ def pc_panel(c, sub):
                                          "Wird am 18. Oktober automatisch gelöscht."], c, USER))
     b.append(button(1010, 338.6, 190, "Kalender", c, "sand", CAL) + button(1208, 338.6, 190, "Teilen", c, "sand", SHARE))
     b.append(button(1010, 402.6, 388, "Bearbeiten", c, icon=PEN))
-    b.append(T(1204, 474, "Nur Sie und der Admin können diesen Eintrag ändern.", 12, 400, c["faint"], "middle"))
+    b.append(T(1204, 474, "Schüler dürfen nicht ändern · umschalten unter „Bearbeiten“", 12, 400, c["faint"], "middle"))
     return "".join(b)
 
 def pc_hausaufgaben(c, theme, sub):
@@ -501,7 +522,7 @@ def pc_hausaufgaben(c, theme, sub):
 def pc_form(c, theme, sub):
     inner, w, h = base("14 Klausuren", theme, "PC")
     b = [inner, cover_main(c), pc_list(c, sub), overlay(c, 1440, 900)]
-    X, Y, W, H = 380, 170, 680, 560
+    X, Y, W, H = 380, 150, 680, 606
     for f in ("nsh0", "nsh1", None):
         b.append(R(X, Y, W, H, 28, c["paper"], extra=f' filter="url(#{f})"' if f else ""))
     b.append(modal_head(X, Y, W, "Lehrkraft · Mü", "Neue Hausaufgabe", c, accent=True))
@@ -525,8 +546,9 @@ def pc_form(c, theme, sub):
         b.append(T(Rx + 17, y + 40 + i * 23, ln, 16, 400, c["ink"]))
     b.append(T(Rx, y + 178, "71 von 300 Zeichen · keine Namen von Schülern", 12, 400, c["faint"]))
     y += 206
-    b.append(note_box(L, y, 628, [S("Die Klasse sieht „eingetragen von Mü“. ", 400, c["muted"]) + S("Wird 30 Tage nach der Abgabe automatisch gelöscht.", 400, c["muted"])], c, USER))
-    y += 64
+    b.append(R(L, y, 628, 67, 22, c["card"]) + switch_row(L, y, 628, *TEACHER_SWITCH, False, c, card=False))
+    b.append(ICON(L, y + 80, 0.54, c["faint"], USER) + T(L + 18, y + 91, "Die Klasse sieht „eingetragen von Mü“. Wird 30 Tage nach der Abgabe gelöscht.", 12, 400, c["faint"]))
+    y += 110
     b.append(f'<line x1="{L}" y1="{y}" x2="{X + W - 26}" y2="{y}" stroke="{c["hair"]}" stroke-width="1"/>')
     b.append(button(X + W - 26 - 126.77 - 8 - 109.3, y + 16.5, 109.3, "Abbrechen", c, "sand", None))
     b.append(button(X + W - 26 - 126.77, y + 16.5, 126.77, "Speichern", c))
@@ -618,6 +640,7 @@ SCREENS = {
     "handy-11-admin-neuer-lehrer-code": p_admin_new,
     "handy-12-admin-einstellungen": p_admin_settings,
     "handy-13-admin-neuer-editor-code": p_editor_new,
+    "handy-14-klausur-lehrkraft": p_klausur_lehrer,
     "pc-01-zugang-lehrkraft": pc_zugang,
     "pc-02-hausaufgaben": pc_hausaufgaben,
     "pc-03-hausaufgabe-eintragen": pc_form,
