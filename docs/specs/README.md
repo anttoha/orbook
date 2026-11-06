@@ -18,7 +18,7 @@
 | 08 | Klausuren: запись, Editor-Code | 16–19 | нет | ✅ готово (ПК — в части 12) |
 | 09 | Mehr, Darstellung, Fachfarben, Teilen | 22–28 | нет | ✅ готово (ПК — в части 12; Mitteilungen — в 17, Sync — в 11) |
 | 10 | Statistik | 19, 37 | нет | ✅ готово (ПК, «Halbjahr», графики по неделям и урокам — в части 12) |
-| 11 | Notizen + Sync | 20–21 | нет | |
+| 11 | Notizen + Sync | 20–21 | нет | ✅ готово (ПК с левым меню и «Jetzt synchronisieren» — в части 12) |
 | 12 | ПК-раскладка | Computer 01–53 | нет | |
 | 13 | Admin | Admin · … | нет | |
 | 14 | Lehrkräfte: вход по коду, Tests/Hausaufgaben | **новые** (`/orb-design`) | **да** | |

@@ -20,13 +20,14 @@
 
 - **Переключатели и значки** (2026-11-05): в «пилюлях» (`Segmented`, тема в сайдбаре) выбранная плашка плавно едет; чипы и кружки меняют фон и рамку плавно (общее правило в `index.css`). Fachfarben как в артефакте: «Farbe wählen · Orange», галочка в кружке, рамка цвета перетекает. Кружок переключателя плавно едет (`Switch.jsx`, `translate`). Значок предмета — общий `ui/SubjectBadge.jsx`, длинные коды («AGTan») режутся до 3 букв (`badgeCode`).
 - **Бэкенд, вариант А** (2026-11-05, «ок» владельца): `GET /api/stats` понимает `hidden=<nr,…>` — скрытые курсы любого типа не считаются (коммит `20be54a` в `/opt/orbook-be`, тесты зелёные, docs и openapi обновлены). Выложен 2026-11-05 21:25 (`update.sh`, тег `pre-update-20261105-212503`), health ok на проде и демо.
+- **11 Notizen + Sync** (2026-11-06): шторка «Notiz» по макету 20/21 (предмет, дата с «Ändern», «Löschen» с «Rückgängig»). Экран «Notizen synchronisieren» (`/mehr/sync`): код из 20 знаков, копирование, «Anderes Gerät verbinden» с окном «Trotzdem verwenden?», «Neuen Code erzeugen». В Datenschutz есть «Meine Sync-Notizen löschen». Синхронизация идёт после входа, при возвращении на вкладку и через 5 с после правки (`useNotesSync`). Шифрование — копия эталона (`syncCrypto.js`), тест по вектору бэкенда. Удалённые заметки — «надгробия» (`deleted`), экраны читают через `visibleNotes`/`findNote`.
 
 ## Дальше
-1. Проверить на демо руками: «Meine Kurse» → скрыть Mathe → Statistik меньше.
+1. Проверить на демо руками: «Meine Kurse» → скрыть Mathe → Statistik меньше. Sync на двух устройствах: Mehr → Notizen synchronisieren → Code erzeugen → на втором устройстве ввести код.
 2. `/orb-design` нового экрана **«Admin · Kurse und Fächer»** (владелец попросил экраны): курс Pflicht ↔ Wahl (`courses.optional`), названия предметов (`subjects.names`), с какого дня считать статистику (`stats.since`). Всё уже есть в `PATCH /api/admin/settings`. Телефон+ПК, светлая+тёмная, в стиле «47 Admin · Einstellungen». Остановиться на «ок дизайн».
-3. Потом 11 Notizen + Sync; 13 Admin (вместе с новым экраном).
+3. Потом 13 Admin (вместе с новым экраном), 12 ПК-раскладка.
 
-Замечено для части 12: страница «Einstellungen» на ПК пока одна колонка без левого меню, в ней нет «Tastenkürzel». В части 11 вернуть в Mehr строку «Notizen synchronisieren», в части 17 — «Mitteilungen».
+Замечено для части 12: страница «Einstellungen» на ПК пока одна колонка без левого меню, в ней нет «Tastenkürzel». В части 17 вернуть в Mehr строку «Mitteilungen». В части 12: страница Notizen-Sync в левом меню «Einstellungen», кнопка «Jetzt synchronisieren».
 
 Замечено на A++: заголовок «Diese Woche» на телефоне обрезается до «Diese Woc…» рядом с тремя кнопками.
 

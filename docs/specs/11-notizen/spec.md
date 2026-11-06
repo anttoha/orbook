@@ -1,6 +1,6 @@
 # 11 · Notizen + Sync
 
-**Статус:** в работе
+**Статус:** готово
 **Источники:** дизайн «20 Notiz schreiben (Blatt)», «21 Notizen synchronisieren» (телефон), «21 Notiz schreiben (Fenster)», «27 Einstellungen · Notizen-Sync» (ПК), «27 Datenschutz» (телефон); `/opt/orbook-be/docs/frontend/06-notizen.md`, `07-einstellungen.md`; `docs/API.md` → «Notizen-Sync»; эталон `docs/examples/sync-crypto.mjs` (2026-11-06).
 
 ## Зачем
