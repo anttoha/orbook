@@ -7,6 +7,7 @@ import DayPageHeader from "../components/day/DayPageHeader";
 import DaySkeleton from "../components/day/DaySkeleton";
 import LessonList from "../components/day/LessonList";
 import NextExamNote from "../components/day/NextExamNote";
+import HomeworkDue from "../components/day/HomeworkDue";
 import NotesSection from "../components/day/NotesSection";
 import Timeline from "../components/day/Timeline";
 import DayHeaderDesktop from "../components/day/desktop/DayHeaderDesktop";
@@ -186,6 +187,7 @@ const Day = () => {
 
           <aside className="grid content-start gap-4 lg:grid-cols-2 desktop:grid-cols-1">
             {day?.info.length > 0 && <DayInfoCard day={day} onOpen={openInfo} />}
+            <HomeworkDue date={date} />
             <NotesSection date={date} lessons={day?.lessons} variant="card" />
             <div className="lg:col-span-2 desktop:col-span-1">
               <UpcomingCard days={week.data?.days ?? []} today={today} />
@@ -237,6 +239,7 @@ const Day = () => {
 
           {restoreHidden}
 
+          <HomeworkDue date={date} />
           <NotesSection date={date} lessons={day?.lessons} hideEmpty={day?.status !== "ok"} />
         </>
       )}

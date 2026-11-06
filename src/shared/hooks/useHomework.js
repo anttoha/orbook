@@ -51,3 +51,28 @@ export const useHistory = (kind, id, version, enabled) => {
   if (state.key !== key) return { status: "loading", changes: [] };
   return { status: state.error ? "error" : "ready", changes: state.changes, error: state.error };
 };
+
+// Hausaufgaben з терміном date (блок «fällig heute» у дні, макет handy-07).
+// Від сьогодні вони вже є у списку planStore; для минулих днів — окремий запит from=to=date.
+// homeworkStamp — після запису/видалення перечитуємо
+export const useHomeworkDue = (date, today) => {
+  const all = usePlanStore((s) => s.homework);
+  const stamp = usePlanStore((s) => s.homeworkStamp);
+  const fromStore = date >= today;
+  const [past, setPast] = useState({ key: null, items: [] });
+  const key = `${date}/${stamp}`;
+
+  useEffect(() => {
+    if (fromStore || !date) return undefined;
+    const controller = new AbortController();
+    api(`/homework?from=${date}&to=${date}`, { signal: controller.signal })
+      .then((data) => setPast({ key, items: data?.homework ?? [] }))
+      .catch(() => {
+        if (!controller.signal.aborted) setPast({ key, items: [] }); // без мережі блоку просто немає
+      });
+    return () => controller.abort();
+  }, [date, fromStore, key]);
+
+  if (fromStore) return all.filter((item) => item.due === date);
+  return past.key === key ? past.items : [];
+};
