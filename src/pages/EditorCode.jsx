@@ -9,11 +9,14 @@ import { useEditorUnlock } from "../shared/hooks/useEditorUnlock";
 import { usePlanStore } from "../shared/store/planStore";
 import { fullDate } from "../shared/utils/examRules";
 
+// Куди після коду (?weiter=…): лише наші адреси, не з параметра
+const NEXT = { neu: "/testen/neu", hausaufgabe: "/testen/hausaufgaben/neu" };
+
 // Коду ще немає: поле вводу. ?weiter=neu — після коду одразу до форми запису
 const UnlockForm = ({ backTo }) => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const next = params.get("weiter") === "neu" ? "/testen/neu" : backTo; // лише наші адреси, не з параметра
+  const next = NEXT[params.get("weiter")] ?? backTo;
   const { code, setCode, error, busy, submit } = useEditorUnlock(() => navigate(next, { replace: true }));
 
   return (

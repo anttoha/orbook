@@ -3,7 +3,7 @@
 // Тут: групи списку, перевірка тексту, підписи «von Mü», «Ändern: …» і рядки «Verlauf».
 // Сервер перевіряє те саме і відповість 422 — тут лише щоб показати помилку до відправки.
 // ─────────────────────────────────────────────────────────────
-import { addDays, mondayOf, numericDate, weekdayShort } from "./format";
+import { addDays, mondayOf, numericDate, weekdayLong, weekdayShort } from "./format";
 
 export const TEXT_MAX = 300;
 
@@ -97,4 +97,36 @@ export function changeText(change) {
   if (change.action === "restored") return "Wiederhergestellt";
   const parts = Object.entries(change.changes ?? {}).map(([field, value]) => FIELD_TEXT[field]?.(value ?? {}) ?? `${field} geändert`);
   return parts.length > 0 ? parts.join(" · ") : "Geändert";
+}
+
+// ── Форма ──
+
+// «Nächste Stunde · Do»: перший урок предмета ПІСЛЯ сьогодні в завантажених днях. days — дні з /api/week.
+// Скасовані уроки не рахуємо. Немає — null (чип не показуємо)
+export function nextLessonDate(days, code, today) {
+  if (!code) return null;
+  const dates = days
+    .filter((day) => day.date > today && day.lessons?.some((lesson) => lesson.subject?.code === code && lesson.status !== "cancelled"))
+    .map((day) => day.date)
+    .sort();
+  return dates[0] ?? null;
+}
+
+// Підпис під датою: «Donnerstag · morgen» або просто «Donnerstag»
+export function dueHint(due, today) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(due ?? "")) return null;
+  const word = { [today]: "heute", [addDays(today, 1)]: "morgen" }[due];
+  return word ? `${weekdayLong(due)} · ${word}` : weekdayLong(due);
+}
+
+// Помилки форми за полями: { subject, due, text }. Дата — ті самі межі, що в Klausur (validateExamDate).
+// Стару дату при правці не перевіряємо, як і в Klausur
+export function validateHomeworkForm(form, today, validateDate, originalDue = null) {
+  const errors = {};
+  if (!form.subject) errors.subject = "Bitte ein Fach wählen.";
+  const dateError = form.due === originalDue ? null : validateDate(form.due, today);
+  if (dateError) errors.due = dateError.message;
+  const textError = validateHomeworkText(form.text);
+  if (textError) errors.text = textError;
+  return errors;
 }

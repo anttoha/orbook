@@ -3,6 +3,7 @@ import App from "../../App";
 import HomePage from "../../pages/HomePage";
 import Tests from "../../pages/Tests";
 import ExamEdit from "../../pages/ExamEdit";
+import HomeworkEdit from "../../pages/HomeworkEdit";
 import EditorCode from "../../pages/EditorCode";
 import Statistic from "../../pages/Statistic";
 import More from "../../pages/More";
@@ -62,6 +63,8 @@ export const router = createBrowserRouter([
           page({ path: "testen", Component: Tests }),
           page({ path: "testen/neu", Component: ExamEdit }), // нова Klausur
           page({ path: "testen/:id/bearbeiten", Component: ExamEdit }), // правка
+          page({ path: "testen/hausaufgaben/neu", Component: HomeworkEdit }), // нова Hausaufgabe (частина 14)
+          page({ path: "testen/hausaufgaben/:id/bearbeiten", Component: HomeworkEdit }),
           page({ path: "editor-code", Component: EditorCode }),
           page({ path: "statistik", Component: Statistic }),
           // «Mehr» / «Einstellungen»: на ПК спільна оболонка з меню розділів (SettingsLayout)

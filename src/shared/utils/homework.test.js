@@ -81,3 +81,27 @@ describe("homeworkText", async () => {
     expect(homeworkText(item("2025-09-18", { text: "Buch S. 54", author: { short: "Mü" } }))).toBe("Hausaufgabe Mathe bis 18.09.\nBuch S. 54\n\nvia ORBook");
   });
 });
+
+describe("Formular", async () => {
+  const { dueHint, nextLessonDate, validateHomeworkForm } = await import("./homework");
+  const { validateExamDate } = await import("./examRules");
+  const days = [
+    { date: "2025-09-17", lessons: [{ subject: { code: "Ma" }, status: "normal" }] },
+    { date: "2025-09-18", lessons: [{ subject: { code: "Ma" }, status: "cancelled" }, { subject: null }] },
+    { date: "2025-09-19", lessons: [{ subject: { code: "Ma" }, status: "normal" }] },
+  ];
+  it("nächste Stunde nach heute, ohne Ausfall", () => {
+    expect(nextLessonDate(days, "Ma", "2025-09-17")).toBe("2025-09-19");
+    expect(nextLessonDate(days, "De", "2025-09-17")).toBeNull();
+    expect(nextLessonDate(days, null, "2025-09-17")).toBeNull();
+  });
+  it("Hinweis unter dem Datum", () => {
+    expect(dueHint("2025-09-18", "2025-09-17")).toBe("Donnerstag · morgen");
+    expect(dueHint("2025-09-19", "2025-09-17")).toBe("Freitag");
+    expect(dueHint("", "2025-09-17")).toBeNull();
+  });
+  it("Fehler je Feld", () => {
+    expect(validateHomeworkForm({ subject: null, due: "2025-09-18", text: "" }, "2025-09-17", validateExamDate)).toEqual({ subject: "Bitte ein Fach wählen.", text: "Bitte die Aufgabe eintragen." });
+    expect(validateHomeworkForm({ subject: "Ma", due: "2024-01-01", text: "x" }, "2025-09-17", validateExamDate, "2024-01-01")).toEqual({});
+  });
+});

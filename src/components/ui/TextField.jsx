@@ -5,21 +5,24 @@ import { cn } from "../../shared/utils/cn";
 //   error — червоний текст і червона рамка; hint — сіра підказка.
 // inputClassName доповнює вигляд самого поля.
 // Решта пропсів (value, onChange, type …) іде прямо на <input>.
-const TextField = ({ id, label, hint, error, className, inputClassName, ref, ...inputProps }) => {
+// multiline — багаторядкове поле (textarea), наприклад текст Hausaufgabe
+const TextField = ({ id, label, hint, error, className, inputClassName, ref, multiline = false, ...inputProps }) => {
   const messageId = `${id}-message`;
+  const Input = multiline ? "textarea" : "input";
 
   return (
     <div className={className}>
       <label htmlFor={id} className="mb-1.5 block text-hint font-extrabold text-faint">
         {label}
       </label>
-      <input
+      <Input
         ref={ref}
         id={id}
         aria-invalid={Boolean(error)}
         aria-describedby={error || hint ? messageId : undefined}
         className={cn(
-          "h-12.5 w-full rounded-field border bg-card px-4 text-input text-ink outline-none transition placeholder:text-faint2 read-only:opacity-60",
+          multiline ? "min-h-29 resize-none py-3.5 leading-6" : "h-12.5",
+          "w-full rounded-field border bg-card px-4 text-input text-ink outline-none transition placeholder:text-faint2 read-only:opacity-60",
           error ? "border-danger focus:ring-2 focus:ring-danger/30" : "border-transparent focus:ring-2 focus:ring-accent/30",
           inputClassName, // наприклад, великий шрифт у полі коду
         )}

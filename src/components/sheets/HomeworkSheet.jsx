@@ -58,7 +58,7 @@ const HomeworkSheet = ({ open, onClose, sheet }) => {
             </Button>
           )}
           {item.canEdit && (
-            <Button variant="primary" className="flex-none" onClick={() => navigate(`/hausaufgaben/${item.id}/bearbeiten`)}>
+            <Button variant="primary" className="flex-none" onClick={() => navigate(`/testen/hausaufgaben/${item.id}/bearbeiten`)}>
               <PencilIcon className="size-4" /> Bearbeiten
             </Button>
           )}

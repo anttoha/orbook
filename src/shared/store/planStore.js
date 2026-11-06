@@ -189,6 +189,13 @@ export const usePlanStore = create((set, get) => ({
     }
   },
 
+  // ── Hausaufgaben змінились (запис, видалення, «Rückgängig»). homeworkStamp — сигнал дню перечитати свої ──
+  homeworkStamp: 0,
+  homeworkChanged: () => {
+    get().loadHomework();
+    set((s) => ({ homeworkStamp: s.homeworkStamp + 1 }));
+  },
+
   // ── Минулі Klausuren: лише коли учень увімкнув «Vergangene anzeigen» ──
   loadPastExams: async () => {
     if (pastExamsRequest) return;

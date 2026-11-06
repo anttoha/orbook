@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addExamTarget, addHomeworkTarget, canCreateExam, canCreateHomework, examLabel, examToForm, formSubjects, fullDate, TOPIC_MAX, unlockErrorText, validateExamDate, validateExamForm, validateTopic } from "./examRules";
+import { addExamTarget, addHomeworkTarget, canCreateExam, canCreateHomework, formEyebrow, examLabel, examToForm, formSubjects, fullDate, TOPIC_MAX, unlockErrorText, validateExamDate, validateExamForm, validateTopic } from "./examRules";
 
 const TODAY = "2026-09-17";
 
@@ -122,7 +122,7 @@ describe("права", () => {
     expect(canCreateHomework({ editor: null, features: { examsWithoutCode: true } })).toBe(false);
     expect(addHomeworkTarget({ editor: null })).toBe("/editor-code?weiter=hausaufgabe");
     expect(addHomeworkTarget({ editor: { canHomework: false } })).toBeNull();
-    expect(addHomeworkTarget({ editor: { canHomework: true } })).toBe("/hausaufgaben/neu");
+    expect(addHomeworkTarget({ editor: { canHomework: true } })).toBe("/testen/hausaufgaben/neu");
   });
 });
 
@@ -144,5 +144,13 @@ describe("unlockErrorText", () => {
 describe("fullDate", () => {
   it("німецький запис", () => {
     expect(fullDate("2027-07-31")).toBe("31.07.2027");
+  });
+});
+
+describe("formEyebrow", () => {
+  it("Lehrkraft, Editor oder Standard", () => {
+    expect(formEyebrow({ teacher: { short: "Mü" }, editor: null }, "X")).toBe("Lehrkraft · Mü");
+    expect(formEyebrow({ editor: { label: "Code A" } }, "X")).toBe("Editor · Code A");
+    expect(formEyebrow(null, "Klausur eintragen")).toBe("Klausur eintragen");
   });
 });

@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { retryText } from "../api/api";
 import { deleteExam, saveExam, undoDelete } from "../api/exams";
+import { deleteHomework, restoreHomework, saveHomework } from "../api/homework";
 import { usePlanStore } from "../store/planStore";
 import { examToForm } from "../utils/examRules";
+import { homeworkToForm } from "../utils/homework";
 import { useSheet } from "./useSheet";
 
 // Одне сповіщення запису на екрані: «Nochmal» висить без кінця, і наступне має замінити його, а не сховатись під ним.
@@ -19,7 +21,29 @@ const notify = (show, text, options) => {
   lastToast = show(text, options);
 };
 // Поля форми, під якими можна показати помилку сервера
-const FORM_FIELDS = ["type", "subject", "date", "lesson", "topic"];
+const FORM_FIELDS = ["type", "subject", "date", "lesson", "topic", "due", "text", "studentsMayEdit"];
+
+// Що саме зберігаємо: Klausur або Hausaufgabe (частина 14). Відповіді сервера однакові,
+// тому одна логіка на обидва. changed — ім'я дії planStore, що перечитує списки
+export const EXAM_OPS = { noun: "Klausur", listPath: "/testen", save: saveExam, remove: deleteExam, restore: undoDelete, toForm: examToForm, changed: "examsChanged" };
+export const HOMEWORK_OPS = {
+  noun: "Hausaufgabe",
+  listPath: "/testen?liste=hausaufgaben",
+  // «exam» у відповіді — щоб решта коду не розрізняла види
+  save: async (form, against) => {
+    const result = await saveHomework(form, against);
+    return result.status === "saved" ? { status: "saved", exam: result.item } : result;
+  },
+  remove: deleteHomework,
+  restore: restoreHomework,
+  // «Rückgängig» правки: без studentsMayEdit — це поле сервер приймає лише від учителя (інакше 422)
+  toForm: (item) => {
+    const fields = homeworkToForm(item);
+    delete fields.studentsMayEdit;
+    return fields;
+  },
+  changed: "homeworkChanged",
+};
 
 // ─────────────────────────────────────────────────────────────
 // Що робити з кожною відповіддю сервера на запис Klausur
@@ -27,17 +51,17 @@ const FORM_FIELDS = ["type", "subject", "date", "lesson", "topic"];
 //   dialog: null | { kind: "duplicate", exam } | { kind: "conflict", exam } | { kind: "delete" }
 //   fieldErrors: помилки сервера за полями
 // ─────────────────────────────────────────────────────────────
-export const useExamSave = (original) => {
+export const useExamSave = (original, ops = EXAM_OPS) => {
   const navigate = useNavigate();
   const { openSheet } = useSheet();
-  const examsChanged = usePlanStore((s) => s.examsChanged);
+  const examsChanged = usePlanStore((s) => s[ops.changed]);
   const dropEditor = usePlanStore((s) => s.dropEditor);
   const [base, setBase] = useState(original); // версія, яку змінюємо; конфлікт замінює її на свіжу
   const [dialog, setDialog] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
   const [busy, setBusy] = useState(false);
 
-  const leave = () => navigate("/testen", { replace: true });
+  const leave = () => navigate(ops.listPath, { replace: true });
 
   // Помилки спільні для збереження і видалення. retry — що повторює «Nochmal»
   const showError = (error, retry) => {
@@ -61,8 +85,8 @@ export const useExamSave = (original) => {
   // «Rückgängig»: нову запис видаляємо, правку повертаємо до старих полів
   const undoSave = async (saved) => {
     try {
-      if (base) await saveExam(examToForm(base), saved);
-      else await deleteExam(saved);
+      if (base) await ops.save(ops.toForm(base), saved);
+      else await ops.remove(saved);
       examsChanged();
     } catch (error) {
       notify(toast.error, error.message);
@@ -71,7 +95,7 @@ export const useExamSave = (original) => {
 
   const finishSave = (saved) => {
     examsChanged();
-    notify(toast.success, "Klausur gespeichert", { duration: 6000, action: { label: "Rückgängig", onClick: () => undoSave(saved) } });
+    notify(toast.success, `${ops.noun} gespeichert`, { duration: 6000, action: { label: "Rückgängig", onClick: () => undoSave(saved) } });
     leave();
   };
 
@@ -81,7 +105,7 @@ export const useExamSave = (original) => {
     setDialog(null);
     setFieldErrors({});
     try {
-      const result = await saveExam(form, against, { force });
+      const result = await ops.save(form, against, { force });
       if (result.status === "saved") finishSave(result.exam);
       else if (result.status === "duplicate") setDialog({ kind: "duplicate", exam: result.existing });
       else setDialog({ kind: "conflict", exam: result.current });
@@ -97,11 +121,11 @@ export const useExamSave = (original) => {
     setBusy(true);
     setDialog(null);
     try {
-      await deleteExam(base);
+      await ops.remove(base);
       examsChanged();
-      notify(toast, "Klausur gelöscht", {
+      notify(toast, `${ops.noun} gelöscht`, {
         duration: 8000,
-        action: { label: "Rückgängig", onClick: () => undoDelete(base).then(examsChanged, (error) => notify(toast.error, error.message)) },
+        action: { label: "Rückgängig", onClick: () => ops.restore(base).then(examsChanged, (error) => notify(toast.error, error.message)) },
       });
       leave();
     } catch (error) {

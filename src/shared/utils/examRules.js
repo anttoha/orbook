@@ -83,7 +83,7 @@ export function addExamTarget(me) {
 
 // «+» у Hausaufgaben: учню без коду — спершу Editor-Code
 export function addHomeworkTarget(me) {
-  if (canCreateHomework(me)) return "/hausaufgaben/neu";
+  if (canCreateHomework(me)) return "/testen/hausaufgaben/neu";
   return me?.editor || isTeacher(me) ? null : "/editor-code?weiter=hausaufgabe";
 }
 
@@ -97,3 +97,9 @@ export function unlockErrorText(error, retryText) {
 
 // «2027-07-31» → «31.07.2027»
 export const fullDate = (iso) => iso.split("-").reverse().join(".");
+
+// Рядок над заголовком форми: хто записує («Lehrkraft · Mü», «Editor · Code A»)
+export function formEyebrow(me, fallback) {
+  if (me?.teacher?.short) return `Lehrkraft · ${me.teacher.short}`;
+  return me?.editor?.label ? `Editor · ${me.editor.label}` : fallback;
+}
