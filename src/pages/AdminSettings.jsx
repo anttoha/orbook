@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import AdminHeader from "../components/admin/AdminHeader";
 import { AdminError, AdminSkeleton } from "../components/admin/AdminState";
-import ClassPasswordCard from "../components/admin/settings/ClassPasswordCard";
+import PasswordLinks from "../components/admin/settings/PasswordLinks";
 import DangerZone from "../components/admin/settings/DangerZone";
 import { FeaturesCard, HomeworkCard, SecurityCard, UpdateCard } from "../components/admin/settings/OptionCards";
 import { purgeHomework } from "../shared/api/admin";
@@ -45,7 +45,7 @@ const SettingsForm = ({ data }) => {
       <AdminHeader title="Einstellungen" actions={isDesktop && <SaveButton {...draft} onSave={draft.save} />} />
       <div className="flex flex-col gap-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4">
         <div className={column}>
-          <ClassPasswordCard className="order-1" changedAt={data.classPasswordChangedAt} />
+          <PasswordLinks className="order-1" changedAt={data.classPasswordChangedAt} />
           <SchoolCard
             className="order-2"
             school={form.school}

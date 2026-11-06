@@ -37,11 +37,11 @@ const DesktopActions = () => {
   );
 };
 
-// «Schnell» на телефоні: Protokoll, пароль класу, сервер, Kurse & Fächer
+// «Schnell» на телефоні: Protokoll, Passwörter (дата зміни пароля класу), сервер, Kurse & Fächer
 const QuickLinks = ({ overview, baseUrl, today }) => (
   <ListCard title="Schnell" className="lg:hidden">
     <MenuRow to="/admin/protokoll" icon={FileText} label="Protokoll" />
-    <MenuRow to="/admin/einstellungen" icon={LockIcon} label="Klassenpasswort" value={classPasswordText(overview.classPasswordChangedAt, today)?.ago} />
+    <MenuRow to="/admin/passwoerter" icon={LockIcon} label="Passwörter" value={classPasswordText(overview.classPasswordChangedAt, today)?.ago} />
     <MenuRow to="/admin/einstellungen" icon={Server} label="Schule & Plan" value={hostOf(baseUrl)} />
     <MenuRow to="/admin/kurse" icon={Table2} label="Kurse & Fächer" />
   </ListCard>
