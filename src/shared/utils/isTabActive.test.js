@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { isTabActive } from "./isTabActive";
+import { navTabs } from "../constants/constants";
+import { isFullScreenPage, isTabActive } from "./isTabActive";
 
 describe("isTabActive", () => {
   it("parent tab stays active on its sub-pages", () => {
@@ -17,5 +18,13 @@ describe("isTabActive", () => {
     expect(isTabActive(woche, "/")).toBe(true);
     expect(isTabActive(woche, "/tag/2026-10-07")).toBe(true);
     expect(isTabActive(woche, "/testen")).toBe(false);
+  });
+
+  it("Materialien: на телефоні світиться «Mehr», форма — на весь екран", () => {
+    const mehr = navTabs.find((tab) => tab.to === "/mehr");
+    expect(isTabActive(mehr, "/materialien")).toBe(true);
+    expect(isFullScreenPage("/materialien/neu")).toBe(true);
+    expect(isFullScreenPage("/materialien/3/bearbeiten")).toBe(true);
+    expect(isFullScreenPage("/materialien")).toBe(false);
   });
 });

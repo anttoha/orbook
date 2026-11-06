@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const DELAY = 500; // мс: стільки тримати палець
 const MOVE = 10; // px: якщо палець поїхав (гортання), це не довге натискання
@@ -17,6 +17,8 @@ export function useLongPress(onLongPress) {
     clearTimeout(timer.current);
     timer.current = null;
   };
+  // рядок зник (список оновився) посеред натискання — таймер більше не потрібен
+  useEffect(() => () => clearTimeout(timer.current), []);
 
   return {
     onPointerDown: (event) => {

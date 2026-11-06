@@ -12,7 +12,7 @@ export const navTabs = [
   { to: "/statistik", label: "Statistik", icon: StatsIcon, mobile: true, desktop: true, feature: "statistics" },
   // Materialien (частина 15): на ПК — пункт меню, на телефоні — з «Mehr»
   { to: "/materialien", label: "Materialien", icon: Folder, desktop: true },
-  { to: "/mehr", label: "Mehr", icon: Ellipsis, mobile: true },
+  { to: "/mehr", label: "Mehr", icon: Ellipsis, mobile: true, activeOn: ["/materialien"] }, // Materialien відкриваються з «Mehr»
 ];
 // Меню адмінки. mobile — у нижньому меню телефона (4 пункти), desktop — у сайдбарі ПК.
 // count — лічильник праворуч: "codes" (усі Editor-Codes) або "exams" (найближчі Klausuren)

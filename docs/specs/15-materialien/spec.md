@@ -1,6 +1,6 @@
 # 15 · Materialien (ссылки Google Drive / OneDrive)
 
-**Статус:** в работе (дизайн ок 2026-11-06, ответы владельца на права — 2026-11-06)
+**Статус:** готово (2026-11-06; дизайн ок и права — решения владельца 2026-11-06)
 **Источники:** `design/neu/15-materialien/` (артефакт https://claude.ai/artifact/CCAw6FL8CbAZu82V7ehoxa), `/opt/orbook-be/docs/API.md` (Hausaufgaben, Editor-Codes, Lehrkraft), код `/opt/orbook-be/src/orbook/homework/`, `exams/rules.py`, `api/admin_homework.py` (`list_teachers`).
 
 ## Зачем
@@ -21,11 +21,11 @@
 
 ## Что куда нажимать
 - Телефон: Mehr → Klasse → Materialien (`/materialien`). ПК: пункт меню «Materialien» после «Statistik».
-- Чипы сверху (Alle, Ma, De …) — фильтр, в адресе `?fach=Ma`. Чипы — только предметы, у которых есть ссылки.
+- Чипы сверху (Alle, Ma, De …) — фильтр, в адресе `?filter=Ma` (не `fach`: этот параметр занят шторками). Чипы — только предметы, у которых есть ссылки.
 - Нажатие на строку — ссылка открывается в новой вкладке (`target="_blank" rel="noopener noreferrer"`).
 - Долгое нажатие (телефон) / правая кнопка или Shift+F10 (ПК) — действия. «Bearbeiten» и «Löschen» видны, только если `canEdit` / `canDelete`.
-- «+» / «Link teilen» → `/materialien/neu` (на ПК — окно поверх списка, как «Klausur eintragen»). Без права — как у Klausuren: просит Editor-Code (`/mehr/editor-code`).
-- Окно урока: блок «Materialien · <Fach>» — до 3 ссылок предмета, «Alle» → `/materialien?fach=<код>`. Нет ссылок — блока нет.
+- «+» / «Link teilen» → `/materialien/neu` (на телефоне и ПК — отдельная страница, как форма Hausaufgaben). Без права — как у Klausuren: просит Editor-Code (`/mehr/editor-code`).
+- Окно урока: блок «Materialien · <Fach>» — до 3 ссылок предмета, «Alle» → `/materialien?filter=<код>`. Нет ссылок — блока нет.
 
 ## Данные
 | На экране | Откуда (запрос → поле) | Может быть пустым? |
@@ -67,6 +67,9 @@
 
 ## Отличия от дизайна
 - Admin: отдельного экрана в дизайне нет — у админа тот же список (`pc-01`) в его разделе `/admin/materialien`, действия «Öffnen», «Link kopieren», «Löschen». Так ответ «админ удаляет» работает без нового макета.
+- Форма на ПК — страница (как уже сделанные формы Klausur/Hausaufgabe), а не окно поверх списка: один код для телефона и ПК.
+- У админа вместо меню — кнопка-корзина справа от строки: единственное действие — «Löschen».
+- «Rückgängig» после удаления создаёт ссылку заново (на сервере удаление окончательное).
 - Чипы фильтра — коды предметов (как в Klausuren), а не полные названия: на телефоне иначе не помещаются.
 
 ## Слова

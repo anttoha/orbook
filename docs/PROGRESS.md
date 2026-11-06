@@ -114,3 +114,11 @@ Spec: `docs/specs/14b-passwoerter/spec.md`, макеты `design/neu/14b-passwoe
 Дизайн ок, права решены (2026-11-06). Spec: `docs/specs/15-materialien/spec.md`.
 **Дальше:** ждём «ок» плана бэкенда (миграция 0007 `materials` + `can_materials`, `/api/materials`, admin, `teacher.subjects`), затем бэкенд в `/opt/orbook-be` и `/orb-build`.
 Новые части по пожеланию владельца: 18 «Termine», 19 «Muster-Stundenplan» (в README сразу после 15).
+
+## Часть 15 — готово (2026-11-06)
+Spec: `docs/specs/15-materialien/spec.md`. Бэкенд выложен (миграция 0007, `/api/materials`, `/api/admin/materials`, `teacher.subjects`).
+Фронт: `/materialien` (`pages/Materials.jsx`, `components/materials/`), шторка действий `?sheet=material&id=` (долгое нажатие, `useLongPress`), меню правой кнопки на ПК (`MaterialMenu`), форма `/materialien/neu` и `…/:id/bearbeiten` (`MaterialForm`, общий `useExamSave` с `onChanged`), блок в окне урока (`LessonMaterials`), строка «Klasse → Materialien» в Mehr, пункт меню ПК, админ: `/admin/materialien`, право «Materialien teilen», карточка «Erlaubte Seiten». Список — `materialsStore` (кеш офлайн). Проверка ссылки — `shared/utils/materials.js` (как на сервере, с тестами).
+Скриншоты: `/root/work/orbook-compare/15-materialien/shots/`, скрипт `_tools/mat.mjs`.
+На демо руками не проверяли запись: нужен Lehrer-Code или Editor-Code с правом (создаёт админ, пароль есть только у владельца).
+
+**Дальше (`/orb-auto`):** часть 18 «Termine» — экранов нет, сначала `/orb-design` и «ок дизайн».
