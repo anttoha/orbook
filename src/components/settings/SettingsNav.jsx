@@ -1,6 +1,8 @@
+import { Keyboard } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { settingsSections } from "../../shared/constants/constants";
 import { useSyncAllowed } from "../../shared/hooks/useNotesSync";
+import { useSheet } from "../../shared/hooks/useSheet";
 import { cn } from "../../shared/utils/cn";
 import { isTabActive } from "../../shared/utils/isTabActive";
 import LeaveClass from "../more/LeaveClass";
@@ -14,6 +16,7 @@ const item = "flex h-10 items-center gap-3 rounded-full px-3 text-nav font-bold"
 const SettingsNav = () => {
   const { pathname } = useLocation();
   const syncAllowed = useSyncAllowed(); // школа могла вимкнути синхронізацію
+  const { openSheet } = useSheet();
 
   return (
     <nav aria-label="Einstellungen" className="w-settings-nav shrink-0">
@@ -35,6 +38,13 @@ const SettingsNav = () => {
               </li>
             );
           })}
+        {/* «Tastenkürzel» — не сторінка, а вікно (як плитка в «Übersicht»); власник попросив пункт і в меню */}
+        <li>
+          <button type="button" onClick={() => openSheet("tasten")} className={cn(item, "w-full text-muted hover:bg-sand hover:text-ink")}>
+            <Keyboard className="size-4 shrink-0" />
+            Tastenkürzel
+          </button>
+        </li>
       </ul>
 
       <ul className="mt-2.5 border-t border-hair pt-3">
