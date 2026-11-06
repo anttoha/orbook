@@ -7,6 +7,7 @@ import ExamFilterSheet from "./ExamFilterSheet";
 import ExamSheet from "./ExamSheet";
 import HomeworkSheet from "./HomeworkSheet";
 import LessonSheet from "./LessonSheet";
+import MaterialSheet from "./MaterialSheet";
 import NoteSheet from "./NoteSheet";
 import ShareSheet from "./ShareSheet";
 import ShortcutsSheet from "./ShortcutsSheet";
@@ -23,6 +24,7 @@ const SHEETS = {
   klausur: ExamSheet, // деталі Klausur
   klausurfilter: ExamFilterSheet, // Filter
   hausaufgabe: HomeworkSheet, // деталі Hausaufgabe (частина 14)
+  material: MaterialSheet, // дії з посиланням Materialien (частина 15)
   editorcode: EditorCodeSheet, // код посеред запису: форма лишається під вікном
   tasten: ShortcutsSheet, // Tastenkürzel (клавіша «?»)
 };

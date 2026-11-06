@@ -7,6 +7,7 @@ import { daysBetween } from "../utils/format";
 import { berlinParts, createSchoolClock } from "../utils/lessonClock";
 import { currentMonday } from "../utils/lessons";
 import { planChanges } from "../utils/planDiff";
+import { useMaterials } from "./materialsStore";
 
 // ─────────────────────────────────────────────────────────────
 // planStore — УСІ дані з сервера живуть тут (одне місце, щоб не шукати).
@@ -116,6 +117,7 @@ export const usePlanStore = create((set, get) => ({
   logout: async () => {
     await api("/auth/logout", { method: "POST" }).catch(() => {}); // без мережі — виходимо локально
     cache.clearAll(); // кеш відповідей особистий — стираємо
+    useMaterials.getState().reset();
     seenChange.save(null);
     seenWeeks = {};
     set({ me: null, meta: null, courses: [], coursesStatus: "loading", exams: [], examsState: { status: "loading", savedAt: null, error: null }, pastExams: NO_PAST_EXAMS, homework: [], homeworkState: { status: "loading", savedAt: null, error: null }, status: null, weeks: {}, newPlan: null, lastStandShown: false });

@@ -1,4 +1,5 @@
-import { Palette, Sun, Table2 } from "lucide-react";
+import { Folder, Palette, Sun, Table2 } from "lucide-react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { version } from "../../package.json";
 import LeaveClass from "../components/more/LeaveClass";
@@ -9,6 +10,7 @@ import ListCard from "../components/ui/ListCard";
 import { useSyncAllowed } from "../shared/hooks/useNotesSync";
 import { useInSettingsPanel } from "../shared/hooks/useSettingsPanel";
 import { useTheme } from "../shared/hooks/useTheme";
+import { useMaterials } from "../shared/store/materialsStore";
 import { useSyncStore } from "../shared/store/syncStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
@@ -56,6 +58,12 @@ const PhoneMenu = () => {
   const school = [me?.className, me?.schoolName].filter(Boolean).join(" · "); // обидва поля бувають порожні
   const hiddenRequired = useUserStore((s) => s.hiddenRequired);
   const count = courseCount(courses, picked, hiddenRequired);
+  const links = useMaterials((s) => (s.status === "idle" ? null : s.items.length));
+  const ensureMaterials = useMaterials((s) => s.ensure);
+  // «6 Links» праворуч: список питаємо один раз за сесію (далі його оновлює сторінка Materialien)
+  useEffect(() => {
+    ensureMaterials();
+  }, [ensureMaterials]);
 
   return (
     <section className="flex flex-col gap-4.5">
@@ -68,6 +76,10 @@ const PhoneMenu = () => {
         <MenuRow to="/mehr/kurse" icon={Table2} label="Meine Kurse" value={count.all > 0 ? `${count.on} von ${count.all}` : null} />
         <MenuRow to="/mehr/darstellung" icon={Sun} label="Darstellung" value={THEME_LABELS[theme]} />
         <MenuRow to="/mehr/fachfarben" icon={Palette} label="Fachfarben" />
+      </ListCard>
+
+      <ListCard title="Klasse">
+        <MenuRow to="/materialien" icon={Folder} label="Materialien" value={links ? `${links} ${links === 1 ? "Link" : "Links"}` : null} />
       </ListCard>
 
       <ListCard title="Daten">

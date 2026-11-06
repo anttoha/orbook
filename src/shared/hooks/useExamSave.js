@@ -21,10 +21,12 @@ const notify = (show, text, options) => {
   lastToast = show(text, options);
 };
 // Поля форми, під якими можна показати помилку сервера
-const FORM_FIELDS = ["type", "subject", "date", "lesson", "topic", "due", "text", "studentsMayEdit"];
+const FORM_FIELDS = ["type", "subject", "date", "lesson", "topic", "due", "text", "studentsMayEdit", "title", "url"];
 
 // Що саме зберігаємо: Klausur або Hausaufgabe (частина 14). Відповіді сервера однакові,
-// тому одна логіка на обидва. changed — ім'я дії planStore, що перечитує списки
+// тому одна логіка на обидва. changed — ім'я дії planStore, що перечитує списки;
+// onChanged(saved) — замість неї, якщо список живе не в planStore (Materialien, частина 15).
+// savedText / deletedText — свій текст сповіщення замість «<noun> gespeichert / gelöscht»
 export const EXAM_OPS = { noun: "Klausur", listPath: "/testen", save: saveExam, remove: deleteExam, restore: undoDelete, toForm: examToForm, changed: "examsChanged" };
 export const HOMEWORK_OPS = {
   noun: "Hausaufgabe",
@@ -54,7 +56,8 @@ export const HOMEWORK_OPS = {
 export const useExamSave = (original, ops = EXAM_OPS) => {
   const navigate = useNavigate();
   const { openSheet } = useSheet();
-  const examsChanged = usePlanStore((s) => s[ops.changed]);
+  const storeChanged = usePlanStore((s) => s[ops.changed]);
+  const examsChanged = ops.onChanged ?? storeChanged;
   const dropEditor = usePlanStore((s) => s.dropEditor);
   const [base, setBase] = useState(original); // версія, яку змінюємо; конфлікт замінює її на свіжу
   const [dialog, setDialog] = useState(null);
@@ -94,8 +97,8 @@ export const useExamSave = (original, ops = EXAM_OPS) => {
   };
 
   const finishSave = (saved) => {
-    examsChanged();
-    notify(toast.success, `${ops.noun} gespeichert`, { duration: 6000, action: { label: "Rückgängig", onClick: () => undoSave(saved) } });
+    examsChanged(saved);
+    notify(toast.success, ops.savedText ?? `${ops.noun} gespeichert`, { duration: 6000, action: { label: "Rückgängig", onClick: () => undoSave(saved) } });
     leave();
   };
 
@@ -123,7 +126,7 @@ export const useExamSave = (original, ops = EXAM_OPS) => {
     try {
       await ops.remove(base);
       examsChanged();
-      notify(toast, `${ops.noun} gelöscht`, {
+      notify(toast, ops.deletedText ?? `${ops.noun} gelöscht`, {
         duration: 8000,
         action: { label: "Rückgängig", onClick: () => ops.restore(base).then(examsChanged, (error) => notify(toast.error, error.message)) },
       });

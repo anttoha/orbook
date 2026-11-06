@@ -1,4 +1,4 @@
-import { Ellipsis, FileText, House, List, Palette, Server, Sun, Table2, UserRound } from "lucide-react";
+import { Ellipsis, FileText, Folder, House, List, Palette, Server, Sun, Table2, UserRound } from "lucide-react";
 import { FlagIcon, KeyIcon, LockIcon, ShieldIcon, StatsIcon, SyncIcon } from "../../components/ui/icons";
 
 // Масштаб «Schriftgröße» (ті самі відсотки, що в index.css): шкали часу множать на нього пікселі
@@ -10,6 +10,8 @@ export const navTabs = [
   { to: "/heute", label: "Heute", icon: List, desktop: true },
   { to: "/testen", label: "Klausuren", icon: FlagIcon, mobile: true, desktop: true, },
   { to: "/statistik", label: "Statistik", icon: StatsIcon, mobile: true, desktop: true, feature: "statistics" },
+  // Materialien (частина 15): на ПК — пункт меню, на телефоні — з «Mehr»
+  { to: "/materialien", label: "Materialien", icon: Folder, desktop: true },
   { to: "/mehr", label: "Mehr", icon: Ellipsis, mobile: true },
 ];
 // Меню адмінки. mobile — у нижньому меню телефона (4 пункти), desktop — у сайдбарі ПК.

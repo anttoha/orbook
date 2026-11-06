@@ -5,6 +5,8 @@ import Tests from "../../pages/Tests";
 import ExamEdit from "../../pages/ExamEdit";
 import HomeworkEdit from "../../pages/HomeworkEdit";
 import EditorCode from "../../pages/EditorCode";
+import Materials from "../../pages/Materials";
+import MaterialEdit from "../../pages/MaterialEdit";
 import Statistic from "../../pages/Statistic";
 import More from "../../pages/More";
 import MyCourses from "../../pages/MyCourses";
@@ -71,6 +73,9 @@ export const router = createBrowserRouter([
           page({ path: "testen/hausaufgaben/:id/bearbeiten", Component: HomeworkEdit }),
           page({ path: "editor-code", Component: EditorCode }),
           page({ path: "statistik", Component: Statistic }),
+          page({ path: "materialien", Component: Materials }), // посилання на Drive за предметами (частина 15)
+          page({ path: "materialien/neu", Component: MaterialEdit }),
+          page({ path: "materialien/:id/bearbeiten", Component: MaterialEdit }),
           // «Mehr» / «Einstellungen»: на ПК спільна оболонка з меню розділів (SettingsLayout)
           {
             path: "mehr",

@@ -7,7 +7,8 @@ import { cn } from "../../shared/utils/cn";
 // Решта пропсів (value, onChange, type …) іде прямо на <input>.
 // multiline — багаторядкове поле (textarea), наприклад текст Hausaufgabe
 // trailing — кнопка всередині поля праворуч (наприклад «око» в PasswordField)
-const TextField = ({ id, label, hint, error, className, inputClassName, ref, multiline = false, trailing, ...inputProps }) => {
+// leading — іконка всередині поля ліворуч (наприклад скріпка в полі посилання)
+const TextField = ({ id, label, hint, error, className, inputClassName, ref, multiline = false, leading, trailing, ...inputProps }) => {
   const messageId = `${id}-message`;
   const Input = multiline ? "textarea" : "input";
 
@@ -27,10 +28,12 @@ const TextField = ({ id, label, hint, error, className, inputClassName, ref, mul
             "w-full rounded-field border bg-card px-4 text-input text-ink outline-none transition placeholder:text-faint2 read-only:opacity-60",
             error ? "border-danger focus:ring-2 focus:ring-danger/30" : "border-transparent focus:ring-2 focus:ring-accent/30",
             trailing && "pr-12",
+            leading && "pl-11",
             inputClassName, // наприклад, великий шрифт у полі коду
           )}
           {...inputProps}
         />
+        {leading && <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-faint">{leading}</div>}
         {trailing && <div className="absolute inset-y-0 right-1.5 flex items-center">{trailing}</div>}
       </div>
       {error ? (
