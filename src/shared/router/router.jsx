@@ -22,6 +22,7 @@ import AdminLog from "../../pages/AdminLog";
 import AdminSettings from "../../pages/AdminSettings";
 import RouteError from "../../pages/RouteError";
 import Datenschutz from "../../pages/Datenschutz";
+import SettingsLayout from "../../pages/SettingsLayout";
 
 // Помилка спрацьовує на найближчому errorElement. Тому він є на кожній сторінці:
 // падає тільки контент, а меню лишається. Той, що вгорі, ловить решту,
@@ -63,11 +64,21 @@ export const router = createBrowserRouter([
           page({ path: "testen/:id/bearbeiten", Component: ExamEdit }), // правка
           page({ path: "editor-code", Component: EditorCode }),
           page({ path: "statistik", Component: Statistic }),
-          page({ path: "mehr", Component: More }),
-          page({ path: "mehr/kurse", Component: MyCourses }),
-          page({ path: "mehr/darstellung", Component: Appearance }),
-          page({ path: "mehr/fachfarben", Component: SubjectColors }),
-          page({ path: "mehr/sync", Component: NotesSync }), // Notizen synchronisieren
+          // «Mehr» / «Einstellungen»: на ПК спільна оболонка з меню розділів (SettingsLayout)
+          {
+            path: "mehr",
+            Component: SettingsLayout,
+            errorElement: <RouteError inline />,
+            children: [
+              page({ index: true, Component: More }),
+              page({ path: "kurse", Component: MyCourses }),
+              page({ path: "darstellung", Component: Appearance }),
+              page({ path: "fachfarben", Component: SubjectColors }),
+              page({ path: "sync", Component: NotesSync }), // Notizen synchronisieren
+              page({ path: "editor-code", Component: EditorCode }),
+              page({ path: "datenschutz", Component: Datenschutz }),
+            ],
+          },
         ],
       },
     ],

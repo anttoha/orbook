@@ -27,12 +27,15 @@ const Fact = ({ Icon, title, text }) => (
 // Унизу «Meine Sync-Notizen löschen» — тільки після входу і коли на пристрої є Sync-Code.
 const Datenschutz = () => {
   const info = usePublicInfo();
-  const from = useLocation().state?.from;
+  const { pathname } = useLocation();
+  // /mehr/datenschutz — усередині застосунку (меню і відступи дає HomePage),
+  // /datenschutz — окрема сторінка з екрана входу
+  const inApp = pathname.startsWith("/mehr");
+  const Wrapper = inApp ? "div" : "main";
 
   return (
-    <main className="mx-auto min-h-dvh w-full max-w-110 bg-paper px-gutter py-5">
-      {/* З «Mehr» повертаємось туди, з екрана входу — на нього */}
-      <PageHeader backTo={from ?? "/"} eyebrow="Kurz und ehrlich" title="Datenschutz" />
+    <Wrapper className={inApp ? undefined : "mx-auto min-h-dvh w-full max-w-110 bg-paper px-gutter py-5"}>
+      <PageHeader backTo={inApp ? "/mehr" : "/"} eyebrow="Kurz und ehrlich" title="Datenschutz" />
 
       <ul className="mt-5 flex flex-col gap-5">
         {FACTS.map((fact) => (
@@ -41,7 +44,7 @@ const Datenschutz = () => {
         <Fact Icon={Shield} title="Verantwortlich" text={responsibleText(info?.privacy)} />
       </ul>
       <DeleteSyncNotes />
-    </main>
+    </Wrapper>
   );
 };
 

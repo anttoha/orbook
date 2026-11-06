@@ -11,6 +11,7 @@ import Kbd from "./Kbd";
 //   Комп'ютер (≥ 1024px) — залежить від desktop:
 //     "panel"  — панель праворуч на всю висоту (урок, Info zum Tag) — як на макеті
 //     "dialog" — вікно по центру (Teilen, календар)
+//     "wide"   — широке вікно по центру (Tastenkürzel)
 // Обидві бібліотеки самі дають: затемнення, Esc, клік по фону, фокус усередині.
 //
 // Пропси:
@@ -28,6 +29,7 @@ import Kbd from "./Kbd";
 const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, titleAside, titleClassName, hideClose = false, icon, footer, children }) => {
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // який варіант показувати
   const isPanel = isDesktop && desktop === "panel"; // панель праворуч?
+  const dialogWidth = desktop === "wide" ? "w-dialog-wide" : "w-dialog"; // ширина вікна по центру
 
   // Бібліотеки повідомляють про відкриття/закриття через onOpenChange(true/false)
   const handleOpenChange = (next) => {
@@ -96,7 +98,7 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
                 ? // панель: праворуч, відступ 16px від країв екрана, ширина 440px (як на макеті)
                   "top-4 right-4 bottom-4 w-sheet max-w-[calc(100%-2rem)] rounded-panel data-[state=closed]:animate-slide-out-right data-[state=open]:animate-slide-in-right"
                 : // вікно: по центру, ширина 520px
-                  "top-1/2 left-1/2 max-h-[85dvh] w-dialog max-w-[calc(100%-2rem)] -translate-1/2 rounded-panel data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in",
+                  cn("top-1/2 left-1/2 max-h-[85dvh] max-w-[calc(100%-2rem)] -translate-1/2 rounded-panel data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in", dialogWidth),
             )}
           >
             {renderHeader(Dialog.Title, Dialog.Description, Dialog.Close)}

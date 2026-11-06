@@ -7,7 +7,8 @@ import { LeaveIcon } from "../ui/icons";
 
 // Рядок «Klasse verlassen» і діалог підтвердження (макет 28).
 // Вихід стирає кеш плану, нотатки й налаштування лишаються (docs/frontend/02-zugang.md).
-const LeaveClass = () => {
+// className — інший вигляд рядка (у меню «Einstellungen» на ПК він як пункт меню)
+const LeaveClass = ({ className }) => {
   const navigate = useNavigate();
   const logout = usePlanStore((s) => s.logout);
   const [open, setOpen] = useState(false);
@@ -21,10 +22,16 @@ const LeaveClass = () => {
 
   return (
     <li>
-      <button type="button" onClick={() => setOpen(true)} className="flex h-12.5 w-full items-center gap-3.25 text-danger">
-        <LeaveIcon className="size-4.5 shrink-0" />
-        <span className="text-row font-medium">Klasse verlassen</span>
-      </button>
+      {className ? (
+        <button type="button" onClick={() => setOpen(true)} className={className}>
+          <LeaveIcon className="size-4 shrink-0" /> Klasse verlassen
+        </button>
+      ) : (
+        <button type="button" onClick={() => setOpen(true)} className="flex h-12.5 w-full items-center gap-3.25 text-danger">
+          <LeaveIcon className="size-4.5 shrink-0" />
+          <span className="text-row font-medium">Klasse verlassen</span>
+        </button>
+      )}
 
       <ConfirmDialog
         open={open}

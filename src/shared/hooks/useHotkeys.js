@@ -23,7 +23,8 @@ export const useHotkeys = (bindings, enabled = true) => {
       const name = mod ? `mod+${key}` : key; // назва сполучення
 
       if (!mod) {
-        if (event.altKey || event.shiftKey) return; // Alt/Shift — не наші сполучення
+        // Alt/Shift — не наші сполучення. Крім «?»: на більшості клавіатур він сам іде з Shift
+        if (event.altKey || (event.shiftKey && key !== "?")) return;
         const target = event.target; // де зараз фокус
         const typing = target.closest?.("input, textarea, select, [contenteditable=true]"); // друкує в полі
         const overlay = document.querySelector("[role=dialog], [role=menu]"); // відкрите вікно або меню

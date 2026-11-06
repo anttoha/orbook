@@ -2,10 +2,12 @@ import { Palette, Sun, Table2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { version } from "../../package.json";
 import LeaveClass from "../components/more/LeaveClass";
+import SettingsTiles from "../components/settings/SettingsTiles";
 import MenuRow from "../components/more/MenuRow";
 import { KeyIcon, ShieldIcon, SyncIcon } from "../components/ui/icons";
 import ListCard from "../components/ui/ListCard";
 import { useSyncAllowed } from "../shared/hooks/useNotesSync";
+import { useInSettingsPanel } from "../shared/hooks/useSettingsPanel";
 import { useTheme } from "../shared/hooks/useTheme";
 import { useSyncStore } from "../shared/store/syncStore";
 import { usePlanStore } from "../shared/store/planStore";
@@ -14,14 +16,35 @@ import { courseCount } from "../shared/utils/courses";
 
 const THEME_LABELS = { light: "Hell", dark: "Dunkel", system: "System" };
 
-// Звідси відкриваються сторінки, у яких є й інший шлях: кнопка «назад» має повернути сюди
-const BACK_HERE = { from: "/mehr" };
+// Рядок унизу: версія і вхід в адмінку
+const Footer = () => (
+  <footer className="flex items-center justify-between text-caption text-faint">
+    <p>ORBook {version.split(".").slice(0, 2).join(".")} · Teil von ORBitium</p>
+    <Link to="/admin">Admin</Link>
+  </footer>
+);
+
+// На ПК «Übersicht» праворуч від меню розділів: плитки замість списку (макет 22)
+const DesktopOverview = () => (
+  <section className="flex flex-col gap-5">
+    <h2 className="text-heading text-ink">Übersicht</h2>
+    <SettingsTiles />
+    <Footer />
+  </section>
+);
 
 // ─────────────────────────────────────────────────────────────
 // Сторінка «Mehr» (макет 22). Своїх запитів немає: me і courses уже завантажені.
 // Mitteilungen з'являться в частині 17. «Notizen synchronisieren» ховаємо, якщо школа вимкнула синхронізацію.
 // ─────────────────────────────────────────────────────────────
 const More = () => {
+  const inPanel = useInSettingsPanel(); // ПК: сторінка всередині «Einstellungen»
+  if (inPanel) return <DesktopOverview />;
+  return <PhoneMenu />;
+};
+
+// Телефон: список «Mehr» (макет 22 Handy)
+const PhoneMenu = () => {
   const me = usePlanStore((s) => s.me);
   const courses = usePlanStore((s) => s.courses);
   const picked = useUserStore((s) => s.picked);
@@ -34,13 +57,10 @@ const More = () => {
   const count = courseCount(courses, picked, hiddenRequired);
 
   return (
-    <section className="flex flex-col gap-4.5 lg:max-w-186">
+    <section className="flex flex-col gap-4.5">
       <header className="space-y-1">
         <p className="min-h-4 text-hint font-extrabold text-faint">{school}</p>
-        <h1 className="text-title text-ink">
-          <span className="lg:hidden">Mehr</span>
-          <span className="hidden lg:inline">Einstellungen</span>
-        </h1>
+        <h1 className="text-title text-ink">Mehr</h1>
       </header>
 
       <ListCard title="App">
@@ -52,18 +72,15 @@ const More = () => {
       <ListCard title="Daten">
         {/* праворуч — перша група коду, як у макеті: «K7QM-…» */}
         {syncAllowed && <MenuRow to="/mehr/sync" icon={SyncIcon} label="Notizen synchronisieren" value={syncCode ? `${syncCode.slice(0, 4)}-…` : "Aus"} />}
-        <MenuRow to="/editor-code" state={BACK_HERE} icon={KeyIcon} label="Klausuren eintragen" value={me?.editor?.label ?? "Editor-Code"} />
+        <MenuRow to="/mehr/editor-code" icon={KeyIcon} label="Klausuren eintragen" value={me?.editor?.label ?? "Editor-Code"} />
       </ListCard>
 
       <ListCard>
-        <MenuRow to="/datenschutz" state={BACK_HERE} icon={ShieldIcon} label="Datenschutz" />
+        <MenuRow to="/mehr/datenschutz" icon={ShieldIcon} label="Datenschutz" />
         <LeaveClass />
       </ListCard>
 
-      <footer className="flex items-center justify-between text-caption text-faint">
-        <p>ORBook {version.split(".").slice(0, 2).join(".")} · Teil von ORBitium</p>
-        <Link to="/admin">Admin</Link>
-      </footer>
+      <Footer />
     </section>
   );
 };

@@ -65,7 +65,9 @@ const ActiveCode = ({ editor }) => {
 // ─────────────────────────────────────────────────────────────
 const EditorCode = () => {
   const editor = usePlanStore((s) => s.me?.editor);
-  const backTo = useLocation().state?.from ?? "/testen"; // прийшли з «Mehr» — туди й повертаємось
+  const location = useLocation();
+  // /mehr/editor-code — розділ «Einstellungen», /editor-code — з «Klausuren»: туди й повертаємось
+  const backTo = location.state?.from ?? (location.pathname.startsWith("/mehr") ? "/mehr" : "/testen");
 
   return (
     <section className="flex flex-1 flex-col lg:max-w-186">

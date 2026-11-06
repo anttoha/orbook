@@ -246,6 +246,9 @@
     --container-popover: 360px; /* «Woche wählen» */
     --container-sheet: 440px; /* панель справа */
     --container-dialog: 520px; /* вікно посередині */
+    --container-dialog-wide: 760px; /* широке вікно: «Tastenkürzel» у дві колонки */
+    --container-settings-nav: 230px; /* меню розділів «Einstellungen» на ПК */
+    --container-settings: 680px; /* праворуч від нього: дві плитки по 334 + 12 */
 
     --color-overlay: #2a243366; /* затемнення під вікнами і панелями */
     --color-paper: #fbf7f2;

@@ -8,6 +8,7 @@ import ExamSheet from "./ExamSheet";
 import LessonSheet from "./LessonSheet";
 import NoteSheet from "./NoteSheet";
 import ShareSheet from "./ShareSheet";
+import ShortcutsSheet from "./ShortcutsSheet";
 import WeekPickerSheet from "./WeekPickerSheet";
 
 // Яке ім'я в адресі (?sheet=…) якій шторці відповідає
@@ -21,6 +22,7 @@ const SHEETS = {
   klausur: ExamSheet, // деталі Klausur
   klausurfilter: ExamFilterSheet, // Filter
   editorcode: EditorCodeSheet, // код посеред запису: форма лишається під вікном
+  tasten: ShortcutsSheet, // Tastenkürzel (клавіша «?»)
 };
 
 // ─────────────────────────────────────────────────────────────

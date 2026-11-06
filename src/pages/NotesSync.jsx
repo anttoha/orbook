@@ -21,7 +21,7 @@ const NotesSync = () => {
 
   return (
     <section className="flex flex-col gap-4.5 lg:max-w-186">
-      <PageHeader backTo={from ?? "/mehr"} eyebrow="Notizen" title="Synchronisieren" />
+      <PageHeader backTo={from ?? "/mehr"} eyebrow="Notizen" title="Synchronisieren" panelTitle="Notizen-Sync" />
 
       {!allowed ? (
         <StateScreen icon={SyncIcon} title="Ausgeschaltet" text="Deine Schule hat das Synchronisieren ausgeschaltet. Deine Notizen bleiben auf diesem Gerät." />

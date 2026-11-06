@@ -60,7 +60,8 @@ const Day = () => {
   const valid = !datum || isIsoDate(datum); // крива дата → на сьогодні
   const date = datum ?? today; // який день показуємо
   const { day, week } = useDay(valid ? date : null); // день + тиждень (стан завантаження)
-  const view = useUserStore((s) => s.dayView); // поточний вигляд
+  const storedView = useUserStore((s) => s.dayView); // збережений вигляд
+  const view = storedView === "zeitleiste" ? "zeitleiste" : "liste"; // невідоме значення (старий запис) → список
   const setView = useUserStore((s) => s.setDayView);
 
   // Гарячі клавіші дня: ← → день, T сьогодні, L / Z вигляд.
