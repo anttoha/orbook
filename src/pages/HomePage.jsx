@@ -11,6 +11,7 @@ import BottomNav from "../components/navbar/BottomNav";
 import SheetHost from "../components/sheets/SheetHost";
 import { usePageAnimation } from "../shared/hooks/usePageAnimation";
 import { useNotesSync } from "../shared/hooks/useNotesSync";
+import { useAppHotkeys } from "../shared/hooks/useAppHotkeys";
 import { usePlanPolling } from "../shared/hooks/usePlanPolling";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
@@ -40,6 +41,7 @@ const HomePage = () => {
     start();
   }, [start]);
 
+  useAppHotkeys(Boolean(me) && coursesChosen); // W, D, N, K, R, «?» — на будь-якій сторінці
   usePlanPolling(Boolean(me)); // кожні 10 секунд питаємо, чи змінився план
   useNotesSync(Boolean(me) && me.features?.notesSync !== false); // нотатки на інших пристроях (якщо є Sync-Code)
 

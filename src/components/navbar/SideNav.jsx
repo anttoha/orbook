@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useHotkeys } from "../../shared/hooks/useHotkeys";
 import { usePlanStore } from "../../shared/store/planStore";
 import { cn } from "../../shared/utils/cn";
 import { isTabActive, isTabEnabled } from "../../shared/utils/isTabActive";
@@ -21,6 +22,8 @@ const SideNav = () => {
   const [isHidden, setIsHidden] = useState(false); // чи згорнутий сайдбар
   const examCount = usePlanStore((s) => s.exams.length); // лічильник у «Testen» (найближчі Klausuren)
   const features = usePlanStore((s) => s.me?.features); // вимкнені школою розділи не показуємо
+
+  useHotkeys({ "mod+b": () => setIsHidden((prev) => !prev) }); // ⌘B / Ctrl+B — згорнути або розгорнути
 
   return (
     <aside

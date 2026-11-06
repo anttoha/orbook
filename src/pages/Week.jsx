@@ -1,4 +1,4 @@
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ChartNoAxesColumn, ChevronLeft, ChevronRight, Flag } from "lucide-react";
 import WeekGrid from "../components/week/WeekGrid";
 import WeekMenu from "../components/week/WeekMenu";
@@ -53,13 +53,11 @@ const WeekSummaryRow = ({ text, linked }) => {
 const Week = () => {
   const { today } = useNow(); // сьогодні (час школи)
   const { openSheet } = useSheet(); // відкрити шторку
-  const navigate = useNavigate(); // перехід на іншу сторінку
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // ≥ 1024px — комп'ютерний вигляд
   const [searchParams, setSearchParams] = useSearchParams(); // параметри адреси
   const showWeekend = useUserStore((s) => s.showWeekend); // показувати вихідні
   const exams = usePlanStore((s) => s.exams); // найближчі Klausuren
   const loadWeek = usePlanStore((s) => s.loadWeek); // завантажити тиждень ще раз
-  const refreshPlan = usePlanStore((s) => s.refreshPlan); // «Plan neu laden»
 
   // Показаний тиждень живе в адресі (тому «Назад» зі сторінки дня повертає на той самий тиждень)
   const param = searchParams.get("woche");
@@ -90,13 +88,11 @@ const Week = () => {
   // Клік по уроку → шторка уроку (fach — бо паралельних курсів буває кілька)
   const openLesson = (day, lesson) => openSheet("stunde", { datum: day.date, stunde: lesson.period, fach: lesson.subject?.code });
 
-  // Гарячі клавіші тижня: ← → тиждень, T сьогодні, D Tagesansicht, R Plan neu laden
+  // Гарячі клавіші тижня: ← → тиждень, T сьогодні (D, R і решта — useAppHotkeys в оболонці)
   useHotkeys({
     arrowleft: () => setWeek(addDays(monday, -7)),
     arrowright: () => setWeek(addDays(monday, 7)),
     t: goToday,
-    d: () => navigate("/heute"),
-    r: refreshPlan,
   });
 
   // Свайп по сторінці на телефоні: сусідній тиждень
