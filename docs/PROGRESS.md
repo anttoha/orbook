@@ -111,4 +111,6 @@ Spec: `docs/specs/14b-passwoerter/spec.md`, макеты `design/neu/14b-passwoe
 Макеты: `design/neu/15-materialien/` (`gen.py` рисует SVG, `build.py` собирает `index.html`), артефакт https://claude.ai/artifact/CCAw6FL8CbAZu82V7ehoxa.
 Экраны: список по предметам (из Mehr → «Klasse» и из левого меню ПК), действия (долгое нажатие / правая кнопка), «Neuer Link» (распознаёт Google Drive / OneDrive, другие сайты — ошибка), тост, удаление, пусто, skeleton, блок «Materialien · Fach» в окне урока, право «Materialien teilen» у кодов.
 Вопросы владельцу: кто добавляет (предложено: учителя по своим предметам, админ, Editor-Codes с правом), кто удаляет (автор, админ, учитель предмета), какие сайты (только Google Drive/Docs и OneDrive/SharePoint).
-**Дальше:** после «ок дизайн» и ответов — `/orb-spec` (бэкенд: таблица ссылок, `/api/materials`, право у кодов; план → «ок» владельца в `/opt/orbook-be`), затем `/orb-build`.
+Дизайн ок, права решены (2026-11-06). Spec: `docs/specs/15-materialien/spec.md`.
+**Дальше:** ждём «ок» плана бэкенда (миграция 0007 `materials` + `can_materials`, `/api/materials`, admin, `teacher.subjects`), затем бэкенд в `/opt/orbook-be` и `/orb-build`.
+Новые части по пожеланию владельца: 18 «Termine», 19 «Muster-Stundenplan» (в README сразу после 15).
