@@ -1,5 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { EyeOff, FileText, Server, Shield, Users } from "lucide-react";
+import DeleteSyncNotes from "../components/sync/DeleteSyncNotes";
 import PageHeader from "../components/ui/PageHeader";
 import { usePublicInfo } from "../shared/hooks/usePublicInfo";
 import { responsibleText } from "../shared/utils/privacy";
@@ -23,7 +24,7 @@ const Fact = ({ Icon, title, text }) => (
 );
 
 // Екран «Datenschutz» (макет 27). Відкривається і без входу: посилання є на екрані «Zugang».
-// Кнопка «Meine Sync-Notizen löschen» з'явиться разом із синхронізацією нотаток (частина 11).
+// Унизу «Meine Sync-Notizen löschen» — тільки після входу і коли на пристрої є Sync-Code.
 const Datenschutz = () => {
   const info = usePublicInfo();
   const from = useLocation().state?.from;
@@ -39,6 +40,7 @@ const Datenschutz = () => {
         ))}
         <Fact Icon={Shield} title="Verantwortlich" text={responsibleText(info?.privacy)} />
       </ul>
+      <DeleteSyncNotes />
     </main>
   );
 };

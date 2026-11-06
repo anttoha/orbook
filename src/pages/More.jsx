@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { version } from "../../package.json";
 import LeaveClass from "../components/more/LeaveClass";
 import MenuRow from "../components/more/MenuRow";
-import { KeyIcon, ShieldIcon } from "../components/ui/icons";
+import { KeyIcon, ShieldIcon, SyncIcon } from "../components/ui/icons";
 import ListCard from "../components/ui/ListCard";
+import { useSyncAllowed } from "../shared/hooks/useNotesSync";
 import { useTheme } from "../shared/hooks/useTheme";
+import { useSyncStore } from "../shared/store/syncStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { courseCount } from "../shared/utils/courses";
@@ -17,13 +19,15 @@ const BACK_HERE = { from: "/mehr" };
 
 // ─────────────────────────────────────────────────────────────
 // Сторінка «Mehr» (макет 22). Своїх запитів немає: me і courses уже завантажені.
-// Mitteilungen з'являться в частині 17, Notizen synchronisieren — у частині 11.
+// Mitteilungen з'являться в частині 17. «Notizen synchronisieren» ховаємо, якщо школа вимкнула синхронізацію.
 // ─────────────────────────────────────────────────────────────
 const More = () => {
   const me = usePlanStore((s) => s.me);
   const courses = usePlanStore((s) => s.courses);
   const picked = useUserStore((s) => s.picked);
   const theme = useTheme((s) => s.theme);
+  const syncCode = useSyncStore((s) => s.code);
+  const syncAllowed = useSyncAllowed();
 
   const school = [me?.className, me?.schoolName].filter(Boolean).join(" · "); // обидва поля бувають порожні
   const hiddenRequired = useUserStore((s) => s.hiddenRequired);
@@ -46,6 +50,8 @@ const More = () => {
       </ListCard>
 
       <ListCard title="Daten">
+        {/* праворуч — перша група коду, як у макеті: «K7QM-…» */}
+        {syncAllowed && <MenuRow to="/mehr/sync" icon={SyncIcon} label="Notizen synchronisieren" value={syncCode ? `${syncCode.slice(0, 4)}-…` : "Aus"} />}
         <MenuRow to="/editor-code" state={BACK_HERE} icon={KeyIcon} label="Klausuren eintragen" value={me?.editor?.label ?? "Editor-Code"} />
       </ListCard>
 

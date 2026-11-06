@@ -9,6 +9,7 @@ import More from "../../pages/More";
 import MyCourses from "../../pages/MyCourses";
 import Appearance from "../../pages/Appearance";
 import SubjectColors from "../../pages/SubjectColors";
+import NotesSync from "../../pages/NotesSync";
 import StartPage from "../../pages/StartPage";
 import Week from "../../pages/Week";
 import Day from "../../pages/Day";
@@ -46,6 +47,7 @@ export const router = createBrowserRouter([
           page({ path: "mehr/kurse", Component: MyCourses }),
           page({ path: "mehr/darstellung", Component: Appearance }),
           page({ path: "mehr/fachfarben", Component: SubjectColors }),
+          page({ path: "mehr/sync", Component: NotesSync }), // Notizen synchronisieren
           page({ path: "admin", Component: Admin }), // поки заглушка
         ],
       },
