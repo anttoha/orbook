@@ -1,16 +1,19 @@
 import { usePlanStore } from "../../shared/store/planStore";
 import { cn } from "../../shared/utils/cn";
-import { splitCourses } from "../../shared/utils/courses";
+import { mergeCourses, splitCourses } from "../../shared/utils/courses";
 import CourseGroup from "./CourseGroup";
 import CourseRow from "./CourseRow";
 import CoursesState from "./CoursesState";
 
 // Блоки «Pflicht» і «Wahl». Перемикач є в кожного курсу: учень сам вирішує, що бачити.
 // isOn(course) — чи ввімкнено курс, onToggle(course) — натиснули перемикач.
+// Однакові курси під різними номерами — один рядок (mergeCourses): у course.nrs усі номери
 // На ПК дві колонки; stacked — одна під одною (у вузькій панелі «Einstellungen»)
 const CourseLists = ({ isOn, onToggle, stacked = false }) => {
   const courses = usePlanStore((s) => s.courses);
-  const { required, optional } = splitCourses(courses);
+  const split = splitCourses(courses);
+  const required = mergeCourses(split.required);
+  const optional = mergeCourses(split.optional);
 
   return (
     <CoursesState>

@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { toggleCourse, togglePicked } from "../utils/courses";
 import { deleteNote, editNote, newNote, upgradeNote } from "../utils/notes";
 
 // ─────────────────────────────────────────────────────────────
@@ -56,13 +55,7 @@ export const useUserStore = create(
 
       // ── курси ──
 
-      // «Kurs ausblenden»: прибрати курс із вибраних.
-      // Якщо ще нічого не вибрано (видно все) — вибираємо всі курси за вибором, крім цього.
-      // allOptional — номери всіх курсів за вибором (з /api/courses)
-      hideCourse: (nr, allOptional) => set({ picked: toggleCourse(get().picked, nr, allOptional) }),
-
-      // Сховати або показати обов'язковий курс
-      toggleRequired: (nr) => set({ hiddenRequired: togglePicked(get().hiddenRequired, nr) }),
+      // Сховані обов'язкові курси (Meine Kurse, «Kurs ausblenden»; номери рахує shared/utils/courses.js)
       setHiddenRequired: (hiddenRequired) => set({ hiddenRequired }),
 
       // Повернути попередній вибір (кнопка «Rückgängig» у сповіщенні)

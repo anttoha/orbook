@@ -3,7 +3,7 @@ import PageHeader from "../components/ui/PageHeader";
 import { useInSettingsPanel } from "../shared/hooks/useSettingsPanel";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
-import { isCourseVisible, optionalNumbers, toggleCourse } from "../shared/utils/courses";
+import { isCourseVisible, optionalNumbers, switchCourses, withNumbers } from "../shared/utils/courses";
 
 // «Meine Kurse» (макет 23). На відміну від першого запуску вибір діє одразу.
 const MyCourses = () => {
@@ -11,11 +11,16 @@ const MyCourses = () => {
   const picked = useUserStore((s) => s.picked);
   const setPicked = useUserStore((s) => s.setPicked);
   const hiddenRequired = useUserStore((s) => s.hiddenRequired);
-  const toggleRequired = useUserStore((s) => s.toggleRequired);
+  const setHiddenRequired = useUserStore((s) => s.setHiddenRequired);
   const inPanel = useInSettingsPanel(); // ПК, розділ «Einstellungen»: списки один під одним
 
-  // Курс за вибором і обов'язковий зберігаються по-різному (див. userStore)
-  const toggle = (course) => (course.optional ? setPicked(toggleCourse(picked, course.nr, optionalNumbers(courses))) : toggleRequired(course.nr));
+  // Курс за вибором і обов'язковий зберігаються по-різному (див. userStore).
+  // course.nrs — усі номери курсу (той самий курс у різні дні), перемикаємо їх разом
+  const toggle = (course) => {
+    const on = !isCourseVisible(course, picked, hiddenRequired);
+    if (course.optional) setPicked(switchCourses(picked, course.nrs, on, optionalNumbers(courses)));
+    else setHiddenRequired(withNumbers(hiddenRequired, course.nrs, !on));
+  };
 
   return (
     <section className="flex flex-col lg:max-w-186">

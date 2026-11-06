@@ -66,7 +66,7 @@ const CoursesForm = ({ data, settings, onSaved }) => {
       <div className="flex flex-col gap-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4">
         <SettingsCard title="Kurse">
           <Lead>Wahl-Kurse wählt jeder Schüler in „Meine Kurse“ selbst.</Lead>
-          <CourseRows courses={data.courses} states={states} onChange={(nr, value) => setStates({ ...states, [nr]: value })} />
+          <CourseRows courses={data.courses} states={states} onChange={(nrs, value) => setStates({ ...states, ...Object.fromEntries(nrs.map((nr) => [nr, value])) })} />
           <p className="flex items-center gap-1.5 border-t border-hair py-3 text-caption text-faint">
             <LockIcon className="size-3.5" /> Gruppen und parallele Kurse sind automatisch Wahl. Du kannst sie trotzdem auf Pflicht stellen.
           </p>

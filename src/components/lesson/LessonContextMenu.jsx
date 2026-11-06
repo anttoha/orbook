@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { useSheet } from "../../shared/hooks/useSheet";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
+import { mergeCourses, optionalNumbers, switchCourses, withNumbers } from "../../shared/utils/courses";
 import { subjectName } from "../../shared/utils/format";
 import { lessonText, shareText } from "../../shared/utils/share";
 import Kbd from "../ui/Kbd";
@@ -24,10 +25,8 @@ const LessonContextMenu = ({ lesson, date, children }) => {
   const { openSheet } = useSheet(); // відкрити шторку
   const courses = usePlanStore((s) => s.courses); // курси класу
   const picked = useUserStore((s) => s.picked); // вибрані курси
-  const hideCourse = useUserStore((s) => s.hideCourse); // сховати курс
   const setPicked = useUserStore((s) => s.setPicked); // повернути вибір
   const hiddenRequired = useUserStore((s) => s.hiddenRequired); // приховані обов'язкові
-  const toggleRequired = useUserStore((s) => s.toggleRequired);
   const setHiddenRequired = useUserStore((s) => s.setHiddenRequired);
   const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // адмін міг вимкнути «Teilen»
 
@@ -44,8 +43,10 @@ const LessonContextMenu = ({ lesson, date, children }) => {
   // «Kurs ausblenden» + сповіщення з кнопкою «Rückgängig» (скасувати)
   const handleHide = () => {
     const before = { picked, hiddenRequired }; // запам'ятовуємо, щоб можна було повернути
-    if (course.optional) hideCourse(course.nr, courses.filter((c) => c.optional).map((c) => c.nr));
-    else toggleRequired(course.nr);
+    // той самий курс в інші дні може мати інший номер — ховаємо всі (mergeCourses)
+    const nrs = mergeCourses(courses.filter((c) => c.optional === course.optional)).find((c) => c.nrs.includes(course.nr))?.nrs ?? [course.nr];
+    if (course.optional) setPicked(switchCourses(picked, nrs, false, optionalNumbers(courses)));
+    else setHiddenRequired(withNumbers(hiddenRequired, nrs, true));
     toast(`${subjectName(lesson.subject)} (${course.label}) ausgeblendet`, {
       action: { label: "Rückgängig", onClick: () => {
         setPicked(before.picked);

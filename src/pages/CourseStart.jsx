@@ -6,7 +6,7 @@ import CourseLists from "../components/courses/CourseLists";
 import StepBar from "../components/courses/StepBar";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
-import { togglePicked } from "../shared/utils/courses";
+import { withNumbers } from "../shared/utils/courses";
 
 // Екран першого запуску «Welche Kurse hast du?» (макет 03).
 // Вибір зберігається лише після «Weiter»: до цього він живе у стані екрана.
@@ -20,7 +20,12 @@ const CourseStart = () => {
   const [hiddenRequired, setHiddenRequired] = useState([]); // обов'язкові спочатку ввімкнені, їх можна вимкнути
 
   const isOn = (course) => (course.optional ? picked.includes(course.nr) : !hiddenRequired.includes(course.nr));
-  const toggle = (course) => (course.optional ? setPicked((list) => togglePicked(list, course.nr)) : setHiddenRequired((list) => togglePicked(list, course.nr)));
+  // course.nrs — усі номери того самого курсу (у різні дні), перемикаємо їх разом
+  const toggle = (course) => {
+    const on = !isOn(course);
+    if (course.optional) setPicked((list) => withNumbers(list, course.nrs, on));
+    else setHiddenRequired((list) => withNumbers(list, course.nrs, !on));
+  };
 
   return (
     <div className="flex min-h-dvh flex-col bg-paper lg:px-11 lg:py-7">
