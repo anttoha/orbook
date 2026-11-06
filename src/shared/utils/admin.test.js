@@ -189,6 +189,11 @@ describe("Lehrer-Codes (Teil 14)", () => {
   it("Rechte-Text", () => {
     expect(rightsText({ create: true, homework: true }, "teacher")).toBe("Klausuren · Hausaufgaben");
     expect(rightsText({ create: true, homework: false }, "teacher")).toBe("Nur Klausuren");
+    expect(rightsText({ create: true, homework: true, materials: true }, "teacher")).toBe("Klausuren · Hausaufgaben · Materialien");
+    expect(rightsText({ create: false, homework: false, materials: true }, "teacher")).toBe("Nur Materialien");
+    expect(rightsText({ create: true, editOwn: true, materials: true })).toBe("Eintragen · eigene bearbeiten · Materialien");
+    expect(rightsText({ materials: true })).toBe("Materialien");
+    expect(hasRight({ materials: true })).toBe(true);
     expect(rightsText({ create: true, editOwn: true, homework: true })).toBe("Eintragen · eigene bearbeiten · Hausaufgaben");
     expect(rightsText({ homework: true })).toBe("Hausaufgaben");
   });
@@ -197,6 +202,6 @@ describe("Lehrer-Codes (Teil 14)", () => {
     expect(entriesCount({ examCount: 2, homeworkCount: 4 })).toBe(6);
     expect(entriesCount({ examCount: 2 })).toBe(2);
     expect(isTeacherCode({ kind: "teacher" })).toBe(true);
-    expect(editableRights({ kind: "teacher" }, { create: true, editOwn: true, homework: false })).toEqual({ create: true, homework: false });
+    expect(editableRights({ kind: "teacher" }, { create: true, editOwn: true, homework: false })).toEqual({ create: true, homework: false, materials: false }); // materials — третє право вчителя (частина 15)
   });
 });

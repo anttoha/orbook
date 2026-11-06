@@ -10,11 +10,13 @@ const EDITOR_RIGHTS = [
   { key: "editAll", label: "Alle Klausuren bearbeiten" },
   { key: "homework", label: "Hausaufgaben eintragen", isNew: true },
   { key: "editTeacher", label: "Lehrer-Einträge ändern", isNew: true, hint: "nur wenn die Lehrkraft es beim Eintrag erlaubt" },
+  { key: "materials", label: "Materialien teilen", isNew: true }, // частина 15
 ];
-// Lehrer-Code: міняти й видаляти — завжди лише свої, тому тут тільки дві галочки (макет handy-11)
+// Lehrer-Code: міняти й видаляти — завжди лише свої, тому тут лише такі галочки (макет handy-11)
 const TEACHER_RIGHTS = [
   { key: "create", label: "Klausuren und Tests eintragen" },
   { key: "homework", label: "Hausaufgaben eintragen" },
+  { key: "materials", label: "Materialien teilen", isNew: true, hint: "nur für die eigenen Fächer" },
 ];
 
 const RightLabel = ({ right }) => (
@@ -27,7 +29,7 @@ const RightLabel = ({ right }) => (
   </span>
 );
 
-// Галочки «Rechte» (вікно нового коду і «Rechte ändern»). value — { create, editOwn, editAll, homework, editTeacher }.
+// Галочки «Rechte» (вікно нового коду і «Rechte ändern»). value — { create, editOwn, editAll, homework, editTeacher, materials }.
 // kind = "teacher" — права Lehrer-Code
 const RightsFields = ({ value, onChange, disabled, error, kind = "editor" }) => (
   <Field label="Rechte" error={error}>

@@ -6,6 +6,7 @@ import PasswordLinks from "../components/admin/settings/PasswordLinks";
 import DangerZone from "../components/admin/settings/DangerZone";
 import { FeaturesCard, HomeworkCard, SecurityCard, UpdateCard } from "../components/admin/settings/OptionCards";
 import { purgeHomework } from "../shared/api/admin";
+import MaterialSitesCard from "../components/admin/settings/MaterialSitesCard";
 import PrivacyCard from "../components/admin/settings/PrivacyCard";
 import SaveButton from "../components/admin/settings/SaveButton";
 import SchoolCard from "../components/admin/settings/SchoolCard";
@@ -60,6 +61,7 @@ const SettingsForm = ({ data }) => {
         </div>
         <div className={column}>
           <UpdateCard className="order-3" {...rows} />
+          <MaterialSitesCard className="order-4" />
           <FeaturesCard className="order-4" {...rows} />
           <SecurityCard className="order-5" {...rows} />
           <HomeworkCard className="order-5" {...rows} onPurge={purge} purging={purging} />

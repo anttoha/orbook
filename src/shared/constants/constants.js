@@ -25,6 +25,7 @@ export const adminTabs = [
   { to: "/admin/passwoerter", label: "Passwörter", icon: LockIcon, desktop: true },
   { to: "/admin/klausuren", label: "Klausuren", icon: FlagIcon, mobile: true, desktop: true, count: "exams" },
   { to: "/admin/kurse", label: "Kurse & Fächer", icon: Table2, desktop: true },
+  { to: "/admin/materialien", label: "Materialien", icon: Folder, desktop: true }, // частина 15; телефон — «Übersicht → Schnell»
   { to: "/admin/protokoll", label: "Protokoll", icon: FileText, desktop: true },
   { to: "/admin/einstellungen", label: "Einstellungen", icon: Server, mobile: true, desktop: true },
 ];

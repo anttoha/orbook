@@ -9,6 +9,7 @@ import { fachTextClass, findLesson, lessonExam, lessonNote } from "../../shared/
 import { findNote } from "../../shared/utils/notes";
 import { lessonText, shareText } from "../../shared/utils/share";
 import ChangedValue from "../lesson/ChangedValue";
+import LessonMaterials from "../materials/LessonMaterials";
 import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
 import StatusBadge from "../ui/StatusBadge";
@@ -83,6 +84,9 @@ const LessonSheet = ({ open, onClose, sheet }) => {
         {exam && <Row label={exam.type}>{exam.topic || "—"}</Row>}
         {info && <Row label="Info">{info}</Row>}
       </dl>
+
+      {/* посилання на Drive цього предмета (частина 15) */}
+      <LessonMaterials subject={lesson.subject} overrides={overrides} />
 
       {/* своя нотатка до уроку, якщо є */}
       {note && (

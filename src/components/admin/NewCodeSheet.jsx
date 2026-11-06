@@ -14,7 +14,8 @@ import RightsFields from "./RightsFields";
 import ValidFields from "./ValidFields";
 
 // Нові права частини 14 за замовчуванням вимкнені; у Lehrer-Code обидва права одразу ввімкнені (рішення власника)
-const START_RIGHTS = { editor: { create: true, editOwn: true, editAll: false, homework: false, editTeacher: false }, teacher: { create: true, homework: true } };
+// Lehrer-Code — одразу з «Materialien teilen» (рішення власника: учителі діляться матеріалами своїх предметів)
+const START_RIGHTS = { editor: { create: true, editOwn: true, editAll: false, homework: false, editTeacher: false, materials: false }, teacher: { create: true, homework: true, materials: true } };
 
 const chip = "h-9.5 rounded-full border px-4 text-label font-bold outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:opacity-40";
 

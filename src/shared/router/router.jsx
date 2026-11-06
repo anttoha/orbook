@@ -24,6 +24,7 @@ import AdminExams from "../../pages/AdminExams";
 import AdminCourses from "../../pages/AdminCourses";
 import AdminLog from "../../pages/AdminLog";
 import AdminPasswords from "../../pages/AdminPasswords";
+import AdminMaterials from "../../pages/AdminMaterials";
 import AdminSettings from "../../pages/AdminSettings";
 import RouteError from "../../pages/RouteError";
 import Datenschutz from "../../pages/Datenschutz";
@@ -56,6 +57,7 @@ export const router = createBrowserRouter([
           page({ path: "protokoll", Component: AdminLog }),
           page({ path: "einstellungen", Component: AdminSettings }),
           page({ path: "passwoerter", Component: AdminPasswords }), // пароль класу і адміна (частина 14b)
+          page({ path: "materialien", Component: AdminMaterials }), // усі посилання, видалення (частина 15)
         ],
       },
       {

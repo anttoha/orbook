@@ -118,14 +118,14 @@ export function storageText(storage) {
 // Lehrer-Code (частина 14): kind = "teacher", label = Kürzel
 export const isTeacherCode = (code) => code?.kind === "teacher";
 
-// Права Lehrer-Code → «Klausuren · Hausaufgaben» / «Nur Klausuren» / «Nur Hausaufgaben» (макет handy-10)
+// Права Lehrer-Code → «Klausuren · Hausaufgaben» / «Nur Klausuren» (макет handy-10); + «Materialien» (частина 15)
 function teacherRightsText(rights) {
-  if (rights?.create && rights?.homework) return "Klausuren · Hausaufgaben";
-  if (rights?.create) return "Nur Klausuren";
-  return rights?.homework ? "Nur Hausaufgaben" : "—";
+  const parts = [rights?.create && "Klausuren", rights?.homework && "Hausaufgaben", rights?.materials && "Materialien"].filter(Boolean);
+  if (parts.length === 0) return "—";
+  return parts.length === 1 ? `Nur ${parts[0]}` : parts.join(" · ");
 }
 
-// Права коду → підпис як у макеті. Hausaufgaben у Editor-Code — додатком у кінці
+// Права коду → підпис як у макеті. Hausaufgaben і Materialien у Editor-Code — додатком у кінці
 export function rightsText(rights, kind = "editor") {
   if (kind === "teacher") return teacherRightsText(rights);
   let text = "—";
@@ -134,8 +134,9 @@ export function rightsText(rights, kind = "editor") {
     text = "Eintragen · eigene bearbeiten";
   else if (rights?.create) text = "Eintragen";
   else if (rights?.editOwn) text = "Eigene bearbeiten";
-  if (!rights?.homework) return text;
-  return text === "—" ? "Hausaufgaben" : `${text} · Hausaufgaben`;
+  const extra = [rights?.homework && "Hausaufgaben", rights?.materials && "Materialien"].filter(Boolean);
+  if (extra.length === 0) return text;
+  return [...(text === "—" ? [] : [text]), ...extra].join(" · ");
 }
 
 // Хоч одне право має лишитись (інакше сервер відповість 422)
@@ -145,17 +146,18 @@ export const hasRight = (rights) =>
     rights.editOwn ||
     rights.editAll ||
     rights.homework ||
-    rights.editTeacher,
+    rights.editTeacher ||
+    rights.materials,
   );
 
 // Скільки записів зробив код: Klausuren + Hausaufgaben (homeworkCount буває відсутнім у старого сервера)
 export const entriesCount = (code) =>
   (code.examCount ?? 0) + (code.homeworkCount ?? 0);
 
-// Права, які можна міняти: у Lehrer-Code — лише create і homework (решту сервер не приймає)
+// Права, які можна міняти: у Lehrer-Code — лише create, homework і materials (решту сервер не приймає)
 export const editableRights = (code, rights) =>
   isTeacherCode(code)
-    ? { create: Boolean(rights.create), homework: Boolean(rights.homework) }
+    ? { create: Boolean(rights.create), homework: Boolean(rights.homework), materials: Boolean(rights.materials) }
     : rights;
 
 // status коду → чип: AKTIV / GESPERRT / ABGELAUFEN
