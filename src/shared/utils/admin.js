@@ -7,10 +7,16 @@
 import { addDays, daysBetween, daysLeftText, shortDate } from "./format";
 
 // Сьогодні в Берліні: "2026-11-06" (шведський формат дати якраз YYYY-MM-DD)
-export const berlinToday = (date = new Date()) => new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Berlin" }).format(date);
+export const berlinToday = (date = new Date()) =>
+  new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Berlin" }).format(date);
 
 // Зараз у Берліні: "16:40" (час перевірки «Verbindung testen»)
-export const berlinClock = (date = new Date()) => new Intl.DateTimeFormat("de-DE", { timeZone: "Europe/Berlin", hour: "2-digit", minute: "2-digit" }).format(date);
+export const berlinClock = (date = new Date()) =>
+  new Intl.DateTimeFormat("de-DE", {
+    timeZone: "Europe/Berlin",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
 
 // "2026-10-07T16:40:00+02:00" → "16:40"; null → null
 export const clock = (iso) => iso?.slice(11, 16) ?? null;
@@ -33,12 +39,17 @@ export function ago(iso, nowIso) {
 export function eventTime(iso, todayIso, { withTime = true } = {}) {
   const day = iso.slice(0, 10);
   if (day === todayIso) return clock(iso);
-  if (daysBetween(day, todayIso) === 1) return withTime ? `gestern ${clock(iso)}` : "gestern";
+  if (daysBetween(day, todayIso) === 1)
+    return withTime ? `gestern ${clock(iso)}` : "gestern";
   return shortDate(day);
 }
 
 // Рівень запису Protokoll → підпис і колір крапки
-const LEVELS = { ok: { text: "ok", dot: "bg-ok" }, warn: { text: "Hinweis", dot: "bg-accent" }, err: { text: "Fehler", dot: "bg-danger" } };
+const LEVELS = {
+  ok: { text: "ok", dot: "bg-ok" },
+  warn: { text: "Hinweis", dot: "bg-accent" },
+  err: { text: "Fehler", dot: "bg-danger" },
+};
 export const levelOf = (level) => LEVELS[level] ?? LEVELS.ok;
 
 // ── План ──
@@ -58,13 +69,19 @@ export const HEALTH = {
 
 // «Zuletzt geladen 16:40 · nächster Abruf 16:45» (часу немає — «noch nie» / без другої частини)
 export function planTimesText(status) {
-  const last = status?.lastOkAt ? `Zuletzt geladen ${clock(status.lastOkAt)}` : "Noch nie geladen";
-  return status?.nextFetchAt ? `${last} · nächster Abruf ${clock(status.nextFetchAt)}` : last;
+  const last = status?.lastOkAt
+    ? `Zuletzt geladen ${clock(status.lastOkAt)}`
+    : "Noch nie geladen";
+  return status?.nextFetchAt
+    ? `${last} · nächster Abruf ${clock(status.nextFetchAt)}`
+    : last;
 }
 
 // Смужка «Letzte 24 Stunden»: 24 стовпчики 'ok' | 'error' | null (у цю годину опиту не було)
-export const hoursStrip = (hours = []) => hours.map((h) => ({ hour: h.hour.slice(11, 13), status: h.status }));
-export const errorHours = (hours = []) => hours.filter((h) => h.status === "error").length;
+export const hoursStrip = (hours = []) =>
+  hours.map((h) => ({ hour: h.hour.slice(11, 13), status: h.status }));
+export const errorHours = (hours = []) =>
+  hours.filter((h) => h.status === "error").length;
 
 // "https://www.stundenplan24.de" → "www.stundenplan24.de"
 export const hostOf = (url) => url?.replace(/^https?:\/\//, "") ?? "";
@@ -81,11 +98,15 @@ export function serverLine(baseUrl, classCount, hours) {
 // Пароль класу: { since: «Seit 10. Sept», ago: «vor 12 Tagen» } або null (дата невідома)
 export function classPasswordText(changedAt, todayIso) {
   if (!changedAt) return null;
-  return { since: `Seit ${shortDate(changedAt)}`, ago: daysLeftText(-daysBetween(changedAt, todayIso)) };
+  return {
+    since: `Seit ${shortDate(changedAt)}`,
+    ago: daysLeftText(-daysBetween(changedAt, todayIso)),
+  };
 }
 
 // Місце на диску: «DB 2,1 MB · Backups 40 von 300 MB · 63 % frei»
-const mb = (bytes) => `${(bytes / 1048576).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MB`;
+const mb = (bytes) =>
+  `${(bytes / 1048576).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MB`;
 export function storageText(storage) {
   if (!storage) return "";
   const backups = `Backups ${mb(storage.backupsBytes ?? 0)} von ${mb(storage.backupsLimitBytes ?? 0)}`;
@@ -109,7 +130,8 @@ export function rightsText(rights, kind = "editor") {
   if (kind === "teacher") return teacherRightsText(rights);
   let text = "—";
   if (rights?.editAll) text = "Alle bearbeiten";
-  else if (rights?.create && rights?.editOwn) text = "Eintragen · eigene bearbeiten";
+  else if (rights?.create && rights?.editOwn)
+    text = "Eintragen · eigene bearbeiten";
   else if (rights?.create) text = "Eintragen";
   else if (rights?.editOwn) text = "Eigene bearbeiten";
   if (!rights?.homework) return text;
@@ -117,26 +139,42 @@ export function rightsText(rights, kind = "editor") {
 }
 
 // Хоч одне право має лишитись (інакше сервер відповість 422)
-export const hasRight = (rights) => Boolean(rights.create || rights.editOwn || rights.editAll || rights.homework || rights.editTeacher);
+export const hasRight = (rights) =>
+  Boolean(
+    rights.create ||
+    rights.editOwn ||
+    rights.editAll ||
+    rights.homework ||
+    rights.editTeacher,
+  );
 
 // Скільки записів зробив код: Klausuren + Hausaufgaben (homeworkCount буває відсутнім у старого сервера)
-export const entriesCount = (code) => (code.examCount ?? 0) + (code.homeworkCount ?? 0);
+export const entriesCount = (code) =>
+  (code.examCount ?? 0) + (code.homeworkCount ?? 0);
 
 // Права, які можна міняти: у Lehrer-Code — лише create і homework (решту сервер не приймає)
-export const editableRights = (code, rights) => (isTeacherCode(code) ? { create: Boolean(rights.create), homework: Boolean(rights.homework) } : rights);
+export const editableRights = (code, rights) =>
+  isTeacherCode(code)
+    ? { create: Boolean(rights.create), homework: Boolean(rights.homework) }
+    : rights;
 
 // status коду → чип: AKTIV / GESPERRT / ABGELAUFEN
-export const codeChip = (code) => ({ ok: "AKTIV", locked: "GESPERRT", expired: "ABGELAUFEN" })[code.status] ?? "";
+export const codeChip = (code) =>
+  ({ ok: "AKTIV", locked: "GESPERRT", expired: "ABGELAUFEN" })[code.status] ??
+  "";
 
 // День останнього використання: «heute», «gestern», «vor 5 Tagen», «vor 3 Wochen», «noch nie»
 export function lastUsedDay(iso, todayIso) {
   if (!iso) return "noch nie";
   const days = daysBetween(iso.slice(0, 10), todayIso);
-  return days >= 14 ? `vor ${Math.round(days / 7)} Wochen` : daysLeftText(-days);
+  return days >= 14
+    ? `vor ${Math.round(days / 7)} Wochen`
+    : daysLeftText(-days);
 }
 
 // Підпис у картці телефона: «zuletzt heute» або «noch nie benutzt»
-export const lastUsedText = (iso, todayIso) => (iso ? `zuletzt ${lastUsedDay(iso, todayIso)}` : "noch nie benutzt");
+export const lastUsedText = (iso, todayIso) =>
+  iso ? `zuletzt ${lastUsedDay(iso, todayIso)}` : "noch nie benutzt";
 
 // «Gültig bis»: «31. Juli» або «abgelaufen»; дати немає — «—»
 export function validText(code) {
@@ -155,7 +193,9 @@ export const validChoices = (yearEnd) => [
 export function schoolYearEnd(todayIso, yearEnd) {
   if (!yearEnd) return null;
   const thisYear = `${todayIso.slice(0, 4)}-${yearEnd}`;
-  return thisYear >= todayIso ? thisYear : `${Number(todayIso.slice(0, 4)) + 1}-${yearEnd}`;
+  return thisYear >= todayIso
+    ? thisYear
+    : `${Number(todayIso.slice(0, 4)) + 1}-${yearEnd}`;
 }
 
 // Варіант строку → дата для PATCH validUntil ("30d" → сьогодні + 30)
@@ -170,7 +210,8 @@ export function labelError(label) {
   const text = label.trim();
   if (!text) return "Bitte eine Bezeichnung eingeben.";
   if (text.length > 40) return "Höchstens 40 Zeichen.";
-  if (/@|https?:|www\.|\d{5,}/i.test(text)) return "Keine E-Mail, Telefonnummer oder Links.";
+  if (/@|https?:|www\.|\d{5,}/i.test(text))
+    return "Keine E-Mail, Telefonnummer oder Links.";
   return null;
 }
 
@@ -186,36 +227,79 @@ export function settingsPatch(before, after) {
   const patch = {};
   for (const [section, fields] of Object.entries(after)) {
     for (const [key, value] of Object.entries(fields)) {
-      if (JSON.stringify(before?.[section]?.[key]) !== JSON.stringify(value)) (patch[section] ??= {})[key] = value;
+      if (JSON.stringify(before?.[section]?.[key]) !== JSON.stringify(value))
+        (patch[section] ??= {})[key] = value;
     }
   }
   return patch;
 }
 
 // 422 при збереженні: які поля підсвітити (["plan.pollMinutes"])
-export const invalidKeys = (error) => (error?.details?.fields ?? []).map((f) => f.field);
+export const invalidKeys = (error) =>
+  (error?.details?.fields ?? []).map((f) => f.field);
 
 // Варіанти випадаючих списків. Поточне значення, якого немає в списку, теж показуємо
-export const withCurrent = (options, value) => (options.some((o) => o.value === value) ? options : [...options, { value, label: String(value) }]);
+export const withCurrent = (options, value) =>
+  options.some((o) => o.value === value)
+    ? options
+    : [...options, { value, label: String(value) }];
 
 // ── Kurse und Fächer (GET /api/admin/courses) ──
 
 // Стан курсу на екрані: "pflicht" | "wahl" (вибрав адмін) | { locked: "Gruppe SpJu" | "parallel zu Musik" }.
 // automatic — група або паралельний курс: такий завжди Wahl, адмін це не змінить
-export function courseState(course) {
-  if (!course.automatic) return course.forced ? "wahl" : "pflicht";
-  if (course.group) return { locked: `Gruppe ${course.group}` };
-  return { locked: course.parallelWith ? `parallel zu ${course.parallelWith}` : "läuft parallel" };
+// Pflicht чи Wahl зараз: підсумок сервера (optional). Старий сервер без optional — за forced
+export const courseState = (course) =>
+  (course.optional ?? course.forced) ? "wahl" : "pflicht";
+
+// Чому сервер сам вважає курс «Wahl» (automatic): група чи паралельний. Звичайний курс — null.
+// Паралельний курс як «Pflicht» — попередження: учні побачать в одному уроці обидва предмети
+export function courseCaption(course, state) {
+  if (!course.automatic) return null;
+  const why = course.group
+    ? `Gruppe ${course.group}`
+    : course.parallelWith
+      ? `parallel zu ${course.parallelWith}`
+      : "läuft parallel";
+  if (state === "pflicht" && !course.group)
+    return `${why} · beide Kurse für alle sichtbar`;
+  return `Automatisch Wahl · ${why}`;
 }
 
-// Новий courses.optional. «Pflicht» прибирає і nr, і мітку курсу; «Wahl» додає nr.
-// Чужі записи (курсів, яких зараз немає в плані) лишаємо як були
-export function optionalPatch(current, courses, states) {
-  const pflicht = courses.filter((c) => states[c.nr] === "pflicht");
-  const drop = new Set(pflicht.flatMap((c) => [c.nr, c.label]));
+// Додати nr, якщо ні nr, ні мітки ще немає; прибрати і nr, і мітку. Чужі записи лишаємо як були
+const withEntries = (current, add, remove) => {
+  const drop = new Set(remove.flatMap((c) => [c.nr, c.label]));
   const kept = current.filter((entry) => !drop.has(entry));
-  const added = courses.filter((c) => states[c.nr] === "wahl" && !kept.includes(c.nr) && !kept.includes(c.label)).map((c) => c.nr);
-  return [...kept, ...added];
+  return [
+    ...kept,
+    ...add
+      .filter((c) => !kept.includes(c.nr) && !kept.includes(c.label))
+      .map((c) => c.nr),
+  ];
+};
+
+// Нові courses.optional і courses.required з чернетки states ({ [nr]: "pflicht" | "wahl" }).
+//   звичайний курс: «Wahl» → у optional, «Pflicht» → геть з optional;
+//   automatic (сам «Wahl»): «Pflicht» → у required, «Wahl» → геть з required
+export function coursesPatch(cfg, courses, states) {
+  const pick = (automatic, state) =>
+    courses.filter(
+      (c) => Boolean(c.automatic) === automatic && states[c.nr] === state,
+    );
+  const required = withEntries(
+    cfg.required ?? [],
+    pick(true, "pflicht"),
+    pick(true, "wahl"),
+  );
+  // старий сервер без required: не додаємо порожній список, інакше форма вважала б себе зміненою
+  return {
+    optional: withEntries(
+      cfg.optional ?? [],
+      pick(false, "wahl"),
+      pick(false, "pflicht"),
+    ),
+    ...(cfg.required || required.length ? { required } : {}),
+  };
 }
 
 // Назва предмета в полі: своя від адміна, інакше вбудована; немає — порожньо (підказка «Kein Name — „TW“»)

@@ -14,7 +14,8 @@ import {
   isTeacherCode,
   labelError,
   lastUsedText,
-  optionalPatch,
+  courseCaption,
+  coursesPatch,
   planHealth,
   planTimesText,
   rightsText,
@@ -146,18 +147,27 @@ describe("Kurse und Fächer", () => {
     course("167", "Fr", { parallel: true, automatic: true }),
   ];
 
-  it("courseState: Pflicht, Wahl vom Admin, Gruppe, parallel", () => {
-    expect(courseState(courses[0])).toBe("pflicht");
-    expect(courseState(courses[1])).toBe("wahl");
-    expect(courseState(courses[2])).toEqual({ locked: "Gruppe SpJu" });
-    expect(courseState(courses[3])).toEqual({ locked: "parallel zu Mu" });
-    expect(courseState(courses[4])).toEqual({ locked: "läuft parallel" });
+  it("courseState: Ergebnis vom Server (optional)", () => {
+    expect(courseState({ ...courses[0], optional: false })).toBe("pflicht");
+    expect(courseState({ ...courses[2], optional: true })).toBe("wahl");
+    expect(courseState(courses[1])).toBe("wahl"); // alter Server ohne optional: forced
   });
 
-  it("optionalPatch: Pflicht entfernt nr und Label, Wahl fügt nr hinzu, Fremdes bleibt", () => {
-    const states = { 131: "wahl", 150: "pflicht" };
-    expect(optionalPatch(["Bi", "150", "999"], courses, states)).toEqual(["999", "131"]);
-    expect(optionalPatch(["Ma"], courses, { 131: "wahl" })).toEqual(["Ma"]);
+  it("courseCaption: warum automatisch Wahl, Warnung bei parallel + Pflicht", () => {
+    expect(courseCaption(courses[0], "pflicht")).toBeNull();
+    expect(courseCaption(courses[2], "wahl")).toBe("Automatisch Wahl · Gruppe SpJu");
+    expect(courseCaption(courses[3], "wahl")).toBe("Automatisch Wahl · parallel zu Mu");
+    expect(courseCaption(courses[3], "pflicht")).toBe("parallel zu Mu · beide Kurse für alle sichtbar");
+    expect(courseCaption(courses[4], "wahl")).toBe("Automatisch Wahl · läuft parallel");
+  });
+
+  it("coursesPatch: normale Kurse in optional, automatische in required, Fremdes bleibt", () => {
+    const states = { 131: "wahl", 150: "pflicht", 141: "pflicht", 160: "wahl", 167: "pflicht" };
+    expect(coursesPatch({ optional: ["Bi", "150", "999"], required: ["Ku", "888"] }, courses, states)).toEqual({
+      optional: ["999", "131"],
+      required: ["888", "141", "167"],
+    });
+    expect(coursesPatch({ optional: ["Ma"] }, courses, { 131: "wahl" })).toEqual({ optional: ["Ma"] });
   });
 
   it("subjectNamesPatch: ändern, leeren, Standardname, unverändert", () => {

@@ -12,7 +12,7 @@ import { loadAdminCourses, saveSettings } from "../shared/api/admin";
 import { useAdminLoad } from "../shared/hooks/useAdminLoad";
 import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useAdminStore } from "../shared/store/adminStore";
-import { courseState, optionalPatch, settingsPatch, subjectNamesPatch } from "../shared/utils/admin";
+import { coursesPatch, courseState, settingsPatch, subjectNamesPatch } from "../shared/utils/admin";
 
 // Підпис під заголовком блоку
 const Lead = ({ children }) => <p className="-mt-1 mb-1 text-caption text-faint">{children}</p>;
@@ -31,13 +31,13 @@ const SinceField = ({ value, onChange }) => (
 // Чернетка: Pflicht/Wahl, назви предметів, «Zählen ab». key на сторінці скидає її після збереження
 const CoursesForm = ({ data, settings, onSaved }) => {
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
-  const [states, setStates] = useState(() => Object.fromEntries(data.courses.filter((c) => !c.automatic).map((c) => [c.nr, courseState(c)])));
+  const [states, setStates] = useState(() => Object.fromEntries(data.courses.map((c) => [c.nr, courseState(c)])));
   const [edited, setEdited] = useState({}); // { [code]: текст } — лише поля, які змінили
   const [since, setSince] = useState(settings.stats.since);
   const [busy, setBusy] = useState(false);
 
   const after = {
-    courses: { optional: optionalPatch(settings.courses.optional, data.courses, states) },
+    courses: coursesPatch(settings.courses, data.courses, states), // optional і required
     subjects: { names: subjectNamesPatch(settings.subjects.names, data.subjects, edited) },
     stats: { since },
   };
@@ -68,7 +68,7 @@ const CoursesForm = ({ data, settings, onSaved }) => {
           <Lead>Wahl-Kurse wählt jeder Schüler in „Meine Kurse“ selbst.</Lead>
           <CourseRows courses={data.courses} states={states} onChange={(nr, value) => setStates({ ...states, [nr]: value })} />
           <p className="flex items-center gap-1.5 border-t border-hair py-3 text-caption text-faint">
-            <LockIcon className="size-3.5" /> Gruppen und parallele Kurse sind immer Wahl.
+            <LockIcon className="size-3.5" /> Gruppen und parallele Kurse sind automatisch Wahl. Du kannst sie trotzdem auf Pflicht stellen.
           </p>
         </SettingsCard>
 
