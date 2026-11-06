@@ -99,7 +99,10 @@ Spec: `docs/specs/14-lehrkraefte/spec.md`. Сделано: вход учител
 
 **Дальше (новый чат, `/orb-auto`):** часть 15 «Материалы» — экранов нет, сначала `/orb-design` и «ок дизайн» владельца.
 
-## Часть 14b — макеты ждут «ок дизайн» (2026-11-06)
-Макеты: `design/neu/14b-passwoerter/` (`gen.py` берёт помощники из `14-lehrkraefte/gen.py`, `build.py` собирает `index.html`), артефакт https://claude.ai/artifact/Fv6TA6PNVUuUL3d9ULCCGp.
-Решено в макетах: раздел `/admin/passwoerter` (ПК — пункт меню после «Lehrer-Codes», телефон — из Einstellungen и Übersicht → Schnell); карточка пароля класса в Einstellungen заменяется ссылками; «Erzeugen» с вопросом, пароль показывается один раз (как `CodeReveal`), «Für die Klassengruppe kopieren»; пароль админа: текущий + новый (мин. 12), ошибка `wrong_password` с `attemptsLeft`, тост `otherSessionsEnded`. Число устройств до смены API не даёт — показываем только после.
-**Дальше (после «ок дизайн»):** `/orb-spec` → `/orb-build` → `/orb-check` для 14b, потом часть 15 (тоже сначала `/orb-design`).
+## Часть 14b — готово (2026-11-06)
+Spec: `docs/specs/14b-passwoerter/spec.md`, макеты `design/neu/14b-passwoerter/` (артефакт https://claude.ai/artifact/Fv6TA6PNVUuUL3d9ULCCGp).
+Сделано: страница `/admin/passwoerter` (`pages/AdminPasswords.jsx`, `components/admin/passwords/`): пароль класса — свой или «Erzeugen» (пароль один раз в `CodeReveal`, «Für die Klassengruppe kopieren»), пароль админа (текущий + новый, ошибки под полями, пауза после 429 — `useLockTimer`). Поле с «глазом» — `ui/PasswordField` (у `TextField` новый слот `trailing`). В Einstellungen вместо карточки пароля — `PasswordLinks`, в Übersicht → Schnell строка «Passwörter», на ПК пункт меню.
+Скриншоты: `/root/work/orbook-compare/14b-passwoerter/` (`cmp-*.png`, `shots/`), скрипт `_tools/pw.mjs`.
+На демо смену паролей руками не проверяли: нужен пароль админа (есть только у владельца). Осторожно: «Erzeugen» на демо выкинет всех из демо-класса.
+
+**Дальше (`/orb-auto`):** часть 15 «Материалы» — экранов нет, сначала `/orb-design` и «ок дизайн» владельца.

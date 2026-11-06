@@ -10,11 +10,11 @@ import PasswordField from "../../ui/PasswordField";
 import CodeReveal from "../CodeReveal";
 import PasswordSection from "./PasswordSection";
 
-// Тексти вікна-питання: «ändern» (свій пароль) або «erzeugen» (придумує сервер)
-const QUESTIONS = {
-  change: { title: "Klassenpasswort ändern?", text: "Alle Geräte der Klasse werden sofort abgemeldet und brauchen das neue Passwort. Sag es der Klasse vorher.", button: "Ändern" },
-  generate: { title: "Passwort erzeugen?", text: "Alle Geräte der Klasse werden sofort abgemeldet. Das neue Passwort siehst du nur einmal — direkt danach.", button: "Erzeugen" },
-};
+// Тексти вікна-питання: «ändern» (свій пароль) або «erzeugen» (придумує сервер). who — «der 9b» або «der Klasse»
+const questions = (who) => ({
+  change: { title: "Klassenpasswort ändern?", text: `Alle Geräte ${who} werden sofort abgemeldet und brauchen das neue Passwort. Sag es der Klasse vorher.`, button: "Ändern", Icon: KeyIcon },
+  generate: { title: "Passwort erzeugen?", text: `Alle Geräte ${who} werden sofort abgemeldet. Das neue Passwort siehst du nur einmal — direkt danach.`, button: "Erzeugen", Icon: SparkIcon },
+});
 
 // Після «Erzeugen»: пароль один раз, кнопки «Für die Klassengruppe kopieren» і «Fertig»
 const Generated = ({ result, schoolClass, onDone }) => {
@@ -81,7 +81,7 @@ const ClassPasswordForm = ({ since, schoolClass, onChanged }) => {
     }
   };
 
-  const ask = QUESTIONS[question];
+  const ask = questions(schoolClass ? `der ${schoolClass}` : "der Klasse")[question];
   return (
     <PasswordSection title="Klassenpasswort" note={generated ? "seit heute" : since}>
       {generated ? (
@@ -114,7 +114,7 @@ const ClassPasswordForm = ({ since, schoolClass, onChanged }) => {
       <ConfirmDialog open={open} onClose={() => setOpen(false)} icon={question === "generate" ? <SparkIcon className="size-6.5 text-accent" /> : <WarningIcon className="size-6.5 text-danger" />} title={ask.title} text={ask.text}>
         <Button onClick={() => setOpen(false)}>Abbrechen</Button>
         <Button variant="primary" disabled={busy} onClick={run}>
-          {ask.button}
+          <ask.Icon className="size-4" /> {ask.button}
         </Button>
       </ConfirmDialog>
     </PasswordSection>

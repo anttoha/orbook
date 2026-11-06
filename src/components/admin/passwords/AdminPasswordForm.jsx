@@ -65,7 +65,11 @@ const AdminPasswordForm = () => {
         <Button type="submit" variant="primary" disabled={busy || locked} className="mt-3.5 w-full lg:w-fit lg:flex-none lg:px-5">
           <KeyIcon className="size-4" /> Admin-Passwort ändern
         </Button>
-        <p className="mt-3.5 text-caption text-faint lg:mt-4 lg:border-t lg:border-hair lg:pt-3.5">Vergessen? Neu setzen geht nur auf dem Server: orbook set-admin-password</p>
+        <p className="mt-3.5 text-caption text-faint lg:mt-4 lg:border-t lg:border-hair lg:pt-3.5">
+          Vergessen? Neu setzen geht nur auf dem Server.
+          {/* команду бачить лише ПК: на телефоні вона некрасиво переноситься, а на сервер там однаково не зайти */}
+          <span className="hidden font-bold text-muted lg:block">orbook set-admin-password</span>
+        </p>
       </form>
     </PasswordSection>
   );
