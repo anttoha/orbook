@@ -1,5 +1,5 @@
 import { Ellipsis, FileText, House, List, Palette, Server, Sun, Table2, UserRound } from "lucide-react";
-import { FlagIcon, KeyIcon, ShieldIcon, StatsIcon, SyncIcon } from "../../components/ui/icons";
+import { FlagIcon, KeyIcon, LockIcon, ShieldIcon, StatsIcon, SyncIcon } from "../../components/ui/icons";
 
 // Масштаб «Schriftgröße» (ті самі відсотки, що в index.css): шкали часу множать на нього пікселі
 export const FONT_SCALES = { 1: 0.9375, 2: 1, 3: 1.125 };
@@ -19,6 +19,8 @@ export const adminTabs = [
   // Lehrer-Codes: на ПК — окремий пункт, на телефоні — друга половина вкладки «Codes» (перемикач, Admin.jsx)
   { to: "/admin/codes", label: "Editor-Codes", short: "Codes", icon: KeyIcon, mobile: true, desktop: true, count: "codes" },
   { to: "/admin/lehrer", label: "Lehrer-Codes", icon: UserRound, desktop: true, count: "teachers" },
+  // Passwörter: на ПК — пункт меню, на телефоні — з Einstellungen і «Übersicht → Schnell» (частина 14b)
+  { to: "/admin/passwoerter", label: "Passwörter", icon: LockIcon, desktop: true },
   { to: "/admin/klausuren", label: "Klausuren", icon: FlagIcon, mobile: true, desktop: true, count: "exams" },
   { to: "/admin/kurse", label: "Kurse & Fächer", icon: Table2, desktop: true },
   { to: "/admin/protokoll", label: "Protokoll", icon: FileText, desktop: true },

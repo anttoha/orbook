@@ -13,7 +13,7 @@ import AdminLogin from "./AdminLogin";
 // На телефоні «Codes» світиться і на /admin/lehrer: там перемикач «Editor-Codes · Lehrer-Codes»
 const MOBILE_TABS = adminTabs.filter((tab) => tab.mobile).map((tab) => (tab.to === "/admin/codes" ? { ...tab, activeOn: ["/admin/lehrer"] } : tab));
 // Підсторінки з кнопкою «назад»: на телефоні без нижнього меню (макет 46)
-const SUB_PAGES = ["/admin/protokoll", "/admin/kurse"];
+const SUB_PAGES = ["/admin/protokoll", "/admin/kurse", "/admin/passwoerter"];
 
 // ─────────────────────────────────────────────────────────────
 // Оболонка адмінки (/admin/...). Окремо від застосунку класу: свій вхід, своє меню.

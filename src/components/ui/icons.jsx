@@ -56,3 +56,6 @@ export const LockIcon = ({ className }) => <Outline d="M7 11h10a2 2 0 0 1 2 2v5a
 
 // Календар: дата нотатки
 export const CalendarIcon = ({ className }) => <Outline d="M6 5h12a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3zM8 3v4M16 3v4M3 10h18" className={className} />;
+
+// «Erzeugen» (пароль придумує сервер): вісім променів, як іскра
+export const SparkIcon = ({ className }) => <Outline d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6" className={className} />;
