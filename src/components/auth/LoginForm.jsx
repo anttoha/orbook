@@ -71,6 +71,13 @@ const LoginForm = () => {
         {loading ? "Wird geprüft…" : "Öffnen"}
       </Button>
 
+      <p className="mt-4 text-center text-label text-muted">
+        Lehrkraft?{" "}
+        <Link to={{ search: "?zugang=lehrkraft" }} className="font-extrabold text-accent-ink">
+          Mit Lehrer-Code anmelden
+        </Link>
+      </p>
+
       <div className="mt-4 flex items-center justify-between lg:mt-5">
         <Link to="/datenschutz" className="text-caption font-semibold text-muted lg:text-hint">
           Datenschutz

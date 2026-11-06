@@ -4,6 +4,7 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import { TriangleAlert } from "lucide-react";
 import AuthPage from "./AuthPage";
 import CourseStart from "./CourseStart";
+import { isTeacher } from "../shared/utils/examRules";
 import AppToaster from "../components/ui/AppToaster";
 import Container from "../components/ui/Container";
 import SideNav from "../components/navbar/SideNav";
@@ -32,7 +33,8 @@ const HomePage = () => {
   const start = usePlanStore((s) => s.start); // GET /api/auth/me (+ решта даних)
   const tick = usePlanStore((s) => s.tick); // оновити «зараз»
   const demo = usePlanStore((s) => s.meta?.demo); // демо-сервер?
-  const coursesChosen = useUserStore((s) => s.coursesChosen); // чи пройдено вибір курсів
+  // чи пройдено вибір курсів. Учителю він не потрібен: бачить увесь план класу (змінити можна в «Meine Kurse»)
+  const coursesChosen = useUserStore((s) => s.coursesChosen) || isTeacher(me);
   const fullScreen = isFullScreenPage(useLocation().pathname); // форма: без меню, кнопки притиснуті донизу
   const page = usePageAnimation(); // перехід між сторінками: справа, зліва або плавно
 

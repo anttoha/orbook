@@ -8,7 +8,8 @@ import { usePlanStore } from "../../shared/store/planStore";
 import { useSyncStore } from "../../shared/store/syncStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { courseCount, visibleSubjects } from "../../shared/utils/courses";
-import { appearanceHint, coursesHint, editorHint, subjectsHint, syncHint } from "../../shared/utils/settings";
+import { isTeacher } from "../../shared/utils/examRules";
+import { appearanceHint, coursesHint, editorHint, sectionVisible, subjectsHint, syncHint } from "../../shared/utils/settings";
 
 // Вміст плитки: кругла іконка, назва, підпис, стрілка
 const TileBody = ({ icon: Icon, label, hint }) => (
@@ -55,12 +56,13 @@ const useHints = () => {
 const SettingsTiles = () => {
   const hints = useHints();
   const syncAllowed = useSyncAllowed();
+  const teacher = usePlanStore((s) => isTeacher(s.me));
   const { openSheet } = useSheet();
 
   return (
     <ul className="grid grid-cols-2 gap-3">
       {settingsSections
-        .filter((section) => section.hint && (!section.sync || syncAllowed))
+        .filter((section) => section.hint && sectionVisible(section, { syncAllowed, teacher }))
         .map((section) => (
           <li key={section.to}>
             <Link to={section.to} className={tile}>

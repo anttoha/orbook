@@ -32,6 +32,6 @@ export const settingsSections = [
   { to: "/mehr/darstellung", label: "Darstellung", icon: Sun, hint: "appearance" },
   { to: "/mehr/fachfarben", label: "Fachfarben", icon: Palette, hint: "subjects" },
   { to: "/mehr/sync", label: "Notizen-Sync", icon: SyncIcon, hint: "sync", sync: true },
-  { to: "/mehr/editor-code", label: "Editor-Code", icon: KeyIcon, hint: "editor" },
+  { to: "/mehr/editor-code", label: "Editor-Code", icon: KeyIcon, hint: "editor", classOnly: true }, // учителю код не потрібен
   { to: "/mehr/datenschutz", label: "Datenschutz", icon: ShieldIcon, hint: "privacy" },
 ];

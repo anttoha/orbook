@@ -10,7 +10,7 @@ import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { settingsSections } from "../../shared/constants/constants";
 import { cn } from "../../shared/utils/cn";
-import { addExamTarget, canCreateExam } from "../../shared/utils/examRules";
+import { addExamTarget, canCreateExam, isTeacher } from "../../shared/utils/examRules";
 import { currentMonday } from "../../shared/utils/lessons";
 import { searchActions, searchGroups } from "../../shared/utils/search";
 import Kbd from "../ui/Kbd";
@@ -61,7 +61,7 @@ const SearchPalette = ({ open, onOpenChange }) => {
   const dark = isDarkTheme(theme);
 
   const groups = [
-    ...searchGroups(query, { days: week.data?.days ?? [], exams, notes, sections: settingsSections }),
+    ...searchGroups(query, { days: week.data?.days ?? [], exams, notes, sections: settingsSections.filter((section) => !(section.classOnly && isTeacher(me))) }),
     searchActions({ canCreate: canCreateExam(me), today, dark }),
   ];
   const flat = groups.flatMap((group) => group.items); // для стрілок ↑ ↓

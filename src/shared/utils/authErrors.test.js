@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ApiError } from "../api/api";
-import { adminLoginErrorText, lockDuration, loginErrorText } from "./authErrors";
+import { adminLoginErrorText, lockDuration, loginErrorText, teacherLoginErrorText } from "./authErrors";
 
 const wrong = (details) => new ApiError(401, "wrong_password", "Passwort stimmt nicht.", details);
 
@@ -50,5 +50,18 @@ describe("adminLoginErrorText", () => {
     expect(adminLoginErrorText(wrong({}))).toBe("Passwort stimmt nicht.");
     expect(adminLoginErrorText(new ApiError(429, "locked", "x", {}, 1800))).toBe("Bitte in 30 Minuten erneut versuchen.");
     expect(adminLoginErrorText(new ApiError(503, "not_configured", "x"))).toBe("Das Admin-Passwort ist noch nicht gesetzt.");
+  });
+});
+
+describe("teacherLoginErrorText", () => {
+  it("unbekannter Code mit Versuchen", () => {
+    const error = new ApiError(403, "code_invalid", "Dieser Code ist ungültig.", { attemptsLeft: 2 });
+    expect(teacherLoginErrorText(error)).toBe("Code unbekannt oder gesperrt. Bitte beim Admin der Klasse nachfragen. Noch 2 Versuche.");
+  });
+  it("gesperrt und abgelaufen: Text vom Server", () => {
+    expect(teacherLoginErrorText(new ApiError(403, "code_locked", "Dieser Code wurde gesperrt."))).toBe("Dieser Code wurde gesperrt. Bitte beim Admin der Klasse nachfragen.");
+  });
+  it("zu viele Versuche", () => {
+    expect(teacherLoginErrorText(new ApiError(429, "locked", "Zu viele Fehlversuche.", {}, 600))).toBe("Bitte in 10 Minuten erneut versuchen.");
   });
 });

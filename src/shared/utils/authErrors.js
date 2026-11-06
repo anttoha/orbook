@@ -32,3 +32,15 @@ export function adminLoginErrorText(error) {
   if (error.code === "not_configured") return "Das Admin-Passwort ist noch nicht gesetzt.";
   return error.message;
 }
+
+// Текст під полем «Lehrer-Code» (макет handy-03). До вчителя — на «Sie»
+export function teacherLoginErrorText(error) {
+  const ask = "Bitte beim Admin der Klasse nachfragen.";
+  if (error.code === "code_invalid") {
+    const left = error.details?.attemptsLeft;
+    const rest = left > 0 ? ` Noch ${left} ${left === 1 ? "Versuch" : "Versuche"}.` : "";
+    return `Code unbekannt oder gesperrt. ${ask}${rest}`;
+  }
+  if (error.code === "code_locked" || error.code === "code_expired") return `${error.message} ${ask}`;
+  return loginErrorText(error); // 429, not_configured, мережа — як у пароля класу
+}

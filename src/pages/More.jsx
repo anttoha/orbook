@@ -13,6 +13,7 @@ import { useSyncStore } from "../shared/store/syncStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { courseCount } from "../shared/utils/courses";
+import { isTeacher } from "../shared/utils/examRules";
 
 const THEME_LABELS = { light: "Hell", dark: "Dunkel", system: "System" };
 
@@ -72,7 +73,7 @@ const PhoneMenu = () => {
       <ListCard title="Daten">
         {/* праворуч — перша група коду, як у макеті: «K7QM-…» */}
         {syncAllowed && <MenuRow to="/mehr/sync" icon={SyncIcon} label="Notizen synchronisieren" value={syncCode ? `${syncCode.slice(0, 4)}-…` : "Aus"} />}
-        <MenuRow to="/mehr/editor-code" icon={KeyIcon} label="Klausuren eintragen" value={me?.editor?.label ?? "Editor-Code"} />
+        {!isTeacher(me) && <MenuRow to="/mehr/editor-code" icon={KeyIcon} label="Klausuren eintragen" value={me?.editor?.label ?? "Editor-Code"} />}
       </ListCard>
 
       <ListCard>

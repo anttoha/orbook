@@ -29,3 +29,6 @@ export const syncHint = (code, lastSyncAt, now = new Date()) => {
 
 // «Code A» (мітка коду) або «nicht freigeschaltet»
 export const editorHint = (editor) => editor?.label ?? (editor ? "freigeschaltet" : "nicht freigeschaltet");
+
+// Чи показувати розділ «Einstellungen»: Sync школа могла вимкнути, Editor-Code учителю не потрібен
+export const sectionVisible = (section, { syncAllowed, teacher }) => (!section.sync || syncAllowed) && !(section.classOnly && teacher);
