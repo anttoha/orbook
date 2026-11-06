@@ -22,6 +22,7 @@ import { useExamFilter } from "../shared/store/examFilterStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { addExamTarget } from "../shared/utils/examRules";
+import Appointments from "./Appointments";
 import Homework from "./Homework";
 import { filterExams, groupExams, isFilterActive, searchExams, subjectChips, toggleSubject } from "../shared/utils/exams";
 
@@ -149,7 +150,7 @@ const ExamList = () => {
 
       <div className="flex items-start gap-9">
         <div className="flex min-w-0 flex-1 flex-col gap-5.5 lg:max-w-exams">
-          <ListSwitch className="lg:w-90 lg:self-start" />
+          <ListSwitch className="lg:w-112.5 lg:self-start" />
           {/* без записів і без фільтра чипам нічого показувати (макет «Klausuren · leer») */}
           <div className="flex items-center gap-3">
             {(list.length > 0 || filterActive) && (
@@ -176,7 +177,11 @@ const ExamList = () => {
   );
 };
 
-// Вкладка Klausuren: два списки під одним перемикачем (частина 14). Окремі компоненти — у них різні хуки
-const Tests = () => (useListMode() === "homework" ? <Homework /> : <ExamList />);
+// Вкладка Klausuren: три списки під одним перемикачем (частини 14 і 18). Окремі компоненти — у них різні хуки
+const LISTS = { exams: ExamList, homework: Homework, appointments: Appointments };
+const Tests = () => {
+  const List = LISTS[useListMode()];
+  return <List />;
+};
 
 export default Tests;

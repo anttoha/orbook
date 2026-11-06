@@ -1,3 +1,4 @@
+import AppointmentBanner from "../components/appointments/AppointmentBanner";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { Eye, List } from "lucide-react";
 import CurrentLessonCard from "../components/day/CurrentLessonCard";
@@ -186,6 +187,7 @@ const Day = () => {
           </div>
 
           <aside className="grid content-start gap-4 lg:grid-cols-2 desktop:grid-cols-1">
+            <AppointmentBanner date={date} />
             {day?.info.length > 0 && <DayInfoCard day={day} onOpen={openInfo} />}
             <HomeworkDue date={date} />
             <NotesSection date={date} lessons={day?.lessons} variant="card" />
@@ -212,6 +214,7 @@ const Day = () => {
 
           <PlanBanner resource={week} onRetry={reload} />
           {day?.info.length > 0 && <DayInfoBanner info={day.info} onClick={openInfo} />}
+          <AppointmentBanner date={date} />
 
           {loadingState}
           {freeState}

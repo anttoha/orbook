@@ -77,6 +77,16 @@ const HOMEWORK_KEEP = [
   { value: 0, label: "zum Schuljahresende" },
 ];
 
+// «Termine» (частина 18): коли видаляти після останнього дня (рішення власника — налаштовується)
+export const AppointmentsCard = ({ className, ...props }) =>
+  props.form.appointments ? (
+    <SettingsCard title="Termine" className={className}>
+      <div className={divided}>
+        <SelectRow label="Automatisch löschen" hint="nach dem letzten Tag" section="appointments" field="keepDays" options={HOMEWORK_KEEP} {...props} />
+      </div>
+    </SettingsCard>
+  ) : null;
+
 // Старі сервери не мають розділу homework у settings — тоді картки немає
 export const HomeworkCard = ({ className, onPurge, purging, ...props }) =>
   props.form.homework ? (

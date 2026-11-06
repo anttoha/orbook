@@ -129,3 +129,12 @@ Spec: `docs/specs/15-materialien/spec.md`. Бэкенд выложен (мигр
 Примеры дат — по календарю Soft (1 Sept = Mo, 3. Okt = Feiertag).
 Вопросы владельцу: (1) учителя — свои курсы + вся класс, «Frei» только админ? (2) Editor-Codes с правом — да/нет? (3) менять/удалять — автор и админ? (4) прошедшие удалять через 30 дней?
 **Дальше:** после «ок» — `/orb-spec` (бэкенд: таблица `events`, `/api/events`, admin, право), затем бэкенд в `/opt/orbook-be` и `/orb-build`.
+
+## Часть 18 «Termine» — готово (2026-11-06)
+Решения владельца: учителя и Editor-Codes (право «Termine eintragen», включает админ) вносят все виды, включая «Frei»; менять/удалять — автор и админ; срок хранения — настройка админа (`appointments.keepDays`).
+Бэкенд выложен (миграция 0008 на проде; демо было на 0006 — домигрировано до 0008 вручную). Spec: `docs/specs/18-termine/spec.md`.
+Фронт: вкладка `/testen?liste=termine` (`pages/Appointments.jsx`, `components/appointments/`), окно `?sheet=termin&id=` (.ics на устройстве), форма `/testen/termine/neu` и `…/:id/bearbeiten` (`AppointmentForm`, общий `useExamSave`), полоска под днями недели (`DayAppointmentPills` в `WeekGrid` и `GridDayHeader`), строка в карточке недели, плашка «Termin: …» в дне/панели дня (`AppointmentBanner`), админ: `/admin/termine` (+ «Termin eintragen» от школы и правка любого), право в кодах, карточка «Termine» в Einstellungen. Логика — `shared/utils/appointments.js` (11 тестов), список — `appointmentsStore` (офлайн-кеш), курсовые термины — только при выбранном предмете (`mySubjects`).
+Скриншоты: `/root/work/orbook-compare/18-termine/shots/`, скрипт `_tools/termine.mjs`.
+На демо запись руками не проверяли: нужен Lehrer-Code или Editor-Code с правом (создаёт админ).
+
+**Дальше (`/orb-auto`):** часть 19 «Muster-Stundenplan» — экранов нет, сначала `/orb-design` и «ок дизайн».

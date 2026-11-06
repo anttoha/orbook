@@ -1,4 +1,4 @@
-import { Ellipsis, FileText, Folder, House, List, Palette, Server, Sun, Table2, UserRound } from "lucide-react";
+import { CalendarDays, Ellipsis, FileText, Folder, House, List, Palette, Server, Sun, Table2, UserRound } from "lucide-react";
 import { FlagIcon, KeyIcon, LockIcon, ShieldIcon, StatsIcon, SyncIcon } from "../../components/ui/icons";
 
 // Масштаб «Schriftgröße» (ті самі відсотки, що в index.css): шкали часу множать на нього пікселі
@@ -26,6 +26,7 @@ export const adminTabs = [
   { to: "/admin/klausuren", label: "Klausuren", icon: FlagIcon, mobile: true, desktop: true, count: "exams" },
   { to: "/admin/kurse", label: "Kurse & Fächer", icon: Table2, desktop: true },
   { to: "/admin/materialien", label: "Materialien", icon: Folder, desktop: true }, // частина 15; телефон — «Übersicht → Schnell»
+  { to: "/admin/termine", label: "Termine", icon: CalendarDays, desktop: true }, // частина 18; телефон — «Übersicht → Schnell»
   { to: "/admin/protokoll", label: "Protokoll", icon: FileText, desktop: true },
   { to: "/admin/einstellungen", label: "Einstellungen", icon: Server, mobile: true, desktop: true },
 ];

@@ -7,6 +7,7 @@ import HomeworkEdit from "../../pages/HomeworkEdit";
 import EditorCode from "../../pages/EditorCode";
 import Materials from "../../pages/Materials";
 import MaterialEdit from "../../pages/MaterialEdit";
+import AppointmentEdit from "../../pages/AppointmentEdit";
 import Statistic from "../../pages/Statistic";
 import More from "../../pages/More";
 import MyCourses from "../../pages/MyCourses";
@@ -25,6 +26,8 @@ import AdminCourses from "../../pages/AdminCourses";
 import AdminLog from "../../pages/AdminLog";
 import AdminPasswords from "../../pages/AdminPasswords";
 import AdminMaterials from "../../pages/AdminMaterials";
+import AdminAppointments from "../../pages/AdminAppointments";
+import AdminAppointmentEdit from "../../pages/AdminAppointmentEdit";
 import AdminSettings from "../../pages/AdminSettings";
 import RouteError from "../../pages/RouteError";
 import Datenschutz from "../../pages/Datenschutz";
@@ -58,6 +61,9 @@ export const router = createBrowserRouter([
           page({ path: "einstellungen", Component: AdminSettings }),
           page({ path: "passwoerter", Component: AdminPasswords }), // пароль класу і адміна (частина 14b)
           page({ path: "materialien", Component: AdminMaterials }), // усі посилання, видалення (частина 15)
+          page({ path: "termine", Component: AdminAppointments }), // усі терміни (частина 18)
+          page({ path: "termine/neu", Component: AdminAppointmentEdit }),
+          page({ path: "termine/:id/bearbeiten", Component: AdminAppointmentEdit }),
         ],
       },
       {
@@ -73,6 +79,8 @@ export const router = createBrowserRouter([
           page({ path: "testen/:id/bearbeiten", Component: ExamEdit }), // правка
           page({ path: "testen/hausaufgaben/neu", Component: HomeworkEdit }), // нова Hausaufgabe (частина 14)
           page({ path: "testen/hausaufgaben/:id/bearbeiten", Component: HomeworkEdit }),
+          page({ path: "testen/termine/neu", Component: AppointmentEdit }), // новий Termin (частина 18)
+          page({ path: "testen/termine/:id/bearbeiten", Component: AppointmentEdit }),
           page({ path: "editor-code", Component: EditorCode }),
           page({ path: "statistik", Component: Statistic }),
           page({ path: "materialien", Component: Materials }), // посилання на Drive за предметами (частина 15)

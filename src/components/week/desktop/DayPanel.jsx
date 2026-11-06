@@ -1,3 +1,4 @@
+import AppointmentBanner from "../../appointments/AppointmentBanner";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { List } from "lucide-react";
@@ -50,6 +51,7 @@ const DayPanel = ({ date }) => {
       </header>
 
       {day?.info.length > 0 && <DayInfoBanner info={day.info} onClick={() => openSheet("info", { datum: date })} />}
+      <AppointmentBanner date={date} />
 
       {day && lessons.length === 0 && <p className="py-10 text-center text-body font-bold text-faint">{freeText(day) ?? "Kein Unterricht"}</p>}
       {day && lessons.length > 0 && view === "liste" && <LessonList day={day} lessons={lessons} onOpen={openLesson} />}

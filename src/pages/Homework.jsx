@@ -109,7 +109,7 @@ const Homework = () => {
       </header>
 
       <div className="flex min-w-0 flex-col gap-5.5 lg:max-w-exams">
-        <ListSwitch className="lg:w-90 lg:self-start" />
+        <ListSwitch className="lg:w-112.5 lg:self-start" />
         <div className="flex items-center gap-3">
           {(items.length > 0 || filterActive) && (
             <ExamChips

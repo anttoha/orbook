@@ -1,3 +1,4 @@
+import AppointmentBanner from "../../appointments/AppointmentBanner";
 import { Link } from "react-router-dom";
 import { useNow } from "../../../shared/hooks/useNow";
 import { useDay, useLessonFilter } from "../../../shared/hooks/usePlan";
@@ -31,6 +32,7 @@ const WeekAside = ({ days }) => {
     <aside className="grid content-start gap-4 lg:grid-cols-2 desktop:grid-cols-1 print:hidden">
       {showLive && <CurrentLessonCard live={live} onOpen={(lesson) => openSheet("stunde", { datum: today, stunde: lesson.period, fach: lesson.subject?.code })} />}
       {todayDay?.info.length > 0 && <DayInfoBanner info={todayDay.info} onClick={() => openSheet("info", { datum: today })} />}
+      <AppointmentBanner date={today} />
 
       {/* Nächste Klausuren */}
       {exams.length > 0 && (

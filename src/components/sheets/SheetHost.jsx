@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSheet } from "../../shared/hooks/useSheet";
+import AppointmentSheet from "./AppointmentSheet";
 import ColorSheet from "./ColorSheet";
 import DayInfoSheet from "./DayInfoSheet";
 import EditorCodeSheet from "./EditorCodeSheet";
@@ -25,6 +26,7 @@ const SHEETS = {
   klausurfilter: ExamFilterSheet, // Filter
   hausaufgabe: HomeworkSheet, // деталі Hausaufgabe (частина 14)
   material: MaterialSheet, // дії з посиланням Materialien (частина 15)
+  termin: AppointmentSheet, // деталі Termin (частина 18)
   editorcode: EditorCodeSheet, // код посеред запису: форма лишається під вікном
   tasten: ShortcutsSheet, // Tastenkürzel (клавіша «?»)
 };

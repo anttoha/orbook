@@ -10,7 +10,7 @@ import { usePlanStore } from "../shared/store/planStore";
 import { fullDate } from "../shared/utils/examRules";
 
 // Куди після коду (?weiter=…): лише наші адреси, не з параметра
-const NEXT = { neu: "/testen/neu", hausaufgabe: "/testen/hausaufgaben/neu", material: "/materialien/neu" };
+const NEXT = { neu: "/testen/neu", hausaufgabe: "/testen/hausaufgaben/neu", material: "/materialien/neu", termin: "/testen/termine/neu" };
 
 // Коду ще немає: поле вводу. ?weiter=neu — після коду одразу до форми запису
 const UnlockForm = ({ backTo }) => {

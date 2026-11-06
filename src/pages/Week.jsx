@@ -1,5 +1,5 @@
 import { Link, useSearchParams } from "react-router-dom";
-import { ChartNoAxesColumn, ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarDays, ChartNoAxesColumn, ChevronLeft, ChevronRight } from "lucide-react";
 import WeekGrid from "../components/week/WeekGrid";
 import WeekMenu from "../components/week/WeekMenu";
 import WeekUpdated from "../components/week/WeekUpdated";
@@ -24,6 +24,8 @@ import { cn } from "../shared/utils/cn";
 import { addDays, examWhen, isIsoDate, mondayOf, subjectName, weekHeading, weekSummaryText, weekTitle, weekdayShort } from "../shared/utils/format";
 import { currentMonday, isWeekEmpty, weekDays, isPlanDown } from "../shared/utils/lessons";
 import { FlagIcon } from "../components/ui/icons";
+import { useAppointments } from "../shared/hooks/useAppointments";
+import { timeText, upcomingAppointments, whenText } from "../shared/utils/appointments";
 
 // Кругла кнопка в шапці
 const roundButton = "flex size-9.5 items-center justify-center rounded-full bg-card outline-none focus-visible:ring-2 focus-visible:ring-accent/50";
@@ -60,6 +62,7 @@ const Week = () => {
   const showWeekend = useUserStore((s) => s.showWeekend); // показувати вихідні
   const exams = usePlanStore((s) => s.exams); // найближчі Klausuren
   const loadWeek = usePlanStore((s) => s.loadWeek); // завантажити тиждень ще раз
+  const { items: appointments } = useAppointments(); // Termine (частина 18)
 
   // Показаний тиждень живе в адресі (тому «Назад» зі сторінки дня повертає на той самий тиждень)
   const param = searchParams.get("woche");
@@ -169,6 +172,8 @@ const Week = () => {
 
   // ── Телефон ──
   const nextExam = exams[0]; // найближча Klausur (сервер віддає за датою)
+  // найближчий термін у показаному тижні (частина 18): рядок у картці під сіткою
+  const nextAppointment = upcomingAppointments(appointments, today).find((item) => item.dateFrom <= lastDay && (item.dateTo ?? item.dateFrom) >= monday) ?? null;
 
   return (
     <section className="flex flex-col gap-3.5" {...swipe}>
@@ -219,6 +224,19 @@ const Week = () => {
               <span className="shrink-0 text-label whitespace-nowrap">{examWhen(nextExam)}</span>
               <ChevronRight className="size-4 shrink-0" />
             </Link>
+          )}
+
+          {/* найближчий термін тижня → його вікно (макет 18 handy-09) */}
+          {nextAppointment && (
+            <button type="button" onClick={() => openSheet("termin", { id: nextAppointment.id })} className="flex items-center gap-3 py-4 text-left">
+              <CalendarDays className="size-4.75 shrink-0 text-accent-ink" />
+              <h3 className="min-w-0 flex-1 truncate text-row leading-5 font-medium text-ink">
+                {weekdayShort(nextAppointment.dateFrom < today ? today : nextAppointment.dateFrom)} · {nextAppointment.title}
+                {timeText(nextAppointment) && ` ${timeText(nextAppointment)}`}
+              </h3>
+              <span className="shrink-0 text-label whitespace-nowrap">{whenText(nextAppointment, today)}</span>
+              <ChevronRight className="size-4 shrink-0" />
+            </button>
           )}
 
           {/* підсумок тижня: «1 fällt aus · 3 Vertretungen · 2 Raumwechsel» */}

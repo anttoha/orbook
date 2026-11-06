@@ -21,7 +21,7 @@ const notify = (show, text, options) => {
   lastToast = show(text, options);
 };
 // Поля форми, під якими можна показати помилку сервера
-const FORM_FIELDS = ["type", "subject", "date", "lesson", "topic", "due", "text", "studentsMayEdit", "title", "url"];
+const FORM_FIELDS = ["type", "subject", "date", "lesson", "topic", "due", "text", "studentsMayEdit", "title", "url", "kind", "dateFrom", "dateTo", "timeFrom", "timeTo", "place", "note"];
 
 // Що саме зберігаємо: Klausur або Hausaufgabe (частина 14). Відповіді сервера однакові,
 // тому одна логіка на обидва. changed — ім'я дії planStore, що перечитує списки;

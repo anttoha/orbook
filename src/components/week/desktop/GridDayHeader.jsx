@@ -1,6 +1,7 @@
 import { Info } from "lucide-react";
 import { useSheet } from "../../../shared/hooks/useSheet";
 import { cn } from "../../../shared/utils/cn";
+import DayAppointmentPills from "../../appointments/DayAppointmentPills";
 import ChangedLine from "../ChangedLine";
 import { dayNumber, longDate, weekdayLong } from "../../../shared/utils/format";
 
@@ -16,7 +17,7 @@ const GridDayHeader = ({ as: Component = "button", day, isToday, className, styl
   const hasNews = day.info.length > 0 || day.exams.length > 0; // є що подивитись
 
   return (
-    <div className={cn("relative", className)} style={style}>
+    <div className={cn("relative flex flex-col gap-1.5", className)} style={style}>
       <Component
         {...props}
         aria-label={`${weekdayLong(day.date)}, ${longDate(day.date)}`}
@@ -28,6 +29,8 @@ const GridDayHeader = ({ as: Component = "button", day, isToday, className, styl
         </span>
         <ChangedLine day={day} isToday={isToday} className="h-3.5 text-note leading-none" />
       </Component>
+      {/* терміни дня (частина 18): під шапкою, як «весь день» у календарі */}
+      <DayAppointmentPills date={day.date} desktop />
 
       <button
         type="button"
@@ -35,7 +38,7 @@ const GridDayHeader = ({ as: Component = "button", day, isToday, className, styl
         aria-label={`Info zum Tag · ${weekdayLong(day.date)}`}
         title="Info zum Tag"
         className={cn(
-          "absolute top-1/2 right-1.5 grid size-7 -translate-y-1/2 place-items-center rounded-full outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent/50",
+          "absolute top-6.5 right-1.5 grid size-7 -translate-y-1/2 place-items-center rounded-full outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent/50",
           isToday ? "text-today-sub hover:bg-on-accent/15" : hasNews ? "text-accent hover:bg-tint" : "text-faint hover:bg-card hover:text-ink",
         )}
       >

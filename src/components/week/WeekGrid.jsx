@@ -6,6 +6,7 @@ import { berlinParts, isLessonPast, toMinutes } from "../../shared/utils/lessonC
 import { freeText, lessonKey, periodRows } from "../../shared/utils/lessons";
 import { usePlanStore } from "../../shared/store/planStore";
 import LessonContextMenu from "../lesson/LessonContextMenu";
+import DayAppointmentPills from "../appointments/DayAppointmentPills";
 import DayHeader from "./DayHeader";
 import LessonCell from "./LessonCell";
 import NowLine from "./NowLine";
@@ -42,9 +43,12 @@ const WeekGrid = ({ days, onLessonClick }) => {
 
   return (
     <div className="grid gap-1" style={{ gridTemplateColumns: `1.375rem repeat(${dayCount}, minmax(0, 1fr))` }}>
-      {/* ── шапка з днями ── */}
+      {/* ── шапка з днями, під нею — терміни дня (частина 18) ── */}
       {days.map((day, di) => (
-        <DayHeader key={day.date} style={{ gridRow: 1, gridColumn: di + 2 }} day={day} isToday={di === todayIndex} />
+        <div key={day.date} style={{ gridRow: 1, gridColumn: di + 2 }} className="flex min-w-0 flex-col gap-1">
+          <DayHeader day={day} isToday={di === todayIndex} />
+          <DayAppointmentPills date={day.date} />
+        </div>
       ))}
 
       {/* ── номери уроків зліва (у уроку 10 часу немає) ── */}
