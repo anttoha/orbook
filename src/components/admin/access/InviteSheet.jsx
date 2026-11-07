@@ -3,6 +3,7 @@ import { ChevronRight, Link2, Maximize, Users } from "lucide-react";
 import { useAccessActions } from "../../../shared/hooks/useAccessActions";
 import { DESKTOP_QUERY, useMediaQuery } from "../../../shared/hooks/useMediaQuery";
 import { useAdminStore } from "../../../shared/store/adminStore";
+import { audienceChip, devicesText } from "../../../shared/utils/accessCodes";
 import { inviteUrl } from "../../../shared/utils/invite";
 import Button from "../../ui/Button";
 import { RenewIcon } from "../../ui/icons";
@@ -69,18 +70,21 @@ const InviteSheet = ({ code: start, onClose, onRenew }) => {
   };
 
   return (
-    <Sheet open onClose={onClose} desktop="qr" eyebrow={off ? `${code.label} · Link ausgeschaltet` : `${code.label} · Gruppe · ${code.devices ?? 0} Geräte`} title="Einladen">
+    <Sheet open onClose={onClose} desktop="qr" eyebrow={off ? `${code.label} · Link ausgeschaltet` : `${code.label} · ${audienceChip(code.audience)} · ${devicesText(code.devices, code.maxDevices)}`} title="Einladen">
       {renderCard()}
       {invite && (
         <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
           {!isDesktop && url && <Row icon={Maximize} label="QR groß zeigen" hint="Beamer" onClick={() => setBig(true)} />}
           <Row icon={Link2} label="Link aktiv" checked={invite.active} onToggle={(on) => toggle("active", on, on ? "Link eingeschaltet" : "Link ausgeschaltet")} />
-          <Row icon={Users} label="Mitschüler dürfen teilen" checked={invite.shared} onToggle={(on) => toggle("shared", on, on ? "Mitschüler sehen den Link unter »Klasse einladen«" : "Mitschüler sehen den Link nicht mehr")} />
+          {/* одноклассникам — лише посилання групи; особисте — для однієї людини */}
+          {code.audience === "group" && <Row icon={Users} label="Mitschüler dürfen teilen" checked={invite.shared} onToggle={(on) => toggle("shared", on, on ? "Mitschüler sehen den Link unter »Klasse einladen«" : "Mitschüler sehen den Link nicht mehr")} />}
           <Row icon={RenewIcon} label="Neuen Link erzeugen" hint="alter geht aus" onClick={onRenew} />
         </ul>
       )}
       <p className="text-caption text-faint">
-        Wer den Link hat, kommt in die {className ?? "Klasse"} und zählt zu »{code.label}«. Nur in der Klassengruppe teilen.
+        {code.audience === "group"
+          ? `Wer den Link hat, kommt in die ${className ?? "Klasse"} und zählt zu »${code.label}«. Nur in der Klassengruppe teilen.`
+          : `Persönlicher Link: nur an diese eine Person schicken. Er zählt zum Geräte-Limit von »${code.label}«.`}
       </p>
       {url && <QrFullscreen open={big} onClose={() => setBig(false)} url={url} className={className} />}
     </Sheet>

@@ -3,9 +3,9 @@ import { LockIcon, PencilIcon, RenewIcon, TrashIcon } from "../../ui/icons";
 
 // Пункти меню Zugangscode (макети 14c handy-04, pc-04). kind — яке вікно відкрити.
 // sheetLabel / hint — підпис і сірий текст праворуч у шторці телефона; label — у меню ПК
-// Перший пункт «Einladen» (частина 16) — лише в групового коду: для однієї людини є сам код
+// Перший пункт «Einladen» (частина 16) — у будь-якого коду (власник 07.11: і в особистого — посилання замість коду)
 export const accessActions = (code) => [
-  ...(code.audience === "group" ? [{ kind: "invite", label: "Einladen · Link und QR", sheetLabel: "Einladen", hint: "Link + QR", icon: QrCode, accent: true }] : []),
+  { kind: "invite", label: "Einladen · Link und QR", sheetLabel: "Einladen", hint: "Link + QR", icon: QrCode, accent: true },
   { kind: "rename", label: "Umbenennen", icon: PencilIcon },
   { kind: "limit", label: "Geräte-Limit ändern", sheetLabel: "Geräte-Limit", icon: Smartphone },
   { kind: "validity", label: "Gültigkeit ändern", sheetLabel: "Gültigkeit", icon: Clock },
