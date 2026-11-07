@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSheet } from "../../shared/hooks/useSheet";
 import AppointmentSheet from "./AppointmentSheet";
+import ClassInviteSheet from "./ClassInviteSheet";
 import ColorSheet from "./ColorSheet";
 import DayInfoSheet from "./DayInfoSheet";
 import EditorCodeSheet from "./EditorCodeSheet";
@@ -31,6 +32,7 @@ const SHEETS = {
   pruefen: PlanCheckSheet, // «Einträge prüfen» після справжнього плану (частина 19)
   editorcode: EditorCodeSheet, // код посеред запису: форма лишається під вікном
   tasten: ShortcutsSheet, // Tastenkürzel (клавіша «?»)
+  einladen: ClassInviteSheet, // «Klasse einladen»: посилання і QR (частина 16)
 };
 
 // ─────────────────────────────────────────────────────────────

@@ -1,4 +1,4 @@
-import { Folder, Palette, Sun, Table2 } from "lucide-react";
+import { Folder, Palette, Sun, Table2, UserPlus } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { version } from "../../package.json";
@@ -9,6 +9,7 @@ import { KeyIcon, ShieldIcon, SyncIcon } from "../components/ui/icons";
 import ListCard from "../components/ui/ListCard";
 import { useSyncAllowed } from "../shared/hooks/useNotesSync";
 import { useInSettingsPanel } from "../shared/hooks/useSettingsPanel";
+import { useSheet } from "../shared/hooks/useSheet";
 import { useTheme } from "../shared/hooks/useTheme";
 import { useMaterials } from "../shared/store/materialsStore";
 import { useSyncStore } from "../shared/store/syncStore";
@@ -60,6 +61,7 @@ const PhoneMenu = () => {
   const count = courseCount(courses, picked, hiddenRequired);
   const links = useMaterials((s) => (s.status === "idle" ? null : s.items.length));
   const ensureMaterials = useMaterials((s) => s.ensure);
+  const { openSheet } = useSheet();
   // «6 Links» праворуч: список питаємо один раз за сесію (далі його оновлює сторінка Materialien)
   useEffect(() => {
     ensureMaterials();
@@ -80,6 +82,8 @@ const PhoneMenu = () => {
 
       <ListCard title="Klasse">
         <MenuRow to="/materialien" icon={Folder} label="Materialien" value={links ? `${links} ${links === 1 ? "Link" : "Links"}` : null} />
+        {/* частина 16: посилання і QR для однокласників; вимкнене — шторка так і скаже */}
+        <MenuRow onClick={() => openSheet("einladen")} icon={UserPlus} label="Klasse einladen" value="Link + QR" />
       </ListCard>
 
       <ListCard title="Daten">

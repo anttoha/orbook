@@ -1,4 +1,4 @@
-import { ChevronRight, Keyboard } from "lucide-react";
+import { ChevronRight, Keyboard, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { settingsSections } from "../../shared/constants/constants";
 import { useSyncAllowed } from "../../shared/hooks/useNotesSync";
@@ -70,6 +70,12 @@ const SettingsTiles = () => {
             </Link>
           </li>
         ))}
+      {/* частина 16: не сторінка, а вікно з QR — як «Tastenkürzel» */}
+      <li>
+        <button type="button" onClick={() => openSheet("einladen")} className={`${tile} w-full`}>
+          <TileBody icon={UserPlus} label="Klasse einladen" hint="Link und QR für Mitschüler" />
+        </button>
+      </li>
       <li>
         <button type="button" onClick={() => openSheet("tasten")} className={`${tile} w-full`}>
           <TileBody icon={Keyboard} label="Tastenkürzel" hint="⌘K, T, ←, →, N …" />

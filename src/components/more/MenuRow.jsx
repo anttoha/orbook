@@ -3,15 +3,31 @@ import { Link } from "react-router-dom";
 
 // Рядок меню «Mehr»: іконка, назва, значення праворуч і стрілка.
 // state — куди повертатись зі сторінки, яка відкривається і звідки ще (Datenschutz, Editor-Code)
-const MenuRow = ({ to, state, icon: Icon, label, value }) => (
-  <li>
-    <Link to={to} state={state} className="-mx-2 flex h-12.5 items-center gap-3.25 rounded-field px-2 hover:bg-paper">
+// onClick замість to — рядок відкриває шторку, а не сторінку («Klasse einladen»)
+const MenuRow = ({ to, state, onClick, icon: Icon, label, value }) => {
+  const inner = (
+    <>
       <Icon className="size-4.5 shrink-0 text-muted" />
       <span className="min-w-0 flex-1 truncate text-row font-medium text-ink">{label}</span>
       {value && <span className="max-w-30 truncate text-label text-faint">{value}</span>}
       <ChevronRight className="size-4 shrink-0 text-faint2" />
-    </Link>
-  </li>
-);
+    </>
+  );
+  // li — flex: тоді і посилання, і кнопка з -mx-2 тягнуться на всю ширину, а фон при наведенні виходить трохи за текст
+  const row = "-mx-2 flex h-12.5 min-w-0 flex-1 items-center gap-3.25 rounded-field px-2 text-left hover:bg-paper";
+  return (
+    <li className="flex">
+      {onClick ? (
+        <button type="button" onClick={onClick} className={row}>
+          {inner}
+        </button>
+      ) : (
+        <Link to={to} state={state} className={row}>
+          {inner}
+        </Link>
+      )}
+    </li>
+  );
+};
 
 export default MenuRow;

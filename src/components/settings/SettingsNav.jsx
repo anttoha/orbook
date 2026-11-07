@@ -1,4 +1,4 @@
-import { Keyboard } from "lucide-react";
+import { Keyboard, UserPlus } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { settingsSections } from "../../shared/constants/constants";
 import { useSyncAllowed } from "../../shared/hooks/useNotesSync";
@@ -42,6 +42,12 @@ const SettingsNav = () => {
               </li>
             );
           })}
+        <li>
+          <button type="button" onClick={() => openSheet("einladen")} className={cn(item, "w-full text-muted hover:bg-sand hover:text-ink")}>
+            <UserPlus className="size-4 shrink-0" />
+            Klasse einladen
+          </button>
+        </li>
         {/* «Tastenkürzel» — не сторінка, а вікно (як плитка в «Übersicht»); власник попросив пункт і в меню */}
         <li>
           <button type="button" onClick={() => openSheet("tasten")} className={cn(item, "w-full text-muted hover:bg-sand hover:text-ink")}>
