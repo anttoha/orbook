@@ -213,3 +213,6 @@ Spec: `docs/specs/14c-zugangscodes/spec.md` (там план бэкенда: т�
 Фронт: страница `/admin/zugang` (меню ПК «Zugangscodes» вместо «Passwörter»; телефон — Einstellungen → «Zugang», Übersicht → Schnell), вход «Zugangscode oder Klassenpasswort», плашка «Du wurdest abgemeldet».
 На демо руками не проверено сохранение: нужен пароль админа (только у владельца). Проверено на подменённом API (скриншоты `orbook-compare/14c-zugangscodes/shots/`).
 **Дальше (`/orb-auto`):** часть 16 «Einladen: ссылка + QR» — сначала `/orb-design`.
+
+## Релиз v0.7.0 — тег готов (2026-11-07)
+Тег `v0.7.0` и текст `docs/releases/v0.7.0.md` на GitHub. Ждём, когда владелец опубликует Release (gh на сервере не авторизован). Бэкенд на проде уже со схемой 0009.
