@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { toast } from "sonner";
 import { api, retryText, setUnauthorizedHandler } from "../api/api";
+import { signedOutNotice } from "../utils/authErrors";
 import { cache, loadWithCache } from "../api/offlineCache";
 import { freshenExams, withDaysLeft } from "../utils/exams";
 import { daysBetween } from "../utils/format";
@@ -70,7 +71,7 @@ let seenWeeks = {};
 export const usePlanStore = create((set, get) => ({
   me: undefined,
   startError: null, // помилка при старті (немає мережі й нічого не збережено)
-  loginNotice: null, // «Bitte erneut anmelden.» — коли сесія закінчилась
+  loginNotice: null, // { title, text } — плашка «Du wurdest abgemeldet», коли сесію закінчив сервер
   meta: null,
   courses: [],
   coursesStatus: "loading", // "loading" | "ready" | "error": екрану курсів треба відрізняти «ще вантажимо» від «порожньо»
@@ -332,6 +333,7 @@ export const usePlanStore = create((set, get) => ({
 }));
 
 // Сесія закінчилась (401 на будь-якому запиті) → екран входу з поясненням
-setUnauthorizedHandler(() => {
-  usePlanStore.setState({ me: null, weeks: {}, loginNotice: "Bitte erneut anmelden." });
+// (Zugangscode вимкнули чи видалили, пароль класу змінили, вхід застарів — частина 14c)
+setUnauthorizedHandler((error) => {
+  usePlanStore.setState({ me: null, weeks: {}, loginNotice: signedOutNotice(error) });
 });

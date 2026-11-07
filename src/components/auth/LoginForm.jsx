@@ -6,10 +6,10 @@ import TextField from "../ui/TextField";
 import { usePlanStore } from "../../shared/store/planStore";
 import { lockDuration, loginErrorText } from "../../shared/utils/authErrors";
 
-// Форма входу паролем класу. Після успіху HomePage сам покаже застосунок.
+// Форма входу: Zugangscode (ORB-A-…, частина 14c) або старий пароль класу — одне поле, сервер розбереться сам.
+// Після успіху HomePage сам покаже застосунок.
 const LoginForm = () => {
   const login = usePlanStore((s) => s.login);
-  const loginNotice = usePlanStore((s) => s.loginNotice); // «Bitte erneut anmelden.», коли сесія закінчилась
   const inputRef = useRef(null);
 
   const [password, setPassword] = useState("");
@@ -50,9 +50,9 @@ const LoginForm = () => {
         id="class-password"
         name="password"
         type="password"
-        label="Klassenpasswort"
-        placeholder="Passwort eingeben"
-        hint={loginNotice ?? "Steht in der Klassengruppe."}
+        label="Zugangscode oder Klassenpasswort"
+        placeholder="ORB-A-XXXX-XXXX"
+        hint="Vom Admin oder aus der Klassengruppe."
         error={error}
         value={password}
         onChange={(event) => {

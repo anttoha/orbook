@@ -23,7 +23,7 @@ const TIMEOUT_MS = 20000; // 20 секунд чекаємо відповідь
 let onUnauthorized = () => {}; // що робити, коли сесія закінчилась
 let onAdminUnauthorized = () => {}; // те саме для адмінки (/admin/...)
 
-// Один раз при старті: setUnauthorizedHandler(() => показати «Zugang»)
+// Один раз при старті: setUnauthorizedHandler((error) => показати «Zugang»); error — відповідь сервера (401)
 export function setUnauthorizedHandler(fn) {
   onUnauthorized = fn;
 }
@@ -84,7 +84,7 @@ export async function api(path, { method = "GET", body, signal, headers = {}, ti
   const retryAfter = Number(res.headers.get("Retry-After")) || null;
   const apiError = new ApiError(res.status, err.code ?? "http_error", err.message ?? "Anfrage fehlgeschlagen.", err.details ?? {}, retryAfter);
   if (res.status === 401 && err.code === "not_authenticated") {
-    (path.startsWith("/admin") ? onAdminUnauthorized : onUnauthorized)(); // сесія закінчилась
+    (path.startsWith("/admin") ? onAdminUnauthorized : onUnauthorized)(apiError); // сесія закінчилась; текст сервера — для плашки
   }
   throw apiError;
 }

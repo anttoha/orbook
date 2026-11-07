@@ -2,6 +2,7 @@ import { ChevronLeft } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import AuthAside from "../components/auth/AuthAside";
 import LoginForm from "../components/auth/LoginForm";
+import SignedOutBanner from "../components/auth/SignedOutBanner";
 import TeacherLoginForm from "../components/auth/TeacherLoginForm";
 import OrbitMark from "../components/ui/OrbitMark";
 import { usePublicInfo } from "../shared/hooks/usePublicInfo";
@@ -33,7 +34,7 @@ const TeacherAccess = ({ schoolClass }) => (
   </main>
 );
 
-// Екран «Zugang»: вхід паролем класу (docs/frontend/02-zugang.md, макети 01 і 02).
+// Екран «Zugang»: вхід Zugangscode або паролем класу (docs/frontend/02-zugang.md, макети 01 і 02; частина 14c).
 // Телефон: знак і назва вгорі, форма внизу. ПК: дві половини, форма по центру правої.
 // ?zugang=lehrkraft — вхід учителя: адреса, щоб кнопка «назад» браузера поверталась до пароля
 const AuthPage = () => {
@@ -66,10 +67,11 @@ const AuthPage = () => {
         <div className="mt-auto w-full lg:mt-0 lg:w-95">
           {/* заголовок ПК */}
           <div className="mb-6 hidden lg:block">
-            <p className="text-hint font-extrabold text-accent-ink">Willkommen</p>
-            <h1 className="mt-2.5 text-lobby text-ink">Klasse öffnen</h1>
-            <p className="mt-3 text-body leading-5.75 text-muted">Ein Passwort für die ganze Klasse. Keine Konten, keine Namen.</p>
+            <p className="text-hint font-extrabold text-accent-ink">{schoolClass ? `Klasse ${schoolClass}` : "Willkommen"}</p>
+            <h1 className="mt-2.5 text-lobby text-ink">Willkommen</h1>
+            <p className="mt-3 text-body leading-5.75 text-muted">Gib deinen Zugangscode ein — oder das Klassenpasswort, falls du noch keinen Code hast.</p>
           </div>
+          <SignedOutBanner className="mb-6" />
           <LoginForm />
         </div>
       </main>
