@@ -3,6 +3,8 @@ import { addDays } from "../../../shared/utils/format";
 import Segmented from "../../ui/Segmented";
 import WeekMenu from "../WeekMenu";
 import WeekPickerPopover from "./WeekPickerPopover";
+import MusterBadge from "../../muster/MusterBadge";
+import WeekLetter from "../../muster/WeekLetter";
 
 // Кругла біла кнопка 38×38 (як на макеті)
 const roundButton =
@@ -19,13 +21,18 @@ const VIEWS = [
 //   KW 41 · 5.–9. Okt                 ‹ [Heute] › 📅   [Zeitraster|Stunden + Tag]  ⋮
 //   Diese Woche
 // monday — понеділок показаного тижня; onWeekChange(понеділок) — інший тиждень
+// letter — «A»/«B» (тиждень циклу школи), muster — весь тиждень із Muster (частина 19)
 // ─────────────────────────────────────────────────────────────
-const WeekHeaderDesktop = ({ monday, subtitle, title, view, onViewChange, onWeekChange, onToday }) => {
+const WeekHeaderDesktop = ({ monday, subtitle, title, letter, muster = false, view, onViewChange, onWeekChange, onToday }) => {
   return (
     <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
       <div className="min-w-0">
-        <p className="text-label font-extrabold text-faint">{subtitle}</p>
-        <h1 className="text-hero text-ink">{title}</h1>
+        <p className="flex items-center gap-2 text-label font-extrabold text-faint">
+          {subtitle} <WeekLetter letter={letter} />
+        </p>
+        <h1 className="flex items-center gap-3 text-hero text-ink">
+          {title} {muster && <MusterBadge />}
+        </h1>
       </div>
 
       <div className="flex items-center gap-6">

@@ -46,6 +46,20 @@ export function validateExamForm(form, today, originalDate = null) {
 }
 
 // Запис → поля форми і назад
+// Поля нової Klausur з адреси (кнопка в уроці з Muster): { date, lesson, subject, muster }.
+// Криві значення просто ігноруємо — учень сам вибере
+export function examPreset(params) {
+  const date = params.get("datum");
+  const lesson = Number(params.get("stunde"));
+  const subject = params.get("fach");
+  return {
+    ...(/^\d{4}-\d{2}-\d{2}$/.test(date ?? "") ? { date } : {}),
+    ...(Number.isInteger(lesson) && lesson >= 0 && lesson <= 10 && params.get("stunde") ? { lesson } : {}),
+    ...(subject && /^[\w-]{1,12}$/.test(subject) ? { subject } : {}),
+    muster: params.get("muster") === "1",
+  };
+}
+
 export const examToForm = (exam) => ({ type: exam?.type ?? null, subject: exam?.subject?.code ?? null, date: exam?.date ?? "", lesson: exam?.lesson ?? null, topic: exam?.topic ?? "" });
 
 // «Mathe · Fr 19.09.» для діалогів

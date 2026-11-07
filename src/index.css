@@ -20,6 +20,15 @@
   text-box: trim-both cap alphabetic;
 }
 
+/* Muster-Stundenplan (частина 19): косі смуги, як у макетах design/neu/19-muster.
+   hatch-muster — поверх кольору предмета (клітинка, рядок уроку), hatch-line — на фоні (заголовок дня, тиждень у календарі) */
+@utility hatch-muster {
+  background-image: repeating-linear-gradient(-45deg, var(--color-muster-stripe) 0 3px, transparent 3px 8px);
+}
+@utility hatch-line {
+  background-image: repeating-linear-gradient(-45deg, var(--color-muster-line) 0 1.5px, transparent 1.5px 7px);
+}
+
 /* Ряд чипів гортається пальцем, смуга прокрутки в ньому зайва */
 @utility no-scrollbar {
   scrollbar-width: none;
@@ -259,6 +268,8 @@
     --container-settings: 680px; /* праворуч від нього: дві плитки по 334 + 12 */
 
     --color-overlay: #2a243366; /* затемнення під вікнами і панелями */
+    --color-muster-stripe: #fbf7f28c; /* штриховка Muster поверх кольору предмета (paper 55 %, частина 19) */
+    --color-muster-line: #c0b8c6cc; /* тонка штриховка Muster на фоні: заголовок дня, календар (faint2 80 %) */
     --color-paper: #fbf7f2;
     --color-accent: #6c4df6;
     --color-ink: #2a2433;
@@ -340,6 +351,8 @@
     --soft-shadow-sheet: 0 24px 64px #00000099;
 
     --color-overlay: #0000008c;
+    --color-muster-stripe: #16131c61; /* у темній темі смуги слабші (paper 38 %) */
+    --color-muster-line: #5f576ccc;
     --color-paper: #16131c;
     --color-accent: #a58bff;
     --color-ink: #f4f0f8;

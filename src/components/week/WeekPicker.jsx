@@ -7,17 +7,21 @@ import { addDays, isoWeek, mondayOf } from "../../shared/utils/format";
 import Button from "../ui/Button";
 import MonthGrid from "../ui/MonthGrid";
 import MonthNav from "../ui/MonthNav";
+import { abForMonday } from "../../shared/utils/muster";
+import { currentMonday } from "../../shared/utils/lessons";
 
 // ─────────────────────────────────────────────────────────────
 // Місячний календар «Woche wählen» (у шторці на телефоні і у випадаючому вікні на ПК).
 // Клік по дню вибирає весь його тиждень.
 //   сірі дні    — вихідні та meta.holidays (назв свят у даних немає — пишемо «frei»)
 //   крапки      — Klausuren місяця (GET /api/exams?from=…&to=…)
+//   A / B       — тиждень циклу школи біля номера KW (частина 19)
 // onOpenWeek(понеділок) — натиснули «KW xx öffnen»
 // ─────────────────────────────────────────────────────────────
 const WeekPicker = ({ initialWeek, onOpenWeek }) => {
   const { today } = useNow(); // сьогодні
   const holidays = usePlanStore((s) => s.meta?.holidays); // вільні дні навчального року
+  const abWeek = usePlanStore((s) => s.meta?.abWeek); // тиждень циклу зараз (1/2) — для букв A/B біля KW
   const [selected, setSelected] = useState(() => mondayOf(initialWeek ?? today)); // вибраний тиждень (понеділок)
   const [month, setMonth] = useState(() => firstOfMonth(initialWeek ?? today)); // показаний місяць
   const [examDays, setExamDays] = useState({}); // { "2026-10": Set дат із Klausuren }
@@ -46,7 +50,7 @@ const WeekPicker = ({ initialWeek, onOpenWeek }) => {
       <MonthNav month={month} onChange={setMonth} canGoNext={canGoNext} />
 
       {/* ── календар: клік по дню вибирає його тиждень ── */}
-      <MonthGrid month={month} today={today} highlight={selected} examDays={exams} freeDays={free} onPick={(day) => setSelected(mondayOf(day))} />
+      <MonthGrid month={month} today={today} highlight={selected} examDays={exams} freeDays={free} weekLetter={(monday) => abForMonday(monday, currentMonday(today), abWeek)} onPick={(day) => setSelected(mondayOf(day))} />
 
       {/* ── легенда ── */}
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-caption font-bold text-muted">

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addExamTarget, addHomeworkTarget, canCreateExam, canCreateHomework, formEyebrow, examLabel, examToForm, formSubjects, fullDate, TOPIC_MAX, unlockErrorText, validateExamDate, validateExamForm, validateTopic } from "./examRules";
+import { addExamTarget, addHomeworkTarget, canCreateExam, canCreateHomework, formEyebrow, examLabel, examToForm, formSubjects, fullDate, TOPIC_MAX, unlockErrorText, validateExamDate, validateExamForm, validateTopic, examPreset } from "./examRules";
 
 const TODAY = "2026-09-17";
 
@@ -152,5 +152,17 @@ describe("formEyebrow", () => {
     expect(formEyebrow({ teacher: { short: "Mü" }, editor: null }, "X")).toBe("Lehrkraft · Mü");
     expect(formEyebrow({ editor: { label: "Code A" } }, "X")).toBe("Editor · Code A");
     expect(formEyebrow(null, "Klausur eintragen")).toBe("Klausur eintragen");
+  });
+});
+
+describe("examPreset (Muster-Stunde → neue Klausur, частина 19)", () => {
+  const preset = (query) => examPreset(new URLSearchParams(query));
+  it("übernimmt Datum, Stunde und Fach aus der Adresse", () => {
+    expect(preset("datum=2026-10-05&stunde=2&fach=Ma&muster=1")).toEqual({ date: "2026-10-05", lesson: 2, subject: "Ma", muster: true });
+  });
+  it("krumme Werte werden ignoriert", () => {
+    expect(preset("datum=morgen&stunde=x&fach=<b>")).toEqual({ muster: false });
+    expect(preset("stunde=11")).toEqual({ muster: false });
+    expect(preset("")).toEqual({ muster: false });
   });
 });

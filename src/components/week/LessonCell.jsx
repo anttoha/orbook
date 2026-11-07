@@ -34,6 +34,7 @@ const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
       className={cn(
         base,
         fachClasses(lesson.subject?.code, overrides), // колір предмета (з урахуванням свого кольору)
+        lesson.muster && "hatch-muster", // урок із Muster (частина 19): смуги поверх кольору
         isChanged && "ring-2 ring-accent ring-inset", // рамка у зміни
         isPast && "opacity-45", // минулий урок блідіший
         className,

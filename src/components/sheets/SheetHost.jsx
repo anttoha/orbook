@@ -13,6 +13,7 @@ import NoteSheet from "./NoteSheet";
 import ShareSheet from "./ShareSheet";
 import ShortcutsSheet from "./ShortcutsSheet";
 import WeekPickerSheet from "./WeekPickerSheet";
+import PlanCheckSheet from "../muster/PlanCheckSheet";
 
 // Яке ім'я в адресі (?sheet=…) якій шторці відповідає
 const SHEETS = {
@@ -27,6 +28,7 @@ const SHEETS = {
   hausaufgabe: HomeworkSheet, // деталі Hausaufgabe (частина 14)
   material: MaterialSheet, // дії з посиланням Materialien (частина 15)
   termin: AppointmentSheet, // деталі Termin (частина 18)
+  pruefen: PlanCheckSheet, // «Einträge prüfen» після справжнього плану (частина 19)
   editorcode: EditorCodeSheet, // код посеред запису: форма лишається під вікном
   tasten: ShortcutsSheet, // Tastenkürzel (клавіша «?»)
 };

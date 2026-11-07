@@ -13,9 +13,10 @@ const NO_DAYS = new Set(); // порожній набір за замовчув�
 //   highlight  — понеділок тижня, рядок якого підсвічено
 //   rowShape   — форма підсвітки: "pill" (вибір тижня) або "tile" (поточний тиждень, макет Klausuren)
 //   examDays / freeDays — набори дат: крапка під числом (фіолетова / сіра)
+//   weekLetter(понеділок) — буква тижня циклу «A»/«B» біля KW або null (частина 19, «Woche wählen»)
 //   onPick(день) — клік по дню
 // ─────────────────────────────────────────────────────────────
-const MonthGrid = ({ month, today, highlight, rowShape = "pill", examDays = NO_DAYS, freeDays = NO_DAYS, onPick }) => (
+const MonthGrid = ({ month, today, highlight, rowShape = "pill", examDays = NO_DAYS, freeDays = NO_DAYS, weekLetter, onPick }) => (
   <div className="flex flex-col gap-1">
     <div className="grid grid-cols-8 text-center text-small font-extrabold text-faint">
       <span>KW</span>
@@ -27,7 +28,10 @@ const MonthGrid = ({ month, today, highlight, rowShape = "pill", examDays = NO_D
     {monthWeeks(month).map((monday) => (
       <div key={monday} className={cn("grid grid-cols-8 items-center", rowShape === "pill" ? "rounded-full" : "rounded-tile", monday === highlight && "bg-tint")}>
         {/* номер тижня */}
-        <span className="text-center text-small font-extrabold text-faint">{isoWeek(monday)}</span>
+        <span className="text-center text-small font-extrabold text-faint">
+          {isoWeek(monday)}
+          {weekLetter?.(monday) && <span className="ml-0.5 font-black text-accent-ink">{weekLetter(monday)}</span>}
+        </span>
 
         {Array.from({ length: 7 }, (_, i) => addDays(monday, i)).map((day) => {
           const inMonth = day.slice(0, 7) === month.slice(0, 7); // день цього місяця?

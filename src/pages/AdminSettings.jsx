@@ -4,7 +4,7 @@ import AdminHeader from "../components/admin/AdminHeader";
 import { AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import PasswordLinks from "../components/admin/settings/PasswordLinks";
 import DangerZone from "../components/admin/settings/DangerZone";
-import { AppointmentsCard, FeaturesCard, HomeworkCard, SecurityCard, UpdateCard } from "../components/admin/settings/OptionCards";
+import { AppointmentsCard, FeaturesCard, HomeworkCard, MusterCard, SecurityCard, UpdateCard } from "../components/admin/settings/OptionCards";
 import { purgeHomework } from "../shared/api/admin";
 import MaterialSitesCard from "../components/admin/settings/MaterialSitesCard";
 import PrivacyCard from "../components/admin/settings/PrivacyCard";
@@ -13,6 +13,7 @@ import SchoolCard from "../components/admin/settings/SchoolCard";
 import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useSettingsForm } from "../shared/hooks/useSettingsForm";
 import { useAdminStore } from "../shared/store/adminStore";
+import { usePlanStore } from "../shared/store/planStore";
 
 // Колонки ПК: ліва (пароль, школа, контакт) і права (оновлення, функції, безпека).
 // На телефоні колонок немає (max-lg:contents), і блоки стають в один ряд у порядку order-* з макета 45
@@ -23,6 +24,7 @@ const SettingsForm = ({ data }) => {
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const demo = useAdminStore((s) => s.overview.data?.demo ?? false);
   const reloadOverview = useAdminStore((s) => s.reloadOverview);
+  const abWeek = usePlanStore((s) => s.meta?.abWeek ?? null); // тиждень A/B (є, якщо цей браузер увійшов і в клас)
   const draft = useSettingsForm(data.settings);
   const { form, set, bad } = draft;
   const rows = { form, set, bad }; // для рядків з перемикачами і списками
@@ -66,6 +68,7 @@ const SettingsForm = ({ data }) => {
           <SecurityCard className="order-5" {...rows} />
           <HomeworkCard className="order-5" {...rows} onPurge={purge} purging={purging} />
           <AppointmentsCard className="order-5" {...rows} />
+          <MusterCard className="order-5" abWeek={abWeek} {...rows} />
         </div>
       </div>
       <DangerZone onDone={reloadOverview} />

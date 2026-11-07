@@ -12,6 +12,10 @@ import LessonList from "../../day/LessonList";
 import { TimelineIcon } from "../../ui/icons";
 import Timeline from "../../day/Timeline";
 import Segmented from "../../ui/Segmented";
+import MusterNote from "../../muster/MusterNote";
+import PlanCheckBanner from "../../muster/PlanCheckBanner";
+import WeekLetter from "../../muster/WeekLetter";
+import { abLetter } from "../../../shared/utils/muster";
 
 // Перемикач «Liste / Zeitleiste» (тільки іконки, як на макеті)
 const VIEWS = [
@@ -38,9 +42,10 @@ const DayPanel = ({ date }) => {
     <section className="flex flex-col gap-3.5 rounded-card bg-card p-4.5">
       <header className="flex items-end justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-label font-extrabold text-accent">
+          <p className="flex items-center gap-2 text-label font-extrabold text-accent">
             {weekdayLong(date)}
             {word && ` · ${word}`}
+            <WeekLetter letter={abLetter(day?.week)} />
           </p>
           {/* посилання на сторінку дня */}
           <Link to={`/tag/${date}`} className="block truncate text-panel leading-tight font-black text-ink hover:underline">
@@ -52,6 +57,9 @@ const DayPanel = ({ date }) => {
 
       {day?.info.length > 0 && <DayInfoBanner info={day.info} onClick={() => openSheet("info", { datum: date })} />}
       <AppointmentBanner date={date} />
+      {day && <PlanCheckBanner day={day} />}
+      {/* день із Muster (частина 19, макет pc-01) */}
+      {day?.muster && <MusterNote lead="Muster:">so ist der {weekdayLong(date)} normalerweise. Der echte Plan kommt meist am Vortag.</MusterNote>}
 
       {day && lessons.length === 0 && <p className="py-10 text-center text-body font-bold text-faint">{freeText(day) ?? "Kein Unterricht"}</p>}
       {day && lessons.length > 0 && view === "liste" && <LessonList day={day} lessons={lessons} onOpen={openLesson} />}

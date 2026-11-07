@@ -80,7 +80,7 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
   const body = (
     <>
       <div className="mt-4 flex flex-col gap-4">{children}</div>
-      {footer && <div className="mt-3.5 flex gap-2 lg:mt-5 lg:gap-2.5">{footer}</div>}
+      {footer && <div className="mt-3.5 flex flex-wrap gap-2 lg:mt-5 lg:gap-2.5">{footer}</div>}
     </>
   );
 

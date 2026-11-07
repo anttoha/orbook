@@ -12,6 +12,7 @@ import ConfirmDialog from "../ui/ConfirmDialog";
 import Field from "../ui/Field";
 import { CheckIcon, TrashIcon } from "../ui/icons";
 import PageHeader from "../ui/PageHeader";
+import MusterNote from "../muster/MusterNote";
 import Segmented from "../ui/Segmented";
 import TextField from "../ui/TextField";
 import SubjectToggle from "./SubjectToggle";
@@ -68,10 +69,13 @@ const ExamDialogs = ({ flow, exam, form }) => {
 };
 
 // ─────────────────────────────────────────────────────────────
-// Форма Klausur. exam = null — нова, інакше правка.
+// Форма Klausur. exam = null — нова, інакше правка. preset — поля з адреси (урок із Muster, частина 19).
 // Логіка відповідей сервера — у useExamSave, правила полів — у examRules.js.
 // ─────────────────────────────────────────────────────────────
-const ExamForm = ({ exam }) => {
+// Поля з адреси без прапорця muster (він лише для підказки, не поле форми)
+const presetFields = (preset) => Object.fromEntries(Object.entries(preset ?? {}).filter(([key]) => key !== "muster"));
+
+const ExamForm = ({ exam, preset = null }) => {
   const { today } = useNow();
   const me = usePlanStore((s) => s.me);
   const teacher = isTeacher(me);
@@ -79,7 +83,7 @@ const ExamForm = ({ exam }) => {
   const courses = usePlanStore((s) => s.courses);
   const picked = useUserStore((s) => s.picked);
   const overrides = useUserStore((s) => s.colorOverrides);
-  const [fields, setFields] = useState(() => ({ ...examToForm(exam), studentsMayEdit: exam?.studentsMayEdit ?? false }));
+  const [fields, setFields] = useState(() => ({ ...examToForm(exam), ...presetFields(preset), studentsMayEdit: exam?.studentsMayEdit ?? false }));
   const [localErrors, setLocalErrors] = useState({});
   const flow = useExamSave(exam);
 
@@ -149,6 +153,11 @@ const ExamForm = ({ exam }) => {
           autoComplete="off"
           onChange={(event) => change({ topic: event.target.value })}
         />
+
+        {/* з уроку Muster: пояснюємо, що станеться, коли вийде справжній план (макет 19 handy-05) */}
+        {preset?.muster && (
+          <MusterNote lead="Stunde aus dem Muster.">Kommt der echte Plan anders, siehst du „Einträge prüfen“.</MusterNote>
+        )}
 
         {teacher && <StudentsMayEdit checked={studentsMayEdit} onChange={(value) => change({ studentsMayEdit: value })} note="An: Schüler mit Freigabe dürfen Datum, Stunde und Thema ändern." />}
       </div>

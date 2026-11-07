@@ -3,14 +3,14 @@ import ChangedLine from "./ChangedLine";
 import { cn } from "../../shared/utils/cn";
 import { dayNumber, longDate, weekdayLong } from "../../shared/utils/format";
 
-// Шапка дня в сітці тижня («MI 17» і час зміни плану). Це посилання на сторінку дня (/tag/2026-10-07)
+// Шапка дня в сітці тижня («MI 17» і час зміни плану). День із Muster — заштрихований. Це посилання на сторінку дня (/tag/2026-10-07)
 const DayHeader = ({ day, isToday, style }) => {
   return (
     <Link
       to={`/tag/${day.date}`}
       style={style}
       aria-label={`${weekdayLong(day.date)}, ${longDate(day.date)}`}
-      className={cn("relative flex h-13 flex-col items-center justify-center rounded-cell transition-colors", isToday ? "bg-accent text-on-accent" : "text-ink hover:bg-sand")}
+      className={cn("relative flex h-13 flex-col items-center justify-center rounded-cell transition-colors", isToday ? "bg-accent text-on-accent" : "text-ink hover:bg-sand", day.muster && !isToday && "hatch-line")}
     >
       <span className={cn("text-micro font-bold uppercase", isToday ? "text-today-sub" : "text-faint")}>{day.weekday}</span>
       <span className="text-cell-sm">{dayNumber(day.date)}</span>

@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { usePlanStore } from "../store/planStore";
 import { useUserStore } from "../store/userStore";
 import { isWeekend, mondayOf, visibleLessons } from "../utils/format";
 import { weekendDay } from "../utils/lessons";
+import { musterWeek } from "../utils/muster";
 
 // ─────────────────────────────────────────────────────────────
 // Хуки для даних плану. Самі завантажують тиждень, якщо його ще немає.
@@ -10,7 +11,7 @@ import { weekendDay } from "../utils/lessons";
 
 // Тиждень за понеділком: { status, data, savedAt, error }
 //   status: "loading" | "ready" | "offline" | "unavailable" | "error"
-//   data:   відповідь GET /api/week (days[5], summary, …) або null
+//   data:   відповідь GET /api/week (days[5], summary, …) або null; Muster-дні — з muster: true
 export const useWeek = (monday) => {
   const week = usePlanStore((s) => s.weeks[monday]);
   const loadWeek = usePlanStore((s) => s.loadWeek);
@@ -20,7 +21,10 @@ export const useWeek = (monday) => {
     if (monday && !usePlanStore.getState().weeks[monday]) loadWeek(monday);
   }, [monday, loadWeek]);
 
-  return week ?? { status: "loading", data: null };
+  // Дні без плану, але з Muster (частина 19) стають «звичайними» днями з прапорцем muster.
+  // У сховищі лежить відповідь сервера як є — «Neuer Plan» порівнює справжні дані
+  const data = useMemo(() => musterWeek(week?.data ?? null), [week?.data]);
+  return week ? { ...week, data } : { status: "loading", data: null };
 };
 
 // День: { status, day, week }. day — об'єкт дня з тижня (як GET /api/day) або null, поки вантажиться

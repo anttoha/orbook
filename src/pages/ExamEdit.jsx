@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useParams, useSearchParams } from "react-router-dom";
 import ExamForm from "../components/exams/ExamForm";
 import { Skeleton } from "../components/ui/PlanState";
 import PageHeader from "../components/ui/PageHeader";
 import { useExam } from "../shared/hooks/useExams";
 import { usePlanStore } from "../shared/store/planStore";
-import { canCreateExam } from "../shared/utils/examRules";
+import { canCreateExam, examPreset } from "../shared/utils/examRules";
 
 // Запису немає, її ще вантажимо або її не можна міняти
 const Placeholder = ({ text }) => (
@@ -26,12 +26,13 @@ const EditExistingExam = ({ id }) => {
 };
 
 // ─────────────────────────────────────────────────────────────
-// Сторінка запису: /testen/neu і /testen/12/bearbeiten.
+// Сторінка запису: /testen/neu і /testen/12/bearbeiten. /testen/neu?datum=…&stunde=…&fach=… — поля вже заповнені.
 // Кнопки ховають те, що не можна, але адресу можна відкрити й напряму, тому перевіряємо ще раз.
 // Остаточно права перевіряє сервер при кожному записі.
 // ─────────────────────────────────────────────────────────────
 const ExamEdit = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams(); // з уроку Muster: ?datum=…&stunde=…&fach=…&muster=1 (частина 19)
   const me = usePlanStore((s) => s.me);
   // Лише при вході на сторінку. Якщо код застаріє посеред запису, сервер скаже про це при збереженні:
   // тоді відкриється вікно коду, а перехід на іншу сторінку знищив би заповнену форму
@@ -39,7 +40,7 @@ const ExamEdit = () => {
 
   if (id) return <EditExistingExam id={id} />;
   if (needsCode) return <Navigate to="/editor-code?weiter=neu" replace />;
-  return <ExamForm exam={null} />;
+  return <ExamForm exam={null} preset={examPreset(searchParams)} />;
 };
 
 export default ExamEdit;

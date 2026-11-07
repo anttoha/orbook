@@ -47,6 +47,7 @@ const LessonRow = ({ lesson, exam, date, isPast, live, note, overrides, onOpen }
       className={cn(
         "relative flex min-h-16 w-full rounded-box px-3.5 py-3 text-left transition-shadow outline-none select-none [-webkit-touch-callout:none] hover:shadow-raise focus-visible:ring-2 focus-visible:ring-accent/60",
         isCancelled ? "bg-sand text-faint" : fachClasses(lesson.subject?.code, overrides),
+        lesson.muster && "hatch-muster", // урок із Muster (частина 19)
         (isChanged || live) && "ring-2 ring-accent", // рамка в зміни й в уроку, що йде
         live && "pb-5", // місце під смужку прогресу
         isPast && "opacity-50", // минулі блідіші

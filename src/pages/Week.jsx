@@ -1,5 +1,5 @@
 import { Link, useSearchParams } from "react-router-dom";
-import { CalendarDays, ChartNoAxesColumn, ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarDays, ChartNoAxesColumn, ChevronLeft, ChevronRight, Layers } from "lucide-react";
 import WeekGrid from "../components/week/WeekGrid";
 import WeekMenu from "../components/week/WeekMenu";
 import WeekUpdated from "../components/week/WeekUpdated";
@@ -26,6 +26,11 @@ import { currentMonday, isWeekEmpty, weekDays, isPlanDown } from "../shared/util
 import { FlagIcon } from "../components/ui/icons";
 import { useAppointments } from "../shared/hooks/useAppointments";
 import { timeText, upcomingAppointments, whenText } from "../shared/utils/appointments";
+import { abForMonday, abLetter, isMusterWeek, musterDays, noMusterYet } from "../shared/utils/muster";
+import MusterBadge from "../components/muster/MusterBadge";
+import MusterNote from "../components/muster/MusterNote";
+import NoMusterState from "../components/muster/NoMusterState";
+import WeekLetter from "../components/muster/WeekLetter";
 
 // Кругла кнопка в шапці
 const roundButton = "flex size-9.5 items-center justify-center rounded-full bg-card outline-none focus-visible:ring-2 focus-visible:ring-accent/50";
@@ -75,6 +80,12 @@ const Week = () => {
   const reload = () => loadWeek(monday); // кнопки «Erneut versuchen» / «Neu laden»
   const lastStandShown = usePlanStore((s) => s.lastStandShown); // учень попросив збережений план
   const down = isPlanDown(week, lastStandShown); // школа або сервер не відповідає: екран замість сітки
+  const meta = usePlanStore((s) => s.meta);
+  // Тиждень A/B (частина 19): з відповіді тижня, а поки вона вантажиться — від поточного тижня (meta.abWeek)
+  const letter = abLetter(week.data?.abWeek) ?? abForMonday(monday, currentMonday(today), meta?.abWeek);
+  const allMuster = isMusterWeek(week.data?.days); // весь тиждень із Muster → мітка MUSTER і пояснення
+  const partMuster = musterDays(week.data?.days); // змішаний тиждень: «Fr» ще з Muster
+  const noMuster = noMusterYet(week.data?.days, meta?.musterUntil, today); // Muster ще не з чого зібрати
 
   // Поміняти параметр адреси (null — видалити); replace — без нового запису в історії
   const setParam = (key, value) => {
@@ -112,6 +123,7 @@ const Week = () => {
     if (down) return <PlanDown resource={week} onRetry={reload} />;
     if (week.status === "error") return <PlanError resource={week} onRetry={reload} />;
     if (!days) return isDesktop ? <Skeleton className="h-140" /> : <WeekSkeleton />;
+    if (noMuster) return <NoMusterState onToday={goToday} />;
     if (isWeekEmpty(week.data?.days)) {
       // одна обгортка: на ПК це ОДНА клітинка сітки сторінки (інакше підпис і сітка розʼїжджаються по колонках)
       return (
@@ -127,6 +139,13 @@ const Week = () => {
     return grid;
   };
 
+  // Пояснення над сіткою, коли весь тиждень — Muster (макет 19 handy-01)
+  const musterNote = allMuster && !down && (
+    <MusterNote lead="Muster-Stundenplan:">
+      so läuft {letter ? `Woche ${letter}` : "diese Woche"} normalerweise – ohne Ausfälle und Vertretungen. Der echte Plan kommt meist am Vortag.
+    </MusterNote>
+  );
+
   // ── ПК ──
   if (isDesktop) {
     const view = searchParams.get("ansicht") === "stunden" ? "stunden" : "zeitraster"; // вигляд тижня
@@ -141,6 +160,8 @@ const Week = () => {
           monday={monday}
           subtitle={title}
           title={heading}
+          letter={letter}
+          muster={allMuster}
           view={view}
           onViewChange={(value) => setParam("ansicht", value === "stunden" ? "stunden" : null)}
           onWeekChange={setWeek}
@@ -151,6 +172,7 @@ const Week = () => {
 
         <NewPlanBanner />
         {!down && <PlanBanner resource={week} onRetry={reload} />}
+        {musterNote}
 
         {/* сітка + права частина; на екрані ≥ 1440px — поруч, на 1024–1439px — права частина під сіткою */}
         <div className={cn("grid items-start gap-8", view === "stunden" ? "desktop:grid-cols-[minmax(0,1fr)_420px]" : "desktop:grid-cols-[minmax(0,1fr)_330px]")}>
@@ -180,9 +202,13 @@ const Week = () => {
       <header className="flex items-end justify-between gap-3">
         <div className="min-w-0 space-y-1">
           {/* «KW 41 · 5.–9. Okt» — по натисканню відкривається календар «Woche wählen» */}
-          <button type="button" onClick={() => openSheet("kalender", { kw: monday })} className="block text-hint font-extrabold text-faint">
-            {title}
-          </button>
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={() => openSheet("kalender", { kw: monday })} className="block truncate text-hint font-extrabold text-faint">
+              {title}
+            </button>
+            {/* на телефоні одна мітка в рядку KW: дві окремі обрізали б «KW 42 · 12.–16. Okt» */}
+            {allMuster ? <MusterBadge>{letter && ` · Woche ${letter}`}</MusterBadge> : <WeekLetter letter={letter} />}
+          </div>
           <h1 className="truncate text-title text-ink">{heading}</h1>
         </div>
         {/* як на макеті: ‹ ⋮ › (календар — у меню «⋮» і по натисканню на рядок KW) */}
@@ -201,12 +227,13 @@ const Week = () => {
 
       <NewPlanBanner />
       {!down && <PlanBanner resource={week} onRetry={reload} />}
+      {musterNote}
 
       {/* клік по уроку → шторка уроку; клік по дню — посилання всередині сітки */}
       {gridState(<WeekGrid days={days} onLessonClick={openLesson} />)}
 
       {/* поки вантажиться, заглушка вже показує ці рядки; при збої їх немає зовсім (макет «Plan nicht erreichbar») */}
-      {days && !down && (
+      {days && !down && !noMuster && (
         <div className="flex flex-col divide-y divide-hair rounded-card bg-card px-3.5 text-faint">
           {/* найближча Klausur → сторінка цього дня */}
           {nextExam && (
@@ -237,6 +264,17 @@ const Week = () => {
               <span className="shrink-0 text-label whitespace-nowrap">{whenText(nextAppointment, today)}</span>
               <ChevronRight className="size-4 shrink-0" />
             </button>
+          )}
+
+          {/* частина днів ще з Muster (макет 19 handy-02): «Fr · noch Muster» */}
+          {partMuster.length > 0 && (
+            <div className="flex items-center gap-3 py-2">
+              <Layers className="size-4.75 shrink-0 text-accent-ink" />
+              <div className="min-w-0 flex-1">
+                <h3 className="text-row leading-5 font-medium text-ink">{partMuster.join(", ")} · noch Muster</h3>
+                <p className="mt-0.5 text-caption leading-4">Der Plan kommt meist am Vortag</p>
+              </div>
+            </div>
           )}
 
           {/* підсумок тижня: «1 fällt aus · 3 Vertretungen · 2 Raumwechsel» */}

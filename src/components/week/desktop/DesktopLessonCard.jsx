@@ -9,6 +9,7 @@ import { fachClasses } from "../../../shared/utils/lessons";
 //   скасований — пунктир, сірий текст, бейдж «FÄLLT AUS»
 //   Klausur   — фіолетова рамка + бейдж «KLAUSUR»
 //   минулий   — блідіший
+//   Muster    — заштрихований (частина 19)
 // ...props (style, onClick, ref і обробники меню/підказки) йдуть прямо на <button>
 // ─────────────────────────────────────────────────────────────
 const DesktopLessonCard = ({ lesson, isPast, overrides, className, ...props }) => {
@@ -27,6 +28,7 @@ const DesktopLessonCard = ({ lesson, isPast, overrides, className, ...props }) =
         isCancelled ? "border-[1.5px] border-dashed border-faint2 text-faint" : fachClasses(lesson.subject?.code, overrides),
         isChanged && "bg-tint ring-2 ring-accent ring-inset", // зміна: фіолетовий фон і рамка
         lesson.examId && "ring-2 ring-accent ring-inset", // Klausur: фіолетова рамка
+        lesson.muster && "hatch-muster", // урок із Muster (частина 19): смуги поверх кольору
         isPast && "opacity-45", // минулий урок
         className,
       )}

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { deleteNote, editNote, newNote, upgradeNote } from "../utils/notes";
+import { deleteNote, editNote, findNote, newNote, upgradeNote } from "../utils/notes";
 
 // ─────────────────────────────────────────────────────────────
 // userStore — те, що користувач налаштовує САМ і що живе тільки на пристрої
@@ -33,6 +33,7 @@ export const useUserStore = create(
       dayView: "liste", // вигляд дня: "liste" | "zeitleiste"
       compactWeek: true, // менші клітинки тижня
       fontScale: 2, // шрифт: 1 — A, 2 — A+ (як на макетах), 3 — A++
+      checkedPlan: [], // «So lassen» у «Einträge prüfen» (частина 19): ключі з shared/utils/muster.js checkKey
 
       // ── нотатки ──
 
@@ -43,6 +44,20 @@ export const useUserStore = create(
         set({ notes: [...get().notes.filter((n) => n.id !== note.id), note] }); // замінюємо стару версію
         return note.id;
       },
+
+      // «In die 6. Stunde» (частина 19): нотатка до уроку переїжджає на інший урок того ж дня.
+      // id нотатки до уроку — «дата#урок», тому це нова нотатка + надгробок старої. Якщо там уже є текст — дописуємо
+      moveNote: (id, period) => {
+        const old = findNote(get().notes, id);
+        if (!old) return;
+        const there = findNote(get().notes, `${old.date}#${period}`);
+        const text = there ? `${there.text}\n${old.text}` : old.text;
+        get().saveNote({ date: old.date, period, subject: old.subject, text });
+        get().deleteNote(id);
+      },
+
+      // «So lassen»: більше не питати про цей запис (останні 200 ключів)
+      dismissCheck: (key) => set({ checkedPlan: [...get().checkedPlan.filter((k) => k !== key), key].slice(-200) }),
 
       // Видалити: лишається «надгробок», щоб видалення дійшло до інших пристроїв
       deleteNote: (id) => set({ notes: get().notes.map((n) => (n.id === id ? deleteNote(n) : n)) }),

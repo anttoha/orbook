@@ -4,6 +4,8 @@ import { usePlanStore } from "../../shared/store/planStore";
 import { cn } from "../../shared/utils/cn";
 import { longDate, mondayOf, nextSchoolDay, relativeDayWord, weekdayLong } from "../../shared/utils/format";
 import ChangedLine from "../week/ChangedLine";
+import WeekLetter from "../muster/WeekLetter";
+import { abLetter } from "../../shared/utils/muster";
 
 // Кругла кнопка-посилання 38×38
 const roundLink = "grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink";
@@ -42,7 +44,11 @@ const DayPageHeader = ({ date, today, day, onInfo }) => {
         </div>
         {/* «30. September» на вузьких телефонах інакше обрізалось би */}
         <h1 className="truncate text-title text-ink max-[379px]:text-heading max-[339px]:text-number">{longDate(date)}</h1>
-        <ChangedLine day={day} isToday={false} className="mt-0.5 h-3.5 text-small leading-none" iconClassName="size-2.5" />
+        {/* час зміни плану і тиждень циклу школи «WOCHE A» (частина 19): у рядку дня тижня він обрізав би «morgen» */}
+        <div className="mt-0.5 flex items-center gap-2">
+          <ChangedLine day={day} isToday={false} className="h-3.5 text-small leading-none" iconClassName="size-2.5" />
+          <WeekLetter letter={abLetter(day?.week)} />
+        </div>
       </div>
 
       {/* гортати дні (вихідні та канікули пропускаються) */}

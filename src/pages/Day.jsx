@@ -27,9 +27,11 @@ import { useSheet } from "../shared/hooks/useSheet";
 import { useSwipe } from "../shared/hooks/useSwipe";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
-import { isIsoDate, mondayOf, nextSchoolDay, subjectName } from "../shared/utils/format";
+import { isIsoDate, mondayOf, nextSchoolDay, subjectName, weekdayLong } from "../shared/utils/format";
 import { lessonState } from "../shared/utils/lessonClock";
 import { freeText, isPlanDown } from "../shared/utils/lessons";
+import MusterNote from "../components/muster/MusterNote";
+import PlanCheckBanner from "../components/muster/PlanCheckBanner";
 
 // Варіанти перемикача вигляду
 const VIEWS = [
@@ -44,7 +46,7 @@ const VIEWS = [
 // Вигляд (Liste / Zeitleiste) — настройка userStore.dayView, її ж змінює «Darstellung».
 // День береться з тижня (GET /api/week), окремого запиту немає.
 // Стан дня (day.status): ok — план є · holiday — вільно · not_published — плану ще немає ·
-// unavailable — сервер школи недоступний (тоді показуємо «очікувані» уроки expectedLessons)
+// unavailable — сервер школи недоступний. День із Muster (частина 19) приходить уже як ok з muster: true
 // ─────────────────────────────────────────────────────────────
 const Day = () => {
   const { datum } = useParams(); // дата з адреси (у /heute її немає)
@@ -92,7 +94,6 @@ const Day = () => {
   const openLesson = (lesson) => openSheet("stunde", { datum: date, stunde: lesson.period, fach: lesson.subject?.code });
 
   const lessons = day?.status === "ok" ? filter(day.lessons) : []; // уроки без прихованих курсів
-  const expected = day && day.status !== "ok" ? filter(day.expectedLessons) : []; // «vorläufig», поки плану немає
   const hiddenHere = day?.status === "ok" ? day.lessons.length - lessons.length : 0; // скільки сховано
   const live = day && date === today ? lessonState(lessons, now) : null; // що йде зараз (тільки сьогодні)
   const showLive = Boolean(live?.current || live?.next); // картка «Jetzt / Gleich»
@@ -107,7 +108,7 @@ const Day = () => {
   const loadingState = !day && (week.status === "error" ? <PlanError resource={week} onRetry={reload} /> : <DaySkeleton />);
 
   // День без плану: вихідний, свято, план ще не вийшов, школа не відповідає
-  const freeState = free && <DayFreeState day={day} today={today} week={week} onRetry={reload} fill={expected.length === 0} />;
+  const freeState = free && <DayFreeState day={day} today={today} week={week} onRetry={reload} />;
 
   // Klausuren дня без плану: «Klausur: Mathe, 1. Stunde» (у звичайні дні вони видно на уроці)
   const examNotes =
@@ -125,13 +126,16 @@ const Day = () => {
       </div>
     );
 
-  // «Очікувані» уроки (сірим), поки плану немає
-  const expectedState = expected.length > 0 && (
-    <div className="flex flex-col gap-2">
-      <p className="px-1 text-label font-extrabold text-faint">Vorläufig (wie sonst an diesem Tag)</p>
-      <LessonList day={day} lessons={expected} preliminary />
-    </div>
+  // День із Muster (частина 19): плану ще немає, уроки — звичайні для цього дня тижня (макет 19 handy-03)
+  const musterNote = day?.muster && (
+    <MusterNote lead="Muster:">
+      so ist der {weekdayLong(date)} normalerweise. Der echte Plan kommt meist am Vortag.
+    </MusterNote>
   );
+  const musterHint = day?.muster && <p className="px-1 text-caption text-faint">Notizen und Tests in Muster-Stunden prüft ORBook, sobald der echte Plan da ist.</p>;
+
+  // Прийшов справжній план, а запис висить на уроці, якого вже немає → «Plan ist da · prüfen»
+  const checkBanner = day && <PlanCheckBanner day={day} />;
 
   // План є, але всі уроки сховані
   const allHidden = day?.status === "ok" && lessons.length === 0 && (
@@ -174,13 +178,15 @@ const Day = () => {
             ) : (
               <>
                 {loadingState}
+                {checkBanner}
+                {musterNote}
                 {showLive && <CurrentLessonCard live={live} onOpen={openLesson} />}
                 {freeState}
                 {examNotes}
-                {expectedState}
                 {allHidden}
                 {lessons.length > 0 && view === "liste" && <LessonList day={day} lessons={lessons} onOpen={openLesson} />}
                 {lessons.length > 0 && view === "zeitleiste" && <Timeline day={day} lessons={lessons} onOpen={openLesson} />}
+                {musterHint}
                 {restoreHidden}
               </>
             )}
@@ -215,11 +221,12 @@ const Day = () => {
           <PlanBanner resource={week} onRetry={reload} />
           {day?.info.length > 0 && <DayInfoBanner info={day.info} onClick={openInfo} />}
           <AppointmentBanner date={date} />
+          {checkBanner}
+          {musterNote}
 
           {loadingState}
           {freeState}
           {examNotes}
-          {expectedState}
           {allHidden}
 
           {/* вигляд «Liste» */}
@@ -240,6 +247,7 @@ const Day = () => {
             </>
           )}
 
+          {musterHint}
           {restoreHidden}
 
           <HomeworkDue date={date} />

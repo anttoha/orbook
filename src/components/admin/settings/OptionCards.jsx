@@ -2,6 +2,8 @@ import Switch from "../../ui/Switch";
 import SelectPill from "../../ui/SelectPill";
 import { withCurrent } from "../../../shared/utils/admin";
 import OptionRow from "./OptionRow";
+import WeekLetter from "../../muster/WeekLetter";
+import { abLetter } from "../../../shared/utils/muster";
 import SettingsCard from "./SettingsCard";
 
 // Варіанти списків (межі — як перевіряє сервер, appsettings.py)
@@ -83,6 +85,27 @@ export const AppointmentsCard = ({ className, ...props }) =>
     <SettingsCard title="Termine" className={className}>
       <div className={divided}>
         <SelectRow label="Automatisch löschen" hint="nach dem letzten Tag" section="appointments" field="keepDays" options={HOMEWORK_KEEP} {...props} />
+      </div>
+    </SettingsCard>
+  ) : null;
+
+// «Muster-Stundenplan» (частина 19, макет 19 handy-11): до якого дня показувати Muster у днях без плану
+const MUSTER_UNTIL = [
+  { value: "2w", label: "2 Wochen" },
+  { value: "4w", label: "4 Wochen" },
+  { value: "8w", label: "8 Wochen" },
+  { value: "yearEnd", label: "Schuljahresende" },
+  { value: "off", label: "Aus" },
+];
+
+export const MusterCard = ({ className, abWeek, ...props }) =>
+  props.form.muster ? (
+    <SettingsCard title="Muster-Stundenplan" className={className}>
+      <div className={divided}>
+        <SelectRow label="Muster zeigen bis" hint="für Tage ohne echten Plan, nicht in Ferien" section="muster" field="until" options={MUSTER_UNTIL} {...props} />
+        <OptionRow label="Wochen A und B" hint={abLetter(abWeek) ? `Diese Woche ist ${abLetter(abWeek)} · aus dem Plan der Schule` : "Kommt aus dem Plan der Schule"}>
+          <WeekLetter letter={abLetter(abWeek)} />
+        </OptionRow>
       </div>
     </SettingsCard>
   ) : null;

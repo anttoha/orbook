@@ -145,3 +145,11 @@ Spec: `docs/specs/15-materialien/spec.md`. Бэкенд выложен (мигр
 Что есть на бэкенде сейчас: `expectedLessons` только при `not_published` и не дальше 14 дней (`plan/view.py`, `EXPECTED_HORIZON_DAYS`), A/B учитывается через `week_number`.
 Вопросы владельцу: (1) как далеко вперёд (предложено: до конца учебного года); (2) кто вносит Tests в Muster-уроки (предложено: как сейчас); (3) при изменении плана Test сам не переносится, заметки ученик переносит сам; (4) Muster только автоматически, без ручной правки админом?
 **Дальше:** после «ок» — `/orb-spec` (бэкенд: горизонт Muster, флаг/поле для Muster-дней), бэкенд в `/opt/orbook-be` по плану с «ок», затем `/orb-build`.
+Дизайн v2 (07.11): буква недели A/B везде + карточка админа «Muster zeigen bis». Владелец: «ок дизайн», бэкенд разрешён.
+
+## Часть 19 «Muster-Stundenplan» — готово (2026-11-07)
+Spec: `docs/specs/19-muster/spec.md`. Бэкенд выложен (`expectedLessons` до `muster.until`, `meta.musterUntil`; без миграции).
+Фронт: `shared/utils/muster.js` (12 тестов: `withMuster`, `abForMonday`, `planChecks` …); `useWeek` отдаёт Muster-дни как обычные с `muster: true`; штриховка — `hatch-muster`/`hatch-line` в `index.css` (токены `--color-muster-*`); метки `components/muster/` (MusterBadge, WeekLetter, MusterNote, NoMusterState), сверка «Einträge prüfen» (`PlanCheckBanner`, шторка `?sheet=pruefen`, `userStore.moveNote`/`dismissCheck`); окно урока с «Test oder Klausur eintragen» → `/testen/neu?datum&stunde&fach&muster=1` (`examPreset`); буква A/B в шапках недели/дня, в «Woche wählen», карточка «Muster-Stundenplan» в админке.
+Скриншоты: `/root/work/orbook-compare/19-muster/shots/`, скрипт `_tools/muster.mjs`.
+
+**Дальше (`/orb-auto`):** часть 16 «Einladen: ссылка + QR» — экранов нет, сначала `/orb-design` и «ок дизайн».
