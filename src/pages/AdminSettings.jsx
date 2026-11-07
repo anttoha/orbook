@@ -48,7 +48,7 @@ const SettingsForm = ({ data }) => {
       <AdminHeader title="Einstellungen" actions={isDesktop && <SaveButton {...draft} onSave={draft.save} />} />
       <div className="flex flex-col gap-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4">
         <div className={column}>
-          <PasswordLinks className="order-1" changedAt={data.classPasswordChangedAt} />
+          <PasswordLinks className="order-1" />
           <SchoolCard
             className="order-2"
             school={form.school}

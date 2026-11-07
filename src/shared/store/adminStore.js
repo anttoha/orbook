@@ -33,6 +33,7 @@ export const useAdminStore = create((set, get) => {
     overview: empty,
     codes: empty,
     teachers: empty, // GET /admin/teachers: Kürzel і предмети для Lehrer-Codes (частина 14)
+    access: empty, // GET /admin/access-codes: Zugangscodes і рядок Klassenpasswort (частина 14c)
     settings: empty,
 
     // Відкрили /admin: чи вже увійшли? 401 → форма входу (обробник нижче)
@@ -47,17 +48,18 @@ export const useAdminStore = create((set, get) => {
 
     login: async (password) => {
       await admin.adminLogin(password); // помилку покаже форма
-      set({ authed: true, loginNotice: null, overview: empty, codes: empty, teachers: empty, settings: empty });
+      set({ authed: true, loginNotice: null, overview: empty, codes: empty, teachers: empty, access: empty, settings: empty });
     },
 
     logout: async () => {
       await admin.adminLogout().catch(() => {}); // навіть без мережі на цьому пристрої виходимо
-      set({ authed: false, loginNotice: null, overview: empty, codes: empty, teachers: empty, settings: empty });
+      set({ authed: false, loginNotice: null, overview: empty, codes: empty, teachers: empty, access: empty, settings: empty });
     },
 
     reloadOverview: () => load("overview", admin.loadOverview),
     reloadCodes: () => load("codes", admin.loadCodes),
     reloadTeachers: () => load("teachers", admin.loadTeachers),
+    reloadAccess: () => load("access", admin.loadAccessCodes),
     reloadSettings: () => load("settings", admin.loadSettings),
 
     // Налаштування потрібні кільком екранам: вантажимо, тільки якщо ще немає

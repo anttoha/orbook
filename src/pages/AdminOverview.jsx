@@ -18,7 +18,7 @@ import { useCodeActions } from "../shared/hooks/useCodeActions";
 import { useNow } from "../shared/hooks/useNow";
 import { usePlanRefresh } from "../shared/hooks/usePlanRefresh";
 import { useAdminStore } from "../shared/store/adminStore";
-import { classPasswordText, hostOf, storageText } from "../shared/utils/admin";
+import { hostOf, storageText } from "../shared/utils/admin";
 import { cn } from "../shared/utils/cn";
 
 // Кнопки в шапці ПК: «Plan neu laden», «Neuer Editor-Code»
@@ -37,11 +37,11 @@ const DesktopActions = () => {
   );
 };
 
-// «Schnell» на телефоні: Protokoll, Passwörter (дата зміни пароля класу), сервер, Kurse & Fächer, Materialien
-const QuickLinks = ({ overview, baseUrl, today }) => (
+// «Schnell» на телефоні: Protokoll, Zugangscodes (частина 14c), сервер, Kurse & Fächer, Materialien
+const QuickLinks = ({ baseUrl }) => (
   <ListCard title="Schnell" className="lg:hidden">
     <MenuRow to="/admin/protokoll" icon={FileText} label="Protokoll" />
-    <MenuRow to="/admin/passwoerter" icon={LockIcon} label="Passwörter" value={classPasswordText(overview.classPasswordChangedAt, today)?.ago} />
+    <MenuRow to="/admin/zugang" icon={LockIcon} label="Zugangscodes" value="verwalten" />
     <MenuRow to="/admin/einstellungen" icon={Server} label="Schule & Plan" value={hostOf(baseUrl)} />
     <MenuRow to="/admin/kurse" icon={Table2} label="Kurse & Fächer" />
     <MenuRow to="/admin/muster" icon={Layers} label="Muster" />
@@ -119,7 +119,7 @@ const AdminOverview = () => {
             {data.storage.diskLow && " · Speicher wird knapp"}
           </p>
         )}
-        <QuickLinks overview={data} baseUrl={baseUrl} today={today} />
+        <QuickLinks baseUrl={baseUrl} />
         <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[1.35fr_1fr] lg:items-start lg:gap-6">
           <CodesPanel today={today} />
           <RecentEvents events={data.events ?? []} today={today} linkLabel={<><span className="lg:hidden">Alle</span><span className="hidden lg:inline">Protokoll</span></>} />

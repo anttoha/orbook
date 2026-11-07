@@ -22,7 +22,7 @@ export const adminTabs = [
   { to: "/admin/codes", label: "Editor-Codes", short: "Codes", icon: KeyIcon, mobile: true, desktop: true, count: "codes" },
   { to: "/admin/lehrer", label: "Lehrer-Codes", icon: UserRound, desktop: true, count: "teachers" },
   // Passwörter: на ПК — пункт меню, на телефоні — з Einstellungen і «Übersicht → Schnell» (частина 14b)
-  { to: "/admin/passwoerter", label: "Passwörter", icon: LockIcon, desktop: true },
+  { to: "/admin/zugang", label: "Zugangscodes", icon: LockIcon, desktop: true, count: "access", activeOn: ["/admin/passwoerter"] }, // частина 14c; паролі (14b) — підсторінка
   { to: "/admin/klausuren", label: "Klausuren", icon: FlagIcon, mobile: true, desktop: true, count: "exams" },
   { to: "/admin/kurse", label: "Kurse & Fächer", icon: Table2, desktop: true },
   { to: "/admin/muster", label: "Muster", icon: Layers, desktop: true }, // частина 19b; телефон — з Einstellungen і «Übersicht → Schnell»

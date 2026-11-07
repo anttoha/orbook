@@ -25,6 +25,7 @@ import AdminExams from "../../pages/AdminExams";
 import AdminCourses from "../../pages/AdminCourses";
 import AdminMuster from "../../pages/AdminMuster";
 import AdminLog from "../../pages/AdminLog";
+import AdminAccessCodes from "../../pages/AdminAccessCodes";
 import AdminPasswords from "../../pages/AdminPasswords";
 import AdminMaterials from "../../pages/AdminMaterials";
 import AdminAppointments from "../../pages/AdminAppointments";
@@ -61,6 +62,7 @@ export const router = createBrowserRouter([
           page({ path: "muster", Component: AdminMuster }), // свій Muster тижнів A і B (частина 19b)
           page({ path: "protokoll", Component: AdminLog }),
           page({ path: "einstellungen", Component: AdminSettings }),
+          page({ path: "zugang", Component: AdminAccessCodes }), // Zugangscodes (частина 14c)
           page({ path: "passwoerter", Component: AdminPasswords }), // пароль класу і адміна (частина 14b)
           page({ path: "materialien", Component: AdminMaterials }), // усі посилання, видалення (частина 15)
           page({ path: "termine", Component: AdminAppointments }), // усі терміни (частина 18)
