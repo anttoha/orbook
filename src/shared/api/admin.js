@@ -106,3 +106,18 @@ export async function runDanger(action, { word, currentPassword, before }) {
 // → { courses: [{ nr, label, subject, teacher, group, parallel, parallelWith, automatic, forced, optional }],
 //     subjects: [{ code, defaultName, name }] }. Зберігаємо через saveSettings (courses.optional, subjects.names, stats.since)
 export const loadAdminCourses = () => api("/admin/courses");
+
+// ── Zugangscodes (частина 14c) ──
+// → { codes: [{ id, label, masked, audience, maxDevices | null, devices, validUntil, active, status, lastUsedAt | null }],
+//     classPassword: { enabled, devices, changedAt | null, lastUsedAt | null } }
+export const loadAccessCodes = () => api("/admin/access-codes");
+// → { code, item }: повний код ORB-A-… є ТІЛЬКИ в цій відповіді. maxDevices: null — без ліміту
+export const createAccessCode = ({ label, audience, maxDevices, valid }) => api("/admin/access-codes", { method: "POST", body: { label, audience, maxDevices, valid } });
+// changes: будь-що з { label, maxDevices, validUntil, active } → { item, signedOut }. active: false — пристрої коду виходять
+export const updateAccessCode = (id, changes) => api(`/admin/access-codes/${id}`, { method: "PATCH", body: changes });
+export const regenerateAccessCode = (id) => api(`/admin/access-codes/${id}/regenerate`, { method: "POST" }); // → { code, item, signedOut }
+export const signOutAccessCode = (id) => api(`/admin/access-codes/${id}/sign-out`, { method: "POST" }); // → { signedOut }
+export const deleteAccessCode = (id) => api(`/admin/access-codes/${id}`, { method: "DELETE" }); // → { signedOut }
+// Старий пароль класу: вимкнути можна лише при робочому коді (інакше 409 last_access). → { classPassword, signedOut }
+export const setClassPasswordEnabled = (enabled) => api("/admin/access-codes/class-password", { method: "PATCH", body: { enabled } });
+export const signOutClassPassword = () => api("/admin/access-codes/class-password/sign-out", { method: "POST" }); // → { signedOut }

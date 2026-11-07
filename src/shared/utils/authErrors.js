@@ -13,7 +13,22 @@ export function loginErrorText(error) {
   }
   if (error.status === 429) return retryText(error);
   if (error.code === "not_configured") return "ORBook ist noch nicht eingerichtet.";
-  return error.message;
+  // Zugangscode (частина 14c, макет handy-10): ліміт пристроїв повний
+  if (error.code === "code_full") {
+    const { devices, maxDevices } = error.details ?? {};
+    const head = maxDevices ? `Schon auf ${devices ?? maxDevices} von ${maxDevices} ${maxDevices === 1 ? "Gerät" : "Geräten"} angemeldet.` : error.message;
+    return `${head} Admin fragen: Gerät abmelden oder Limit erhöhen.`;
+  }
+  if (error.code === "code_locked" || error.code === "code_expired") return `${error.message} Bitte beim Admin nachfragen.`;
+  return error.message; // password_disabled — сервер уже пише, що робити
+}
+
+// Плашка «Du wurdest abgemeldet» на екрані входу (макет handy-11): сесію закінчив сервер.
+// Особливий текст сервера («Dein Zugang gilt nicht mehr…») показуємо як є; звичайний — «Bitte neu anmelden.»
+export function signedOutNotice(error) {
+  const message = error?.message ?? "";
+  const generic = !message || message === "Bitte zuerst anmelden.";
+  return { title: "Du wurdest abgemeldet", text: generic ? "Bitte neu anmelden." : message };
 }
 
 // Скільки мілісекунд кнопка «Öffnen» лишається вимкненою. 0 — не вимикати.
