@@ -1,6 +1,6 @@
 # 16 · Einladen (Link + QR)
 
-**Статус:** ждёт «ок» плана бэкенда
+**Статус:** готово (2026-11-07), на демо
 **Источники:** `design/neu/16-einladen/` (дизайн ок 2026-11-07, QR «красивее» — точки, фиолетовые глаза, логотип), часть 14c (`docs/specs/14c-zugangscodes/spec.md`), бэкенд `/opt/orbook-be/src/orbook/` (`api/auth.py` `_login_with_code`, `security/access_codes.py`, `security/crypto.py` `encrypt_secret`, `api/admin_access.py`), `docs/API.md` (Zugangscodes), фронт `src/pages/More.jsx`, `src/components/auth/*`, `src/components/sheets/ShareSheet.jsx`.
 
 ## Зачем
@@ -82,4 +82,12 @@
 - **Шифрование токена** — в базе токен лежит зашифрованным ключом сервера: без ключа из `/etc/orbook/orbook.env` его не прочитать.
 
 ## Открытые вопросы
-- [ ] «ок» владельца на план бэкенда (пункты 1–7) — владелец.
+- [x] «ок» владельца на план бэкенда — получен 07.11 («ок, делай всё»).
+- [ ] Проверить сканирование QR настоящей камерой (iPhone и Android) — владелец, на демо.
+
+## Сделано (2026-11-07)
+- Бэкенд (`/opt/orbook-be` 675ccfa): миграция 0010, `security/invites.py`, `api/invite.py`, админ-API; выложен на прод и демо.
+- Фронт: `ui/QrCode.jsx` + `utils/qr.js` (uqr, уровень Q, точки, глаза, лого), `invite/InviteCard.jsx`, `invite/QrFullscreen.jsx` (Wake Lock), `admin/access/InviteSheet.jsx`, пункт «Einladen» и метка LINK, `sheets/ClassInviteSheet.jsx` (`?sheet=einladen`), строка в «Mehr», плитка и пункт меню в Einstellungen, `pages/JoinPage.jsx` (`/i/:token`), `planStore.join`.
+- Отличия: окно на ПК 620px (новый токен `--container-dialog-qr`, как в макете); у «Mehr» строка в карточке «Klasse»; в «Kein Platz mehr» без чисел, если ссылка проверена заранее (`full: true` без деталей).
+- Проверка QR: большой QR из приложения декодирует OpenCV в обеих темах; маленький OpenCV не берёт (он же не читает и скруглённые «глаза» вообще) — нужна проверка камерой.
+- Скриншоты: `/root/work/orbook-compare/16-einladen/shots/`, скрипт `_tools/einladen.mjs`.

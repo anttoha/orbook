@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { toast } from "sonner";
 import { api, retryText, setUnauthorizedHandler } from "../api/api";
+import { joinWithInvite } from "../api/invite";
 import { signedOutNotice } from "../utils/authErrors";
 import { cache, loadWithCache } from "../api/offlineCache";
 import { freshenExams, withDaysLeft } from "../utils/exams";
@@ -104,6 +105,13 @@ export const usePlanStore = create((set, get) => ({
   // ── Вхід паролем класу. Помилку (ApiError) кидаємо далі — її показує екран входу ──
   login: async (password) => {
     await api("/auth/login", { method: "POST", body: { password } });
+    set({ loginNotice: null, weeks: {} });
+    await get().start();
+  },
+
+  // ── Вхід за посиланням-запрошенням /i/<token> (частина 16): як вхід кодом. Помилку показує JoinPage ──
+  join: async (token) => {
+    await joinWithInvite(token);
     set({ loginNotice: null, weeks: {} });
     await get().start();
   },

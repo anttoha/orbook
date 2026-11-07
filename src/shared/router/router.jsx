@@ -33,6 +33,7 @@ import AdminAppointmentEdit from "../../pages/AdminAppointmentEdit";
 import AdminSettings from "../../pages/AdminSettings";
 import RouteError from "../../pages/RouteError";
 import Datenschutz from "../../pages/Datenschutz";
+import JoinPage from "../../pages/JoinPage";
 import SettingsLayout from "../../pages/SettingsLayout";
 
 // Помилка спрацьовує на найближчому errorElement. Тому він є на кожній сторінці:
@@ -48,6 +49,8 @@ export const router = createBrowserRouter([
     children: [
       // поза HomePage: цю сторінку можна відкрити без входу, з екрана «Zugang»
       page({ path: "datenschutz", Component: Datenschutz }),
+      // посилання-запрошення (частина 16): відкривається без входу
+      page({ path: "i/:token", Component: JoinPage }),
       // Адмінка: свій вхід і своє меню, вхід класу їй не потрібен (docs/frontend/09-admin.md)
       {
         path: "admin",

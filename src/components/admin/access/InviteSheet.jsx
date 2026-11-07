@@ -69,7 +69,7 @@ const InviteSheet = ({ code: start, onClose, onRenew }) => {
   };
 
   return (
-    <Sheet open onClose={onClose} desktop="dialog" eyebrow={off ? `${code.label} · Link ausgeschaltet` : `${code.label} · Gruppe · ${code.devices ?? 0} Geräte`} title="Einladen">
+    <Sheet open onClose={onClose} desktop="qr" eyebrow={off ? `${code.label} · Link ausgeschaltet` : `${code.label} · Gruppe · ${code.devices ?? 0} Geräte`} title="Einladen">
       {renderCard()}
       {invite && (
         <ul className="divide-y divide-hair rounded-card bg-card px-3.5">

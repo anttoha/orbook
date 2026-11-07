@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link2, RefreshCw, ShieldCheck } from "lucide-react";
 import { loadClassInvite } from "../../shared/api/invite";
+import { usePlanStore } from "../../shared/store/planStore";
 import { inviteUrl } from "../../shared/utils/invite";
 import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
@@ -29,6 +30,7 @@ const ClassInviteSheet = ({ open, onClose }) => {
   const [state, setState] = useState({ status: "loading" }); // loading | ready | off | error
   const [attempt, setAttempt] = useState(0); // «Erneut versuchen» → запит ще раз
   const [big, setBig] = useState(false);
+  const myClass = usePlanStore((s) => s.me?.className ?? null); // поки посилання не прийшло (або вимкнене)
 
   useEffect(() => {
     if (!open) return undefined;
@@ -46,10 +48,11 @@ const ClassInviteSheet = ({ open, onClose }) => {
     setAttempt((a) => a + 1);
   };
   const url = state.status === "ready" ? inviteUrl(state.token) : null;
+  const className = state.className ?? myClass;
   const intro = state.status === "off" ? null : "Zeig den QR deinen Mitschülern oder schick den Link in die Klassengruppe.";
 
   return (
-    <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow={state.className ? `${state.className} · Meine Schule` : "Meine Schule"} title="Klasse einladen">
+    <Sheet open={open} onClose={onClose} desktop="qr" eyebrow={className ? `${className} · Meine Schule` : "Meine Schule"} title="Klasse einladen">
       {intro && <p className="-mt-2 text-body-sm text-muted">{intro}</p>}
       {state.status === "loading" && <InviteCardSkeleton />}
       {state.status === "off" && <Off onClose={onClose} />}
@@ -63,11 +66,11 @@ const ClassInviteSheet = ({ open, onClose }) => {
       )}
       {url && (
         <>
-          <InviteCard url={url} className={state.className} onBig={() => setBig(true)} caption={`Ein Tippen — und der Plan der ${state.className ?? "Klasse"} ist da`} />
+          <InviteCard url={url} className={className} onBig={() => setBig(true)} caption={`Ein Tippen — und der Plan der ${className ?? "Klasse"} ist da`} />
           <p className="flex items-center gap-1.5 text-caption text-faint">
-            <ShieldCheck className="size-3.5 shrink-0" /> Nur für die {state.className ?? "Klasse"} — bitte nicht öffentlich posten.
+            <ShieldCheck className="size-3.5 shrink-0" /> Nur für die {className ?? "Klasse"} — bitte nicht öffentlich posten.
           </p>
-          <QrFullscreen open={big} onClose={() => setBig(false)} url={url} className={state.className} />
+          <QrFullscreen open={big} onClose={() => setBig(false)} url={url} className={className} />
         </>
       )}
     </Sheet>

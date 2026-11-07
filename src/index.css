@@ -263,6 +263,7 @@
     --container-sheet: 440px; /* панель справа */
     --container-dialog: 520px; /* вікно посередині */
     --container-dialog-wide: 760px; /* широке вікно: «Tastenkürzel» у дві колонки */
+    --container-dialog-qr: 620px; /* вікно «Einladen»: QR ліворуч, посилання й кнопки праворуч (частина 16) */
     --container-palette: 640px; /* пошук ⌘K (макет 51) */
     --container-settings-nav: 230px; /* меню розділів «Einstellungen» на ПК */
     --container-settings: 680px; /* праворуч від нього: дві плитки по 334 + 12 */

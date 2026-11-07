@@ -12,6 +12,7 @@ import Kbd from "./Kbd";
 //     "panel"  — панель праворуч на всю висоту (урок, Info zum Tag) — як на макеті
 //     "dialog" — вікно по центру (Teilen, календар)
 //     "wide"   — широке вікно по центру (Tastenkürzel)
+//     "qr"     — вікно 620px: QR і кнопки поруч («Einladen», частина 16)
 // Обидві бібліотеки самі дають: затемнення, Esc, клік по фону, фокус усередині.
 //
 // Пропси:
@@ -29,7 +30,7 @@ import Kbd from "./Kbd";
 const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, titleAside, titleClassName, hideClose = false, icon, footer, children }) => {
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // який варіант показувати
   const isPanel = isDesktop && desktop === "panel"; // панель праворуч?
-  const dialogWidth = desktop === "wide" ? "w-dialog-wide" : "w-dialog"; // ширина вікна по центру
+  const dialogWidth = { wide: "w-dialog-wide", qr: "w-dialog-qr" }[desktop] ?? "w-dialog"; // ширина вікна по центру
 
   // Бібліотеки повідомляють про відкриття/закриття через onOpenChange(true/false)
   const handleOpenChange = (next) => {

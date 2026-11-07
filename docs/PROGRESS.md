@@ -230,3 +230,8 @@ Spec: `docs/specs/14c-zugangscodes/spec.md` (там план бэкенда: т�
 **Дальше:** «ок» → `/orb-spec` (план бэкенда: `invite_links`, `GET /api/invite/{token}`, вход по ссылке, `/api/admin/access-codes/{id}/invite`) → «ок» плана → бэкенд → `/orb-build`.
 Владелец 07.11: «ок дизайн», QR — «красивее»: точки, фиолетовые «глаза», логотип ORBook в центре (уровень Q; проверено декодером OpenCV). Артефакт обновлён.
 Spec: `docs/specs/16-einladen/spec.md` (план бэкенда: колонки `invite_*` в `access_codes`, `GET /api/public/invite/{token}`, `POST /api/auth/join`, `GET /api/invite`, `POST/PATCH /api/admin/access-codes/{id}/invite`). **Ждём «ок» плана бэкенда**, затем бэкенд в `/opt/orbook-be`, потом `/orb-build`.
+
+## Часть 16 «Einladen» — готово (2026-11-07)
+Владелец: «ок, делай всё». Бэкенд `/opt/orbook-be` 675ccfa (миграция 0010, `/api/public/invite/{token}`, `/api/auth/join`, `/api/invite`, `/api/admin/access-codes/{id}/invite`) — выложен на прод и демо, 888 тестов. Фронт: QR в стиле ORBook (`uqr`, своя отрисовка), «Einladen» у групповых кодов в админке, «Klasse einladen» для учеников, страница `/i/:token`. Проверено на подменённом API (скриншоты `orbook-compare/16-einladen/shots/`).
+**Открыто:** владельцу — отсканировать QR настоящим телефоном на демо (создать ссылку может только админ: пароль у владельца).
+**Дальше (`/orb-auto`):** 20a баг «Wahl», 20b Sport Mädchen/Jungen, потом 21.
