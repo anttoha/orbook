@@ -1,6 +1,6 @@
 # 14c · Zugangscodes
 
-**Статус:** ждёт «ок» плана бэкенда
+**Статус:** готово (2026-11-07)
 **Источники:** `design/neu/14c-zugangscodes/` (дизайн ок 2026-11-07, буква `A`), ответы владельца 07.11 (`docs/PROGRESS.md`), бэкенд `/opt/orbook-be/src/orbook/` (`api/auth.py`, `api/deps.py`, `security/accounts.py`, `security/editor_codes.py`, `api/admin_codes.py`), `docs/API.md`.
 
 ## Зачем
@@ -81,4 +81,9 @@
 - **Миграция** — скрипт, который добавляет новую таблицу в базу без потери данных.
 
 ## Открытые вопросы
-- [ ] «ок» владельца на план бэкенда (п. 1–7) — владелец.
+- [x] «ок» владельца на план бэкенда — получен 07.11.
+
+## Сделано (2026-11-07)
+- Бэкенд выложен (миграция 0009 на проде и демо). Фронт: `pages/AdminAccessCodes.jsx`, `components/admin/access/*`, `shared/hooks/useAccessActions.js`, `shared/utils/accessCodes.js` (+ тест), вход — `LoginForm`, `SignedOutBanner`.
+- Отличие от дизайна: поле входа остаётся скрытым (точки), как пароль, — код тоже секрет. Код в фиолетовой карточке чуть меньше шрифтом, чтобы `ORB-A-XXXX-XXXX` помещался в одну строку.
+- Скриншоты: `/root/work/orbook-compare/14c-zugangscodes/shots/`, скрипт `_tools/zugang.mjs`.

@@ -8,7 +8,7 @@ const CodeReveal = ({ code, masked, title = "Neuer Code · nur jetzt sichtbar", 
   <div className="rounded-card bg-accent px-4 py-4 text-on-accent">
     <p className="text-label font-extrabold text-on-accent/80">{title}</p>
     <div className="mt-2 flex items-center gap-3">
-      <p className="min-w-0 flex-1 text-heading font-black tracking-code break-all select-all">{code}</p>
+      <p className="min-w-0 flex-1 text-dialog font-black tracking-code break-all select-all lg:text-heading">{code}</p>
       <button type="button" onClick={() => copyText(code)} aria-label={copyLabel} className="grid size-9.5 shrink-0 place-items-center rounded-full hover:bg-on-accent/15">
         <CopyIcon className="size-4.25" />
       </button>

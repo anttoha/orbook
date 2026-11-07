@@ -207,3 +207,9 @@ Spec: `docs/specs/19b-muster-editor/spec.md`. Бэкенд выложен (`must
 **Дальше:** после «ок» — `/orb-spec` (план бэкенда: таблица `access_codes`, миграция, вход по коду с лимитом устройств, выход устройств при выключении/удалении/сроке, `/api/admin/access-codes`) → «ок» владельца на план → бэкенд в `/opt/orbook-be` → `/orb-build`. Потом 16 «Einladen».
 Владелец 07.11: «ок дизайн», но буква после ORB — не Z. Решение: `ORB-A-…` (A = Anmeldung; рядом E = Editor, L = Lehrer). Макеты перерисованы.
 Spec: `docs/specs/14c-zugangscodes/spec.md` (там план бэкенда: таблица `access_codes` + `auth_sessions.access_code_id`, вход по коду в `/api/auth/login`, `code_full`/`password_disabled`, `/api/admin/access-codes`). **Ждём «ок» плана бэкенда**, затем бэкенд в `/opt/orbook-be`, потом `/orb-build`.
+
+## Часть 14c «Zugangscodes» — готово (2026-11-07)
+Бэкенд (`/opt/orbook-be`, коммит ecaac70): таблица `access_codes`, `sessions.access_code_id`, вход кодом `ORB-A-…` в `/api/auth/login` (`code_full`, `password_disabled`), `/api/admin/access-codes` (+ `class-password` вкл/выкл), смена пароля класса выкидывает только вошедших по паролю. Выложен `update.sh` (прод 0008 → 0009) + демо вручную (`orbook-demo migrate`).
+Фронт: страница `/admin/zugang` (меню ПК «Zugangscodes» вместо «Passwörter»; телефон — Einstellungen → «Zugang», Übersicht → Schnell), вход «Zugangscode oder Klassenpasswort», плашка «Du wurdest abgemeldet».
+На демо руками не проверено сохранение: нужен пароль админа (только у владельца). Проверено на подменённом API (скриншоты `orbook-compare/14c-zugangscodes/shots/`).
+**Дальше (`/orb-auto`):** часть 16 «Einladen: ссылка + QR» — сначала `/orb-design`.
