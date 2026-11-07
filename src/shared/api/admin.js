@@ -61,6 +61,12 @@ export const generateClassPassword = () => api("/admin/class-password", { method
 // Цей пристрій лишається в адмінці, інші виходять. → { otherSessionsEnded }; 403 wrong_password рахується в ліміт входу
 export const changeAdminPassword = (currentPassword, newPassword) => api("/admin/admin-password", { method: "POST", body: { currentPassword, newPassword } });
 
+// ── Muster-Stundenplan (частина 19b) ──
+// → { source, abMode, abWeek, schoolAbWeek, weeks | null, updatedAt, auto: { A, B }, autoFrom, autoTo, lessonTimes }
+export const loadMuster = () => api("/admin/muster");
+// Своя сітка тижнів A і B. 422 → details.fields «weeks.A.3» (дубль або забагато курсів в уроці)
+export const saveMuster = (weeks) => api("/admin/muster", { method: "PUT", body: { weeks } });
+
 // ── Protokoll ──
 export function loadEvents({ kind = "all", q = "", before = null }) {
   const params = new URLSearchParams({ kind });

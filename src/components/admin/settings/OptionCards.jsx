@@ -1,3 +1,5 @@
+import { ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import Switch from "../../ui/Switch";
 import SelectPill from "../../ui/SelectPill";
 import { withCurrent } from "../../../shared/utils/admin";
@@ -98,17 +100,40 @@ const MUSTER_UNTIL = [
   { value: "off", label: "Aus" },
 ];
 
-export const MusterCard = ({ className, abWeek, ...props }) =>
-  props.form.muster ? (
+// Звідки Muster і як рахуються тижні — з ЗБЕРЕЖЕНИХ налаштувань (міняються на сторінці «Muster», частина 19b)
+const MUSTER_SOURCE = { auto: "Automatisch · aus den Plänen", admin: "Vom Admin · Woche A und B" };
+const AB_MODE = { school: "aus dem Plan der Schule", swap: "getauscht" };
+
+// Рядок-посилання на сторінку «Muster»: назва, підказка, праворуч бейдж і стрілка
+const LinkRow = ({ to, label, hint, children }) => (
+  <Link to={to} className="-mx-2 flex min-h-16.75 items-center gap-3 rounded-field px-2 py-2.5 hover:bg-paper">
+    <span className="min-w-0 flex-1">
+      <span className="block text-row text-ink">{label}</span>
+      <span className="mt-0.5 block text-caption text-faint">{hint}</span>
+    </span>
+    {children}
+    <ChevronRight className="size-4 shrink-0 text-faint2" />
+  </Link>
+);
+
+export const MusterCard = ({ className, abWeek, saved, ...props }) => {
+  if (!props.form.muster) return null;
+  const letter = saved?.abMode === "none" ? null : abLetter(abWeek);
+  const mode = saved?.abMode ?? "school";
+  // Букву знаємо, лише якщо цей браузер увійшов і в клас (meta.abWeek)
+  const abHint = mode === "none" ? "Jede Woche gleich" : letter ? `Diese Woche ist ${letter} · ${AB_MODE[mode]}` : mode === "swap" ? "A und B getauscht" : "Kommt aus dem Plan der Schule";
+  return (
     <SettingsCard title="Muster-Stundenplan" className={className}>
       <div className={divided}>
         <SelectRow label="Muster zeigen bis" hint="für Tage ohne echten Plan, nicht in Ferien" section="muster" field="until" options={MUSTER_UNTIL} {...props} />
-        <OptionRow label="Wochen A und B" hint={abLetter(abWeek) ? `Diese Woche ist ${abLetter(abWeek)} · aus dem Plan der Schule` : "Kommt aus dem Plan der Schule"}>
-          <WeekLetter letter={abLetter(abWeek)} />
-        </OptionRow>
+        <LinkRow to="/admin/muster" label="Muster bearbeiten" hint={MUSTER_SOURCE[saved?.source ?? "auto"]} />
+        <LinkRow to="/admin/muster" label="Wochen A und B" hint={abHint}>
+          <WeekLetter letter={letter} />
+        </LinkRow>
       </div>
     </SettingsCard>
-  ) : null;
+  );
+};
 
 // Старі сервери не мають розділу homework у settings — тоді картки немає
 export const HomeworkCard = ({ className, onPurge, purging, ...props }) =>

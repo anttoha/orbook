@@ -167,3 +167,11 @@ Spec: `docs/specs/19-muster/spec.md`. Бэкенд выложен (`expectedLess
 **Дальше:** после «ок» — `/orb-spec` (бэкенд: настройки `muster.source`, `muster.abShift`/`abMode`, хранение сетки A/B, `GET/PUT /api/admin/muster`, учёт в `expected_lessons`/`week_number`), план бэкенда → «ок» владельца → бэкенд в `/opt/orbook-be`, затем `/orb-build`. Потом часть 16 «Einladen».
 Ответы владельца (07.11): своя сетка при «Automatisch» сохраняется; «Keine Wochen A und B» — оставить вариантом; правит только админ. Дизайн ок.
 Spec: `docs/specs/19b-muster-editor/spec.md` (там же план бэкенда). **Ждём «ок» плана бэкенда**, затем бэкенд в `/opt/orbook-be` и `/orb-build`.
+
+## Часть 19b «Muster-Editor» — готово (2026-11-07)
+Spec: `docs/specs/19b-muster-editor/spec.md`. Бэкенд выложен (`muster.source`, `muster.abMode`, `GET/PUT /api/admin/muster`, поправка `week`/`abWeek`; без миграции).
+Фронт: `/admin/muster` (`pages/AdminMuster.jsx`, `components/admin/muster/`), черновик `useMusterDraft`, логика `shared/utils/musterEditor.js` (13 тестов); пункт меню ПК «Muster», строка в Übersicht → Schnell, в Einstellungen строки «Muster bearbeiten» и «Wochen A und B». Уход с несохранёнными правками — «Änderungen verwerfen?» (`useBlocker`).
+Скриншоты: `/root/work/orbook-compare/19b-muster-editor/shots/`, скрипт `_tools/mustered.mjs`.
+На демо руками не сохраняли: нужен пароль админа (есть только у владельца).
+
+**Дальше (`/orb-auto`):** часть 16 «Einladen: ссылка + QR» — экранов нет, сначала `/orb-design` и «ок дизайн».

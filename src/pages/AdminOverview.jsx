@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { CalendarDays, FileText, Folder, LogOut, Plus, Server, Table2 } from "lucide-react";
+import { CalendarDays, FileText, Folder, Layers, LogOut, Plus, Server, Table2 } from "lucide-react";
 import AdminHeader from "../components/admin/AdminHeader";
 import { AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import CodeDialogs from "../components/admin/CodeDialogs";
@@ -44,6 +44,7 @@ const QuickLinks = ({ overview, baseUrl, today }) => (
     <MenuRow to="/admin/passwoerter" icon={LockIcon} label="Passwörter" value={classPasswordText(overview.classPasswordChangedAt, today)?.ago} />
     <MenuRow to="/admin/einstellungen" icon={Server} label="Schule & Plan" value={hostOf(baseUrl)} />
     <MenuRow to="/admin/kurse" icon={Table2} label="Kurse & Fächer" />
+    <MenuRow to="/admin/muster" icon={Layers} label="Muster" />
     <MenuRow to="/admin/materialien" icon={Folder} label="Materialien" />
     <MenuRow to="/admin/termine" icon={CalendarDays} label="Termine" />
   </ListCard>

@@ -68,7 +68,7 @@ const SettingsForm = ({ data }) => {
           <SecurityCard className="order-5" {...rows} />
           <HomeworkCard className="order-5" {...rows} onPurge={purge} purging={purging} />
           <AppointmentsCard className="order-5" {...rows} />
-          <MusterCard className="order-5" abWeek={abWeek} {...rows} />
+          <MusterCard className="order-5" abWeek={abWeek} saved={data.settings.muster} {...rows} />
         </div>
       </div>
       <DangerZone onDone={reloadOverview} />

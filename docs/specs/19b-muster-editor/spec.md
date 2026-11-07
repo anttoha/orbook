@@ -1,6 +1,6 @@
 # 19b · Muster-Editor
 
-**Статус:** дизайн ок (2026-11-07), ждёт «ок» плана бэкенда
+**Статус:** готово (2026-11-07; дизайн и план бэкенда — «ок» владельца)
 **Источники:** `design/neu/19b-muster-editor/` (артефакт https://claude.ai/artifact/HLj5RCmDhDciv64gpoZCnV), часть 19 (`docs/specs/19-muster/spec.md`), бэкенд `/opt/orbook-be/src/orbook/plan/view.py` (`week_number`, `expected_lessons`, `_plan_day`), `appsettings.py` (`MusterSettings`), `/opt/orbook-be/docs/API.md` (`expectedLessons`, `/api/admin/settings`).
 
 ## Зачем
@@ -49,7 +49,7 @@
 - «Keine Wochen A und B»: вкладок A/B нет, одна сетка (хранится как `A`).
 - Сеанс админа истёк (401) — как везде в админке.
 
-## Бэкенд (нужен; план ждёт «ок» владельца)
+## Бэкенд (сделано, выложено 2026-11-07)
 Без миграции: всё в таблице `settings`.
 1. **Настройки** (`MusterSettings`): `source` — `auto` (по умолчанию) | `admin`; `abMode` — `school` (по умолчанию) | `swap` | `none`. Меняются через существующий `PATCH /api/admin/settings`, попадают в протокол как сейчас.
 2. **Своя сетка** — ключ `internal.musterWeeks` (наружу только через новый эндпоинт): `{"A": [MusterLesson…], "B": [...]}`, `MusterLesson = {weekday 0–4, period 0–10, subject, course: {nr,label}|null, teacher|null, room|null}`. При `source=auto` не удаляется.
@@ -72,7 +72,10 @@
 - История версий Muster.
 
 ## Отличия от дизайна
-- В макете на телефоне 6 уроков; в коде строк столько, сколько уроков в `lessonTimes` или в сетке (минимум 6).
+- В макете на телефоне 6 уроков; в коде строк столько, сколько уроков в сетке (минимум 6; урок 0 и 7–10 — только если есть).
+- Кнопка «Speichern · N Änderungen» на телефоне плавает над нижним меню и видна, только пока есть несохранённые правки (как «Änderungen speichern» в Einstellungen); вместо серой «Gespeichert» — тост.
+- Подпись над заголовком шторок серая, как у всех шторок приложения (в макете фиолетовая).
+- Буква недели в строке «Wochen A und B» в Einstellungen видна, только если этот браузер вошёл и в класс (как в части 19).
 
 ## Слова
 - **Muster** — обычное расписание недели A или B для дней, на которые плана ещё нет.
@@ -81,5 +84,11 @@
 - **abMode** — как считать неделю: как школа, наоборот (`swap`) или без A/B (`none`).
 - **Parallelkurs** — два курса в одном уроке (например, Kunst или Bio).
 
+## Как устроено во фронте
+- `pages/AdminMuster.jsx` — страница; `components/admin/muster/` — `MusterGrid`, `MusterCell`, `LessonEditor`, `AbSwitch` (строка/карточка + шторка или выпадающее окно), `AbChoice`.
+- `shared/hooks/useMusterDraft.js` — черновик сетки и «Speichern»; `shared/utils/musterEditor.js` (+13 тестов) — клетки, «своя правка», счётчик, строки сетки, полоска KW.
+- `shared/api/admin.js` — `loadMuster`, `saveMuster`; источник и режим A/B — `saveSettings({ muster: … })`.
+- Скриншоты: `/root/work/orbook-compare/19b-muster-editor/shots/`, скрипт `_tools/mustered.mjs` (подставные данные).
+
 ## Открытые вопросы
-- [ ] «ок» плана бэкенда — владелец.
+- нет
