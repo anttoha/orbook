@@ -222,3 +222,9 @@ Spec: `docs/specs/14c-zugangscodes/spec.md` (там план бэкенда: т�
 - **20b Sport Mädchen / Jungen:** различать в названии (как SpMä / SpJu) — сначала посмотреть, что в плане и в `/api/courses` (группа курса).
 - **21 Hausaufgaben/Tests ↔ Materialien + описание:** новые экраны → `/orb-design`, бэкенд нужен.
 Порядок (предложение): 20a и 20b — сразу (маленькие), потом 16 «Einladen», потом 21.
+
+## Часть 16 «Einladen: ссылка + QR» — ждёт «ок дизайн» (2026-11-07)
+Макеты: `design/neu/16-einladen/` (`gen.py` на помощниках 14/14b/14c, `build.py` → `index.html`), артефакт https://claude.ai/artifact/PLW1E3weRWKFopnAKVMWmN.
+Экраны: админ — Zugangscodes → ⋮ у группового кода → «Einladen» (QR, ссылка `orbook.orbitium.net/i/K7MQ-2XPA`, Kopieren/WhatsApp, «QR groß zeigen», «Link aktiv», «Mitschüler dürfen teilen», «Neuen Link erzeugen» с вопросом), тост, загрузка, «Link ist aus»; ученик — Mehr → «Klasse einladen» (ПК: Einstellungen, карточка + пункт меню), «Einladen ist aus»; кто открыл ссылку — «Beitreten», загрузка, «Link gilt nicht mehr» (поле кода), «Kein Platz mehr».
+Решения (ждут подтверждения): ссылка = отдельный токен у группового Zugangscode (не сам код, можно показывать снова); вход по ссылке = устройство этого кода; новый токен гасит старую ссылку, никого не выкидывая; QR тёмный на белом в обеих темах (`--color-qr-bg/ink`); во фронте нужна маленькая QR-библиотека.
+**Дальше:** «ок» → `/orb-spec` (план бэкенда: `invite_links`, `GET /api/invite/{token}`, вход по ссылке, `/api/admin/access-codes/{id}/invite`) → «ок» плана → бэкенд → `/orb-build`.
