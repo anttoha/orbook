@@ -200,3 +200,8 @@ Spec: `docs/specs/19b-muster-editor/spec.md`. Бэкенд выложен (`must
 4. Срок по умолчанию — Schuljahresende.
 Названия кодов — без настоящих имён (подсказка «keine echten Namen», как у Editor-Codes).
 **Дальше (новый чат, `/orb-auto`):** `/orb-design` 14c → «ок дизайн» → план бэкенда (миграция `access_codes`, вход по коду, лимит устройств, выход при выключении) → «ок» → бэкенд, фронт.
+
+## Часть 14c «Zugangscodes» — ждёт «ок дизайн» (2026-11-07)
+Макеты: `design/neu/14c-zugangscodes/` (`gen.py` на помощниках 14/14b, `build.py` → `index.html`), артефакт https://claude.ai/artifact/XAGNk7XMFFWjz4Wtr3pDFM.
+Экраны: список кодов (карточки как Editor-Codes: Gruppe/Persönlich, ••••-M4, «9 von 30 Geräten», срок, zuletzt, переключатель; строка «Klassenpasswort · ALT»), пусто, загрузка; «Neuer Code» (Bezeichnung, Person/Gruppe, Geräte 1/2/30/Unbegrenzt, Gültig bis 30 Tage/Halbjahr/Schuljahresende) и показ кода `ORB-Z-…` один раз; шторка/меню действий (Umbenennen, Geräte-Limit, Gültigkeit, Geräte abmelden, Neu erzeugen, Sperren, Löschen), «Sperren?» и тост; вход «Zugangscode oder Klassenpasswort», ошибка «Limit voll», «Du wurdest abgemeldet»; Einstellungen → карточка «Zugang». ПК: пункт меню «Zugangscodes» вместо «Passwörter», таблица, окно, меню, диалог.
+**Дальше:** после «ок» — `/orb-spec` (план бэкенда: таблица `access_codes`, миграция, вход по коду с лимитом устройств, выход устройств при выключении/удалении/сроке, `/api/admin/access-codes`) → «ок» владельца на план → бэкенд в `/opt/orbook-be` → `/orb-build`. Потом 16 «Einladen».
