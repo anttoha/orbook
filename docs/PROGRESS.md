@@ -216,3 +216,9 @@ Spec: `docs/specs/14c-zugangscodes/spec.md` (там план бэкенда: т�
 
 ## Релиз v0.7.0 — тег готов (2026-11-07)
 Тег `v0.7.0` и текст `docs/releases/v0.7.0.md` на GitHub. Ждём, когда владелец опубликует Release (gh на сервере не авторизован). Бэкенд на проде уже со схемой 0009.
+
+## Новые пункты плана от владельца (2026-11-07)
+- **20a баг «Wahl»:** на старте выбрал только NT → в «Meine Kurse» включены все. Код: `pages/CourseStart.jsx` (`withNumbers`) против `pages/MyCourses.jsx` (`switchCourses`, пустой `picked` = все), `shared/utils/courses.js`. Начать с падающего теста.
+- **20b Sport Mädchen / Jungen:** различать в названии (как SpMä / SpJu) — сначала посмотреть, что в плане и в `/api/courses` (группа курса).
+- **21 Hausaufgaben/Tests ↔ Materialien + описание:** новые экраны → `/orb-design`, бэкенд нужен.
+Порядок (предложение): 20a и 20b — сразу (маленькие), потом 16 «Einladen», потом 21.
