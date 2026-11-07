@@ -3,7 +3,7 @@ import { ChevronRight, Info } from "lucide-react";
 import { useAccessActions } from "../../../shared/hooks/useAccessActions";
 import { useNow } from "../../../shared/hooks/useNow";
 import { useAdminStore } from "../../../shared/store/adminStore";
-import { DEVICE_CHOICES, accessValidChoices, accessValidUntil, audienceChip, choiceFromDevices, devicesFromChoice, devicesText } from "../../../shared/utils/accessCodes";
+import { accessValidChoices, accessValidUntil, audienceChip, choiceFromDevices, customDevicesError, devicesFromChoice, devicesText } from "../../../shared/utils/accessCodes";
 import { labelError, lastUsedText, validText } from "../../../shared/utils/admin";
 import { cn } from "../../../shared/utils/cn";
 import Button from "../../ui/Button";
@@ -15,6 +15,7 @@ import Sheet from "../../ui/Sheet";
 import TextField from "../../ui/TextField";
 import CodeReveal from "../CodeReveal";
 import { accessActions, passwordActions } from "./accessActions";
+import DevicesField from "./DevicesField";
 
 // Значення праворуч у шторці: «30», «Schuljahresende», «9 angemeldet»
 const hintOf = (item, code) =>
@@ -108,13 +109,17 @@ const RenameSheet = ({ code, actions, onClose }) => {
 };
 
 const LimitSheet = ({ code, actions, onClose }) => {
-  const [choice, setChoice] = useState(choiceFromDevices(code.maxDevices));
+  const choice = choiceFromDevices(code.maxDevices);
+  const [value, setValue] = useState({ choice, custom: choice === "custom" ? String(code.maxDevices) : "" });
+  const [error, setError] = useState(null);
+  const save = () => {
+    const found = customDevicesError(value.choice, value.custom);
+    setError(found);
+    return found ? false : actions.setLimit(code, devicesFromChoice(value.choice, value.custom));
+  };
   return (
-    <FormSheet code={code} title="Geräte-Limit" onClose={onClose} onSave={() => actions.setLimit(code, devicesFromChoice(choice))}>
-      <Field label="Geräte höchstens">
-        <Segmented label="Geräte höchstens" size="form" options={DEVICE_CHOICES} value={choice} onChange={setChoice} />
-        <p className="mt-1.5 text-caption text-faint">Jetzt angemeldet: {code.devices ?? 0}. Wer schon drin ist, bleibt drin.</p>
-      </Field>
+    <FormSheet code={code} title="Geräte-Limit" onClose={onClose} onSave={save}>
+      <DevicesField value={value} onChange={setValue} error={error} hint={`Jetzt angemeldet: ${code.devices ?? 0}. Wer schon drin ist, bleibt drin.`} />
     </FormSheet>
   );
 };

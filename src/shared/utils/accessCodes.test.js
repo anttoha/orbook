@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { accessValidChoices, accessValidUntil, accessValidValue, audienceChip, choiceFromDevices, devicesFromChoice, devicesShort, devicesText, halfYearEnd, isFull, signedOutText, summaryText } from "./accessCodes";
+import { accessValidChoices, accessValidUntil, accessValidValue, audienceChip, choiceFromDevices, customDevicesError, devicesFromChoice, devicesShort, devicesText, halfYearEnd, isFull, signedOutText, summaryText } from "./accessCodes";
 import { loginErrorText, signedOutNotice } from "./authErrors";
 
 describe("devicesText", () => {
@@ -19,6 +19,16 @@ describe("лимит устройств", () => {
     expect(devicesFromChoice("30")).toBe(30);
     expect(choiceFromDevices(null)).toBe("none");
     expect(choiceFromDevices(2)).toBe("2");
+    expect(choiceFromDevices(5)).toBe("custom");
+    expect(devicesFromChoice("custom", "12")).toBe(12);
+  });
+  it("своё число: 1–500, целое", () => {
+    expect(customDevicesError("custom", "12")).toBeNull();
+    expect(customDevicesError("custom", "0")).toMatch(/1 bis 500/);
+    expect(customDevicesError("custom", "501")).toMatch(/1 bis 500/);
+    expect(customDevicesError("custom", "2.5")).toMatch(/1 bis 500/);
+    expect(customDevicesError("custom", "")).toMatch(/1 bis 500/);
+    expect(customDevicesError("2", "")).toBeNull();
   });
   it("VOLL только у рабочего кода с полным лимитом", () => {
     expect(isFull({ status: "ok", maxDevices: 1, devices: 1 })).toBe(true);

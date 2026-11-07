@@ -87,3 +87,4 @@
 - Бэкенд выложен (миграция 0009 на проде и демо). Фронт: `pages/AdminAccessCodes.jsx`, `components/admin/access/*`, `shared/hooks/useAccessActions.js`, `shared/utils/accessCodes.js` (+ тест), вход — `LoginForm`, `SignedOutBanner`.
 - Отличие от дизайна: поле входа остаётся скрытым (точки), как пароль, — код тоже секрет. Код в фиолетовой карточке чуть меньше шрифтом, чтобы `ORB-A-XXXX-XXXX` помещался в одну строку.
 - Скриншоты: `/root/work/orbook-compare/14c-zugangscodes/shots/`, скрипт `_tools/zugang.mjs`.
+- 07.11: по просьбе владельца в «Geräte höchstens» добавлен вариант «Andere» — своё число 1–500 (`DevicesField`), релиз v0.7.1.

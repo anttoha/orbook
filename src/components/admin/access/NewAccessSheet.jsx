@@ -2,7 +2,7 @@ import { useState } from "react";
 import * as admin from "../../../shared/api/admin";
 import { useNow } from "../../../shared/hooks/useNow";
 import { useAdminStore } from "../../../shared/store/adminStore";
-import { AUDIENCES, DEVICE_CHOICES, accessValidChoices, accessValidUntil, accessValidValue, audienceHint, defaultDevices, devicesFromChoice } from "../../../shared/utils/accessCodes";
+import { AUDIENCES, accessValidChoices, accessValidUntil, accessValidValue, audienceHint, customDevicesError, defaultDevices, devicesFromChoice } from "../../../shared/utils/accessCodes";
 import { labelError } from "../../../shared/utils/admin";
 import { copyText } from "../../../shared/utils/share";
 import { longDate } from "../../../shared/utils/format";
@@ -13,6 +13,7 @@ import Segmented from "../../ui/Segmented";
 import Sheet from "../../ui/Sheet";
 import TextField from "../../ui/TextField";
 import CodeReveal from "../CodeReveal";
+import DevicesField from "./DevicesField";
 
 // Поле-перемикач з підписом і сірою підказкою під ним (Für wen, Geräte, Gültig bis)
 const Choice = ({ label, hint, options, value, onChange, disabled }) => (
@@ -29,7 +30,7 @@ const NewAccessForm = ({ yearEnd, onDone }) => {
   const { today } = useNow();
   const [label, setLabel] = useState("");
   const [audience, setAudience] = useState("person");
-  const [devices, setDevices] = useState(defaultDevices("person"));
+  const [devices, setDevices] = useState({ choice: defaultDevices("person"), custom: "" });
   const [valid, setValid] = useState(yearEnd ? "schuljahresende" : "halbjahr");
   const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState(false);
@@ -38,17 +39,17 @@ const NewAccessForm = ({ yearEnd, onDone }) => {
   // Змінили «Für wen» — пропонуємо типовий ліміт (людина — 2, група — 30)
   const chooseAudience = (next) => {
     setAudience(next);
-    setDevices(defaultDevices(next));
+    setDevices((old) => (old.choice === "custom" ? old : { ...old, choice: defaultDevices(next) })); // своє число не чіпаємо
   };
 
   const create = async (event) => {
     event.preventDefault();
-    const found = { label: labelError(label) };
+    const found = { label: labelError(label), devices: customDevicesError(devices.choice, devices.custom) };
     setErrors(found);
-    if (found.label || busy) return;
+    if (found.label || found.devices || busy) return;
     setBusy(true);
     try {
-      const body = { label: label.trim(), audience, maxDevices: devicesFromChoice(devices), valid: accessValidValue(valid, today, yearEnd) };
+      const body = { label: label.trim(), audience, maxDevices: devicesFromChoice(devices.choice, devices.custom), valid: accessValidValue(valid, today, yearEnd) };
       setCreated(await admin.createAccessCode(body));
     } catch (error) {
       setErrors({ form: error.message });
@@ -63,7 +64,7 @@ const NewAccessForm = ({ yearEnd, onDone }) => {
     <form onSubmit={create} noValidate className="flex flex-col gap-4">
       <TextField id="access-label" label="Bezeichnung" placeholder="z. B. Schüler 08" hint="Nur für dich sichtbar · keine echten Namen" error={errors.label} value={label} maxLength={40} readOnly={locked} onChange={(event) => setLabel(event.target.value)} autoComplete="off" />
       <Choice label="Für wen?" hint={audienceHint(audience)} options={AUDIENCES} value={audience} onChange={chooseAudience} disabled={locked} />
-      <Choice label="Geräte höchstens" hint="Handy + Laptop = 2. Voll? Dann kommt kein neues Gerät rein." options={DEVICE_CHOICES} value={devices} onChange={setDevices} disabled={locked} />
+      <DevicesField value={devices} onChange={setDevices} hint="Handy + Laptop = 2. Voll? Dann kommt kein neues Gerät rein." error={errors.devices} disabled={locked} />
       <Choice label="Gültig bis" hint={until ? `${longDate(until)} ${until.slice(0, 4)} · danach automatisch gesperrt` : ""} options={accessValidChoices(yearEnd)} value={valid} onChange={setValid} disabled={locked} />
       {errors.form && <p role="alert" className="text-hint text-danger">{errors.form}</p>}
       {created ? (

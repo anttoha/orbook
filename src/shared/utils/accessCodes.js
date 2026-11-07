@@ -4,15 +4,31 @@
 import { schoolYearEnd } from "./admin";
 import { addDays } from "./format";
 
-// «Geräte höchstens»: 1 · 2 · 30 · Unbegrenzt (null — без ліміту)
+// «Geräte höchstens»: 1 · 2 · 30 · Unbegrenzt · Andere (своє число в полі нижче). null — без ліміту
 export const DEVICE_CHOICES = [
   { value: "1", label: "1" },
   { value: "2", label: "2" },
   { value: "30", label: "30" },
   { value: "none", label: "Unbegrenzt" },
+  { value: "custom", label: "Andere" },
 ];
-export const devicesFromChoice = (choice) => (choice === "none" ? null : Number(choice));
-export const choiceFromDevices = (max) => (max == null ? "none" : String(max));
+export const MAX_DEVICES = 500; // те саме обмеження на сервері
+const PRESETS = ["1", "2", "30"];
+
+// Вибір + своє число → що надіслати серверу (null — без ліміту)
+export function devicesFromChoice(choice, custom = "") {
+  if (choice === "none") return null;
+  return Number(choice === "custom" ? custom : choice);
+}
+// Ліміт із сервера → вибір у перемикачі (5 → «Andere» і 5 у полі)
+export const choiceFromDevices = (max) => (max == null ? "none" : PRESETS.includes(String(max)) ? String(max) : "custom");
+
+// Своє число: ціле від 1 до 500. Повертає текст помилки або null
+export function customDevicesError(choice, custom) {
+  if (choice !== "custom") return null;
+  const n = Number(custom);
+  return Number.isInteger(n) && n >= 1 && n <= MAX_DEVICES ? null : `Bitte eine Zahl von 1 bis ${MAX_DEVICES} eingeben.`;
+}
 
 // «Für wen?»: людині вистачає 2 (телефон + ноутбук), групі — 30
 export const AUDIENCES = [
