@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { autoText, badSlot, changeCount, courseChipLabel, gridPeriods, isOwnChange, kwStrip, lessonFromCourse, saveLabel, setSlot, slotLessons, weekForMode } from "./musterEditor";
+import { autoText, badSlot, changeCount, gridPeriods, isOwnChange, kwStrip, lessonFromCourse, saveLabel, setSlot, slotLessons, weekForMode } from "./musterEditor";
 
 const ma = { weekday: 0, period: 1, subject: "Ma", course: { nr: "131", label: "Ma" }, teacher: "T03", room: "305" };
 const de = { weekday: 0, period: 2, subject: "De", course: null, teacher: null, room: "Aula" };
@@ -55,10 +55,6 @@ describe("Kurse", () => {
   const sport = { nr: "141", label: "SpJu", group: "SpJu", subject: { code: "Sp", name: "Sport" }, teacher: null };
   it("Stunde aus Kurs: Lehrer kann null sein", () => {
     expect(lessonFromCourse(sport, "TH")).toEqual({ subject: "Sp", course: { nr: "141", label: "SpJu" }, teacher: null, room: "TH" });
-  });
-  it("Chip: Name, bei Gruppen mit Kürzel; ohne Namen der Code", () => {
-    expect(courseChipLabel(sport)).toBe("Sport · SpJu");
-    expect(courseChipLabel({ label: "Sw", group: null, subject: { code: "Sw", name: null } })).toBe("Sw");
   });
   it("autoText", () => {
     expect(autoText([ma], { Ma: "Mathe" })).toBe("Mathe · T03 · Raum 305");

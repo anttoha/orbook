@@ -1,12 +1,12 @@
 import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
-import { filterSubjects, toggleSubject } from "../../shared/utils/exams";
-import { subjectName } from "../../shared/utils/format";
+import { filterSubjects } from "../../shared/utils/exams";
 import Field from "../ui/Field";
 import Segmented from "../ui/Segmented";
 import Switch from "../ui/Switch";
-import SubjectToggle from "./SubjectToggle";
+import ListPicker from "../ui/ListPicker";
+import { subjectItems } from "../../shared/utils/picker";
 
 const RANGES = [
   { value: "2w", label: "2 Wochen" },
@@ -24,7 +24,6 @@ const ExamFilterFields = ({ draft, change }) => {
   const courses = usePlanStore((s) => s.courses);
   const types = usePlanStore((s) => s.meta?.examTypes) ?? [];
   const picked = useUserStore((s) => s.picked);
-  const overrides = useUserStore((s) => s.colorOverrides);
   const subjects = filterSubjects(courses, picked, [...exams, ...pastExams]);
 
   return (
@@ -41,18 +40,8 @@ const ExamFilterFields = ({ draft, change }) => {
 
       {subjects.length > 0 && (
         <Field label="Fächer">
-          <div className="flex flex-wrap gap-1.75">
-            {subjects.map((subject) => (
-              <SubjectToggle
-                key={subject.code}
-                code={subject.code}
-                label={subjectName(subject)}
-                overrides={overrides}
-                selected={draft.subjects.includes(subject.code)}
-                onClick={() => change({ subjects: toggleSubject(draft.subjects, subject.code) })}
-              />
-            ))}
-          </div>
+          {/* кілька предметів: список із пошуком, розгортається на місці (фільтр уже у вікні) */}
+          <ListPicker id="filter-subjects" label="Fächer" multiple inline placeholder="Alle Fächer" items={subjectItems(subjects)} value={draft.subjects} onChange={(subjects) => change({ subjects })} />
         </Field>
       )}
 

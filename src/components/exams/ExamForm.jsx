@@ -15,7 +15,8 @@ import PageHeader from "../ui/PageHeader";
 import MusterNote from "../muster/MusterNote";
 import Segmented from "../ui/Segmented";
 import TextField from "../ui/TextField";
-import SubjectToggle from "./SubjectToggle";
+import ListPicker from "../ui/ListPicker";
+import { mySubjectCodes, subjectItems } from "../../shared/utils/picker";
 
 // Поки meta не прийшла: значення за замовчуванням із docs/API.md
 const DEFAULT_TYPES = ["Klausur", "Test", "Abgabe"];
@@ -82,7 +83,6 @@ const ExamForm = ({ exam, preset = null }) => {
   const meta = usePlanStore((s) => s.meta);
   const courses = usePlanStore((s) => s.courses);
   const picked = useUserStore((s) => s.picked);
-  const overrides = useUserStore((s) => s.colorOverrides);
   const [fields, setFields] = useState(() => ({ ...examToForm(exam), ...presetFields(preset), studentsMayEdit: exam?.studentsMayEdit ?? false }));
   const [localErrors, setLocalErrors] = useState({});
   const flow = useExamSave(exam);
@@ -125,11 +125,8 @@ const ExamForm = ({ exam, preset = null }) => {
         </Field>
 
         <Field label="Fach" error={errors.subject}>
-          <div className="flex flex-wrap gap-1.75">
-            {subjects.map((subject) => (
-              <SubjectToggle key={subject.code} large code={subject.code} label={subject.code} overrides={overrides} selected={fields.subject === subject.code} onClick={() => change({ subject: subject.code })} />
-            ))}
-          </div>
+          {/* одне поле зі списком і пошуком (design/neu/19c): свої предмети зверху */}
+          <ListPicker id="exam-subject" label="Fach" items={subjectItems(subjects, mySubjectCodes(courses, picked), courses)} value={fields.subject} error={Boolean(errors.subject)} onChange={(subject) => change({ subject })} />
         </Field>
 
         <TextField id="exam-date" label="Datum" type="date" value={fields.date} error={errors.date} onChange={(event) => change({ date: event.target.value })} />

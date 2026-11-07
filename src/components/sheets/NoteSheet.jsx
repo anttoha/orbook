@@ -2,10 +2,12 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { useSyncOn } from "../../shared/hooks/useNotesSync";
 import { useDay } from "../../shared/hooks/usePlan";
+import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { isIsoDate, longDate, weekdayLong } from "../../shared/utils/format";
 import { findNote, noteSubjects } from "../../shared/utils/notes";
-import SubjectToggle from "../exams/SubjectToggle";
+import ListPicker from "../ui/ListPicker";
+import { subjectItems } from "../../shared/utils/picker";
 import Button from "../ui/Button";
 import Field from "../ui/Field";
 import { CalendarIcon, CheckIcon, LockIcon, TrashIcon } from "../ui/icons";
@@ -46,6 +48,7 @@ const NoteForm = ({ note, noteId, date: openedOn, period, onDone }) => {
   const restoreNote = useUserStore((s) => s.restoreNote);
 
   const subjects = noteSubjects(day?.lessons, subject);
+  const subjectNames = usePlanStore((s) => s.meta?.subjects); // назви предметів для списку
 
   const handleSubmit = (e) => {
     e.preventDefault(); // не перезавантажувати сторінку
@@ -83,12 +86,8 @@ const NoteForm = ({ note, noteId, date: openedOn, period, onDone }) => {
 
       {subjects.length > 0 && (
         <Field label="Zu Fach · optional">
-          <div className="flex flex-wrap gap-2">
-            {subjects.map((code) => (
-              // повторне натискання знімає предмет: він необов'язковий
-              <SubjectToggle key={code} code={code} label={code} selected={subject === code} onClick={() => setSubject(subject === code ? null : code)} />
-            ))}
-          </div>
+          {/* необов'язковий: «Ohne Fach» знімає; у шторці на телефоні список розгортається на місці */}
+          <ListPicker id="note-subject" label="Zu Fach" inline clearable items={subjectItems(subjects.map((code) => ({ code, name: subjectNames?.[code] ?? null })))} value={subject} onChange={setSubject} />
         </Field>
       )}
 

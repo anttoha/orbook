@@ -182,3 +182,5 @@ Spec: `docs/specs/19b-muster-editor/spec.md`. Бэкенд выложен (`must
 Предложение: одно поле «Kurs»/«Fach» (кружок предмета, название, «учитель · Kurs 145») → список с поиском (телефон — шторка, ПК — выпадающее окно как Soft 51 ⌘K), сверху «Vorschlag»/«Deine Fächer». Без новой библиотеки (Sheet + Radix Popover). Заменить в формах: Muster, Klausur, Hausaufgabe, Material, Termin, Notiz.
 Вопрос владельцу: фильтры над списками (3–6 чипов) оставить чипами?
 **Дальше:** после «ок» — общий компонент `ui/SubjectPicker` + утилита поиска с тестами, замена во всех формах; затем часть 16 «Einladen».
+Владелец: «ок дизайн, везде так делай» (07.11). Сделано: `ui/ListPicker` + `ui/PickerList`, `shared/utils/picker.js` (9 тестов); заменены чипы в Muster, Klausur, Hausaufgabe, Material, Termin, Notiz и в фильтре Klausuren (несколько). Полоска чипов над списками оставлена. `SubjectToggle` удалён. Spec: `docs/specs/19c-kurs-auswahl/spec.md`. Скриншоты: `/root/work/orbook-compare/19b-muster-editor/shots/*-1[0-2]-*`.
+**Дальше (`/orb-auto`, новый чат):** часть 16 «Einladen» — сначала `/orb-design`.

@@ -78,12 +78,6 @@ export const lessonFromCourse = (course, room = null) => ({
   room,
 });
 
-// Підпис курсу на чипі: назва предмета; у групи — ще й мітка («Sport · SpJu»)
-export function courseChipLabel(course) {
-  const name = course.subject?.name ?? course.subject?.code ?? course.label;
-  return course.group ? `${name} · ${course.group}` : name;
-}
-
 // «Automatisch war: Mathe · T03 · Raum 305» (кілька курсів — через « / »; порожньо — «frei»)
 export function autoText(entries, names = {}) {
   if (!entries.length) return "frei";

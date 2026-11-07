@@ -4,11 +4,11 @@ import { useExamSave } from "../../shared/hooks/useExamSave";
 import { useNow } from "../../shared/hooks/useNow";
 import { deleteAppointment, recreateAppointment, saveAppointment } from "../../shared/api/appointments";
 import { useAppointmentStore } from "../../shared/store/appointmentsStore";
-import { useUserStore } from "../../shared/store/userStore";
 import { KINDS, NOTE_MAX, TITLE_MAX, appointmentToForm, dateHint, validateAppointmentForm } from "../../shared/utils/appointments";
 import { cn } from "../../shared/utils/cn";
 import { subjectName } from "../../shared/utils/format";
-import SubjectToggle from "../exams/SubjectToggle";
+import ListPicker from "../ui/ListPicker";
+import { subjectItems } from "../../shared/utils/picker";
 import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import Field from "../ui/Field";
@@ -50,7 +50,6 @@ const Choice = ({ selected, onClick, children }) => (
 // ─────────────────────────────────────────────────────────────
 const AppointmentForm = ({ item, subjects, eyebrow, admin = false, authorShort = null }) => {
   const { today } = useNow();
-  const overrides = useUserStore((s) => s.colorOverrides);
   const [fields, setFields] = useState(() => appointmentToForm(item));
   const [localErrors, setLocalErrors] = useState({});
   const [ops] = useState(() => opsFor(admin));
@@ -102,10 +101,9 @@ const AppointmentForm = ({ item, subjects, eyebrow, admin = false, authorShort =
             <Choice selected={!fields.subject} onClick={() => change({ subject: null })}>
               Ganze Klasse
             </Choice>
-            {subjects.map((subject) => (
-              <SubjectToggle key={subject.code} large code={subject.code} label={subjects.length <= 4 ? subjectName(subject) : subject.code} overrides={overrides} selected={fields.subject === subject.code} onClick={() => change({ subject: subject.code })} />
-            ))}
           </div>
+          {/* або один курс: поле зі списком і пошуком (design/neu/19c) */}
+          <ListPicker id="appointment-subject" label="Nur für ein Fach" placeholder="Nur für ein Fach …" className="mt-2" items={subjectItems(subjects)} value={fields.subject} clearable clearLabel="Ganze Klasse" onChange={(subject) => change({ subject })} />
           {fields.subject && <p className="mt-2 text-caption text-faint">{subjectName(subjects.find((s) => s.code === fields.subject) ?? { code: fields.subject })}: sehen nur Schüler mit diesem Kurs.</p>}
         </Field>
 

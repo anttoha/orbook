@@ -6,9 +6,9 @@ import { useMaterials } from "../../shared/store/materialsStore";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { formEyebrow, formSubjects, isTeacher } from "../../shared/utils/examRules";
-import { subjectName } from "../../shared/utils/format";
 import { TITLE_MAX, materialSubjects, materialToForm, validateMaterialForm } from "../../shared/utils/materials";
-import SubjectToggle from "../exams/SubjectToggle";
+import ListPicker from "../ui/ListPicker";
+import { subjectItems } from "../../shared/utils/picker";
 import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import Field from "../ui/Field";
@@ -39,17 +39,12 @@ const Note = ({ icon: Icon, children }) => (
   </div>
 );
 
-// Предмети: коротко — повні назви («Mathe», як на макеті), багато — коди, щоб влізли
-const SubjectChoice = ({ subjects, value, error, teacher, overrides, onChange }) => {
-  const long = subjects.length <= 4;
+// Предмет — одне поле зі списком і пошуком (design/neu/19c)
+const SubjectChoice = ({ subjects, courses, value, error, teacher, onChange }) => {
   const hint = teacher ? (subjects.length > 0 ? "Nur Ihre Fächer laut Plan." : "Für Ihre Fächer gibt es im Plan keine Kurse.") : null;
   return (
     <Field label="Fach" error={error}>
-      <div className="flex flex-wrap gap-1.75">
-        {subjects.map((subject) => (
-          <SubjectToggle key={subject.code} large code={subject.code} label={long ? subjectName(subject) : subject.code} overrides={overrides} selected={value === subject.code} onClick={() => onChange(subject.code)} />
-        ))}
-      </div>
+      <ListPicker id="material-subject" label="Fach" items={subjectItems(subjects, [], courses)} value={value} error={Boolean(error)} onChange={onChange} />
       {hint && <p className="mt-2 text-caption text-faint">{hint}</p>}
     </Field>
   );
@@ -64,7 +59,6 @@ const MaterialForm = ({ item }) => {
   const meta = usePlanStore((s) => s.meta);
   const courses = usePlanStore((s) => s.courses);
   const picked = useUserStore((s) => s.picked);
-  const overrides = useUserStore((s) => s.colorOverrides);
   const teacher = isTeacher(me);
   const subjects = materialSubjects(me, formSubjects(courses, picked, meta?.subjects, item?.subject));
   // одного предмета досить, щоб не натискати зайвий раз
@@ -92,7 +86,7 @@ const MaterialForm = ({ item }) => {
       <PageHeader backTo="/materialien" eyebrow={formEyebrow(me, "Materialien")} eyebrowClassName="text-accent-ink" title={item ? "Link ändern" : "Neuer Link"} />
 
       <div className="mt-5 flex flex-col gap-5">
-        <SubjectChoice subjects={subjects} value={fields.subject} error={errors.subject} teacher={teacher} overrides={overrides} onChange={(subject) => change({ subject })} />
+        <SubjectChoice subjects={subjects} courses={courses} value={fields.subject} error={errors.subject} teacher={teacher} onChange={(subject) => change({ subject })} />
 
         <div>
           <TextField id="material-url" label="Link" type="url" inputMode="url" autoComplete="off" placeholder="Link einfügen" value={fields.url} error={errors.url} leading={<Link2 className="size-4.5" />} onChange={(event) => change({ url: event.target.value })} />

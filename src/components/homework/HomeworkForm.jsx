@@ -7,7 +7,8 @@ import { useUserStore } from "../../shared/store/userStore";
 import { formEyebrow, formSubjects, isTeacher, validateExamDate } from "../../shared/utils/examRules";
 import { addDays, numericDate, subjectName, weekdayShort } from "../../shared/utils/format";
 import { dueHint, homeworkToForm, nextLessonDate, TEXT_MAX, validateHomeworkForm } from "../../shared/utils/homework";
-import SubjectToggle from "../exams/SubjectToggle";
+import ListPicker from "../ui/ListPicker";
+import { mySubjectCodes, subjectItems } from "../../shared/utils/picker";
 import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import Field from "../ui/Field";
@@ -73,7 +74,6 @@ const HomeworkForm = ({ item }) => {
   const meta = usePlanStore((s) => s.meta);
   const courses = usePlanStore((s) => s.courses);
   const picked = useUserStore((s) => s.picked);
-  const overrides = useUserStore((s) => s.colorOverrides);
   const teacher = isTeacher(me);
   // нова Hausaufgabe — за замовчуванням «bis morgen» (як у макеті handy-06)
   const [fields, setFields] = useState(() => (item ? homeworkToForm(item) : { ...homeworkToForm(null), due: addDays(today, 1) }));
@@ -104,11 +104,7 @@ const HomeworkForm = ({ item }) => {
 
       <div className="mt-5 flex flex-col gap-5">
         <Field label="Fach" error={errors.subject}>
-          <div className="flex flex-wrap gap-1.75">
-            {subjects.map((subject) => (
-              <SubjectToggle key={subject.code} large code={subject.code} label={subject.code} overrides={overrides} selected={fields.subject === subject.code} onClick={() => change({ subject: subject.code })} />
-            ))}
-          </div>
+          <ListPicker id="homework-subject" label="Fach" items={subjectItems(subjects, mySubjectCodes(courses, picked), courses)} value={fields.subject} error={Boolean(errors.subject)} onChange={(subject) => change({ subject })} />
         </Field>
 
         <div>
