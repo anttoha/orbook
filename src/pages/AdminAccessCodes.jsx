@@ -27,6 +27,8 @@ const EmptyHint = ({ onNew }) => (
     </span>
     <p className="mt-2 text-dialog text-ink">Noch keine Zugangscodes</p>
     <p className="max-w-80 text-body-sm leading-5.5 text-muted">Ein Code für eine Gruppe (Eltern, Vertretung) oder einer pro Schüler — jeder einzeln sperrbar, mit Ablaufdatum.</p>
+    {/* частина 16: «Einladen» є лише в меню групового коду — без коду його не знайти */}
+    <p className="max-w-80 text-caption text-faint">Link und QR zum Einladen: einen Gruppen-Code erstellen, dann ⋮ → »Einladen«.</p>
     <Button variant="primary" className="mt-2 flex-none px-5" onClick={onNew}>
       <Plus className="size-4.5" /> Ersten Code erstellen
     </Button>
