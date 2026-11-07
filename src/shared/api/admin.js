@@ -121,3 +121,7 @@ export const deleteAccessCode = (id) => api(`/admin/access-codes/${id}`, { metho
 // Старий пароль класу: вимкнути можна лише при робочому коді (інакше 409 last_access). → { classPassword, signedOut }
 export const setClassPasswordEnabled = (enabled) => api("/admin/access-codes/class-password", { method: "PATCH", body: { enabled } });
 export const signOutClassPassword = () => api("/admin/access-codes/class-password/sign-out", { method: "POST" }); // → { signedOut }
+// Посилання-запрошення групового коду (частина 16): створити або замінити (стара адреса перестає працювати)
+export const renewInvite = (id) => api(`/admin/access-codes/${id}/invite`, { method: "POST" }); // → { item }
+// { active?, shared? }: вимкнути посилання / показати його учням (таке посилання одне на клас) → { item }
+export const updateInvite = (id, changes) => api(`/admin/access-codes/${id}/invite`, { method: "PATCH", body: changes });

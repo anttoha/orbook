@@ -299,6 +299,11 @@
     --color-preview-dark: #141518;
     --color-preview-dark-line: #f2f1ed;
 
+    /* QR-код запрошення (частина 16): завжди темний на білому — інакше камера в темній темі його не прочитає */
+    --color-qr-bg: #ffffff;
+    --color-qr-ink: #2a2433;
+    --color-qr-eye: #6c4df6;
+
     /* fach */
     --color-deutsch-tint: #f6d7da;
     --color-deutsch-text: #8d364c;
@@ -380,6 +385,10 @@
     --color-preview-light-line: #14151a;
     --color-preview-dark: #141518;
     --color-preview-dark-line: #f2f1ed;
+
+    --color-qr-bg: #ffffff;
+    --color-qr-ink: #2a2433;
+    --color-qr-eye: #6c4df6;
 
     /* fach */
     --color-deutsch-tint: #482836;

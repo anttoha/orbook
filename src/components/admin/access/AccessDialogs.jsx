@@ -16,6 +16,7 @@ import TextField from "../../ui/TextField";
 import CodeReveal from "../CodeReveal";
 import { accessActions, passwordActions } from "./accessActions";
 import DevicesField from "./DevicesField";
+import InviteSheet from "./InviteSheet";
 
 // Значення праворуч у шторці: «30», «Schuljahresende», «9 angemeldet»
 const hintOf = (item, code) =>
@@ -32,9 +33,9 @@ const ActionsSheet = ({ code, onAction, onClose }) => {
       <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
         {accessActions(code).map((item) => (
           <li key={item.kind}>
-            <button type="button" onClick={() => onAction(item.kind, code)} className={cn("flex h-12.5 w-full items-center gap-3.25 text-left", item.danger ? "text-danger" : "text-ink")}>
-              <item.icon className={cn("size-4.5 shrink-0", item.danger ? "text-danger" : "text-muted")} />
-              <span className="flex-1 text-row font-medium">{item.sheetLabel ?? item.label}</span>
+            <button type="button" onClick={() => onAction(item.kind, code)} className={cn("flex h-12.5 w-full items-center gap-3.25 text-left", item.danger ? "text-danger" : item.accent ? "text-accent-ink" : "text-ink")}>
+              <item.icon className={cn("size-4.5 shrink-0", item.danger ? "text-danger" : item.accent ? "text-accent-ink" : "text-muted")} />
+              <span className={cn("flex-1 text-row", item.accent ? "font-bold" : "font-medium")}>{item.sheetLabel ?? item.label}</span>
               {!item.danger && hintOf(item, code) != null && <span className="max-w-40 truncate text-label text-faint">{hintOf(item, code)}</span>}
               {!item.danger && <ChevronRight className="size-4 shrink-0 text-faint2" />}
             </button>
@@ -185,6 +186,15 @@ const CONFIRMS = {
     variant: "primary",
     run: () => a.regenerate(code),
   }),
+  // Посилання-запрошення (частина 16): нове замість старого; хто вже увійшов — лишається
+  "invite-renew": (code, a) => ({
+    icon: <RenewIcon className="size-6.5 text-accent" />,
+    title: "Neuen Link erzeugen?",
+    text: "Der alte Link und der alte QR gehen dann nicht mehr. Wer schon drin ist, bleibt angemeldet.",
+    button: "Neuer Link",
+    variant: "primary",
+    run: () => a.renewInvite(code),
+  }),
   delete: (code, a) => ({
     icon: <TrashIcon className="size-6.5 text-danger" />,
     title: `»${code.label}« löschen?`,
@@ -214,7 +224,7 @@ const PASSWORD_CONFIRMS = {
 
 // ─────────────────────────────────────────────────────────────
 // Усі вікна дій. action — { kind, code } або null; onChange — відкрити інше / закрити.
-//   menu, rename, limit, validity, lock, signout, regenerate, delete, reveal (після Neu erzeugen),
+//   menu, invite, invite-renew (частина 16), rename, limit, validity, lock, signout, regenerate, delete, reveal (після Neu erzeugen),
 //   password-menu, password-off, password-signout (Klassenpasswort; «Passwort ändern» відкриває сторінка сама)
 // ─────────────────────────────────────────────────────────────
 const AccessDialogs = ({ action, password, onChange, onPasswordAction }) => {
@@ -239,6 +249,7 @@ const AccessDialogs = ({ action, password, onChange, onPasswordAction }) => {
     };
     return <PasswordSheet password={password} onAction={pick} onClose={close} />;
   }
+  if (kind === "invite") return <InviteSheet code={code} onClose={close} onRenew={() => onChange({ kind: "invite-renew", code })} />;
   if (kind === "rename") return <RenameSheet code={code} actions={actions} onClose={close} />;
   if (kind === "limit") return <LimitSheet code={code} actions={actions} onClose={close} />;
   if (kind === "validity") return <ValiditySheet code={code} actions={actions} onClose={close} />;
@@ -257,7 +268,12 @@ const AccessDialogs = ({ action, password, onChange, onPasswordAction }) => {
   if (!make) return null;
   const spec = make(code ?? password, actions);
   // Після «Neu erzeugen» показуємо новий код; після решти — просто закриваємо
-  const done = (result) => (kind === "regenerate" && result ? onChange({ kind: "reveal", code, result }) : close());
+  // Після «Neuer Link» — назад до вікна «Einladen» (з новим QR), навіть якщо скасували
+  const done = (result) => {
+    if (kind === "regenerate" && result) return onChange({ kind: "reveal", code, result });
+    if (kind === "invite-renew") return onChange({ kind: "invite", code: { ...code, invite: code.invite ?? {} } });
+    return close();
+  };
   return <Confirm {...spec} onClose={done} onConfirm={spec.run} />;
 };
 

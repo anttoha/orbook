@@ -5,7 +5,7 @@ import Badge from "../../ui/Badge";
 import Switch from "../../ui/Switch";
 import CodeMenu from "../CodeMenu";
 import { accessActions, passwordActions } from "./accessActions";
-import { FullChip, StatusChip } from "./AccessChips";
+import { FullChip, LinkChip, StatusChip } from "./AccessChips";
 
 const th = "pb-3 text-left text-hint font-extrabold text-faint";
 const HEAD = ["Bezeichnung", "Für", "Code", "Geräte", "Gültig bis", "Zuletzt", "Status"];
@@ -56,6 +56,7 @@ const AccessTable = ({ codes, password, today, onToggle, onAction, onPasswordTog
             <>
               <StatusChip code={code} />
               <FullChip code={code} />
+              <LinkChip code={code} />
             </>
           }
           switchProps={{ checked: code.active, onChange: () => onToggle(code), label: code.active ? `${code.label} sperren` : `${code.label} entsperren` }}

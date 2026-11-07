@@ -54,6 +54,9 @@ export function devicesText(devices, maxDevices) {
 export const devicesShort = (devices, maxDevices) => (maxDevices == null ? `${devices ?? 0} · unbegrenzt` : `${devices ?? 0} von ${maxDevices}`);
 
 // Ліміт повний — нове пристрій не увійде (чип VOLL)
+// Мітка LINK: у коду є робоче посилання-запрошення (частина 16)
+export const hasLink = (code) => code.status === "ok" && Boolean(code.invite?.active);
+
 export const isFull = (code) => code.status === "ok" && code.maxDevices != null && code.devices >= code.maxDevices;
 
 // «Halbjahr» = до 31 січня; якщо вже після — до кінця навчального року (рішення в spec 14c)

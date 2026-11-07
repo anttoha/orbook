@@ -1,4 +1,4 @@
-import { audienceChip, isFull } from "../../../shared/utils/accessCodes";
+import { audienceChip, hasLink, isFull } from "../../../shared/utils/accessCodes";
 import { codeChip } from "../../../shared/utils/admin";
 import Badge from "../../ui/Badge";
 
@@ -13,9 +13,13 @@ export const StatusChip = ({ code }) => <Badge variant={STATUS[code.status] ?? "
 // VOLL — ліміт пристроїв вичерпано: нові пристрої не увійдуть
 export const FullChip = ({ code }) => (isFull(code) ? <Badge variant="changed">Voll</Badge> : null);
 
+// LINK — у коду працює посилання-запрошення (частина 16)
+export const LinkChip = ({ code }) => (hasLink(code) ? <Badge variant="ok">Link</Badge> : null);
+
 export const CodeChips = ({ code }) => (
   <>
     <AudienceChip audience={code.audience} />
     {code.status !== "ok" ? <StatusChip code={code} /> : <FullChip code={code} />}
+    <LinkChip code={code} />
   </>
 );

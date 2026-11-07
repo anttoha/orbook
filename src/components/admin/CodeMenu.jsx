@@ -24,9 +24,11 @@ const CodeMenu = ({ code, onAction, onOpenSheet, items: ownItems }) => {
           {items.map((item) => (
             <div key={item.kind}>
               {item.danger && <DropdownMenu.Separator className={menuSeparatorClass} />}
-              <DropdownMenu.Item className={cn(menuItemClass, "font-semibold", item.danger && "text-danger")} onSelect={() => onAction(item.kind, code)}>
-                <item.icon className={cn(menuIconClass, item.danger && "text-danger")} /> {item.label}
+              {/* accent — головний пункт («Einladen», частина 16): фіолетовий фон і риска під ним */}
+              <DropdownMenu.Item className={cn(menuItemClass, "font-semibold", item.danger && "text-danger", item.accent && "bg-tint font-bold text-accent-ink")} onSelect={() => onAction(item.kind, code)}>
+                <item.icon className={cn(menuIconClass, item.danger && "text-danger", item.accent && "text-accent-ink")} /> {item.label}
               </DropdownMenu.Item>
+              {item.accent && <DropdownMenu.Separator className={menuSeparatorClass} />}
             </div>
           ))}
         </DropdownMenu.Content>

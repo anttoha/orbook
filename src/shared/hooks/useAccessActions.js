@@ -34,5 +34,9 @@ export function useAccessActions() {
     remove: (code) => run(() => admin.deleteAccessCode(code.id), `${name(code)} gelöscht`),
     setPassword: (enabled) => run(() => admin.setClassPasswordEnabled(enabled), enabled ? "Klassenpasswort eingeschaltet" : "Klassenpasswort ausgeschaltet"),
     signOutPassword: () => run(() => admin.signOutClassPassword(), "Klassenpasswort"),
+    // Посилання-запрошення (частина 16). Перше створюємо мовчки — людина просто відкрила «Einladen»
+    createInvite: (code) => run(() => admin.renewInvite(code.id)),
+    renewInvite: (code) => run(() => admin.renewInvite(code.id), "Neuer Link erstellt · der alte geht nicht mehr"),
+    setInvite: (code, changes, title) => run(() => admin.updateInvite(code.id, changes), title),
   };
 }
