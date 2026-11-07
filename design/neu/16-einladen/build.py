@@ -114,13 +114,13 @@ def page():
         out += [shot(nm, cap, "pc") for nm, cap in pcs]
         out.append('</div></section>')
     out.append('</div>')
-    out.append('''<div class="box"><h2>Решил сам (скажите, если не так)</h2><ul style="margin:0;padding-left:20px">
+    out.append('''<div class="box"><h2>Решения (дизайн ок 07.11, QR — красивее по просьбе)</h2><ul style="margin:0;padding-left:20px">
 <li>ссылка приглашения — у <b>группового</b> Zugangscode (например «Klasse 9b»); кто вошёл по ней, считается устройством этого кода (лимит, «Sperren», «Geräte abmelden» работают как раньше);</li>
 <li>ссылка короткая <code>orbook.orbitium.net/i/K7MQ-2XPA</code> — это отдельный токен, не сам код: её можно показывать снова, а код по-прежнему виден один раз;</li>
 <li>«Neuen Link erzeugen» гасит старую ссылку и QR, но никого не выкидывает; «Link aktiv» выкл. — по ссылке больше не войти;</li>
 <li>ученики видят «Klasse einladen» только если админ включил «Mitschüler dürfen teilen» (по умолчанию вкл.);</li>
-<li>QR всегда тёмный на белом (новые токены <code>--color-qr-bg</code>/<code>--color-qr-ink</code>, одинаковые в обеих темах); для QR во фронте понадобится маленькая библиотека.</li>
-</ul><p style="margin-top:12px">Ответ: «ок дизайн» или что поменять.</p></div>''')
+<li>QR в стиле ORBook: точки, фиолетовые «глаза», логотип в центре (уровень коррекции Q — логотип не мешает); всегда тёмный на белом (токены <code>--color-qr-bg</code>/<code>-ink</code>/<code>-eye</code>, одинаковые в обеих темах). Матрицу считает маленькая библиотека, рисуем сами в SVG.</li>
+</ul></div>''')
     out.append(f'</div><script>{JS}</script>')
     return "\n".join(out)
 
