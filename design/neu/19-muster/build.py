@@ -46,6 +46,8 @@ SECTIONS = [
     ("kalender", "Выбор недели и «Muster ещё нет»", "В «Woche wählen» недели без настоящего плана заштрихованы, в легенде — «Muster». В начале учебного года, пока у школы нет двух недель плана, Muster не из чего собрать — тогда пустой экран с объяснением. Загрузка — те же серые полоски, что и сейчас (Soft 29).",
      [("handy-09-woche-waehlen", "Woche wählen · Muster-Wochen"), ("handy-10-kein-muster", "Noch kein Muster")],
      [("pc-04-woche-waehlen", "Computer · Woche wählen")]),
+    ("admin", "Неделя A/B и настройка админа", "Буква недели теперь видна везде: в шапке недели и дня («KW 38 · 15.–19. Sept · WOCHE A»), в календаре рядом с номером KW. Берётся из плана школы (неделя 1 = A, 2 = B). В админке (Einstellungen) новая карточка: «Muster zeigen bis» — по умолчанию «Schuljahresende», можно 2/4/8 недель или выключить; там же видно, какая сейчас неделя и из каких недель собран Muster.",
+     [("handy-11-admin", "Admin · Einstellungen · Muster")], []),
 ]
 OLD = [(("1 Handy Hell", "2 Handy Dunkel", "04 Woche"), "Soft 04 · Woche", "phone"),
        (("1 Handy Hell", "2 Handy Dunkel", "05 Tag · Liste"), "Soft 05 · Tag · Liste", "phone"),
@@ -113,17 +115,12 @@ def page():
     out.append('<section id="vergleich"><h2>Для сравнения: старые экраны Soft</h2><p>Откуда взяты шторка, строки меню, список и левое меню.</p><div class="row">')
     out += [orig(pth, cap, kind) for pth, cap, kind in OLD]
     out.append('</div></section></div>')
-    out.append('''<div class="box"><h2>Вопросы к вам (решаете вы)</h2><ol>
-<li><b>Как далеко вперёд:</b> <span>предлагаю — до конца учебного года (каникулы и праздники берём из плана школы, там Muster не показываем). Или ограничить, например, 8 неделями?</span></li>
-<li><b>Кто вносит Tests/Klausuren в Muster-уроки:</b> <span>предлагаю — те же, что сейчас (Editor-Codes, учителя). Так?</span></li>
-<li><b>Если план изменился:</b> <span>Test/Klausur никогда не переносим сами: автор, учитель или Editor-Code видят «Einträge prüfen» и «Test ändern», остальные — только пометку «prüfen». Заметки ученик переносит сам. Так?</span></li>
-<li><b>Откуда Muster:</b> <span>предлагаю — только автоматически из последних недель настоящего плана (отдельно для недели A и B), без ручной правки админом. Нужна ли админу кнопка «Muster bearbeiten»?</span></li>
-</ol><h2 style="margin-top:20px">Решил сам (скажите, если не так)</h2><ul style="margin:0;padding-left:20px">
-<li>в Muster только обычные уроки, без отмен и замен; курсы по выбору — как в «Meine Kurse»;</li>
-<li>как только школа выложила план на день, Muster этого дня исчезает — главный источник всегда план школы;</li>
-<li>серые «vorläufig»-уроки под «Plan fehlt noch» заменяются Muster-днём;</li>
-<li>штриховка = Muster везде: неделя, день, календарь; заметки остаются только на устройстве (и в Sync), как сейчас.</li>
-</ul><p style="margin-top:12px">Ответ: «ок дизайн» + ответы на 4 вопроса, или что поменять.</p></div>''')
+    out.append('''<div class="box"><h2>Ваши ответы (учтены)</h2><ol>
+<li><b>Как далеко:</b> <span>по умолчанию до конца учебного года, админ меняет в Einstellungen (2/4/8 недель, выкл.).</span></li>
+<li><b>Кто вносит:</b> <span>те же, что сейчас (Editor-Codes, учителя).</span></li>
+<li><b>Если план изменился:</b> <span>Test сам не переносится, заметки ученик переносит сам.</span></li>
+<li><b>Откуда Muster:</b> <span>только автоматически, отдельно для недель A и B; буква недели видна везде.</span></li>
+</ol><p style="margin-top:12px">Осталось: «ок дизайн» для буквы недели и карточки в админке — и «ок» плана бэкенда.</p></div>''')
     out.append(f'</div><script>{JS}</script>')
     return "\n".join(out)
 

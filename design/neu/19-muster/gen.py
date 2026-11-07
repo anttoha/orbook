@@ -30,6 +30,11 @@ def defs(c):
             f'<pattern id="mr" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">'
             f'<rect x="0" y="0" width="1.6" height="7" fill="{c["faint2"]}" fill-opacity="0.8"/></pattern>')
 
+def ab_eyebrow(x, y, text, ab, c, accent=False):
+    """Eyebrow mit Wochen-Badge: «KW 41 · 6.–10. Okt» + WOCHE B (A/B-Woche der Schule, sonst unklar)."""
+    bd, _ = badge(x + g.tw(text, 12.5, 800) * 0.92 + 8, y - 13.5, f"WOCHE {ab}", c, "sand")
+    return eyebrow(x, y, text, c, accent) + bd
+
 def page(w, h, c, body):
     return svg(w, h, c, body, defs(c))
 
@@ -172,7 +177,8 @@ MO_MUSTER = [(1, "De", True, (), None, None), (2, "Ma", True, (TEST_LINE,), None
 
 # ════════════════ Telefon ════════════════
 def p_week_head(c, eyebrow_text, title_text, with_badge=True):
-    b = [eyebrow(18, 33, eyebrow_text, c), title(18, 65, title_text, c)]
+    text, ab = eyebrow_text
+    b = [ab_eyebrow(18, 33, text, ab, c), title(18, 65, title_text, c)]
     if with_badge:
         bd, _ = badge(18 + g.tw(title_text, 29, 900) * 0.93 + 10, 46, "MUSTER", c, "tint"); b.append(bd)
     b.append(round_btn(246, 33.31, c, BACK) + round_btn(290, 33.31, c, CAL) + round_btn(334, 33.31, c, CHEV_R))
@@ -180,7 +186,7 @@ def p_week_head(c, eyebrow_text, title_text, with_badge=True):
 
 def p_muster_woche(c, theme, sub):
     """Ganze Woche in der Zukunft: alles Muster."""
-    b = [p_week_head(c, "KW 41 · 6.–10. Okt · in 3 Wochen", "Oktober")]
+    b = [p_week_head(c, ("KW 41 · 6.–10. Okt", "B"), "Oktober")]
     b.append(muster_box(18, 85.31, 354, c, [S("Muster-Stundenplan: ", 700, c["accink"]) + S("so läuft Woche B", 400, c["muted"]),
                                             g.esc("normalerweise – ohne Ausfälle und Vertretungen.")]))
     y0 = 157
@@ -202,6 +208,7 @@ def p_diese_woche(c, theme, sub):
     """Diese Woche: Mo–Do echter Plan, Freitag noch Muster (Plan kommt meist am Vortag)."""
     inner, w, h = base("04 Woche", theme)
     b = [inner]
+    b.append(R(14, 18, 230, 20, 0, c["paper"]) + ab_eyebrow(18, 33, "KW 38 · 15.–19. Sept", "A", c))
     b.append(R(311.19, 85.31, CW, 42, 14, c["paper"]) + day_head(4, "FR", "19", c, hatch=True))
     fr = ["Ma", "En", "De", "Bio", "Ge", None]
     for row, code in enumerate(fr):
@@ -221,7 +228,7 @@ def p_tag_head(c, theme, eyebrow_text, title_text, accent=False):
     inner, w, h = base("05 Tag · Liste", theme)
     clip = '<clipPath id="th"><rect x="0" y="0" width="390" height="129"/></clipPath>'
     return (f'{clip}<g clip-path="url(#th)">{inner}</g>' + R(60, 10, 330, 70, 0, c["paper"])
-            + eyebrow(66, 33, eyebrow_text, c, accent) + title(66, 65, title_text, c)
+            + ab_eyebrow(66, 33, eyebrow_text, "B", c, accent) + title(66, 65, title_text, c)
             + round_btn(290, 33.31, c, BACK) + round_btn(334, 33.31, c, CHEV_R))
 
 def p_muster_tag(c, theme, sub, sheet=False):
@@ -357,18 +364,29 @@ def pruefen_sheet(c, sub, top=396, H=1000):
     card, h = check_card(18, y, 354, c, sub, "test"); b.append(card)
     return "".join(b)
 
+AB_OF = {"36": "A", "37": "B", "38": "A", "39": "B", "40": "A"}
+
+def ab_kw(inner, x, c):
+    """KW-Spalte im Kalender: Nummer + Buchstabe der A/B-Woche («38 A»)."""
+    import re
+    def one(m):
+        y, rest, kw = m.groups()
+        return f'<text x="{float(x) - 6:g}" y="{y}"{rest}>{kw}</text>' + T(float(x) + 11, float(y), AB_OF[kw], 11, 900, c["accink"])
+    return re.sub(r'<text x="' + re.escape(x) + r'" y="([\d.]+)"([^>]*)>(3[6-9]|40)</text>', one, inner)
+
 def p_woche_waehlen(c, theme, sub):
     """11 «Woche wählen»: Wochen ohne echten Plan schraffiert, Legende «Muster»."""
     inner, w, h = base("11 Woche wählen (Blatt)", theme)
     for kw, y in (("39", 700), ("40", 740)):
         i = inner.find(f'<text x="33.52" y="{float(y) + 22.5:g}"')
         inner = inner[:i] + R(18, y, 354, 38, 12, "url(#mr)") + inner[i:]
+    inner = ab_kw(inner, "33.52", c)
     b = [inner, R(200, 796, 10, 10, 3, "url(#mr)") + R(200.5, 796.5, 9, 9, 2.5, "none", c["faint2"]) + T(215, 804, "Muster", 12, 400, c["muted"])]
     return page(w, h, c, "".join(b))
 
 def p_kein_muster(c, theme, sub):
     """Woche weit voraus, aber noch kein Muster (Schuljahresanfang) — wie 35 «Plan fehlt noch»."""
-    b = [p_week_head(c, "KW 37 · 8.–12. Sept · in 2 Wochen", "September", with_badge=False)]
+    b = [p_week_head(c, ("KW 37 · 8.–12. Sept", "B"), "September", with_badge=False)]
     for i, (wd, d) in enumerate([("MO", "8"), ("DI", "9"), ("MI", "10"), ("DO", "11"), ("FR", "12")]):
         b.append(day_head(i, wd, d, c))
     b.append(R(163, 254.47, 64, 64, 32, c["tint"]) + ICON(181, 272.47, 1.17, c["accink"], LAYERS, 1.8))
@@ -377,6 +395,38 @@ def p_kein_muster(c, theme, sub):
         b.append(T(195, 388.47 + i * 21.7, ln, 14, 400, c["muted"], "middle"))
     b.append(button(34, 470, 322, "Zur aktuellen Woche", c, icon=CAL))
     b.append(R(0, 744, 390, 100, 0, c["paper"]) + g.nav_only(theme, "04 Woche"))
+    return page(390, 844, c, "".join(b))
+
+def p_admin(c, theme, sub):
+    """Admin · Einstellungen: neue Karte «Muster-Stundenplan» (wie «Hausaufgaben» in Teil 14), Auswahl offen."""
+    b = [eyebrow(18, 33, "Admin", c), title(18, 65, "Einstellungen", c)]
+    y = 100
+    b.append(label(18, y, "Muster-Stundenplan", c) + R(164, y - 13.5, 34, 17, 8.5, c["tint"]) + T(181, y - 1.5, "NEU", 9, 800, c["accink"], "middle", 0.5))
+    y += 14
+    b.append(R(18, y, 354, 201, 22, c["card"]))
+    b.append(T(32, y + 30, "Muster zeigen bis", 15, 400, c["ink"]) + T(32, y + 49, "für Wochen ohne echten Plan", 12, 400, c["faint"]))
+    pw = 162
+    b.append(R(358 - pw + .5, y + 18.5, pw - 1, 31, 15.5, "none", c["rule"]) + T(358 - pw + 12, y + 39, "Schuljahresende", 13, 700, c["ink"])
+             + ICON(358 - 21, y + 28, 0.5, c["faint"], g.CHEV_D, 2.2))
+    menu_y = y + 56
+    for i, (t, st, right) in enumerate([("Wochen A und B", "Diese Woche ist A · aus dem Plan der Schule", "A"),
+                                        ("Muster gebaut aus", "KW 35–38 · automatisch, ohne Ausfälle", None)]):
+        ry = y + 67 + i * 67
+        b.append(f'<line x1="32" y1="{ry}" x2="358" y2="{ry}" stroke="{c["hair"]}" stroke-width="1"/>')
+        b.append(T(32, ry + 30, t, 15, 400, c["ink"]) + T(32, ry + 49, st, 12, 400, c["faint"]))
+        if right:
+            bd, bw = badge(0, 0, f"WOCHE {right}", c, "sand"); b.append(f'<g transform="translate({358 - bw} {ry + 24})">{bd}</g>')
+    y += 201 + 14
+    for i, ln in enumerate(["Der echte Plan der Schule ersetzt das Muster immer,", "sobald er da ist. In Ferien gibt es kein Muster."]):
+        b.append(T(18, y + 12 + i * 17, ln, 12, 400, c["faint"]))
+    opts = ["2 Wochen", "4 Wochen", "8 Wochen", "Schuljahresende", "Aus"]
+    mw, mx, my = 196, 358 - 196, menu_y
+    b.append(R(mx, my, mw, 12 + 40 * len(opts), 18, c["card"], extra=' filter="url(#nsh0)"') + R(mx, my, mw, 12 + 40 * len(opts), 18, c["card"], c["hair"]))
+    for i, o in enumerate(opts):
+        oy = my + 6 + i * 40
+        on = o == "Schuljahresende"
+        if on: b.append(R(mx + 6, oy, mw - 12, 40, 12, c["tint"]) + ICON(mx + mw - 34, oy + 11, 0.71, c["accink"], CHECK, 2.4))
+        b.append(T(mx + 18, oy + 25, o, 14, 700 if on else 400, c["accink"] if on else c["ink"]))
     return page(390, 844, c, "".join(b))
 
 # ════════════════ Computer ════════════════
@@ -407,7 +457,7 @@ def pc_week(c, theme, sub, sel=0, muster=True, real_mo=False):
     b = [inner, R(256, 0, 1440 - 256, 900, 0, c["paper"])]
     # Kopfzeile rechts (Knöpfe, Umschalter) aus dem Original
     b.append(f'<clipPath id="pch"><rect x="860" y="0" width="580" height="100"/></clipPath><g clip-path="url(#pch)">{inner}</g>')
-    b.append(eyebrow(284, 39, "KW 41 · 6.–10. Oktober · in 3 Wochen", c) + title(284, 80, "Oktober", c, 38))
+    b.append(ab_eyebrow(284, 39, "KW 41 · 6.–10. Oktober · in 3 Wochen", "B", c) + title(284, 80, "Oktober", c, 38))
     if muster:
         bd, _ = badge(284 + g.tw("Oktober", 38, 900) * 0.93 + 14, 57, "MUSTER", c, "tint"); b.append(bd)
     # Spaltenauswahl wie im Original (Rahmen um den gewählten Tag)
@@ -438,7 +488,7 @@ def pc_week(c, theme, sub, sel=0, muster=True, real_mo=False):
 def pc_day_panel(c, sub):
     """Rechte Spalte wie PC 05: gewählter Tag, hier ein Muster-Montag."""
     b = [R(984, 110, 420, 766, 22, c["card"])]
-    b.append(eyebrow(1002, 141, "Montag · in 3 Wochen", c) + title(1002, 174, "6. Oktober", c, 29))
+    b.append(ab_eyebrow(1002, 141, "Montag · in 3 Wochen", "B", c) + title(1002, 174, "6. Oktober", c, 29))
     b.append(muster_box(1002, 192, 384, c, [S("Muster: ", 700, c["accink"]) + S("so ist der Montag normalerweise.", 400, c["muted"]),
                                            g.esc("Der echte Plan kommt meist am Vortag.")]))
     rows, y = day_list(266, MO_MUSTER, c, sub, x=1002, w=384, gap=8)
@@ -477,7 +527,7 @@ def pc_pruefen(c, theme, sub):
     """Echter Plan für Montag ist da → Fenster «Einträge prüfen» (wie PC 17 als Fenster)."""
     b = [pc_week(c, theme, sub, muster=True, real_mo=True)]
     b.append(R(984, 110, 420, 766, 22, c["card"]))
-    b.append(eyebrow(1002, 141, "Montag · morgen", c) + title(1002, 174, "6. Oktober", c, 29))
+    b.append(ab_eyebrow(1002, 141, "Montag · morgen", "B", c) + title(1002, 174, "6. Oktober", c, 29))
     b.append(plan_da_banner(1002, 192, 384, c))
     rows, _ = day_list(256, MO_REAL[:4], c, sub, x=1002, w=384); b.append(rows)
     b.append(overlay(c, 1440, 900))
@@ -497,6 +547,7 @@ def pc_waehlen(c, theme, sub):
     for kw, y in (("39", 286), ("40", 324)):
         i = inner.find(f'<text x="769.89" y="{y + 21.5:g}"')
         inner = inner[:i] + R(756, y, 328, 36, 12, "url(#mr)") + inner[i:]
+    inner = ab_kw(inner, "769.89", c)
     b = [inner, R(940, 376, 10, 10, 3, "url(#mr)") + R(940.5, 376.5, 9, 9, 2.5, "none", c["faint2"]) + T(955, 384, "Muster", 12, 400, c["muted"])]
     return page(w, h, c, "".join(b))
 
@@ -511,6 +562,7 @@ SCREENS = {
     "handy-08-verschoben": lambda c, t, s: p_plan_da(c, t, s, "verschoben"),
     "handy-09-woche-waehlen": p_woche_waehlen,
     "handy-10-kein-muster": p_kein_muster,
+    "handy-11-admin": p_admin,
     "pc-01-muster-woche": pc_muster,
     "pc-02-stunde": pc_stunde,
     "pc-03-pruefen": pc_pruefen,
