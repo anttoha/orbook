@@ -33,7 +33,7 @@ CODES = [
     ("Klassenpasswort", "alt", None, 4, None, "vor 5 Tagen", True, "—"),
 ]
 KIND = {"gruppe": ("GRUPPE", "tint"), "persoenlich": ("PERSÖNLICH", "sand"), "alt": ("ALT", "sand")}
-NEW = "ORB-Z-4KX9-T2"  # так выглядит новый код (Z = Zugang; E = Editor, L = Lehrer)
+NEW = "ORB-A-4KX9-T2"  # так выглядит новый код (A = Anmeldung; E = Editor, L = Lehrer)
 
 def geraete(used, limit):
     if limit is None: return f"{used} Geräte · unbegrenzt"
@@ -204,12 +204,12 @@ def p_zugang(c, theme, sub, state="normal"):
         b.append(T(68, 533, "Frag den Admin nach einem neuen.", 12.5, 400, c["danger"]))
     b.append(label(28, 584, "Zugangscode oder Klassenpasswort", c))
     if state == "voll":
-        b.append(R(28, 594, 334, 50, 16, c["field"]) + R(29, 595, 332, 48, 15, "none", c["danger"], 2) + T(45, 625, "ORB-Z-4KX9-T2", 17, 900, c["ink"], ls=1))
+        b.append(R(28, 594, 334, 50, 16, c["field"]) + R(29, 595, 332, 48, 15, "none", c["danger"], 2) + T(45, 625, "ORB-A-4KX9-T2", 17, 900, c["ink"], ls=1))
         b.append(error_line(28, 666, "Schon auf 2 von 2 Geräten angemeldet.", c))
         b.append(T(47, 683, "Admin fragen: Gerät abmelden oder Limit erhöhen.", 12.5, 400, c["danger"]))
         by = 700
     else:
-        b.append(R(28, 594, 334, 50, 16, c["field"]) + T(45, 624, "ORB-Z-XXXX-XX", 16, 400, c["faint2"], ls=1))
+        b.append(R(28, 594, 334, 50, 16, c["field"]) + T(45, 624, "ORB-A-XXXX-XX", 16, 400, c["faint2"], ls=1))
         b.append(T(28, 662, "Vom Admin oder aus der Klassengruppe.", 12, 400, c["faint"]))
         by = 682
     b.append(button(28, by, 334, "Öffnen", c, icon=CHEV_R))
@@ -323,7 +323,7 @@ def pc_zugang(c, theme, sub, state="voll"):
         b.append(T(x + 19, y + 101, "Admin fragen: Gerät abmelden oder Limit erhöhen.", 12.5, 400, c["danger"]))
         by = y + 120
     else:
-        b.append(R(x, y + 10, 380, 52, 16, c["field"]) + T(x + 17, y + 44, "ORB-Z-XXXX-XX", 20, 900, c["faint2"], ls=1))
+        b.append(R(x, y + 10, 380, 52, 16, c["field"]) + T(x + 17, y + 44, "ORB-A-XXXX-XX", 20, 900, c["faint2"], ls=1))
         b.append(T(x, y + 80, "Vom Admin oder aus der Klassengruppe.", 12, 400, c["faint"]))
         by = y + 100
     b.append(button(x, by, 380, "Öffnen", c, icon=CHEV_R))

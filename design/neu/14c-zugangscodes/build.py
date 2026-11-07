@@ -22,7 +22,7 @@ SECTIONS = [
     ("liste", "Список кодов входа", "Как Editor-Codes: карточка на каждый код — название (без настоящих имён), «Gruppe» или «Persönlich», конец кода ••••-M4, сколько устройств вошло из скольких, срок и «zuletzt». Переключатель справа — включить/выключить. Старый общий пароль — последней строкой «Klassenpasswort · ALT»: его можно выключить, когда у всех будут коды. Сверху — сколько всего устройств вошло.",
      [("handy-01-liste", "Zugangscodes"), ("handy-07-leer", "Leer (nur Klassenpasswort)"), ("handy-08-laden", "Laden")],
      [("pc-01-liste", "Computer · Tabelle (пункт меню вместо «Passwörter»)"), ("pc-07-laden", "Computer · Laden")]),
-    ("neu", "Новый код: показывается один раз", "Название, «Eine Person / Eine Gruppe», лимит устройств (1, 2, 30, Unbegrenzt), срок (по умолчанию Schuljahresende = 31. Juli). После «Code erstellen» — фиолетовая карточка ORB-Z-…, как у Editor-Code: потом виден только конец.",
+    ("neu", "Новый код: показывается один раз", "Название, «Eine Person / Eine Gruppe», лимит устройств (1, 2, 30, Unbegrenzt), срок (по умолчанию Schuljahresende = 31. Juli). После «Code erstellen» — фиолетовая карточка ORB-A-…, как у Editor-Code: потом виден только конец.",
      [("handy-02-neu", "Neuer Code"), ("handy-03-neu-fertig", "Code · nur jetzt sichtbar")],
      [("pc-02-neu", "Computer · Fenster"), ("pc-03-neu-fertig", "Computer · Code erstellt")]),
     ("aktionen", "Действия с кодом", "Три точки → шторка (телефон) или меню (ПК): переименовать, лимит, срок, «Geräte abmelden» (выкинуть устройства, код остаётся), «Neu erzeugen», «Sperren», «Löschen». Перед блокировкой — вопрос, сколько устройств выйдет; после — тост.",
@@ -92,7 +92,7 @@ def page():
         out.append('</div></section>')
     out.append('</div>')
     out.append('''<div class="box"><h2>Решил сам (скажите, если не так)</h2><ul style="margin:0;padding-left:20px">
-<li>код вида <code>ORB-Z-4KX9-T2</code> (Z = Zugang), хранится только хэш, полный код виден один раз;</li>
+<li>код вида <code>ORB-A-4KX9-T2</code> (A = Anmeldung), хранится только хэш, полный код виден один раз;</li>
 <li>лимит на выбор 1 / 2 / 30 / Unbegrenzt (для «Person» по умолчанию 2: телефон + ноутбук);</li>
 <li>срок: 30 Tage / Halbjahr / Schuljahresende (по умолчанию); после срока код сам выключается и выкидывает устройства;</li>
 <li>«Geräte abmelden» — выкинуть устройства, не выключая код (например, ученик сменил телефон и упёрся в лимит);</li>
