@@ -138,3 +138,10 @@ Spec: `docs/specs/15-materialien/spec.md`. Бэкенд выложен (мигр
 На демо запись руками не проверяли: нужен Lehrer-Code или Editor-Code с правом (создаёт админ).
 
 **Дальше (`/orb-auto`):** часть 19 «Muster-Stundenplan» — экранов нет, сначала `/orb-design` и «ок дизайн».
+
+## Часть 19 «Muster-Stundenplan» — ждёт «ок дизайн» (2026-11-07)
+Макеты: `design/neu/19-muster/` (`gen.py` рисует SVG поверх оригиналов Soft, `build.py` собирает `index.html`), артефакт https://claude.ai/artifact/GfeBJpXgwd96118856UhSr.
+Экраны: неделя целиком из Muster (штриховка, метка MUSTER), текущая неделя с пятницей из Muster, день и окно урока из Muster («Test oder Klausur eintragen»), форма Test с датой и уроком, «Plan ist da · Einträge prüfen» (окно сверки: перенести заметку / «Test ändern»), тост, «Woche wählen» с Muster-неделями, «Noch kein Muster»; ПК — неделя + день, окно урока, окно сверки, выбор недели.
+Что есть на бэкенде сейчас: `expectedLessons` только при `not_published` и не дальше 14 дней (`plan/view.py`, `EXPECTED_HORIZON_DAYS`), A/B учитывается через `week_number`.
+Вопросы владельцу: (1) как далеко вперёд (предложено: до конца учебного года); (2) кто вносит Tests в Muster-уроки (предложено: как сейчас); (3) при изменении плана Test сам не переносится, заметки ученик переносит сам; (4) Muster только автоматически, без ручной правки админом?
+**Дальше:** после «ок» — `/orb-spec` (бэкенд: горизонт Muster, флаг/поле для Muster-дней), бэкенд в `/opt/orbook-be` по плану с «ок», затем `/orb-build`.
