@@ -92,7 +92,7 @@ const AdminAccessCodes = () => {
           <div className="rounded-card bg-card px-5 pt-4.5 pb-1">
             <AccessTable codes={list} password={query ? null : password} today={today} onToggle={toggle} onAction={onAction} onPasswordToggle={togglePassword} />
           </div>
-          <p className="mt-4 text-label text-faint">Codes werden nur als Hash gespeichert. Den vollen Code siehst du nur einmal — beim Erstellen.</p>
+          <p className="mt-4 text-label text-faint">Den vollen Code siehst du jederzeit unter ⋮ → »Code anzeigen« (gespeichert verschlüsselt).</p>
           <p className="mt-1.5 text-label text-faint">»Klassenpasswort« ist das alte gemeinsame Passwort: ausschalten, sobald alle einen Code haben.</p>
           {!codes.length && <EmptyHint onNew={openNew} />}
         </>

@@ -23,7 +23,7 @@ const Choice = ({ label, hint, options, value, onChange, disabled }) => (
   </Field>
 );
 
-const REVEAL_NOTE = (masked) => `Danach siehst du nur noch ${masked}. Gib ihn nur an die Person oder Gruppe weiter, für die er ist.`;
+const REVEAL_NOTE = () => "Gib ihn nur an die Person oder Gruppe weiter, für die er ist. Du siehst ihn später wieder: ⋮ → »Code anzeigen«.";
 
 // Форма: поки код не створено — поля і «Code erstellen»; після — поля лише для читання, код, «Kopieren», «Fertig»
 const NewAccessForm = ({ yearEnd, onDone }) => {
@@ -69,7 +69,7 @@ const NewAccessForm = ({ yearEnd, onDone }) => {
       {errors.form && <p role="alert" className="text-hint text-danger">{errors.form}</p>}
       {created ? (
         <>
-          <CodeReveal code={created.code} masked={created.item.masked} title="Neuer Zugangscode · nur jetzt sichtbar" note={REVEAL_NOTE(created.item.masked)} />
+          <CodeReveal code={created.code} masked={created.item.masked} title="Neuer Zugangscode" note={REVEAL_NOTE()} />
           <div className="grid grid-cols-2 gap-2.5">
             <Button className="flex-none" onClick={() => copyText(created.code)}>
               <CopyIcon className="size-4" /> Kopieren

@@ -241,3 +241,6 @@ Spec: `docs/specs/16-einladen/spec.md` (план бэкенда: колонки 
 
 ## v0.8.1 — Einladen и для личных кодов (2026-11-07)
 Владелец: «да, тоже… сразу на прод». Бэкенд 26b0972 (ссылка у любого кода, `shared` только у групп) выложен `update.sh` на прод + перезапуск демо; фронт: пункт «Einladen» у всех кодов, у личного нет «Mitschüler dürfen teilen». Тег `v0.8.1`, текст `docs/releases/v0.8.1.md` — ждём публикации Release владельцем.
+
+## v0.8.2 — Zugangscode wieder anzeigen (2026-11-07)
+Владелец: «сделай, сразу на прод». Бэкенд (схема 0011: `access_codes.code_secret`, Fernet `access-code-view`; `GET /api/admin/access-codes/{id}/code`, `409 code_hidden` для старых) — выложен на прод и демо, 891 тест. Фронт: пункт «Code anzeigen», `ShowCodeSheet`. Тег `v0.8.2` — ждём публикации Release.

@@ -17,6 +17,7 @@ import CodeReveal from "../CodeReveal";
 import { accessActions, passwordActions } from "./accessActions";
 import DevicesField from "./DevicesField";
 import InviteSheet from "./InviteSheet";
+import ShowCodeSheet from "./ShowCodeSheet";
 
 // Значення праворуч у шторці: «30», «Schuljahresende», «9 angemeldet»
 const hintOf = (item, code) =>
@@ -249,6 +250,7 @@ const AccessDialogs = ({ action, password, onChange, onPasswordAction }) => {
     };
     return <PasswordSheet password={password} onAction={pick} onClose={close} />;
   }
+  if (kind === "show") return <ShowCodeSheet code={code} onClose={close} onRegenerate={() => onChange({ kind: "regenerate", code })} />;
   if (kind === "invite") return <InviteSheet code={code} onClose={close} onRenew={() => onChange({ kind: "invite-renew", code })} />;
   if (kind === "rename") return <RenameSheet code={code} actions={actions} onClose={close} />;
   if (kind === "limit") return <LimitSheet code={code} actions={actions} onClose={close} />;
@@ -256,7 +258,7 @@ const AccessDialogs = ({ action, password, onChange, onPasswordAction }) => {
   if (kind === "reveal") {
     return (
       <Sheet open onClose={close} desktop="dialog" eyebrow={`Zugangscode · ${code.label}`} title="Neuer Code">
-        <CodeReveal code={action.result.code} masked={action.result.item.masked} title="Neuer Zugangscode · nur jetzt sichtbar" note={`Danach siehst du nur noch ${action.result.item.masked}.`} />
+        <CodeReveal code={action.result.code} masked={action.result.item.masked} title="Neuer Zugangscode" note="Du siehst ihn später wieder: ⋮ → »Code anzeigen«." />
         <Button variant="primary" className="flex-none" onClick={close}>
           <CheckIcon className="size-4" /> Fertig
         </Button>
