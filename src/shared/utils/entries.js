@@ -86,14 +86,24 @@ export function nextLessons(days, subject, from, count = 2) {
 }
 
 // Записи нажатого урока: Tests с этим днём/уроком/предметом и Hausaufgaben «bis zu dieser Stunde»
-export function lessonEntries(exams, homework, date, lesson) {
+// allHomework — окно урока: все Hausaufgaben этого предмета на этот день, а не только «к этой Stunde»
+// (у сдвоенного урока домашку записывают к одной из двух Stunden, а смотрят обычно первую)
+export function lessonEntries(exams, homework, date, lesson, { allHomework = false } = {}) {
   const code = lesson?.subject?.code;
   if (!code) return { exams: [], homework: [] };
   const here = (item, day) => day === date && item.subject?.code === code && (item.lesson == null || item.lesson === lesson.period);
+  const sameDay = (item) => item.due === date && item.subject?.code === code;
   return {
     exams: exams.filter((exam) => here(exam, exam.date)),
-    homework: homework.filter((item) => here(item, item.due) && item.lesson != null),
+    homework: homework.filter((item) => (allHomework ? sameDay(item) : here(item, item.due) && item.lesson != null)),
   };
+}
+
+// Серая подпись у Hausaufgabe в окне урока: к этой Stunde, к другой Stunde того же дня или просто к дню
+export function homeworkWhen(item, lesson) {
+  if (item?.lesson == null) return "bis zu diesem Tag";
+  if (item.lesson === lesson?.period) return "bis zu dieser Stunde";
+  return `bis zur ${item.lesson}. Stunde`;
 }
 
 // Записи, которые сервер увёз с этого (выпавшего) урока: «Test Unit 3 → Fr 19.09., 4. Std»

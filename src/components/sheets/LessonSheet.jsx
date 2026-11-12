@@ -47,7 +47,8 @@ const LessonSheet = ({ open, onClose, sheet }) => {
 
   const exam = lessonExam(day, lesson); // Klausur цього уроку
   const info = lessonNote(lesson, null); // пояснення школи / перенос
-  const entries = lessonEntries(day.exams ?? [], homework, sheet.datum, lesson); // «Für diese Stunde»
+  // «Für diese Stunde»: Tests этой Stunde и все Hausaufgaben предмета на этот день (сдвоенный урок)
+  const entries = lessonEntries(day.exams ?? [], homework, sheet.datum, lesson, { allHomework: true });
   // Куда ведут «+ Hausaufgabe» / «+ Test»: форма на этот урок; без кода — ввод Editor-Code; код без права — кнопки нет
   const query = `?datum=${sheet.datum}&stunde=${lesson.period}&fach=${encodeURIComponent(lesson.subject?.code ?? "")}${lesson.muster ? "&muster=1" : ""}`;
   const homeworkTarget = !lesson.subject ? null : canCreateHomework(me) ? `/testen/hausaufgaben/neu${query}` : addHomeworkTarget(me);
@@ -110,7 +111,7 @@ const LessonSheet = ({ open, onClose, sheet }) => {
       </dl>
 
       {/* Tests и Hausaufgaben этого урока (часть 24) */}
-      <LessonEntries exams={entries.exams} homework={entries.homework} />
+      <LessonEntries exams={entries.exams} homework={entries.homework} lesson={lesson} />
 
       {/* посилання на Drive цього предмета (частина 15) */}
       <LessonMaterials subject={lesson.subject} overrides={overrides} />

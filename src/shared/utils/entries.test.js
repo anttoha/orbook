@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { defaultShort, isMajorType, lessonEntries, movedAway, movedFromText, nextLessons, typeList, typeShort, validateDetails } from "./entries";
+import { defaultShort, homeworkWhen, isMajorType, lessonEntries, movedAway, movedFromText, nextLessons, typeList, typeShort, validateDetails } from "./entries";
 
 const ma = (period, status = "normal") => ({ period, status, subject: { code: "Ma" } });
 
@@ -93,3 +93,28 @@ describe("Einträge der Stunde", () => {
     expect(lessonEntries(exams, homework, "2026-09-19", { period: 2, subject: null })).toEqual({ exams: [], homework: [] });
   });
 });
+
+describe("Hausaufgaben im Fenster der Stunde", () => {
+  const homework = [
+    { id: 4, due: "2026-11-13", lesson: 3, subject: { code: "Fr" } }, // Doppelstunde 2–3, eingetragen zur 3.
+    { id: 5, due: "2026-11-13", lesson: null, subject: { code: "Fr" } },
+    { id: 6, due: "2026-11-13", lesson: 2, subject: { code: "En" } },
+    { id: 7, due: "2026-11-14", lesson: 2, subject: { code: "Fr" } },
+    { id: 8, due: "2026-11-13", lesson: 2, subject: null },
+  ];
+  const second = { period: 2, subject: { code: "Fr" } };
+
+  it("zeigt alle Hausaufgaben des Fachs an diesem Tag", () => {
+    expect(lessonEntries([], homework, "2026-11-13", second, { allHomework: true }).homework.map((h) => h.id)).toEqual([4, 5]);
+    // Liste des Tages: weiter nur die zu genau dieser Stunde
+    expect(lessonEntries([], homework, "2026-11-13", second).homework).toEqual([]);
+  });
+
+  it("schreibt, bis wann", () => {
+    expect(homeworkWhen(homework[0], second)).toBe("bis zur 3. Stunde");
+    expect(homeworkWhen(homework[0], { period: 3 })).toBe("bis zu dieser Stunde");
+    expect(homeworkWhen(homework[1], second)).toBe("bis zu diesem Tag");
+    expect(homeworkWhen(null, second)).toBe("bis zu diesem Tag");
+  });
+});
+

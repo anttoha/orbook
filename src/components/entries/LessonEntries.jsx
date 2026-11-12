@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import { useSheet } from "../../shared/hooks/useSheet";
-import { isMajorType } from "../../shared/utils/entries";
+import { homeworkWhen, isMajorType } from "../../shared/utils/entries";
 import Badge from "../ui/Badge";
 
 // Серая строка рядом с бейджем Test: «Lernen: S. 40–58 · 2 Materialien»
@@ -30,7 +30,7 @@ const Row = ({ badge, note, title, onClick }) => (
 // «Für diese Stunde» в окне урока (макет 24 handy-03): Tests и Hausaufgaben этого урока.
 // Записей нет — блока нет. Нажатие — окно записи вместо окна урока (replace: «Назад» не вернёт сюда)
 // ─────────────────────────────────────────────────────────────
-const LessonEntries = ({ exams, homework }) => {
+const LessonEntries = ({ exams, homework, lesson }) => {
   const { openSheet } = useSheet();
   const count = exams.length + homework.length;
   if (count === 0) return null;
@@ -45,7 +45,7 @@ const LessonEntries = ({ exams, homework }) => {
           <Row key={`e${exam.id}`} badge={<Badge variant={isMajorType(exam.type) ? "exam" : "soft"}>{exam.type}</Badge>} note={examNote(exam)} title={exam.topic || exam.type} onClick={() => openSheet("klausur", { id: exam.id }, { replace: true })} />
         ))}
         {homework.map((item) => (
-          <Row key={`h${item.id}`} badge={<Badge variant="soft">Hausaufgabe</Badge>} note="bis zu dieser Stunde" title={item.text?.split("\n")[0]} onClick={() => openSheet("hausaufgabe", { id: item.id }, { replace: true })} />
+          <Row key={`h${item.id}`} badge={<Badge variant="soft">Hausaufgabe</Badge>} note={homeworkWhen(item, lesson)} title={item.text?.split("\n")[0]} onClick={() => openSheet("hausaufgabe", { id: item.id }, { replace: true })} />
         ))}
       </ul>
     </section>
