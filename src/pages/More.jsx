@@ -1,11 +1,13 @@
-import { Folder, Palette, Sun, Table2, UserPlus } from "lucide-react";
+import { Folder, Palette, Sparkles, Sun, Table2, UserPlus } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { version } from "../../package.json";
+import NewBadge from "../components/changelog/NewBadge";
 import LeaveClass from "../components/more/LeaveClass";
 import SettingsTiles from "../components/settings/SettingsTiles";
 import MenuRow from "../components/more/MenuRow";
 import { KeyIcon, ShieldIcon, StatsIcon, SyncIcon } from "../components/ui/icons";
+import { changelog } from "../shared/changelog";
 import { settingsGroups } from "../shared/constants/constants";
 import ListCard from "../components/ui/ListCard";
 import { useSyncAllowed } from "../shared/hooks/useNotesSync";
@@ -80,6 +82,7 @@ const PhoneMenu = () => {
       {/* «Seiten» — просто сторінки й вікна; Statistik переїхала сюди з нижнього меню (частина 22) */}
       <ListCard title={seiten.title} hint={seiten.hint}>
         {statsEnabled && <MenuRow to="/statistik" icon={StatsIcon} label="Statistik" value="Woche · Monat" />}
+        <MenuRow to="/mehr/neuigkeiten" icon={Sparkles} label="Neuigkeiten" badge={<NewBadge />} value={changelog[0]?.version} />
         <MenuRow to="/materialien" icon={Folder} label="Materialien" value={links ? `${links} ${links === 1 ? "Link" : "Links"}` : null} />
         {/* частина 16: посилання і QR для однокласників; вимкнене — шторка так і скаже */}
         <MenuRow onClick={() => openSheet("einladen")} icon={UserPlus} label="Klasse einladen" value="Link + QR" />

@@ -43,6 +43,7 @@ src/
 - `useEffect` — только когда правда нужно, с очисткой.
 - На каждом маршруте `errorElement` с немецким текстом «Etwas ist schiefgelaufen».
 - В плашке дня второй строкой под датой, с маленькой иконкой обновления: время из `changedAt` (иначе `publishedAt`), в тот же день «07:08», раньше «Mi 15:15» (`changedLabel`). Цвет `text-faint`, на сегодняшнем дне `text-on-accent/70`. Место под строку зарезервировано, высота плашки фиксированная. В шапке недели «aktualisiert vor N Min.» из `fetchedAt`. Подробности («Plan geändert», «Veröffentlicht», «Zuletzt geprüft») — в окне «Info zum Tag».
+- Changelog «Was ist neu» (часть 22b): при каждом релизе дописывай запись **сверху** в `src/shared/changelog.js` вместе с `docs/releases/vX.Y.Z.md`. Тексты — по-немецки, коротко, по-человечески (как одноклассник, не как пресс-релиз); группы `neu` / `behoben` / `entfernt`.
 - Опрос `/api/plan/status` каждые 10 секунд, только пока вкладка видима (`usePlanPolling`, `conditional: true` в `api`): при 304 ничего не перерисовываем.
 
 ## Проверки

@@ -1,4 +1,4 @@
-import { CalendarDays, Ellipsis, FileText, Folder, House, Layers, List, Palette, Server, Sun, Table2, UserRound } from "lucide-react";
+import { CalendarDays, Ellipsis, FileText, Folder, House, Layers, List, Palette, Server, Sparkles, Sun, Table2, UserRound } from "lucide-react";
 import { FlagIcon, KeyIcon, LockIcon, ShieldIcon, StatsIcon, SyncIcon } from "../../components/ui/icons";
 
 // Масштаб «Schriftgröße» (ті самі відсотки, що в index.css): шкали часу множать на нього пікселі
@@ -39,6 +39,7 @@ export const adminTabs = [
 export const settingsSections = [
   { to: "/mehr", label: "Übersicht", icon: House, exact: true },
   { to: "/statistik", label: "Statistik", icon: StatsIcon, hint: "stats", group: "seiten", feature: "statistics" },
+  { to: "/mehr/neuigkeiten", label: "Neuigkeiten", icon: Sparkles, hint: "news", group: "seiten", badge: "news" }, // часть 22b
   { to: "/mehr/datenschutz", label: "Datenschutz", icon: ShieldIcon, hint: "privacy", group: "seiten" },
   { to: "/mehr/kurse", label: "Meine Kurse", icon: Table2, hint: "courses", group: "einstellungen" },
   { to: "/mehr/darstellung", label: "Darstellung", icon: Sun, hint: "appearance", group: "einstellungen" },

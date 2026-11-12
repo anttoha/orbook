@@ -7,18 +7,24 @@ import { useTheme } from "../../shared/hooks/useTheme";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useSyncStore } from "../../shared/store/syncStore";
 import { useUserStore } from "../../shared/store/userStore";
+import { changelog } from "../../shared/changelog";
 import { courseCount, visibleSubjects } from "../../shared/utils/courses";
+import { newsDate } from "../../shared/utils/changelog";
 import { isTeacher } from "../../shared/utils/examRules";
+import NewBadge from "../changelog/NewBadge";
 import { appearanceHint, coursesHint, editorHint, sectionVisible, subjectsHint, syncHint } from "../../shared/utils/settings";
 
 // Вміст плитки: кругла іконка, назва, підпис, стрілка
-const TileBody = ({ icon: Icon, label, hint }) => (
+const TileBody = ({ icon: Icon, label, hint, badge }) => (
   <>
     <span className="grid size-10 shrink-0 place-items-center rounded-full bg-tint text-accent">
       <Icon className="size-4.5" />
     </span>
     <span className="min-w-0 flex-1">
-      <span className="block truncate text-body font-bold text-ink">{label}</span>
+      <span className="flex items-center gap-2 text-body font-bold text-ink">
+        <span className="truncate">{label}</span>
+        {badge}
+      </span>
       <span className="block min-h-4 truncate text-hint text-faint">{hint}</span>
     </span>
     <ChevronRight className="size-4 shrink-0 text-faint2" />
@@ -47,6 +53,7 @@ const useHints = () => {
     editor: editorHint(me?.editor),
     privacy: "Keine Konten, kein Tracking",
     stats: "Stunden, Ausfälle, Vertretungen",
+    news: changelog[0] ? `Neu in ${changelog[0].version} · ${newsDate(changelog[0].date)}` : null,
   };
 };
 
@@ -80,7 +87,7 @@ const SettingsTiles = () => {
               .map((section) => (
                 <li key={section.to}>
                   <Link to={section.to} className={tile}>
-                    <TileBody icon={section.icon} label={section.label} hint={hints[section.hint]} />
+                    <TileBody icon={section.icon} label={section.label} hint={hints[section.hint]} badge={section.badge === "news" ? <NewBadge /> : null} />
                   </Link>
                 </li>
               ))}

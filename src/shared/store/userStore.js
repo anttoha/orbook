@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { changelog } from "../changelog";
 import { deleteNote, editNote, findNote, newNote, upgradeNote } from "../utils/notes";
 
 // ─────────────────────────────────────────────────────────────
@@ -35,6 +36,8 @@ export const useUserStore = create(
       fontScale: 2, // шрифт: 1 — A, 2 — A+ (як на макетах), 3 — A++
       changedFormat: "weekday", // підпис зміни під днем: "weekday" «Mi 15:15» | "date" «15.09.» | "datetime" «15.09. 15:15»
       allCourses: false, // режим «Alle Kurse»: видно й чужі курси (пунктиром)
+      seenNews: null, // версия из changelog, для которой окно «Was ist neu» уже показано
+      readNews: null, // версия, список которой открыт в «Neuigkeiten» (пока не совпадает — в «Mehr» горит метка NEU)
       checkedPlan: [], // «So lassen» у «Einträge prüfen» (частина 19): ключі з shared/utils/muster.js checkKey
 
       // ── нотатки ──
@@ -79,7 +82,13 @@ export const useUserStore = create(
       setPicked: (picked) => set({ picked }),
 
       // «Weiter» на екрані першого запуску: зберегти вибір і більше не питати
-      finishCourseChoice: (picked, hiddenRequired = []) => set({ picked, hiddenRequired, coursesChosen: true }),
+      // Новичку окно «Was ist neu» не нужно: для него всё и так новое, поэтому текущую версию считаем увиденной
+      finishCourseChoice: (picked, hiddenRequired = []) => set({ picked, hiddenRequired, coursesChosen: true, seenNews: get().seenNews ?? changelog[0]?.version ?? null, readNews: get().readNews ?? changelog[0]?.version ?? null }),
+
+      // Окно «Was ist neu» показано — повторно само не откроется
+      markNewsShown: () => set({ seenNews: changelog[0]?.version ?? null }),
+      // Список «Neuigkeiten» открыт — метка NEU гаснет
+      markNewsRead: () => set({ seenNews: changelog[0]?.version ?? null, readNews: changelog[0]?.version ?? null }),
 
       // «Alle Kurse» (частина 22): лише показати весь план класу. Вибір «Meine Kurse» НЕ змінюється
       // (раніше кнопки «показати все» стирали picked — це й був баг 20a)

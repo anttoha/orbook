@@ -10,6 +10,7 @@ import ExamSheet from "./ExamSheet";
 import HomeworkSheet from "./HomeworkSheet";
 import LessonSheet from "./LessonSheet";
 import MaterialSheet from "./MaterialSheet";
+import NewsSheet from "./NewsSheet";
 import NoteSheet from "./NoteSheet";
 import ShareSheet from "./ShareSheet";
 import ShortcutsSheet from "./ShortcutsSheet";
@@ -32,6 +33,7 @@ const SHEETS = {
   pruefen: PlanCheckSheet, // «Einträge prüfen» після справжнього плану (частина 19)
   editorcode: EditorCodeSheet, // код посеред запису: форма лишається під вікном
   tasten: ShortcutsSheet, // Tastenkürzel (клавіша «?»)
+  news: NewsSheet, // «Was ist neu» после новой версии (часть 22b)
   einladen: ClassInviteSheet, // «Klasse einladen»: посилання і QR (частина 16)
 };
 

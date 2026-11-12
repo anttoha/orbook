@@ -8,6 +8,7 @@ import { cn } from "../../shared/utils/cn";
 import { isTeacher } from "../../shared/utils/examRules";
 import { isTabActive } from "../../shared/utils/isTabActive";
 import { sectionVisible } from "../../shared/utils/settings";
+import NewBadge from "../changelog/NewBadge";
 import LeaveClass from "../more/LeaveClass";
 
 // Пункт меню: 40px заввишки, вибраний — фіолетова «пігулка» (макет 22)
@@ -22,6 +23,7 @@ const SectionLink = ({ section, pathname }) => {
       <Link to={section.to} aria-current={active ? "page" : undefined} className={cn(item, active ? "bg-accent font-extrabold text-on-accent" : idle)}>
         <section.icon className="size-4 shrink-0" />
         {section.label}
+        {section.badge === "news" && !active && <NewBadge />}
       </Link>
     </li>
   );

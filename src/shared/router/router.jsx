@@ -34,6 +34,7 @@ import AdminSettings from "../../pages/AdminSettings";
 import RouteError from "../../pages/RouteError";
 import Datenschutz from "../../pages/Datenschutz";
 import JoinPage from "../../pages/JoinPage";
+import Neuigkeiten from "../../pages/Neuigkeiten";
 import SettingsLayout from "../../pages/SettingsLayout";
 
 // Помилка спрацьовує на найближчому errorElement. Тому він є на кожній сторінці:
@@ -105,6 +106,7 @@ export const router = createBrowserRouter([
               page({ path: "fachfarben", Component: SubjectColors }),
               page({ path: "sync", Component: NotesSync }), // Notizen synchronisieren
               page({ path: "editor-code", Component: EditorCode }),
+              page({ path: "neuigkeiten", Component: Neuigkeiten }), // «Was ist neu», все версии (часть 22b)
               page({ path: "datenschutz", Component: Datenschutz }),
             ],
           },
