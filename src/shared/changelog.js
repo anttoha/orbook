@@ -3,6 +3,11 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.11.1",
+    date: "2026-11-12",
+    behoben: ["Doppelstunde: Die Hausaufgabe siehst du jetzt in beiden Stunden, nicht nur in der, zu der sie eingetragen wurde."],
+  },
+  {
     version: "0.11.0",
     date: "2026-11-12",
     neu: [
