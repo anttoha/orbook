@@ -1,39 +1,69 @@
-import { ChevronRight } from "lucide-react";
+import { UserRound } from "lucide-react";
 import { useHomeworkDue } from "../../shared/hooks/useHomework";
 import { useNow } from "../../shared/hooks/useNow";
 import { useSheet } from "../../shared/hooks/useSheet";
+import { usePlanStore } from "../../shared/store/planStore";
+import { useTasksStore } from "../../shared/store/tasksStore";
 import { cn } from "../../shared/utils/cn";
 import { subjectName } from "../../shared/utils/format";
 import { authorShort } from "../../shared/utils/homework";
+import { aufgabenOfDay } from "../../shared/utils/tasks";
+import CheckCircle from "../tasks/CheckCircle";
 import SubjectBadge from "../ui/SubjectBadge";
 
+// Вторая строка: «Mathe · von Mü» у домашки, «Eigene Aufgabe» у своей
+function subline(row, names) {
+  if (row.kind === "own") return [ "Eigene Aufgabe", row.subject ? (names?.[row.subject] ?? row.subject) : null].filter(Boolean).join(" · ");
+  return [subjectName(row.item.subject), authorShort(row.item) && `von ${authorShort(row.item)}`].filter(Boolean).join(" · ");
+}
+
 // ─────────────────────────────────────────────────────────────
-// «Hausaufgaben · fällig heute» під уроками, над «Meine Notizen» (макет handy-07).
-// Немає Hausaufgaben з таким терміном — блоку немає.
+// «Aufgaben · fällig …» под уроками, над «Meine Notizen» (макет 25 handy-05; было «Hausaufgaben», часть 14).
+// Домашки этого дня + свои задачи на этот день, кружок — «erledigt». Ничего нет — блока нет.
 // ─────────────────────────────────────────────────────────────
 const HomeworkDue = ({ date, className }) => {
   const { today } = useNow();
-  const items = useHomeworkDue(date, today);
+  const homework = useHomeworkDue(date, today);
+  const tasks = useTasksStore((s) => s.tasks);
+  const marks = useTasksStore((s) => s.marks);
+  const toggleTask = useTasksStore((s) => s.toggleTask);
+  const markHomework = useTasksStore((s) => s.markHomework);
+  const names = usePlanStore((s) => s.meta?.subjects);
   const { openSheet } = useSheet();
-  if (items.length === 0) return null;
+  const rows = aufgabenOfDay({ homework, tasks, marks, date });
+  if (rows.length === 0) return null;
+  const doneCount = rows.filter((row) => row.done).length;
 
   return (
     <section className={cn("flex flex-col gap-2", className)}>
-      <h2 className="text-hint font-extrabold text-faint">Hausaufgaben · {date === today ? "fällig heute" : "fällig an diesem Tag"}</h2>
-      <ul className="rounded-card bg-card px-3.5">
-        {items.map((item) => (
-          <li key={item.id} className="border-b border-rule last:border-0">
-            <button type="button" onClick={() => openSheet("hausaufgabe", { id: item.id })} className="flex w-full items-center gap-3 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
-              <SubjectBadge subject={item.subject} />
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-body text-ink">{item.text?.split("\n")[0]}</span>
-                <span className="mt-0.5 block truncate text-caption text-faint">
-                  {subjectName(item.subject)}
-                  {authorShort(item) && ` · von ${authorShort(item)}`}
-                </span>
+      <h2 className="flex justify-between text-hint font-extrabold text-faint">
+        <span>Aufgaben · {date === today ? "fällig heute" : "fällig an diesem Tag"}</span>
+        {doneCount > 0 && <span>{doneCount} von {rows.length}</span>}
+      </h2>
+      <ul className="rounded-card bg-card pr-1.5 pl-3.5">
+        {rows.map((row) => (
+          <li key={row.key} className="flex items-center border-b border-rule last:border-0">
+            <button
+              type="button"
+              onClick={() => (row.kind === "own" ? openSheet("aufgabe", { id: row.id }) : openSheet("hausaufgabe", { id: row.id }))}
+              className="flex min-w-0 flex-1 items-center gap-3 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+            >
+              <span className={cn("shrink-0", row.done && "opacity-50")}>
+                {row.subject ? (
+                  <SubjectBadge subject={{ code: row.subject }} />
+                ) : (
+                  <span className="grid size-8 place-items-center rounded-full bg-sand text-muted">
+                    <UserRound className="size-4" />
+                  </span>
+                )}
               </span>
-              <ChevronRight className="size-4 shrink-0 text-faint" />
+              <span className="min-w-0 flex-1">
+                <span className={cn("block truncate text-body", row.done ? "text-faint line-through" : "text-ink")}>{row.text}</span>
+                <span className={cn("mt-0.5 block truncate text-caption", row.kind === "own" && !row.done ? "text-accent-ink" : "text-faint")}>{subline(row, names)}</span>
+              </span>
             </button>
+            {/* детали — по нажатию на строку, справа — кружок «erledigt» */}
+            <CheckCircle done={row.done} label={row.text} onToggle={() => (row.kind === "own" ? toggleTask(row.id) : markHomework(row.id, !row.done))} />
           </li>
         ))}
       </ul>

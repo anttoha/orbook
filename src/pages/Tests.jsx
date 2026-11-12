@@ -23,7 +23,7 @@ import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { addExamTarget } from "../shared/utils/examRules";
 import Appointments from "./Appointments";
-import Homework from "./Homework";
+import Aufgaben from "./Aufgaben";
 import { filterExams, groupExams, isFilterActive, searchExams, subjectChips, toggleSubject } from "../shared/utils/exams";
 
 // «Ab heute · 5 geplant». Поки записів немає — без числа
@@ -178,7 +178,7 @@ const ExamList = () => {
 };
 
 // Вкладка Klausuren: три списки під одним перемикачем (частини 14 і 18). Окремі компоненти — у них різні хуки
-const LISTS = { exams: ExamList, homework: Homework, appointments: Appointments };
+const LISTS = { exams: ExamList, homework: Aufgaben, appointments: Appointments };
 const Tests = () => {
   const List = LISTS[useListMode()];
   return <List />;

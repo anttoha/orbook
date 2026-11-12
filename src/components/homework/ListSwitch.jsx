@@ -6,6 +6,8 @@ import { DESKTOP_QUERY, useMediaQuery } from "../../shared/hooks/useMediaQuery";
 import { useNow } from "../../shared/hooks/useNow";
 import { upcomingAppointments } from "../../shared/utils/appointments";
 import { usePlanStore } from "../../shared/store/planStore";
+import { useTasksStore } from "../../shared/store/tasksStore";
+import { aufgabenList } from "../../shared/utils/tasks";
 import { cn } from "../../shared/utils/cn";
 import Segmented from "../ui/Segmented";
 
@@ -14,7 +16,16 @@ import Segmented from "../ui/Segmented";
 // ставимо на нове місце — і CSS-перехід у Segmented плавно її пересуває
 let lastMode = null;
 
-// «Klausuren · 5 | Hausaufgaben · 4 | Termine · 5» (макети handy-04, частина 18). Режим живе в адресі.
+// Сколько Aufgaben ещё открыто (домашки класса без галочки + свои)
+const useOpenCount = () => {
+  const { today } = useNow();
+  const homework = usePlanStore((s) => s.homework);
+  const tasks = useTasksStore((s) => s.tasks);
+  const marks = useTasksStore((s) => s.marks);
+  return aufgabenList({ homework, tasks, marks, today }).open.length;
+};
+
+// «Tests · 5 | Aufgaben · 4 | Termine · 5» (макети handy-04, частина 18). Режим живе в адресі.
 // На телефоні три частини без чисел (макет 18 handy-01): з числами не влазять
 const ListSwitch = ({ className }) => {
   const mode = useListMode();
@@ -27,7 +38,7 @@ const ListSwitch = ({ className }) => {
   }, [mode, shown]);
   const [, setParams] = useSearchParams();
   const examCount = usePlanStore((s) => s.exams.length);
-  const homeworkCount = usePlanStore((s) => s.homework.length);
+  const homeworkCount = useOpenCount();
   const { today } = useNow();
   const appointmentCount = upcomingAppointments(useAppointments().items, today).length;
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
@@ -40,7 +51,7 @@ const ListSwitch = ({ className }) => {
       value={shown}
       options={[
         { value: "exams", label: label("Tests", examCount) },
-        { value: "homework", label: label("Hausaufgaben", homeworkCount) },
+        { value: "homework", label: label("Aufgaben", homeworkCount) },
         { value: "appointments", label: label("Termine", appointmentCount) },
       ]}
       onChange={(value) => setParams(LIST_PARAM[value] ? { liste: LIST_PARAM[value] } : {}, { replace: true })}

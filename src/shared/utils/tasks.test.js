@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { aufgabenList, aufgabenOfDay, dueChoices, editTask, newTask, removeTask, setMark, validateTaskText } from "./tasks";
+import { aufgabenList, aufgabenOfDay, dueChoices, editTask, newTask, removeTask, setMark, validateTaskText, weekProgress } from "./tasks";
 
 const now = new Date("2026-09-17T10:00:00Z");
 const today = "2026-09-17";
@@ -53,5 +53,12 @@ describe("Liste", () => {
     const tasks = [newTask({ text: "Sport", due: "2026-09-18" }, now), newTask({ text: "anders", due: "2026-09-20" }, now)];
     const rows = aufgabenOfDay({ homework: [hw(1, "2026-09-18"), hw(2, "2026-09-19")], tasks, marks: setMark([], 1, true, now), date: "2026-09-18" });
     expect(rows.map((r) => [r.kind, r.done])).toEqual([["homework", true], ["own", false]]);
+  });
+});
+
+describe("weekProgress", () => {
+  it("zählt nur diese Woche, offen bis morgen extra", () => {
+    const list = aufgabenList({ homework: [hw(1, "2026-09-18"), hw(2, "2026-09-25"), hw(3, "2026-09-16")], marks: setMark([], 3, true, now), today });
+    expect(weekProgress(list, today)).toEqual({ done: 1, total: 2, dueSoon: 1 });
   });
 });

@@ -4,7 +4,7 @@
 // Своя задача: { id: "t-…", text, due: "2026-09-19" | null, subject: "De" | null, done, updatedAt, deleted? }
 // Галочка у домашки: { id: "<id домашки>", done, updatedAt }
 // ─────────────────────────────────────────────────────────────
-import { addDays, isWeekend, numericDate, weekdayShort } from "./format";
+import { addDays, isWeekend, mondayOf, numericDate, weekdayShort } from "./format";
 import { groupHomework } from "./homework";
 
 export const TASK_MAX = 120;
@@ -69,4 +69,17 @@ export function aufgabenOfDay({ homework = [], tasks = [], marks = [], date }) {
     ...homework.filter((item) => item.due === date).map((item) => homeworkRow(item, doneIds.has(String(item.id)))),
     ...tasks.filter((t) => !t.deleted && t.due === date).map(ownRow),
   ];
+}
+
+// Карточка «Diese Woche» на ПК: сколько из задач с сроком на этой неделе уже сделано
+export function weekProgress({ open, done }, today) {
+  const from = mondayOf(today);
+  const to = addDays(from, 6);
+  const inWeek = (row) => row.due && row.due >= from && row.due <= to;
+  const tomorrow = addDays(today, 1);
+  return {
+    done: done.filter(inWeek).length,
+    total: open.filter(inWeek).length + done.filter(inWeek).length,
+    dueSoon: open.filter((row) => row.due && row.due <= tomorrow).length,
+  };
 }
