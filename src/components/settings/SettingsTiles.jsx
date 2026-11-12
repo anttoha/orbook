@@ -1,4 +1,4 @@
-import { ChevronRight, Keyboard, UserPlus } from "lucide-react";
+import { ChevronRight, Info, Keyboard, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { settingsGroups, settingsSections } from "../../shared/constants/constants";
 import { useSyncAllowed } from "../../shared/hooks/useNotesSync";
@@ -97,6 +97,11 @@ const SettingsTiles = () => {
                 <li>
                   <button type="button" onClick={() => openSheet("einladen")} className={`${tile} w-full`}>
                     <TileBody icon={UserPlus} label="Klasse einladen" hint="Link und QR für Mitschüler" />
+                  </button>
+                </li>
+                <li>
+                  <button type="button" onClick={() => openSheet("tipps")} className={`${tile} w-full`}>
+                    <TileBody icon={Info} label="Kurz erklärt" hint="3 Tipps für den Anfang" />
                   </button>
                 </li>
                 <li>

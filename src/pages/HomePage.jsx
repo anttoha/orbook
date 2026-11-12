@@ -4,6 +4,8 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import { TriangleAlert } from "lucide-react";
 import AuthPage from "./AuthPage";
 import CourseStart from "./CourseStart";
+import SyncConnect from "./SyncConnect";
+import { useLinkCode } from "../shared/store/linkCodeStore";
 import { isTeacher } from "../shared/utils/examRules";
 import AppToaster from "../components/ui/AppToaster";
 import Container from "../components/ui/Container";
@@ -38,6 +40,8 @@ const HomePage = () => {
   const coursesChosen = useUserStore((s) => s.coursesChosen) || isTeacher(me);
   const fullScreen = isFullScreenPage(useLocation().pathname); // форма: без меню, кнопки притиснуті донизу
   const page = usePageAnimation(); // перехід між сторінками: справа, зліва або плавно
+  const link = useLinkCode((s) => s.link); // код із посилання (QR), частина 25
+  const syncAllowed = me?.features?.notesSync !== false;
 
   // Один раз при відкритті: дізнатись, чи ми увійшли
   useEffect(() => {
@@ -72,6 +76,8 @@ const HomePage = () => {
   }
 
   if (!me) return <AuthPage />; // не увійшли — екран входу
+  // відкрили QR зі Sync-Code (частина 25): спершу «Gerät verbinden?» — курси, найімовірніше, прийдуть з коду
+  if (link?.kind === "sync" && syncAllowed) return <SyncConnect code={link.code} />;
   if (!coursesChosen) return <CourseStart />; // перший запуск на цьому пристрої
 
   return (

@@ -1,4 +1,4 @@
-import { Folder, Palette, Sparkles, Sun, Table2, UserPlus } from "lucide-react";
+import { Folder, Info, Palette, Sparkles, Sun, Table2, UserPlus } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { version } from "../../package.json";
@@ -42,7 +42,7 @@ const DesktopOverview = () => (
 
 // ─────────────────────────────────────────────────────────────
 // Сторінка «Mehr» (макет 22). Своїх запитів немає: me і courses уже завантажені.
-// Mitteilungen з'являться в частині 17. «Notizen synchronisieren» ховаємо, якщо школа вимкнула синхронізацію.
+// Mitteilungen з'являться в частині 17. «Synchronisieren» ховаємо, якщо школа вимкнула синхронізацію.
 // ─────────────────────────────────────────────────────────────
 const More = () => {
   const inPanel = useInSettingsPanel(); // ПК: сторінка всередині «Einstellungen»
@@ -86,6 +86,8 @@ const PhoneMenu = () => {
         <MenuRow to="/materialien" icon={Folder} label="Materialien" value={links ? `${links} ${links === 1 ? "Link" : "Links"}` : null} />
         {/* частина 16: посилання і QR для однокласників; вимкнене — шторка так і скаже */}
         <MenuRow onClick={() => openSheet("einladen")} icon={UserPlus} label="Klasse einladen" value="Link + QR" />
+        {/* часть 25: три подсказки с первого входа — открыть ещё раз */}
+        <MenuRow onClick={() => openSheet("tipps")} icon={Info} label="Kurz erklärt" value="3 Tipps" />
         <MenuRow to="/mehr/datenschutz" icon={ShieldIcon} label="Datenschutz" />
       </ListCard>
 
@@ -95,7 +97,7 @@ const PhoneMenu = () => {
         <MenuRow to="/mehr/darstellung" icon={Sun} label="Darstellung" value={THEME_LABELS[theme]} />
         <MenuRow to="/mehr/fachfarben" icon={Palette} label="Fachfarben" />
         {/* праворуч — перша група коду, як у макеті: «K7QM-…» */}
-        {syncAllowed && <MenuRow to="/mehr/sync" icon={SyncIcon} label="Notizen synchronisieren" value={syncCode ? `${syncCode.slice(0, 4)}-…` : "Aus"} />}
+        {syncAllowed && <MenuRow to="/mehr/sync" icon={SyncIcon} label="Synchronisieren" value={syncCode ? `${syncCode.slice(0, 4)}-…` : "Aus"} />}
         {!isTeacher(me) && <MenuRow to="/mehr/editor-code" icon={KeyIcon} label="Tests eintragen" value={me?.editor?.label ?? "Editor-Code"} />}
       </ListCard>
 

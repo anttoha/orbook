@@ -1,19 +1,12 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { retryText } from "../../shared/api/api";
 import { useSyncStore } from "../../shared/store/syncStore";
-import { syncErrorText } from "../../shared/utils/notes";
+import { connectError } from "./connectError";
 import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import { SyncIcon, WarningIcon } from "../ui/icons";
 import TextField from "../ui/TextField";
 
-// Текст помилки під полем коду
-function connectError(error) {
-  if (error?.message === "Ungültiger Sync-Code") return "Der Code hat 20 Zeichen, z. B. K7QM-4TXP-R2AB-9CDE-FGHJ.";
-  if (error?.status === 429) return retryText(error);
-  return syncErrorText(error);
-}
 
 // ─────────────────────────────────────────────────────────────
 // «Anderes Gerät verbinden» (макет 21): ввести код з іншого пристрою.
@@ -72,6 +65,10 @@ const ConnectDevice = () => {
       <Button type="submit" variant="primary" disabled={busy || !text.trim()} className="flex-none">
         <SyncIcon className="size-4" /> {busy ? "Wird verbunden …" : "Verbinden"}
       </Button>
+      {/* часть 25: проще всего — QR этого кода на другом устройстве */}
+      <p className="text-center text-label text-faint">
+        Oder: <span className="font-bold text-muted">am anderen Gerät den QR scannen</span>
+      </p>
 
       <ConfirmDialog
         open={Boolean(emptyCode)}

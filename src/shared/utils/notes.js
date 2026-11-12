@@ -74,8 +74,7 @@ const localMoment = (date) => {
 };
 
 // «Zuletzt synchronisiert heute 07:40 · 6 Notizen» / «Noch nicht synchronisiert · 1 Notiz»
-export function syncedText(lastSyncAt, count, now = new Date()) {
-  const notes = `${count} ${count === 1 ? "Notiz" : "Notizen"}`;
-  if (!lastSyncAt) return `Noch nicht synchronisiert · ${notes}`;
-  return `Zuletzt synchronisiert ${planMomentText(localMoment(new Date(lastSyncAt)), localMoment(now).slice(0, 10))} · ${notes}`;
+export function syncedText(lastSyncAt, now = new Date()) {
+  if (!lastSyncAt) return "Noch nicht synchronisiert";
+  return `Zuletzt synchronisiert ${planMomentText(localMoment(new Date(lastSyncAt)), localMoment(now).slice(0, 10))} · alles aktuell`;
 }

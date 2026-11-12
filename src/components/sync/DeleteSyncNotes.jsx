@@ -8,7 +8,7 @@ import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import { TrashIcon } from "../ui/icons";
 
-// «Meine Sync-Notizen löschen» (Datenschutz, макет 27): DELETE /api/sync і забути код.
+// «Meine Sync-Daten löschen» (Datenschutz, макет 27): DELETE /api/sync і забути код.
 // Нотатки на цьому пристрої лишаються. Видно тільки після входу і коли код є.
 const DeleteSyncNotes = () => {
   const code = useSyncStore((s) => s.code);
@@ -24,7 +24,7 @@ const DeleteSyncNotes = () => {
     setBusy(true);
     try {
       await forget();
-      toast.success("Sync-Notizen gelöscht");
+      toast.success("Sync-Daten gelöscht");
     } catch (error) {
       toast.error(syncErrorText(error)); // наприклад, немає мережі: код лишається, можна повторити
     } finally {
@@ -36,14 +36,14 @@ const DeleteSyncNotes = () => {
   return (
     <>
       <Button variant="danger" onClick={() => setOpen(true)} className="mt-6 w-full flex-none">
-        <TrashIcon className="size-4" /> Meine Sync-Notizen löschen
+        <TrashIcon className="size-4" /> Meine Sync-Daten löschen
       </Button>
       <ConfirmDialog
         open={open}
         onClose={() => setOpen(false)}
         icon={<TrashIcon className="size-6.5 text-danger" />}
-        title="Sync-Notizen löschen?"
-        text="Die verschlüsselten Notizen werden vom Server gelöscht und der Code von diesem Gerät entfernt. Deine Notizen auf diesem Gerät bleiben."
+        title="Sync-Daten löschen?"
+        text="Die verschlüsselten Daten werden vom Server gelöscht und der Code von diesem Gerät entfernt. Alles auf diesem Gerät bleibt."
       >
         <Button onClick={() => setOpen(false)}>Abbrechen</Button>
         <Button variant="danger" onClick={remove} disabled={busy}>

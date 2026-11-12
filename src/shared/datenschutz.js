@@ -8,7 +8,7 @@ export const STAND = "2026-11-12";
 export const FACTS = [
   { id: "konten", title: "Keine Konten", text: "Keine Namen, keine E-Mails von Schülerinnen und Schülern. Du meldest dich mit dem Klassenpasswort oder einem Zugangscode an." },
   { id: "server", title: "Was auf dem Server liegt", text: "Der Stundenplan der Klasse und was ihr eintragt: Tests, Hausaufgaben, Termine, Links zu Materialien. Bei Schülern steht kein Name dabei." },
-  { id: "notizen", title: "Deine Notizen", text: "Bleiben auf deinem Gerät. Beim Synchronisieren liegen sie verschlüsselt unter einem zufälligen Code. Der Server kann sie nicht lesen." },
+  { id: "notizen", title: "Deine Notizen und Aufgaben", text: "Bleiben auf deinem Gerät, auch deine Häkchen. Beim Synchronisieren liegen sie verschlüsselt unter einem zufälligen Code. Der Server kann sie nicht lesen." },
   { id: "tracking", title: "Kein Tracking", text: "Keine Werbung, keine Analyse, keine IP-Adressen. Cookies nur für die Anmeldung und gegen Passwort-Raten." },
 ];
 
@@ -35,19 +35,20 @@ export const SECTIONS = [
   },
   {
     id: "sync",
-    title: "Notizen und Sync",
+    title: "Notizen, Aufgaben und Sync",
     intro: [
-      "Notizen speichert die App nur auf deinem Gerät.",
-      "Mit Notizen-Sync werden sie auf deinem Gerät verschlüsselt, bevor sie losgeschickt werden. Der Schlüssel steckt im Sync-Code, und den hast nur du. Der Server sieht eine zufällige Kennung und unlesbaren Datensalat (höchstens 64 KB).",
-      "Sync-Code weg heißt: Die Notizen auf dem Server kann niemand mehr lesen, auch wir nicht.",
-      "Löschen kannst du sie unten mit „Meine Sync-Notizen löschen“. Nach 365 Tagen ohne Zugriff löscht der Server sie von selbst.",
+      "Notizen, eigene Aufgaben und welche Hausaufgaben du abgehakt hast, speichert die App nur auf deinem Gerät. Die Klasse und die Lehrkräfte sehen davon nichts.",
+      "Mit Sync werden sie auf deinem Gerät verschlüsselt, bevor sie losgeschickt werden — dazu, wenn du es eingeschaltet lässt, deine Kurse, Darstellung und Fachfarben. Der Schlüssel steckt im Sync-Code, und den hast nur du. Der Server sieht eine zufällige Kennung und unlesbaren Datensalat (höchstens 64 KB).",
+      "Der QR mit dem Sync-Code enthält den Code hinter „#“. Diesen Teil der Adresse schickt der Browser nicht an den Server.",
+      "Sync-Code weg heißt: Die Daten auf dem Server kann niemand mehr lesen, auch wir nicht.",
+      "Löschen kannst du sie unten mit „Meine Sync-Daten löschen“. Nach 365 Tagen ohne Zugriff löscht der Server sie von selbst.",
     ],
   },
   {
     id: "geraet",
     title: "Auf deinem Gerät",
     intro: [
-      "Im Browser (localStorage) liegen: deine Kurse, Darstellung und Fachfarben, deine Notizen und dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne, damit die App auch ohne Netz geht.",
+      "Im Browser (localStorage) liegen: deine Kurse, Darstellung und Fachfarben, deine Notizen, Aufgaben und Häkchen, dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne, damit die App auch ohne Netz geht.",
       "„Klasse verlassen“ löscht die Kopie der Pläne. Notizen und Einstellungen bleiben, bis du die Website-Daten im Browser löschst.",
       "Die App lädt nichts von fremden Servern: keine Schriften von Google, kein CDN, keine Analyse.",
     ],
@@ -72,7 +73,7 @@ export const SECTIONS = [
       ["Hausaufgaben, Termine", "30 Tage nach dem Datum"],
       ["Materialien", "bis sie jemand löscht"],
       ["Anmeldung", "bis die Sitzung abläuft: 30 Tage, Admin 12 Stunden"],
-      ["Sync-Notizen", "365 Tage ohne Zugriff"],
+      ["Sync-Daten", "365 Tage ohne Zugriff"],
       ["Protokoll für den Admin", "30 Tage, ohne IP und ohne Namen"],
       ["Sicherungskopien", "14 Tage, vor größeren Änderungen bis zu 60 Tage"],
     ],
@@ -91,7 +92,7 @@ export const SECTIONS = [
     intro: [
       "Die App verarbeitet nur, was sie zum Funktionieren braucht (Art. 6 Abs. 1 lit. f DSGVO: berechtigtes Interesse, der Klasse einen aktuellen Plan zu geben).",
       "Du kannst fragen, was gespeichert ist, und Daten berichtigen oder löschen lassen oder widersprechen (Art. 15–21 DSGVO). Schreib dafür an die Person unter „Verantwortlich“. Du kannst dich auch bei einer Datenschutz-Aufsichtsbehörde beschweren.",
-      "Vieles kannst du selbst: Sync-Notizen löschen, „Klasse verlassen“, Website-Daten im Browser löschen.",
+      "Vieles kannst du selbst: Sync-Daten löschen, „Klasse verlassen“, Website-Daten im Browser löschen.",
     ],
   },
 ];

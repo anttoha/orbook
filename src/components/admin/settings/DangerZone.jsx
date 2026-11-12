@@ -16,9 +16,9 @@ const dangers = (counts) => [
   },
   {
     action: "deleteSync",
-    label: "Alle Sync-Notizen löschen",
+    label: "Alle Sync-Daten löschen",
     icon: TrashIcon,
-    title: "Alle Sync-Notizen löschen?",
+    title: "Alle Sync-Daten löschen?",
     text: `Alle ${counts?.syncBlocks ?? 0} verschlüsselten Sync-Speicher auf dem Server werden gelöscht. Die Notizen auf den Geräten selbst bleiben.`,
   },
   {

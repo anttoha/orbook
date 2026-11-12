@@ -1,4 +1,4 @@
-import { Keyboard, UserPlus } from "lucide-react";
+import { Info, Keyboard, UserPlus } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { settingsGroups, settingsSections } from "../../shared/constants/constants";
 import { useSyncAllowed } from "../../shared/hooks/useNotesSync";
@@ -73,6 +73,7 @@ const SettingsNav = () => {
             {group.key === "seiten" && (
               <>
                 <SheetItem icon={UserPlus} label="Klasse einladen" onClick={() => openSheet("einladen")} />
+                <SheetItem icon={Info} label="Kurz erklärt" onClick={() => openSheet("tipps")} />
                 <SheetItem icon={Keyboard} label="Tastenkürzel" onClick={() => openSheet("tasten")} />
               </>
             )}

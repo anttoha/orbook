@@ -79,8 +79,8 @@ describe("підписи", () => {
 describe("syncedText", () => {
   it("сьогодні — тільки час, ще не було — «Noch nicht»", () => {
     const now = new Date(2026, 10, 6, 9, 0);
-    expect(syncedText(new Date(2026, 10, 6, 7, 40).toISOString(), 6, now)).toBe("Zuletzt synchronisiert heute 07:40 · 6 Notizen");
-    expect(syncedText(new Date(2026, 10, 5, 18, 5).toISOString(), 1, now)).toBe("Zuletzt synchronisiert gestern 18:05 · 1 Notiz");
-    expect(syncedText(null, 0, now)).toBe("Noch nicht synchronisiert · 0 Notizen");
+    expect(syncedText(new Date(2026, 10, 6, 7, 40).toISOString(), now)).toBe("Zuletzt synchronisiert heute 07:40 · alles aktuell");
+    expect(syncedText(new Date(2026, 10, 5, 18, 5).toISOString(), now)).toBe("Zuletzt synchronisiert gestern 18:05 · alles aktuell");
+    expect(syncedText(null, now)).toBe("Noch nicht synchronisiert");
   });
 });

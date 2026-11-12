@@ -44,7 +44,7 @@ export const settingsSections = [
   { to: "/mehr/kurse", label: "Meine Kurse", icon: Table2, hint: "courses", group: "einstellungen" },
   { to: "/mehr/darstellung", label: "Darstellung", icon: Sun, hint: "appearance", group: "einstellungen" },
   { to: "/mehr/fachfarben", label: "Fachfarben", icon: Palette, hint: "subjects", group: "einstellungen" },
-  { to: "/mehr/sync", label: "Notizen-Sync", icon: SyncIcon, hint: "sync", sync: true, group: "einstellungen" },
+  { to: "/mehr/sync", label: "Synchronisieren", icon: SyncIcon, hint: "sync", sync: true, group: "einstellungen" },
   { to: "/mehr/editor-code", label: "Editor-Code", icon: KeyIcon, hint: "editor", classOnly: true, group: "einstellungen" }, // учителю код не потрібен
 ];
 

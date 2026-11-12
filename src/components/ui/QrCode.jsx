@@ -9,14 +9,14 @@ const QUIET = 3; // тихий край навколо коду (у клітин
 // Кольори — токени qr-*: однакові в обох темах, бо камера читає темне на білому.
 // Розмір задається ззовні: className="size-42"
 // ─────────────────────────────────────────────────────────────
-const QrCode = ({ value, className, dim = false }) => {
+const QrCode = ({ value, className, dim = false, label = "QR-Code zum Einladungslink" }) => {
   const { size, dots, eyes, logo } = useMemo(() => qrFor(value), [value]); // рахуємо лише при новому посиланні
   const box = size + QUIET * 2;
   const at = (n) => n + QUIET; // клітинка → координата в SVG
   const logoSize = logo.to - logo.from + 1;
 
   return (
-    <svg viewBox={`0 0 ${box} ${box}`} role="img" aria-label="QR-Code zum Einladungslink" className={cn("rounded-field", dim && "opacity-15", className)}>
+    <svg viewBox={`0 0 ${box} ${box}`} role="img" aria-label={label} className={cn("rounded-field", dim && "opacity-15", className)}>
       <rect width={box} height={box} className="fill-qr-bg" />
       {/* одна path з кружечків: тисяча окремих <circle> гальмувала б */}
       <path className="fill-qr-ink" d={dots.map(([x, y]) => `M${at(x) + 0.06} ${at(y) + 0.5}a.44 .44 0 1 0 .88 0a.44 .44 0 1 0 -.88 0`).join("")} />
