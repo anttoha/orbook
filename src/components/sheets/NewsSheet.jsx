@@ -32,7 +32,7 @@ const NewsSheet = ({ open, onClose }) => {
       }
     >
       <NewsPicture name={latest.picture} />
-      <ChangeGroups entry={latest} />
+      <ChangeGroups entry={latest} delay={250} />
     </Sheet>
   );
 };

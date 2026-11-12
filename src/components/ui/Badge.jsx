@@ -13,7 +13,7 @@ const variants = {
 };
 
 // Маленький бейдж великими літерами: <Badge variant="changed">Vertretung</Badge>
-const Badge = ({ variant = "changed", className, children }) => {
+const Badge = ({ variant = "changed", className, children, ...rest }) => {
   return (
     <span
       className={cn(
@@ -21,6 +21,7 @@ const Badge = ({ variant = "changed", className, children }) => {
         variants[variant], // колір за типом
         className,
       )}
+      {...rest} // например style для задержки анимации
     >
       {children}
     </span>

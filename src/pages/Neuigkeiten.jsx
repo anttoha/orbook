@@ -21,7 +21,7 @@ const Neuigkeiten = () => {
       <p className="hidden text-label text-muted lg:block">Was sich geändert hat. Das Neueste steht oben.</p>
       <ul className="flex flex-col gap-2.5">
         {changelog.map((entry, i) => (
-          <EntryCard key={entry.version} entry={entry} open={openVersion === entry.version} isNew={wasNew && i === 0} onToggle={() => setOpenVersion(openVersion === entry.version ? null : entry.version)} />
+          <EntryCard key={entry.version} index={i} entry={entry} open={openVersion === entry.version} isNew={wasNew && i === 0} onToggle={() => setOpenVersion(openVersion === entry.version ? null : entry.version)} />
         ))}
       </ul>
     </div>

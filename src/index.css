@@ -506,6 +506,9 @@
     --animate-page-fade: fade-in 0.16s ease-out;
     /* Розділ «Einstellungen» на ПК: як вкладка — проявляється і трохи підіймається */
     --animate-panel-in: panel-in 0.26s var(--ease-soft);
+    /* «Neuigkeiten»: блоки по очереди выплывают снизу (задержку задаёт animationDelay), метка NEU «выскакивает» с отскоком */
+    --animate-rise-in: rise-in 0.5s var(--ease-soft) backwards;
+    --animate-badge-pop: badge-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s backwards;
 
     @keyframes fade-in { from { opacity: 0; } }
     @keyframes fade-out { to { opacity: 0; } }
@@ -516,4 +519,6 @@
     @keyframes page-forward { from { opacity: 0; translate: 24px 0; } }
     @keyframes page-back { from { opacity: 0; translate: -24px 0; } }
     @keyframes panel-in { from { opacity: 0; translate: 0 8px; } }
+    @keyframes rise-in { from { opacity: 0; translate: 0 14px; } }
+    @keyframes badge-pop { from { opacity: 0; scale: 0.5; } }
 }
