@@ -279,3 +279,8 @@ Spec: `docs/specs/16-einladen/spec.md` (план бэкенда: колонки 
 Проверки: lint, 393 теста, build; скриншоты на подменённом API — `/root/work/orbook-compare/22-kleinigkeiten/shots/`.
 **Дальше:** владельцу проверить на демо; потом часть 22b (Neuigkeiten).
 **Остановка /orb-auto (12.11.2026):** чат стал большим после части 22. Следующая — **22b Neuigkeiten** (новые экраны → начать с `/orb-design`, ждать «ок дизайн»). Модель: Sonnet · effort medium.
+
+## 2026-11-12 · часть 22b (Neuigkeiten)
+Дизайн утверждён («Имба»), макеты в `design/neu/22b-neuigkeiten/` (артефакт: https://claude.ai/artifact/UNvGHBLaXPhrds2XrVPQf9). Код не начат.
+Решения: окно «Was ist neu» (шторка/окно, один раз после новой версии, «Verstanden» запоминает версию, «Alle ansehen» → список); Mehr → «Seiten» → «Neuigkeiten» (метка NEU, пока не открыт); на ПК пункт в левом меню Mehr. Данные — файл во фронте (`src/shared/changelog`), группы Neu / Behoben / Entfernt, картинка по желанию. Тексты — простые, человеческие, как в макетах (см. ENTRIES в `gen.py`), не «ИИ-стиль». Первая запись — 0.8.4; дописывать вместе с `docs/releases/`.
+Дальше: `/orb-spec` → `/orb-build` → `/orb-check`.
