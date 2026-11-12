@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { usePlanStore } from "../store/planStore";
-import { useSyncStore } from "../store/syncStore";
-import { useUserStore } from "../store/userStore";
+import { useSyncStore, watchChanges } from "../store/syncStore";
 
-const AFTER_EDIT_MS = 5000; // після зміни нотатки чекаємо 5 с: кілька правок підряд — одна синхронізація
+const AFTER_EDIT_MS = 5000; // після зміни чекаємо 5 с: кілька правок підряд — одна синхронізація
 
 // ─────────────────────────────────────────────────────────────
-// Коли синхронізувати нотатки (docs/frontend/06-notizen.md):
-// після входу, при поверненні на вкладку, коли з'явилась мережа, і через 5 с після зміни нотаток.
+// Коли синхронізувати (docs/frontend/06-notizen.md; частина 25 — усе, не лише нотатки):
+// після входу, при поверненні на вкладку, коли з'явилась мережа, і через 5 с після зміни
+// нотаток, Aufgaben, «Meine Kurse» чи «Darstellung».
 // enabled — увійшли і школа не вимкнула синхронізацію. Без коду runSync нічого не робить.
 // ─────────────────────────────────────────────────────────────
 export function useNotesSync(enabled) {
@@ -20,10 +20,9 @@ export function useNotesSync(enabled) {
     document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("online", run);
 
-    // Нотатки змінились (не самою синхронізацією) — синхронізувати трохи пізніше
+    // Користувач щось змінив (не сама синхронізація) — синхронізувати трохи пізніше
     let timer;
-    const stop = useUserStore.subscribe((state, prev) => {
-      if (state.notes === prev.notes || state.notes === useSyncStore.getState().lastSynced) return;
+    const stop = watchChanges(() => {
       clearTimeout(timer);
       timer = setTimeout(run, AFTER_EDIT_MS);
     });

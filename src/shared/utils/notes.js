@@ -7,7 +7,6 @@
 import { planMomentText } from "./format";
 
 const TOMBSTONE_DAYS = 30; // видалена нотатка живе як «надгробок», щоб видалення дійшло до інших пристроїв
-const MAX_PLAIN_BYTES = 48 * 1024; // блок ≤ 64 КБ у base64: відкритий JSON — не більше ~48 КБ
 
 // id: у нотатки до уроку сталий («дата#урок») — на двох пристроях це одна нотатка
 export const noteId = (date, period) => (period ? `${date}#${period}` : `${date}#${crypto.randomUUID()}`);
@@ -37,36 +36,7 @@ export function mergeNotes(local, remote, now = new Date()) {
 }
 
 export const sameNotes = (a, b) => JSON.stringify(a) === JSON.stringify(b);
-export const fitsInBlock = (notes) => new TextEncoder().encode(JSON.stringify({ notes })).length <= MAX_PLAIN_BYTES;
 
-// Синхронізація: GET → злити → (якщо змінилось) PUT з baseVersion; на 409 — спочатку.
-// request(method, body) → { status, data } (404 і 409 — статусом, решта помилок кидається).
-// Повертає { notes, version, changed }. Блок не розшифрувався → Error("wrong_code"), нічого не пишемо.
-export async function syncNotes({ keys, notes, request, crypto: box, now = new Date(), maxTries = 5 }) {
-  for (let attempt = 0; attempt < maxTries; attempt++) {
-    const got = await request("GET");
-    let remote = [];
-    let version = 0; // на сервері нічого немає (404): починаємо з baseVersion 0
-    if (got.status === 200) {
-      try {
-        remote = (await box.decryptNotes(keys, got.data.data)).notes ?? [];
-      } catch {
-        throw new Error("wrong_code");
-      }
-      version = got.data.version;
-    }
-    const merged = mergeNotes(notes, remote, now);
-    if (version > 0 && sameNotes(merged, remote)) return { notes: merged, version, changed: false };
-    if (!fitsInBlock(merged)) throw new Error("too_big");
-    const block = await box.encryptNotes(keys, { notes: merged });
-    const put = await request("PUT", { data: block, baseVersion: version });
-    if (put.status === 200) return { notes: merged, version: put.data.version, changed: true };
-    // 409: інший пристрій встиг записати — беремо свіжу версію і зливаємо знову
-  }
-  throw new Error("conflict");
-}
-
-// Старі нотатки (до частини 11): updatedAt був числом, предмета не було
 export const upgradeNote = (n) => ({
   ...n,
   subject: n.subject ?? null,

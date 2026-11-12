@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useSyncStore } from "./syncStore";
+import { useTasksStore } from "./tasksStore";
 import { migrateUser, useUserStore } from "./userStore";
+import { ALL_PARTS } from "../utils/syncPayload";
 
 // Підставний сервер /api/sync: один блок на syncId, перевіряє baseVersion як справжній
 function fakeServer() {
@@ -27,8 +29,41 @@ describe("syncStore", () => {
   beforeEach(() => {
     server = fakeServer();
     vi.stubGlobal("fetch", server.fetch);
-    useSyncStore.setState({ code: null, version: 0, lastSyncAt: null, status: "idle", error: null, disabled: false });
-    useUserStore.setState({ notes: [] });
+    useSyncStore.setState({ code: null, version: 0, lastSyncAt: null, status: "idle", error: null, disabled: false, parts: ALL_PARTS, stamps: { kurse: null, darstellung: null } });
+    useUserStore.setState({ notes: [], picked: [], coursesChosen: false });
+    useTasksStore.setState({ tasks: [], marks: [] });
+  });
+
+  it("часть 25: задачи, галочки и Meine Kurse переходят на второе устройство", async () => {
+    useTasksStore.getState().addTask({ text: "Referat" });
+    useTasksStore.getState().markHomework(17, true);
+    useUserStore.setState({ picked: [3, 5], coursesChosen: true });
+    await useSyncStore.getState().enable();
+    const { code } = useSyncStore.getState();
+
+    // второе устройство: курсы ещё не выбраны — после «Verbinden» берутся с кода
+    useTasksStore.setState({ tasks: [], marks: [] });
+    useUserStore.setState({ picked: [], coursesChosen: false });
+    useSyncStore.setState({ code: null, version: 0 });
+    await useSyncStore.getState().connect(code);
+    expect(useTasksStore.getState().tasks.map((t) => t.text)).toEqual(["Referat"]);
+    expect(useTasksStore.getState().marks).toMatchObject([{ id: "17", done: true }]);
+    expect(useUserStore.getState()).toMatchObject({ picked: [3, 5], coursesChosen: true });
+  });
+
+  it("выключенная часть не приходит и не стирается", async () => {
+    useUserStore.setState({ picked: [3], coursesChosen: true });
+    await useSyncStore.getState().enable();
+    const { code } = useSyncStore.getState();
+    useUserStore.setState({ picked: [9], coursesChosen: true });
+    useSyncStore.setState({ code: null, version: 0, parts: { ...ALL_PARTS, kurse: false } });
+    await useSyncStore.getState().connect(code);
+    expect(useUserStore.getState().picked).toEqual([9]); // своё осталось
+    // а первое устройство при следующей синхронизации по-прежнему видит [3]
+    useSyncStore.setState({ parts: ALL_PARTS });
+    useUserStore.setState({ picked: [] });
+    await useSyncStore.getState().runSync();
+    expect(useUserStore.getState().picked).toEqual([3]);
   });
 
   it("два пристрої з одним кодом отримують однакові нотатки", async () => {

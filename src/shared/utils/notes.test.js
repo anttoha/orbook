@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { deleteNote, editNote, findNote, fitsInBlock, mergeNotes, newNote, noteMeta, noteSubjects, syncedText, syncErrorText, syncNotes, upgradeNote, visibleNotes } from "./notes";
+import { deleteNote, editNote, findNote, mergeNotes, newNote, noteMeta, noteSubjects, syncedText, syncErrorText, upgradeNote, visibleNotes } from "./notes";
 
 const at = (iso) => new Date(iso);
 const note = (id, updatedAt, extra = {}) => ({ id, text: id, date: "2026-11-06", subject: null, period: null, updatedAt, ...extra });
@@ -53,52 +53,6 @@ describe("mergeNotes", () => {
   it("надгробки старші за 30 днів зникають", () => {
     expect(mergeNotes([note("a", "2026-09-01T00:00:00Z", { deleted: true })], [], now)).toEqual([]);
     expect(mergeNotes([note("a", "2026-11-01T00:00:00Z", { deleted: true })], [], now)).toHaveLength(1);
-  });
-});
-
-describe("syncNotes", () => {
-  // «Шифрування» для тесту: блок — це просто JSON
-  const box = { encryptNotes: async (_k, v) => JSON.stringify(v), decryptNotes: async (_k, b) => JSON.parse(b) };
-  const now = at("2026-11-06T12:00:00Z");
-
-  it("на сервері порожньо → PUT з baseVersion 0", async () => {
-    const calls = [];
-    const request = async (method, body) => {
-      calls.push([method, body?.baseVersion]);
-      return method === "GET" ? { status: 404 } : { status: 200, data: { version: 1 } };
-    };
-    const res = await syncNotes({ keys: {}, notes: [note("a", "2026-11-06T00:00:00Z")], request, crypto: box, now });
-    expect(calls).toEqual([["GET", undefined], ["PUT", 0]]);
-    expect(res).toMatchObject({ version: 1, changed: true });
-  });
-
-  it("нічого не змінилось → без PUT", async () => {
-    const notes = [note("a", "2026-11-06T00:00:00Z")];
-    const request = async (method) => (method === "GET" ? { status: 200, data: { data: JSON.stringify({ notes }), version: 4 } } : { status: 500 });
-    expect(await syncNotes({ keys: {}, notes, request, crypto: box, now })).toMatchObject({ version: 4, changed: false });
-  });
-
-  it("409 → повтор із новою версією", async () => {
-    let puts = 0;
-    const request = async (method, body) => {
-      if (method === "GET") return { status: 200, data: { data: JSON.stringify({ notes: [] }), version: 2 + puts } };
-      puts += 1;
-      return puts === 1 ? { status: 409 } : { status: 200, data: { version: body.baseVersion + 1 } };
-    };
-    expect(await syncNotes({ keys: {}, notes: [note("a", "2026-11-06T00:00:00Z")], request, crypto: box, now })).toMatchObject({ version: 4, changed: true });
-  });
-
-  it("постійний 409 → conflict; нерозшифрований блок → wrong_code", async () => {
-    const busy = async (method) => (method === "GET" ? { status: 404 } : { status: 409 });
-    await expect(syncNotes({ keys: {}, notes: [], request: busy, crypto: box, now })).rejects.toThrow("conflict");
-    const broken = async () => ({ status: 200, data: { data: "kaputt", version: 1 } });
-    await expect(syncNotes({ keys: {}, notes: [], request: broken, crypto: box, now })).rejects.toThrow("wrong_code");
-  });
-
-  it("забагато тексту → too_big", async () => {
-    const big = [note("a", "2026-11-06T00:00:00Z", { text: "x".repeat(50 * 1024) })];
-    expect(fitsInBlock(big)).toBe(false);
-    await expect(syncNotes({ keys: {}, notes: big, request: async () => ({ status: 404 }), crypto: box, now })).rejects.toThrow("too_big");
   });
 });
 

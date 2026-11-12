@@ -10,12 +10,15 @@ const getStoredTheme = () => {
     }
 };
 
-const media = window.matchMedia("(prefers-color-scheme: dark)");
+// Вне браузера (тесты Vitest в Node) окна нет — тогда тема просто не применяется
+const browser = typeof window !== "undefined";
+const media = browser ? window.matchMedia("(prefers-color-scheme: dark)") : null;
 
 // Тема зараз темна? «system» дивиться на налаштування пристрою
-export const isDarkTheme = (theme) => theme === "dark" || (theme === "system" && media.matches);
+export const isDarkTheme = (theme) => theme === "dark" || (theme === "system" && Boolean(media?.matches));
 
 const applyTheme = (theme) => {
+    if (!browser) return;
     document.documentElement.classList.toggle("dark", isDarkTheme(theme));
 
     // Панель браузера на телефоні — кольору сторінки, навіть якщо тема не збігається із системною
@@ -41,4 +44,4 @@ export const useTheme = create((set) => ({
 applyTheme(useTheme.getState().theme);
 
 // Застосунок живе, поки відкрита вкладка, тому цей слухач не прибираємо
-media.addEventListener("change", () => applyTheme(useTheme.getState().theme));
+media?.addEventListener("change", () => applyTheme(useTheme.getState().theme));
