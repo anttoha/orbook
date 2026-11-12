@@ -58,6 +58,13 @@ describe("changedLabel", () => {
     expect(changedLabel({ ...day, changedAt: "2026-11-04T15:15:00+01:00" })).toBe("Mi 15:15");
   });
 
+  it("формат из Darstellung: дата или дата и время; в тот же день всё равно время", () => {
+    const earlier = { ...day, changedAt: "2026-11-04T15:15:00+01:00" };
+    expect(changedLabel(earlier, "date")).toBe("04.11.");
+    expect(changedLabel(earlier, "datetime")).toBe("04.11. 15:15");
+    expect(changedLabel(day, "date")).toBe("07:08");
+  });
+
   it("changedAt = null: берём publishedAt", () => {
     expect(changedLabel({ ...day, changedAt: null })).toBe("Mi 20:01");
   });

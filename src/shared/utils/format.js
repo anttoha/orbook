@@ -105,14 +105,19 @@ export function lastStandLabel(moment, today) {
 }
 
 // Другий рядок у плашці дня: коли план цього дня востаннє змінився.
-// Той самий день — «07:08», інший — «Mi 15:15». Дати в API вже в часі школи (+01:00),
-// тому беремо їх із рядка, а не через Date. Немає плану або часу — null.
-export function changedLabel(day) {
+// Той самий день — завжди «07:08». Інший — за налаштуванням «Darstellung» (частина 22):
+//   "weekday" «Mi 15:15» (як було) · "date" «04.11.» · "datetime" «04.11. 15:15».
+// Дати в API вже в часі школи (+01:00), тому беремо їх із рядка, а не через Date. Немає плану або часу — null.
+export function changedLabel(day, format = "weekday") {
   const moment = day?.changedAt ?? day?.publishedAt;
   if (!moment || day.status !== "ok") return null;
   const date = moment.slice(0, 10);
   const time = moment.slice(11, 16);
-  return date === day.date ? time : `${weekdayShort(date)} ${time}`;
+  if (date === day.date) return time;
+  const dotted = `${date.slice(8, 10)}.${date.slice(5, 7)}.`; // «04.11.»
+  if (format === "date") return dotted;
+  if (format === "datetime") return `${dotted} ${time}`;
+  return `${weekdayShort(date)} ${time}`;
 }
 
 // Час у вікні «Info zum Tag»: «heute 07:08», «gestern 18:30», «Mi, 4.11. 15:15». null → «—»

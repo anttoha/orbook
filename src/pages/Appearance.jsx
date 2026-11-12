@@ -1,3 +1,4 @@
+import ChangedFormatCard from "../components/more/ChangedFormatCard";
 import SettingRow from "../components/more/SettingRow";
 import ThemePicker from "../components/more/ThemePicker";
 import ListCard from "../components/ui/ListCard";
@@ -52,6 +53,8 @@ const Appearance = () => {
           <Segmented label="Schriftgröße" size="form" className="w-fit" options={FONT_SIZES} value={user.fontScale} onChange={user.setFontScale} />
         </SettingRow>
       </ListCard>
+
+      <ChangedFormatCard />
     </section>
   );
 };

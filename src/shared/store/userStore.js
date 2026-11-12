@@ -33,6 +33,7 @@ export const useUserStore = create(
       dayView: "liste", // вигляд дня: "liste" | "zeitleiste"
       compactWeek: true, // менші клітинки тижня
       fontScale: 2, // шрифт: 1 — A, 2 — A+ (як на макетах), 3 — A++
+      changedFormat: "weekday", // підпис зміни під днем: "weekday" «Mi 15:15» | "date" «15.09.» | "datetime" «15.09. 15:15»
       allCourses: false, // режим «Alle Kurse»: видно й чужі курси (пунктиром)
       checkedPlan: [], // «So lassen» у «Einträge prüfen» (частина 19): ключі з shared/utils/muster.js checkKey
 
@@ -103,6 +104,7 @@ export const useUserStore = create(
       setStartView: (startView) => set({ startView }),
       setDayView: (dayView) => set({ dayView }),
       setCompactWeek: (compactWeek) => set({ compactWeek }),
+      setChangedFormat: (changedFormat) => set({ changedFormat }),
 
       // Розмір шрифту: атрибут на <html> вмикає масштаб в index.css
       setFontScale: (fontScale) => {
