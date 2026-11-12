@@ -360,3 +360,6 @@ Spec и план бэкенда: `docs/specs/17-pwa-push/spec.md` (миграц�
 **Дальше:** часть 27 (Каналы + вечерняя сводка), Opus · effort medium.
 - Проверено на настоящем демо (`eded5e0`): `sw.js` зарегистрирован, манифест отдаётся (`application/manifest+json`), иконки 200, `scrollbar-gutter: stable`, ошибок в консоли нет.
 - **Находка (ждёт владельца):** сервер собирает фронт с `NODE_ENV=development` (unit `orbook-fe-sync`, нужно для dev-зависимостей), поэтому на демо **и проде** работает отладочная сборка React (тяжелее и медленнее, `import.meta.env.PROD` = false). Поправить можно в `/opt/orbook-be/scripts/fe_sync.py`: `npm run build` с `NODE_ENV=production` (установку оставить как есть). Это изменение выкладки — только после «ок» владельца.
+
+## Релиз v0.12.0 (2026-11-12)
+Владелец: «на прод». Бэкенд: `scripts/update.sh` 19:49 (тег отката `pre-update-20261112-194952`, бэкап `orbook-before-update-20261112-194953.db`), прод 0012 → 0013, health ok, `/api/push/key` без входа → 401, ошибок в журнале нет. `orbook check`: свободно 9,6 % диска (предупреждение). Фронт: `docs/releases/v0.12.0.md`, тег `v0.12.0` → Release через Actions → прод. Вопрос про сборку с `NODE_ENV=development` всё ещё ждёт владельца.
