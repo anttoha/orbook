@@ -3,6 +3,16 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.11.0",
+    date: "2026-11-12",
+    neu: [
+      "Neuer Plan kommt von selbst: Ist die App offen, siehst du ihn ein paar Sekunden nach der Schule. Kein Neuladen mehr.",
+      "„Verlauf des Tages“ unter „Info zum Tag“: Was sich am Plan geändert hat und wann. Alte Fassungen kannst du dir ansehen.",
+      "Unter der Woche steht „Live“. Tipp drauf: Du siehst für jeden Tag, ob der Plan schon da ist und wann zuletzt nachgeschaut wurde.",
+    ],
+    behoben: ["Kommt ein neuer Plan, schaut ORBook gleich alle Tage bis Ende nächster Woche an, nicht nur heute und morgen.", "„Jetzt prüfen“ prüft die Woche, die du gerade anschaust."],
+  },
+  {
     version: "0.10.0",
     date: "2026-11-12",
     neu: [

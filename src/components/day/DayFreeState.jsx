@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { ChevronRight, Clock, RotateCw, Sun } from "lucide-react";
 import { usePlanStore } from "../../shared/store/planStore";
-import { nextSchoolDay, shortDate, weekdayLong, weekdayShort } from "../../shared/utils/format";
+import { useTicker } from "../../shared/hooks/useTicker";
+import { mondayOf, nextSchoolDay, shortDate, weekdayLong, weekdayShort } from "../../shared/utils/format";
+import { agoText } from "../../shared/utils/liveText";
 import Button from "../ui/Button";
 import { PlanDown } from "../ui/PlanState";
 import StateScreen from "../ui/StateScreen";
@@ -21,6 +23,7 @@ const DayFreeState = ({ day, today, week, onRetry, fill }) => {
   const holidays = usePlanStore((s) => s.meta?.holidays);
   const refreshPlan = usePlanStore((s) => s.refreshPlan);
   const refreshing = usePlanStore((s) => s.refreshing);
+  const now = useTicker();
 
   if (day.status === "holiday") {
     const next = nextSchoolDay(day.date, holidays);
@@ -44,9 +47,11 @@ const DayFreeState = ({ day, today, week, onRetry, fill }) => {
         text="Die Schule stellt den Plan meist am Vortag ab Mittag online. ORBook schaut regelmäßig nach."
         fill={fill}
       >
-        <Button variant="primary" onClick={refreshPlan} disabled={refreshing} className="flex-none">
-          <RotateCw className="size-4" /> Jetzt prüfen
+        <Button variant="primary" onClick={() => refreshPlan(mondayOf(day.date))} disabled={refreshing} className="flex-none">
+          <RotateCw className={refreshing ? "size-4 motion-safe:animate-spin" : "size-4"} /> {refreshing ? "Wird geprüft…" : "Jetzt prüfen"}
         </Button>
+        {/* часть 26: время проверки этого дня */}
+        <p className="w-full text-center text-caption text-faint">{day.checkedAt ? `Zuletzt geprüft ${agoText(day.checkedAt, now)}` : "Noch nicht geprüft"}</p>
       </StateScreen>
     );
   }

@@ -1,6 +1,6 @@
 # 26 · Schnelle Aktualisierung + Verlauf des Tages
 
-**Статус:** дизайн и план бэкенда ждут «ок» владельца (2026-11-12)
+**Статус:** дизайн ок, план бэкенда ок (2026-11-12); бэкенд `fa76cbd` на демо; фронт на демо 2026-11-12; прод — ждёт «на прод»
 **Источники:** `design/neu/26-live-verlauf/` (артефакт https://claude.ai/artifact/VhcJWZifkkwJNWkLGoZjPf), идеи 09.11, 10.11 и 11.11 (`docs/ideas/2026-11-11/ideas.md`), пункт 20c в `docs/specs/README.md`, `/opt/orbook-be/docs/SPEC.md` §8.3, `/opt/orbook-be/docs/API.md` (Plan), код `/opt/orbook-be/src/orbook/plan/{poller,schedule,store,view}.py`, `src/shared/hooks/usePlanPolling.js`, `src/shared/store/planStore.js`, `src/components/sheets/{DayInfoSheet,DayPlanDetails}.jsx`.
 
 ## Зачем
@@ -77,8 +77,14 @@
 - **Server-Sent Events (SSE)** — простой способ, которым сервер шлёт браузеру события по одному долгому соединению.
 - **Условный запрос (304)** — «изменилось ли с прошлого раза?»; если нет, школа отвечает коротким «нет» без файла.
 
-## Открытые вопросы
-- [ ] «ок дизайн?» — владелец
-- [ ] Как часто спрашивать школу: оставить 60 с (предложение) или 30 с — владелец (нагрузка на сервер школы)
-- [ ] История 30 дней — оставить? — владелец
-- [ ] «ок» плана бэкенда — владелец
+## Решения владельца (12.11.2026)
+- «ок дизайн», «ок» плана бэкенда.
+- Частота: «чтобы сервер лишний раз не нагружать» → быстрая проверка остаётся 60 с; в админке можно реже (2 / 5 мин) или выключить (`plan.fastSeconds`).
+- История 30 дней, меняется в админке (`plan.versionsDays`: 7 / 14 / 30 / 90).
+- «Всё, что надо — в админке»: Admin → Einstellungen → «Aktualisierung»: «Heute und morgen prüfen», «Live-Aktualisierung» (`plan.live`), «Verlauf des Tages behalten».
+- Больше анимаций: ореол точки Live, плашка «Neuer Plan» въезжает сверху и колокольчик качается, строки ленты и Plan-Status появляются по очереди, галочки «отскакивают», «Jetzt anders» выскакивает, старая Fassung плавно сменяется.
+
+## Сделанные отличия от макета
+- Строка дня в Plan-Status: «Plan da · Stand heute 07:12» (время публикации школы) вместо «seit / geändert» — у сервера нет надёжного признака «менялся после публикации».
+- «Jetzt anders» — сиреневая полоска под уроком старой Fassung, а не бейдж в углу (там уже бывает VERTRETUNG).
+- В дне без плана (без Muster) — подпись «Zuletzt geprüft vor …» под кнопкой «Jetzt prüfen» экрана «Plan fehlt noch».

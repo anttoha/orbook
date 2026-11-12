@@ -24,7 +24,9 @@ import { useMaterials } from "./materialsStore";
 //   examsState — стан цього списку: { status, savedAt, error }, status як у weeks
 //   pastExams  — минулі Klausuren: { status, exams, savedAt, error }, вантажаться лише на вимогу
 //   homework   — Hausaufgaben з сьогоднішнього терміну (GET /api/homework), homeworkState — як examsState
-//   status   — стан плану: «Stand 07:12», stale (GET /api/plan/status)
+//   status   — стан плану: «Stand 07:12», stale (GET /api/plan/status или событие «status» потока)
+//   live     — часть 26: поток /api/plan/stream: "live" | "connecting" | "off"
+//   planStamp — растёт при каждом событии «plan»: «Verlauf des Tages» перечитывает Fassungen
 //   weeks    — завантажені тижні: { "2026-10-05": { status, data, savedAt, error } }
 //              status: "loading" | "ready" | "offline" | "unavailable" | "error"
 //   clock    — годинник школи (поправка з meta.serverTime)
@@ -86,6 +88,8 @@ export const usePlanStore = create((set, get) => ({
   clock: createSchoolClock(null), // поки meta немає — звичайний час пристрою
   now: new Date(), // поточний час школи; оновлює tick() раз на хвилину (HomePage)
   refreshing: false, // іде «Plan neu laden»
+  live: "off",
+  planStamp: 0,
   newPlan: null,
   lastStandShown: false,
 
@@ -131,7 +135,7 @@ export const usePlanStore = create((set, get) => ({
     useAppointmentStore.getState().reset();
     seenChange.save(null);
     seenWeeks = {};
-    set({ me: null, meta: null, courses: [], coursesStatus: "loading", exams: [], examsState: { status: "loading", savedAt: null, error: null }, pastExams: NO_PAST_EXAMS, homework: [], homeworkState: { status: "loading", savedAt: null, error: null }, status: null, weeks: {}, newPlan: null, lastStandShown: false });
+    set({ live: "off", me: null, meta: null, courses: [], coursesStatus: "loading", exams: [], examsState: { status: "loading", savedAt: null, error: null }, pastExams: NO_PAST_EXAMS, homework: [], homeworkState: { status: "loading", savedAt: null, error: null }, status: null, weeks: {}, newPlan: null, lastStandShown: false });
   },
 
   // ── Після входу: паралельно meta, курси, Klausuren, стан плану ──
@@ -295,12 +299,13 @@ export const usePlanStore = create((set, get) => ({
     get().reloadWeeks({ seen: true });
   },
 
-  // ── «Plan neu laden»: сервер одразу питає школу (кілька секунд) ──
-  refreshPlan: async () => {
+  // ── «Plan neu laden»: сервер одразу питає школу (кілька секунд).
+  // monday — неделя на экране: её дни сервер проверит тоже (часть 26, «Diese Woche jetzt prüfen») ──
+  refreshPlan: async (monday) => {
     if (get().refreshing) return; // уже йде
     set({ refreshing: true });
     try {
-      const result = await api("/plan/refresh", { method: "POST" });
+      const result = await api("/plan/refresh", { method: "POST", body: typeof monday === "string" ? { week: monday } : undefined });
       set({ status: result.status });
       if (!result.refreshed) {
         toast.error("Plan konnte nicht geladen werden", { duration: 6000, action: { label: "Nochmal", onClick: () => get().refreshPlan() } });
@@ -312,6 +317,7 @@ export const usePlanStore = create((set, get) => ({
         get().reloadWeeks({ seen: true }); // нові дані тижнів
         get().loadBasics(); // і Klausuren / стан
       }
+      set((s) => ({ planStamp: s.planStamp + 1 })); // «Plan-Status» и «Verlauf» перечитывают дни
     } catch (error) {
       // 429 → «Bitte in 2 Minuten erneut versuchen.»; інше — текст сервера
       toast.error(error.code === "rate_limited" ? retryText(error) : error.message);
@@ -323,7 +329,23 @@ export const usePlanStore = create((set, get) => ({
   // ── Раз на хвилину: оновити «зараз» (лінія часу, «noch 27 min») ──
   tick: () => set({ now: get().clock.now() }),
 
-  // ── Раз на хвилину: чи змінився план? (GET /api/plan/status) ──
+  // ── Live (часть 26) ──
+  setLive: (live) => get().live !== live && set({ live }),
+
+  // Событие «status» потока (после каждой проверки школы): то же, что ответ /plan/status
+  applyStatus: async (status) => {
+    if (!status) return;
+    set({ status });
+    await get().noticePlanChange(status.lastChangeAt);
+  },
+
+  // Событие «plan»: план этих дней изменился → плашка «Neuer Plan», лента «Verlauf» перечитывается
+  applyPlanEvent: async ({ lastChangeAt } = {}) => {
+    set((s) => ({ planStamp: s.planStamp + 1 }));
+    await get().noticePlanChange(lastChangeAt);
+  },
+
+  // ── Без Live: раз на хвилину — чи змінився план? (GET /api/plan/status) ──
   checkStatus: async () => {
     if (statusRequest) return; // попередній опит ще йде (повільна мережа): не накладаємо
     try {

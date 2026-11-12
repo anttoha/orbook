@@ -1,4 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
+import * as Popover from "@radix-ui/react-popover";
+import PlanStatusBody from "../live/PlanStatusBody";
+import { currentMonday } from "../../shared/utils/lessons";
 import { Ellipsis, Keyboard, Moon, Sun } from "lucide-react";
 import { useNow } from "../../shared/hooks/useNow";
 import { isDarkTheme, useTheme } from "../../shared/hooks/useTheme";
@@ -12,14 +15,14 @@ import NavigationLink from "./NavigationLink";
 const settingsTab = { to: "/mehr", label: "Mehr", icon: Ellipsis, activeOn: ["/statistik"] };
 
 // Текст стану плану (GET /api/plan/status):
-//   «Plan aktuell · Stand 07:12» / «Plan veraltet · Stand von gestern 18:30» / «Plan noch nicht geladen»
-const planText = (status, today) => {
+//   «Live · Stand 07:12» (часть 26) / «Plan aktuell · Stand 07:12» / «Plan veraltet · Stand von gestern 18:30» / «Plan noch nicht geladen»
+const planText = (status, today, live) => {
   if (!status?.lastOkAt) return "Plan noch nicht geladen"; // сервер ще жодного разу не опитав школу
   const stand =
     status.lastOkAt.slice(0, 10) === today
       ? `Stand ${status.lastOkAt.slice(11, 16)}`
       : standText(status.lastOkAt, today);
-  return `${status.stale ? "Plan veraltet" : "Plan aktuell"} · ${stand}`;
+  return `${status.stale ? "Plan veraltet" : live ? "Live" : "Plan aktuell"} · ${stand}`;
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -32,9 +35,10 @@ const SideNavFooter = ({ collapsed }) => {
   const { today } = useNow(); // сьогодні (для «Stand von gestern»)
   const status = usePlanStore((s) => s.status); // стан плану з сервера
   const refreshing = usePlanStore((s) => s.refreshing); // іде «Plan neu laden»
+  const live = usePlanStore((s) => s.live) === "live"; // часть 26: поток Live открыт
 
   const isDark = isDarkTheme(theme);
-  const text = refreshing ? "Plan wird geladen…" : planText(status, today);
+  const text = refreshing ? "Plan wird geladen…" : planText(status, today, live);
 
   return (
     <div className="mt-auto">
@@ -47,31 +51,61 @@ const SideNavFooter = ({ collapsed }) => {
       <div className="mt-3 border-t border-hair pt-3">
         {/* стан плану: зелена крапка (актуальний) / червона (застарілий) + час.
             Текст не зникає, а тане й ховається за краєм — висота блоку та сама, нічого не стрибає */}
-        <p
-          className="flex items-center gap-2 overflow-hidden px-2 text-caption font-semibold whitespace-nowrap text-muted"
-          title={text}
-        >
-          <span
-            className={cn(
-              "size-2 shrink-0 rounded-full",
-              refreshing
-                ? "animate-pulse bg-faint"
-                : status?.stale || !status?.lastOkAt
-                  ? "bg-danger"
-                  : "bg-ok",
-            )}
-          />
-          <span
-            aria-hidden={collapsed}
-            className={cn(
-              "truncate transition-opacity duration-300 ease-soft",
-              collapsed ? "opacity-0" : "opacity-100 delay-150",
-              status?.stale && "text-danger",
-            )}
-          >
-            {text}
-          </span>
-        </p>
+        <Popover.Root>
+          <Popover.Trigger asChild>
+            <button
+              type="button"
+              aria-label="Plan-Status"
+              className="-mx-0.5 flex w-full items-center gap-2 overflow-hidden rounded-full px-2.5 py-1 text-left text-caption font-semibold whitespace-nowrap text-muted transition-colors hover:bg-sand"
+              title={text}
+            >
+              <span
+                className={cn(
+                  "relative size-2 shrink-0 rounded-full",
+                  refreshing
+                    ? "animate-pulse bg-faint"
+                    : status?.stale || !status?.lastOkAt
+                      ? "bg-danger"
+                      : "bg-ok",
+                )}
+              >
+                {/* часть 26: ореол, пока Live */}
+                {live && !refreshing && !status?.stale && <span className="absolute inset-0 rounded-full bg-ok opacity-40 motion-safe:animate-live-halo" />}
+              </span>
+              <span
+                aria-hidden={collapsed}
+                className={cn(
+                  "truncate transition-opacity duration-300 ease-soft",
+                  collapsed ? "opacity-0" : "opacity-100 delay-150",
+                  status?.stale && "text-danger",
+                  live && !status?.stale && "[&>b]:text-ok",
+                )}
+              >
+                {live && !refreshing && !status?.stale ? (
+                  <>
+                    <b className="font-extrabold">Live</b>
+                    {text.slice(4)}
+                  </>
+                ) : (
+                  text
+                )}
+              </span>
+            </button>
+          </Popover.Trigger>
+          <Popover.Portal>
+            {/* «Plan-Status» над строкой (часть 26, макет pc-03) */}
+            <Popover.Content
+              side="top"
+              align="start"
+              sideOffset={10}
+              className="z-50 w-popover rounded-panel border border-hair bg-paper p-4.5 shadow-sheet shadow-ink/15 outline-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
+            >
+              <p className="text-caption font-extrabold text-faint">Stundenplan</p>
+              <p className="mb-3 text-subhead text-ink">Plan-Status</p>
+              <PlanStatusBody monday={currentMonday(today)} compact />
+            </Popover.Content>
+          </Popover.Portal>
+        </Popover.Root>
 
         {/* Один і той самий рядок у обох виглядах (раніше в згорнутому він перебудовувався в стовпчик і стрибав).
             Згортаємо плавно: невибрана тема і «Admin» стискаються до нуля, лишається кнопка поточної теми */}

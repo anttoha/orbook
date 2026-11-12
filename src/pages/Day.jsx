@@ -32,6 +32,7 @@ import { isIsoDate, mineOnly, mondayOf, nextSchoolDay, subjectName, weekdayLong 
 import { lessonState } from "../shared/utils/lessonClock";
 import { freeText, isPlanDown } from "../shared/utils/lessons";
 import MusterNote from "../components/muster/MusterNote";
+import DayCheckRow from "../components/live/DayCheckRow";
 import PlanCheckBanner from "../components/muster/PlanCheckBanner";
 
 // Варіанти перемикача вигляду
@@ -129,9 +130,13 @@ const Day = () => {
 
   // День із Muster (частина 19): плану ще немає, уроки — звичайні для цього дня тижня (макет 19 handy-03)
   const musterNote = day?.muster && (
-    <MusterNote lead="Muster:">
-      so ist der {weekdayLong(date)} normalerweise. Der echte Plan kommt meist am Vortag.
-    </MusterNote>
+    <>
+      <MusterNote lead="Muster:">
+        so ist der {weekdayLong(date)} normalerweise. Der echte Plan kommt meist am Vortag.
+      </MusterNote>
+      {/* часть 26: когда этот день проверяли — «noch kein Plan» значит правда нет, а не «не смотрели» */}
+      {date >= today && <DayCheckRow day={day} />}
+    </>
   );
   const musterHint = day?.muster && <p className="px-1 text-caption text-faint">Notizen und Tests in Muster-Stunden prüft ORBook, sobald der echte Plan da ist.</p>;
 

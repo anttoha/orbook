@@ -3,15 +3,16 @@ import { usePlanStore } from "../../shared/store/planStore";
 import { cn } from "../../shared/utils/cn";
 
 // Маленька кнопка «Neu laden» (POST /api/plan/refresh). Раніше була лише в меню «⋮» — її не знаходили.
-// Поки йде запит, значок крутиться, повторно натиснути не можна
-const RefreshButton = ({ className }) => {
+// Поки йде запит, значок крутиться, повторно натиснути не можна.
+// monday — неделя на экране: сервер проверит и её дни (часть 26)
+const RefreshButton = ({ className, monday }) => {
   const refreshPlan = usePlanStore((s) => s.refreshPlan);
   const refreshing = usePlanStore((s) => s.refreshing);
 
   return (
     <button
       type="button"
-      onClick={refreshPlan}
+      onClick={() => refreshPlan(monday)}
       disabled={refreshing}
       className={cn("inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-caption font-bold text-accent-ink outline-none transition-colors hover:bg-tint focus-visible:ring-2 focus-visible:ring-accent/50 disabled:opacity-60", className)}
     >

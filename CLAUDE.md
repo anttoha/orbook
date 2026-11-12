@@ -42,9 +42,9 @@ src/
 - Sync-шифрование — только эталон `/opt/orbook-be/docs/examples/sync-crypto.mjs`, не переписывать.
 - `useEffect` — только когда правда нужно, с очисткой.
 - На каждом маршруте `errorElement` с немецким текстом «Etwas ist schiefgelaufen».
-- В плашке дня второй строкой под датой, с маленькой иконкой обновления: время из `changedAt` (иначе `publishedAt`), в тот же день «07:08», раньше «Mi 15:15» (`changedLabel`). Цвет `text-faint`, на сегодняшнем дне `text-on-accent/70`. Место под строку зарезервировано, высота плашки фиксированная. В шапке недели «aktualisiert vor N Min.» из `fetchedAt`. Подробности («Plan geändert», «Veröffentlicht», «Zuletzt geprüft») — в окне «Info zum Tag».
+- В плашке дня второй строкой под датой, с маленькой иконкой обновления: время из `changedAt` (иначе `publishedAt`), в тот же день «07:08», раньше «Mi 15:15» (`changedLabel`). Цвет `text-faint`, на сегодняшнем дне `text-on-accent/70`. Место под строку зарезервировано, высота плашки фиксированная. Под заголовком недели — «● Live · geprüft vor N Sek.» (`LiveLine`, `status.lastOkAt`). Подробности — в окне «Info zum Tag»: «Verlauf des Tages» (Fassungen дня) и «Zuletzt geprüft»; под неделей — строка «Live».
 - Changelog «Was ist neu» (часть 22b): при каждом релизе дописывай запись **сверху** в `src/shared/changelog.js` вместе с `docs/releases/vX.Y.Z.md`. Тексты — по-немецки, коротко, по-человечески (как одноклассник, не как пресс-релиз); группы `neu` / `behoben` / `entfernt`.
-- Опрос `/api/plan/status` каждые 10 секунд, только пока вкладка видима (`usePlanPolling`, `conditional: true` в `api`): при 304 ничего не перерисовываем.
+- Новый план приходит потоком `GET /api/plan/stream` (часть 26, `usePlanLive` + `shared/api/planStream.js`), только пока вкладка видима. Без потока (503, сеть) — опрос `/api/plan/status` раз в минуту (`conditional: true` в `api`: при 304 ничего не перерисовываем).
 
 ## Проверки
 `npm run lint`, `npm test` (Vitest), `npm run build`. В окружении сервера стоит `NODE_ENV=production`, из-за чего `npm install` пропускает dev-зависимости: ставь `npm install --include=dev`, а тесты/линтер запускай с `NODE_ENV=development`. Разработка — против демо (`vite.config.js`: proxy `/api` → `https://orbook-demo.orbitium.net`).

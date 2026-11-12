@@ -3,7 +3,7 @@ import { CalendarDays, ChartNoAxesColumn, ChevronLeft, ChevronRight, Layers } fr
 import WeekGrid from "../components/week/WeekGrid";
 import WeekMenu from "../components/week/WeekMenu";
 import { AllCoursesLegend } from "../components/week/AllCourses";
-import WeekUpdated from "../components/week/WeekUpdated";
+import LiveLine from "../components/live/LiveLine";
 import RefreshButton from "../components/week/RefreshButton";
 import DayPanel from "../components/week/desktop/DayPanel";
 import PeriodGrid from "../components/week/desktop/PeriodGrid";
@@ -131,7 +131,7 @@ const Week = () => {
         <div className="flex min-w-0 flex-col gap-3">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-card bg-card px-4 py-3">
             <p className="text-body-sm text-muted">Noch kein Plan für diese Woche. Die Schule veröffentlicht ihn meist kurz vorher.</p>
-            <RefreshButton className="ml-auto" />
+            <RefreshButton className="ml-auto" monday={monday} />
           </div>
           {grid}
         </div>
@@ -169,7 +169,7 @@ const Week = () => {
           onToday={goToday}
         />
 
-        {showUpdated && <WeekUpdated days={week.data?.days} />}
+        {showUpdated && <LiveLine days={week.data?.days} monday={monday} />}
 
         <NewPlanBanner />
         {!down && <PlanBanner resource={week} onRetry={reload} />}
@@ -225,7 +225,7 @@ const Week = () => {
         </div>
       </header>
 
-      {showUpdated && <WeekUpdated days={week.data?.days} />}
+      {showUpdated && <LiveLine days={week.data?.days} monday={monday} />}
 
       <NewPlanBanner />
       {!down && <PlanBanner resource={week} onRetry={reload} />}

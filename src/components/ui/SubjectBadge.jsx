@@ -5,8 +5,8 @@ import { fachClasses } from "../../shared/utils/lessons";
 
 // Кружечок предмета з кодом («Ma»). Коди шкіл бувають довгі («AGTan», «Nach»), а в кружечок
 // влазить лише 2–3 літери: показуємо початок, повний код — у підказці (title).
-// size: "md" — 32px (списки), "lg" — 44px (шторки)
-const SIZES = { md: "size-8", lg: "size-11" };
+// size: "sm" — 26px (лента «Verlauf», часть 26), "md" — 32px (списки), "lg" — 44px (шторки)
+const SIZES = { sm: "size-6.5 text-tiny", md: "size-8", lg: "size-11" };
 
 const SubjectBadge = ({ subject, size = "md", className }) => {
   const overrides = useUserStore((s) => s.colorOverrides);

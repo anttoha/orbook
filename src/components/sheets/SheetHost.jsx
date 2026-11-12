@@ -4,6 +4,8 @@ import AppointmentSheet from "./AppointmentSheet";
 import ClassInviteSheet from "./ClassInviteSheet";
 import ColorSheet from "./ColorSheet";
 import DayInfoSheet from "./DayInfoSheet";
+import DayHistorySheet from "./DayHistorySheet";
+import PlanStatusSheet from "./PlanStatusSheet";
 import EditorCodeSheet from "./EditorCodeSheet";
 import ExamFilterSheet from "./ExamFilterSheet";
 import ExamSheet from "./ExamSheet";
@@ -24,6 +26,8 @@ import PlanCheckSheet from "../muster/PlanCheckSheet";
 const SHEETS = {
   stunde: LessonSheet, // деталі уроку
   info: DayInfoSheet, // Info zum Tag
+  verlauf: DayHistorySheet, // «Verlauf des Tages» и старые Fassungen (часть 26)
+  status: PlanStatusSheet, // «Plan-Status»: Live и проверка по дням (часть 26)
   notiz: NoteSheet, // нотатка
   farbe: ColorSheet, // Fachfarbe ändern
   teilen: ShareSheet, // Teilen

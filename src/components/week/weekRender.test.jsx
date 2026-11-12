@@ -10,11 +10,11 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import { describe, expect, it, vi } from "vitest";
 import process from "node:process";
 import WeekGrid from "./WeekGrid";
-import WeekUpdated from "./WeekUpdated";
+import LiveLine from "../live/LiveLine";
 import PeriodGrid from "./desktop/PeriodGrid";
 import TimeGrid from "./desktop/TimeGrid";
 import WeekAside from "./desktop/WeekAside";
-import DayPlanDetails from "../sheets/DayPlanDetails";
+import DayHistoryCard from "../history/DayHistoryCard";
 import DayPageHeader from "../day/DayPageHeader";
 import LessonList from "../day/LessonList";
 import Timeline from "../day/Timeline";
@@ -44,7 +44,7 @@ const drawWeek = (days) => [
   draw(<PeriodGrid days={days} selectedDay={days[0].date} onSelectDay={noop} onLessonClick={noop} />),
   draw(<TimeGrid days={days} onLessonClick={noop} />),
   draw(<WeekAside days={days} />),
-  draw(<WeekUpdated days={days} />),
+  draw(<LiveLine days={days} monday={days[0].date} />),
 ].join("");
 
 // Все виды дня
@@ -89,10 +89,11 @@ describe("неделя и день со сложными уроками", () => 
     expect(draw(<DayPageHeader date={day.date} today={day.date} day={null} onInfo={noop} />)).not.toContain("Info zum Tag");
   });
 
-  it("подробности плана: три строки, у пустых прочерк", () => {
-    const html = draw(<DayPlanDetails day={hardWeek.days[0]} />);
-    for (const label of ["Plan geändert", "Veröffentlicht", "Zuletzt geprüft", "heute 07:08", "heute 07:06", "heute 13:00"]) expect(html).toContain(label);
-    expect(draw(<DayPlanDetails day={{ ...hardWeek.days[0], changedAt: null, publishedAt: null, fetchedAt: null }} />).match(/—/g)).toHaveLength(3);
+  it("Info zum Tag: Verlauf и «Zuletzt geprüft», пустые поля не ломают (часть 26)", () => {
+    const html = draw(<DayHistoryCard day={hardWeek.days[0]} />);
+    for (const label of ["Verlauf des Tages", "Zuletzt geprüft"]) expect(html).toContain(label);
+    const empty = draw(<DayHistoryCard day={{ ...hardWeek.days[0], changedAt: null, publishedAt: null, fetchedAt: null, checkedAt: null }} />);
+    expect(empty).toContain("noch nie");
   });
 
   it("логика вокруг уроков не падает на null", () => {

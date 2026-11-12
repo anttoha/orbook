@@ -514,6 +514,9 @@
     /* «Aufgaben» (часть 25): кружок «erledigt» пружинит, линия зачёркивания протягивается слева направо */
     --animate-check-pop: check-pop 0.36s cubic-bezier(0.34, 1.56, 0.64, 1);
     --animate-strike: strike 0.32s var(--ease-soft) both;
+    --animate-live-halo: live-halo 2.4s ease-out infinite;
+    --animate-drop-in: drop-in 0.42s var(--ease-soft);
+    --animate-bell-ring: bell-ring 0.9s ease-in-out 0.25s;
 
     @keyframes fade-in { from { opacity: 0; } }
     @keyframes fade-out { to { opacity: 0; } }
@@ -528,6 +531,10 @@
     @keyframes badge-pop { from { opacity: 0; scale: 0.5; } }
     @keyframes check-pop { 0% { scale: 0.55; } 60% { scale: 1.18; } 100% { scale: 1; } }
     @keyframes strike { from { scale: 0 1; } }
+    /* часть 26: ореол точки «Live», плашка «Neuer Plan» въезжает сверху, колокольчик качнётся */
+    @keyframes live-halo { 0% { scale: 1; opacity: 0.45; } 70%, 100% { scale: 2.6; opacity: 0; } }
+    @keyframes drop-in { from { opacity: 0; translate: 0 -10px; scale: 0.98; } }
+    @keyframes bell-ring { 0%, 100% { rotate: 0deg; } 15% { rotate: 14deg; } 30% { rotate: -12deg; } 45% { rotate: 8deg; } 60% { rotate: -5deg; } 75% { rotate: 2deg; } }
 }
 
 /* ── Печать (часть 25): на бумаге только лист из PrintArea, приложение и окна скрыты.

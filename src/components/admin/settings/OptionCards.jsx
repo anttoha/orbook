@@ -19,6 +19,15 @@ const KEEP = [
   { value: 730, label: "2 Jahre" },
   { value: 1825, label: "5 Jahre" },
 ];
+// Часть 26: как часто 06–16 Uhr смотреть два ближайших дня (чаще минуты нельзя — не грузим сервер школы)
+const FAST = [
+  { value: 60, label: "jede Minute" },
+  { value: 120, label: "alle 2 min" },
+  { value: 300, label: "alle 5 min" },
+  { value: 0, label: "Aus" },
+];
+// Часть 26: сколько дней хранить прошлые Fassungen («Verlauf des Tages»)
+const VERSIONS = [7, 14, 30, 90].map((value) => ({ value, label: `${value} Tage` }));
 const SESSION = [1, 7, 14, 30, 90, 180, 365].map((value) => ({ value, label: value === 1 ? "1 Tag" : `${value} Tage` }));
 const ATTEMPTS = [3, 5, 10, 20].map((value) => ({ value, label: String(value) }));
 
@@ -43,8 +52,16 @@ export const UpdateCard = ({ className, ...props }) => (
   <SettingsCard title="Aktualisierung" className={className}>
     <div className={divided}>
       <SelectRow label="Plan abrufen alle" section="plan" field="pollMinutes" options={POLL} {...props} />
+      {/* часть 26: старые серверы этих полей не знают — тогда строк нет */}
+      {props.form.plan.fastSeconds !== undefined && (
+        <SelectRow label="Heute und morgen prüfen" hint="06–16 Uhr an Schultagen · neuer Plan prüft sofort die ganze Woche" section="plan" field="fastSeconds" options={FAST} {...props} />
+      )}
+      {props.form.plan.live !== undefined && <SwitchRow label="Live-Aktualisierung" hint="Neuer Plan erscheint in offenen Apps von selbst" section="plan" field="live" {...props} />}
       <SwitchRow label="Nur an Schultagen" hint="Wochenende und Ferien überspringen" section="plan" field="onlySchoolDays" {...props} />
       <SelectRow label="Alte Pläne behalten" hint="für die Statistik" section="plan" field="retentionDays" options={KEEP} {...props} />
+      {props.form.plan.versionsDays !== undefined && (
+        <SelectRow label="Verlauf des Tages behalten" hint="frühere Fassungen eines Tages" section="plan" field="versionsDays" options={VERSIONS} {...props} />
+      )}
     </div>
   </SettingsCard>
 );
