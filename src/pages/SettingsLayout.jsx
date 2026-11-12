@@ -10,7 +10,7 @@ const isOverview = (pathname) => pathname.replace(/\/$/, "") === "/mehr";
 // ─────────────────────────────────────────────────────────────
 // Оболонка всіх сторінок /mehr/* (макети 22–29).
 // Телефон: сторінка як є (своя шапка з «назад»).
-// ПК: загальний заголовок «Einstellungen», меню розділів зліва, вибраний розділ праворуч.
+// ПК: загальний заголовок «Mehr», меню розділів зліва (групи «Seiten» і «Einstellungen»), вибраний розділ праворуч.
 // ─────────────────────────────────────────────────────────────
 const SettingsLayout = () => {
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
@@ -25,7 +25,7 @@ const SettingsLayout = () => {
     <section>
       <header className="space-y-1">
         <p className="min-h-4 text-hint font-extrabold text-faint">{school}</p>
-        <h1 className="text-hero text-ink">Einstellungen</h1>
+        <h1 className="text-hero text-ink">Mehr</h1>
       </header>
 
       <div className="mt-5.5 flex items-start gap-11">

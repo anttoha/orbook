@@ -9,10 +9,10 @@ export const navTabs = [
   { to: "/woche", label: "Woche", icon: Table2, end: true, desktop: true, activeOn: ["/", "/tag"] },
   { to: "/heute", label: "Heute", icon: List, desktop: true },
   { to: "/testen", label: "Klausuren", icon: FlagIcon, mobile: true, desktop: true, },
-  { to: "/statistik", label: "Statistik", icon: StatsIcon, mobile: true, desktop: true, feature: "statistics" },
   // Materialien (частина 15): на ПК — пункт меню, на телефоні — з «Mehr»
   { to: "/materialien", label: "Materialien", icon: Folder, desktop: true },
-  { to: "/mehr", label: "Mehr", icon: Ellipsis, mobile: true, activeOn: ["/materialien"] }, // Materialien відкриваються з «Mehr»
+  // Materialien і Statistik (частина 22) відкриваються з «Mehr»
+  { to: "/mehr", label: "Mehr", icon: Ellipsis, mobile: true, activeOn: ["/materialien", "/statistik"] },
 ];
 // Меню адмінки. mobile — у нижньому меню телефона (4 пункти), desktop — у сайдбарі ПК.
 // count — лічильник праворуч: "codes" (усі Editor-Codes) або "exams" (найближчі Klausuren)
@@ -32,15 +32,23 @@ export const adminTabs = [
   { to: "/admin/einstellungen", label: "Einstellungen", icon: Server, mobile: true, desktop: true },
 ];
 
-// Розділи «Einstellungen» на ПК (макети 22–29): меню зліва і плитки «Übersicht».
-// hint — ключ підпису під плиткою (shared/utils/settings.js); sync — ховаємо, якщо школа вимкнула синхронізацію.
-// «Mitteilungen» з'явиться в частині 17.
+// Розділи «Mehr» на ПК (макети 22–29, частина 22): меню зліва і плитки «Übersicht», у двох групах.
+// group — «seiten» (просто сторінки) або «einstellungen» (те, що налаштовується).
+// hint — ключ підпису під плиткою (shared/utils/settings.js); sync — ховаємо, якщо школа вимкнула синхронізацію;
+// feature — ховаємо, якщо школа вимкнула розділ (me.features). «Mitteilungen» з'явиться в частині 17.
 export const settingsSections = [
   { to: "/mehr", label: "Übersicht", icon: House, exact: true },
-  { to: "/mehr/kurse", label: "Meine Kurse", icon: Table2, hint: "courses" },
-  { to: "/mehr/darstellung", label: "Darstellung", icon: Sun, hint: "appearance" },
-  { to: "/mehr/fachfarben", label: "Fachfarben", icon: Palette, hint: "subjects" },
-  { to: "/mehr/sync", label: "Notizen-Sync", icon: SyncIcon, hint: "sync", sync: true },
-  { to: "/mehr/editor-code", label: "Editor-Code", icon: KeyIcon, hint: "editor", classOnly: true }, // учителю код не потрібен
-  { to: "/mehr/datenschutz", label: "Datenschutz", icon: ShieldIcon, hint: "privacy" },
+  { to: "/statistik", label: "Statistik", icon: StatsIcon, hint: "stats", group: "seiten", feature: "statistics" },
+  { to: "/mehr/datenschutz", label: "Datenschutz", icon: ShieldIcon, hint: "privacy", group: "seiten" },
+  { to: "/mehr/kurse", label: "Meine Kurse", icon: Table2, hint: "courses", group: "einstellungen" },
+  { to: "/mehr/darstellung", label: "Darstellung", icon: Sun, hint: "appearance", group: "einstellungen" },
+  { to: "/mehr/fachfarben", label: "Fachfarben", icon: Palette, hint: "subjects", group: "einstellungen" },
+  { to: "/mehr/sync", label: "Notizen-Sync", icon: SyncIcon, hint: "sync", sync: true, group: "einstellungen" },
+  { to: "/mehr/editor-code", label: "Editor-Code", icon: KeyIcon, hint: "editor", classOnly: true, group: "einstellungen" }, // учителю код не потрібен
+];
+
+// Дві групи «Mehr» з підписом праворуч від заголовка (макет 22, частина 22)
+export const settingsGroups = [
+  { key: "seiten", title: "Seiten", hint: "weitere Bereiche der App" },
+  { key: "einstellungen", title: "Einstellungen", hint: "so soll ORBook bei dir sein" },
 ];

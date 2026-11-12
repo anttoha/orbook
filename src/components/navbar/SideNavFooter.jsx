@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Keyboard, Moon, Settings, Sun } from "lucide-react";
+import { Ellipsis, Keyboard, Moon, Sun } from "lucide-react";
 import { useNow } from "../../shared/hooks/useNow";
 import { isDarkTheme, useTheme } from "../../shared/hooks/useTheme";
 import { usePlanStore } from "../../shared/store/planStore";
@@ -8,8 +8,8 @@ import { standText } from "../../shared/utils/format";
 import { isTabActive } from "../../shared/utils/isTabActive";
 import NavigationLink from "./NavigationLink";
 
-// Вкладка «Einstellungen» — веде на «Mehr» (там налаштування)
-const settingsTab = { to: "/mehr", label: "Einstellungen", icon: Settings };
+// Вкладка «Mehr» (частина 22: раніше «Einstellungen»): сторінки й налаштування; Statistik теж відкривається звідти
+const settingsTab = { to: "/mehr", label: "Mehr", icon: Ellipsis, activeOn: ["/statistik"] };
 
 // Текст стану плану (GET /api/plan/status):
 //   «Plan aktuell · Stand 07:12» / «Plan veraltet · Stand von gestern 18:30» / «Plan noch nicht geladen»
@@ -23,11 +23,11 @@ const planText = (status, today) => {
 };
 
 // ─────────────────────────────────────────────────────────────
-// Низ сайдбара: «Einstellungen», стан плану, перемикач теми, «Admin».
+// Низ сайдбара: «Mehr», стан плану, перемикач теми, «Admin».
 // collapsed — сайдбар згорнутий: лишаємо тільки іконки
 // ─────────────────────────────────────────────────────────────
 const SideNavFooter = ({ collapsed }) => {
-  const { pathname } = useLocation(); // для підсвічування «Einstellungen»
+  const { pathname } = useLocation(); // для підсвічування «Mehr»
   const { theme, setTheme } = useTheme(); // світла / темна тема
   const { today } = useNow(); // сьогодні (для «Stand von gestern»)
   const status = usePlanStore((s) => s.status); // стан плану з сервера

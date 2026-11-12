@@ -1,3 +1,5 @@
+import { isTabEnabled } from "./isTabActive";
+
 // Підписи під плитками «Einstellungen · Übersicht» на ПК (макет 22).
 // Чисті функції: усі дані приходять параметрами, тому їх легко перевірити тестом.
 
@@ -30,5 +32,6 @@ export const syncHint = (code, lastSyncAt, now = new Date()) => {
 // «Code A» (мітка коду) або «nicht freigeschaltet»
 export const editorHint = (editor) => editor?.label ?? (editor ? "freigeschaltet" : "nicht freigeschaltet");
 
-// Чи показувати розділ «Einstellungen»: Sync школа могла вимкнути, Editor-Code учителю не потрібен
-export const sectionVisible = (section, { syncAllowed, teacher }) => (!section.sync || syncAllowed) && !(section.classOnly && teacher);
+// Чи показувати розділ «Mehr»: Sync і Statistik школа могла вимкнути, Editor-Code учителю не потрібен
+export const sectionVisible = (section, { syncAllowed, teacher, features }) =>
+  (!section.sync || syncAllowed) && !(section.classOnly && teacher) && isTabEnabled(section, features);

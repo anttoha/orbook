@@ -1,6 +1,6 @@
 import { ChevronRight, Keyboard, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
-import { settingsSections } from "../../shared/constants/constants";
+import { settingsGroups, settingsSections } from "../../shared/constants/constants";
 import { useSyncAllowed } from "../../shared/hooks/useNotesSync";
 import { useSheet } from "../../shared/hooks/useSheet";
 import { useTheme } from "../../shared/hooks/useTheme";
@@ -46,42 +46,63 @@ const useHints = () => {
     sync: syncHint(syncCode, lastSyncAt),
     editor: editorHint(me?.editor),
     privacy: "Keine Konten, kein Tracking",
+    stats: "Stunden, Ausfälle, Vertretungen",
   };
 };
 
+// Заголовок групи з підписом праворуч від нього: «Seiten  weitere Bereiche der App»
+const GroupTitle = ({ group }) => (
+  <h3 className="mb-2.5 flex items-baseline gap-2 text-hint font-extrabold text-faint">
+    {group.title}
+    <span className="text-caption font-normal">{group.hint}</span>
+  </h3>
+);
+
 // ─────────────────────────────────────────────────────────────
-// «Einstellungen · Übersicht» на ПК (макет 22): плитки у дві колонки.
-// Остання плитка — «Tastenkürzel», вона відкриває вікно, а не сторінку.
+// «Mehr · Übersicht» на ПК (макет 22, частина 22): дві групи плиток у дві колонки —
+// «Seiten» (Statistik, Datenschutz, вікна «Klasse einladen» і «Tastenkürzel») і «Einstellungen».
 // ─────────────────────────────────────────────────────────────
 const SettingsTiles = () => {
   const hints = useHints();
   const syncAllowed = useSyncAllowed();
-  const teacher = usePlanStore((s) => isTeacher(s.me));
+  const me = usePlanStore((s) => s.me);
   const { openSheet } = useSheet();
+  const visible = settingsSections.filter((section) => section.hint && sectionVisible(section, { syncAllowed, teacher: isTeacher(me), features: me?.features }));
 
   return (
-    <ul className="grid grid-cols-2 gap-3">
-      {settingsSections
-        .filter((section) => section.hint && sectionVisible(section, { syncAllowed, teacher }))
-        .map((section) => (
-          <li key={section.to}>
-            <Link to={section.to} className={tile}>
-              <TileBody icon={section.icon} label={section.label} hint={hints[section.hint]} />
-            </Link>
-          </li>
-        ))}
-      {/* частина 16: не сторінка, а вікно з QR — як «Tastenkürzel» */}
-      <li>
-        <button type="button" onClick={() => openSheet("einladen")} className={`${tile} w-full`}>
-          <TileBody icon={UserPlus} label="Klasse einladen" hint="Link und QR für Mitschüler" />
-        </button>
-      </li>
-      <li>
-        <button type="button" onClick={() => openSheet("tasten")} className={`${tile} w-full`}>
-          <TileBody icon={Keyboard} label="Tastenkürzel" hint="⌘K, T, ←, →, N …" />
-        </button>
-      </li>
-    </ul>
+    <div className="flex flex-col gap-6">
+      {settingsGroups.map((group) => (
+        <section key={group.key}>
+          <GroupTitle group={group} />
+          <ul className="grid grid-cols-2 gap-3">
+            {visible
+              .filter((section) => section.group === group.key)
+              .map((section) => (
+                <li key={section.to}>
+                  <Link to={section.to} className={tile}>
+                    <TileBody icon={section.icon} label={section.label} hint={hints[section.hint]} />
+                  </Link>
+                </li>
+              ))}
+            {/* не сторінки, а вікна: QR для однокласників (частина 16) і клавіші */}
+            {group.key === "seiten" && (
+              <>
+                <li>
+                  <button type="button" onClick={() => openSheet("einladen")} className={`${tile} w-full`}>
+                    <TileBody icon={UserPlus} label="Klasse einladen" hint="Link und QR für Mitschüler" />
+                  </button>
+                </li>
+                <li>
+                  <button type="button" onClick={() => openSheet("tasten")} className={`${tile} w-full`}>
+                    <TileBody icon={Keyboard} label="Tastenkürzel" hint="⌘K, T, ←, →, N …" />
+                  </button>
+                </li>
+              </>
+            )}
+          </ul>
+        </section>
+      ))}
+    </div>
   );
 };
 

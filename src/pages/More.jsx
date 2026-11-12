@@ -5,7 +5,8 @@ import { version } from "../../package.json";
 import LeaveClass from "../components/more/LeaveClass";
 import SettingsTiles from "../components/settings/SettingsTiles";
 import MenuRow from "../components/more/MenuRow";
-import { KeyIcon, ShieldIcon, SyncIcon } from "../components/ui/icons";
+import { KeyIcon, ShieldIcon, StatsIcon, SyncIcon } from "../components/ui/icons";
+import { settingsGroups } from "../shared/constants/constants";
 import ListCard from "../components/ui/ListCard";
 import { useSyncAllowed } from "../shared/hooks/useNotesSync";
 import { useInSettingsPanel } from "../shared/hooks/useSettingsPanel";
@@ -62,6 +63,8 @@ const PhoneMenu = () => {
   const links = useMaterials((s) => (s.status === "idle" ? null : s.items.length));
   const ensureMaterials = useMaterials((s) => s.ensure);
   const { openSheet } = useSheet();
+  const statsEnabled = me?.features?.statistics !== false; // школа могла вимкнути статистику
+  const [seiten, einstellungen] = settingsGroups;
   // «6 Links» праворуч: список питаємо один раз за сесію (далі його оновлює сторінка Materialien)
   useEffect(() => {
     ensureMaterials();
@@ -74,26 +77,26 @@ const PhoneMenu = () => {
         <h1 className="text-title text-ink">Mehr</h1>
       </header>
 
-      <ListCard title="App">
-        <MenuRow to="/mehr/kurse" icon={Table2} label="Meine Kurse" value={count.all > 0 ? `${count.on} von ${count.all}` : null} />
-        <MenuRow to="/mehr/darstellung" icon={Sun} label="Darstellung" value={THEME_LABELS[theme]} />
-        <MenuRow to="/mehr/fachfarben" icon={Palette} label="Fachfarben" />
-      </ListCard>
-
-      <ListCard title="Klasse">
+      {/* «Seiten» — просто сторінки й вікна; Statistik переїхала сюди з нижнього меню (частина 22) */}
+      <ListCard title={seiten.title} hint={seiten.hint}>
+        {statsEnabled && <MenuRow to="/statistik" icon={StatsIcon} label="Statistik" value="Woche · Monat" />}
         <MenuRow to="/materialien" icon={Folder} label="Materialien" value={links ? `${links} ${links === 1 ? "Link" : "Links"}` : null} />
         {/* частина 16: посилання і QR для однокласників; вимкнене — шторка так і скаже */}
         <MenuRow onClick={() => openSheet("einladen")} icon={UserPlus} label="Klasse einladen" value="Link + QR" />
+        <MenuRow to="/mehr/datenschutz" icon={ShieldIcon} label="Datenschutz" />
       </ListCard>
 
-      <ListCard title="Daten">
+      {/* «Einstellungen» — те, що налаштовується */}
+      <ListCard title={einstellungen.title} hint={einstellungen.hint}>
+        <MenuRow to="/mehr/kurse" icon={Table2} label="Meine Kurse" value={count.all > 0 ? `${count.on} von ${count.all}` : null} />
+        <MenuRow to="/mehr/darstellung" icon={Sun} label="Darstellung" value={THEME_LABELS[theme]} />
+        <MenuRow to="/mehr/fachfarben" icon={Palette} label="Fachfarben" />
         {/* праворуч — перша група коду, як у макеті: «K7QM-…» */}
         {syncAllowed && <MenuRow to="/mehr/sync" icon={SyncIcon} label="Notizen synchronisieren" value={syncCode ? `${syncCode.slice(0, 4)}-…` : "Aus"} />}
         {!isTeacher(me) && <MenuRow to="/mehr/editor-code" icon={KeyIcon} label="Klausuren eintragen" value={me?.editor?.label ?? "Editor-Code"} />}
       </ListCard>
 
       <ListCard>
-        <MenuRow to="/mehr/datenschutz" icon={ShieldIcon} label="Datenschutz" />
         <LeaveClass />
       </ListCard>
 

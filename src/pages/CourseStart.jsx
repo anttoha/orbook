@@ -43,8 +43,7 @@ const CourseStart = () => {
           <p className="mt-5 text-hint font-extrabold text-faint">Schritt 2 von 3</p>
           <h1 className="mt-1 text-title text-ink lg:text-welcome">Welche Kurse hast du?</h1>
           <p className="mt-3 mb-6 text-body-sm leading-5.25 text-muted lg:text-row">
-            Nur deine Kurse erscheinen im Plan. Ändern kannst du das später unter <span className="lg:hidden">Mehr</span>
-            <span className="hidden lg:inline">Einstellungen</span> → Meine Kurse.
+            Nur deine Kurse erscheinen im Plan. Ändern kannst du das später unter Mehr → Meine Kurse.
           </p>
 
           <CourseLists isOn={isOn} onToggle={toggle} />

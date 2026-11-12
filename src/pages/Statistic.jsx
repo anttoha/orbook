@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { ChevronLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 import PeriodChart from "../components/stats/PeriodChart";
 import StackedChart from "../components/stats/StackedChart";
 import StatCard from "../components/stats/StatCard";
@@ -10,7 +12,6 @@ import Segmented from "../components/ui/Segmented";
 import StateScreen from "../components/ui/StateScreen";
 import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useStats } from "../shared/hooks/useStats";
-import { usePlanStore } from "../shared/store/planStore";
 import { byWeekTitle, cancelRateText, changedCount, compareWith, lessonsText, statsEyebrow, tooLittleText, untilText, weekBars, weekdayBars } from "../shared/utils/stats";
 
 // «Halbjahr» є тільки на ПК (макет 20); на телефоні — два періоди, як у макеті 19
@@ -62,7 +63,6 @@ const Statistic = () => {
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const range = !isDesktop && chosen === "halfyear" ? "month" : chosen; // вікно звузили — на телефоні Halbjahr немає
   const stats = useStats(range);
-  const className = usePlanStore((s) => s.me?.className);
   const { main, week } = stats;
 
   const body = () => {
@@ -86,9 +86,15 @@ const Statistic = () => {
   return (
     <section className="flex flex-col gap-5">
       <header className="flex items-end justify-between gap-3">
-        <div className="min-w-0 space-y-1">
-          <p className="truncate text-hint font-extrabold text-faint">{statsEyebrow(className, main) || " "}</p>
-          <h1 className="text-title text-ink lg:text-hero">Statistik</h1>
+        {/* Statistik відкривається з «Mehr» (частина 22): «назад» і «Mehr · September» над заголовком */}
+        <div className="flex min-w-0 items-end gap-2.5">
+          <Link to="/mehr" aria-label="Zurück" className="grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink outline-none focus-visible:ring-2 focus-visible:ring-accent/50 lg:mb-1">
+            <ChevronLeft className="size-4.5" />
+          </Link>
+          <div className="min-w-0 space-y-1">
+            <p className="truncate text-hint font-extrabold text-faint">{["Mehr", statsEyebrow(null, main)].filter(Boolean).join(" · ")}</p>
+            <h1 className="text-title text-ink lg:text-hero">Statistik</h1>
+          </div>
         </div>
         <Segmented options={isDesktop ? RANGES_DESKTOP : RANGES} value={range} onChange={setRange} label="Zeitraum" size="form" className="shrink-0" />
       </header>
