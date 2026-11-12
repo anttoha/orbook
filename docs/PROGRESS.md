@@ -278,3 +278,4 @@ Spec: `docs/specs/16-einladen/spec.md` (план бэкенда: колонки 
 - **Mehr:** «Seiten» / «Einstellungen»; Statistik из нижней панели (Woche · Klausuren · Mehr) и ПК-меню переехала в Mehr; на ПК «Mehr» вместо «Einstellungen».
 Проверки: lint, 393 теста, build; скриншоты на подменённом API — `/root/work/orbook-compare/22-kleinigkeiten/shots/`.
 **Дальше:** владельцу проверить на демо; потом часть 22b (Neuigkeiten).
+**Остановка /orb-auto (12.11.2026):** чат стал большим после части 22. Следующая — **22b Neuigkeiten** (новые экраны → начать с `/orb-design`, ждать «ок дизайн»). Модель: Sonnet · effort medium.
