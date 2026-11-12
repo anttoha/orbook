@@ -15,7 +15,7 @@ const SyncQrSheet = ({ open, onClose }) => {
     <Sheet open={open} onClose={onClose} desktop="qr" eyebrow="Nur für deine Geräte" title="Sync-Code als QR">
       {code ? (
         <div className="flex flex-col items-center rounded-panel bg-card px-4 pt-5.5 pb-6 text-center">
-          <QrCode value={codeLink("sync", code, window.location.origin)} label="QR-Code mit deinem Sync-Code" className="size-52" />
+          <QrCode value={codeLink("sync", code, window.location.origin)} label="QR-Code mit deinem Sync-Code" className="size-52 motion-safe:animate-pop-in" />
           <p className="mt-6 text-row font-black tracking-code text-ink">{code}</p>
           <p className="mt-2 text-label text-faint">Mit der Kamera des anderen Handys scannen</p>
         </div>

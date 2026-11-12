@@ -19,7 +19,7 @@ export const SyncQrCard = () => {
   const code = useSyncStore((s) => s.code);
   if (!code) return null;
   return (
-    <div className="hidden items-center gap-5 rounded-card bg-card p-4 lg:flex">
+    <div className="hidden items-center gap-5 rounded-card bg-card p-4 motion-safe:animate-rise-in lg:flex">
       <QrCode value={codeLink("sync", code, window.location.origin)} label="QR-Code mit deinem Sync-Code" className="size-40 shrink-0" />
       <div className="min-w-0">
         <p className="text-hint font-extrabold text-faint">Aufs Handy holen</p>

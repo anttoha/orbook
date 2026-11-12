@@ -511,6 +511,9 @@
     /* «Neuigkeiten»: блоки по очереди выплывают снизу (задержку задаёт animationDelay), метка NEU «выскакивает» с отскоком */
     --animate-rise-in: rise-in 0.5s var(--ease-soft) backwards;
     --animate-badge-pop: badge-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s backwards;
+    /* «Aufgaben» (часть 25): кружок «erledigt» пружинит, линия зачёркивания протягивается слева направо */
+    --animate-check-pop: check-pop 0.36s cubic-bezier(0.34, 1.56, 0.64, 1);
+    --animate-strike: strike 0.32s var(--ease-soft) both;
 
     @keyframes fade-in { from { opacity: 0; } }
     @keyframes fade-out { to { opacity: 0; } }
@@ -523,6 +526,8 @@
     @keyframes panel-in { from { opacity: 0; translate: 0 8px; } }
     @keyframes rise-in { from { opacity: 0; translate: 0 14px; } }
     @keyframes badge-pop { from { opacity: 0; scale: 0.5; } }
+    @keyframes check-pop { 0% { scale: 0.55; } 60% { scale: 1.18; } 100% { scale: 1; } }
+    @keyframes strike { from { scale: 0 1; } }
 }
 
 /* ── Печать (часть 25): на бумаге только лист из PrintArea, приложение и окна скрыты.

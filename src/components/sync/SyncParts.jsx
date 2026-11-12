@@ -4,6 +4,7 @@ import { useSyncStore } from "../../shared/store/syncStore";
 import { useTasksStore } from "../../shared/store/tasksStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { visibleNotes } from "../../shared/utils/notes";
+import { cn } from "../../shared/utils/cn";
 import Switch from "../ui/Switch";
 
 const THEME = { light: "Hell", dark: "Dunkel", system: "System" };
@@ -29,15 +30,24 @@ const SyncParts = () => {
   return (
     <section className="flex flex-col gap-3">
       <h2 className="text-hint font-extrabold text-faint">Was wird synchronisiert</h2>
-      <ul className="rounded-card bg-card">
+      <ul className="overflow-hidden rounded-card bg-card">
         {rows.map((row) => (
-          <li key={row.key} className="flex items-center gap-3 border-b border-hair px-3.5 py-3 last:border-0">
-            <row.icon className="size-5 shrink-0 text-muted" />
-            <span className="min-w-0 flex-1">
-              <span className="block text-row text-ink">{row.title}</span>
-              <span className="block text-caption text-faint">{row.hint}</span>
-            </span>
-            <Switch checked={parts[row.key] !== false} onChange={(on) => setPart(row.key, on)} label={row.title} />
+          <li key={row.key} className="border-b border-hair last:border-0">
+            {/* вся строка — переключатель: попасть пальцем легче, чем в маленький тумблер */}
+            <button
+              type="button"
+              role="switch"
+              aria-checked={parts[row.key] !== false}
+              onClick={() => setPart(row.key, parts[row.key] === false)}
+              className="flex w-full items-center gap-3 px-3.5 py-3 text-left outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-accent/50 active:bg-sand"
+            >
+              <row.icon className={cn("size-5 shrink-0 transition-colors duration-200", parts[row.key] === false ? "text-faint2" : "text-muted")} />
+              <span className="min-w-0 flex-1">
+                <span className={cn("block text-row transition-colors duration-200", parts[row.key] === false ? "text-muted" : "text-ink")}>{row.title}</span>
+                <span className="block text-caption text-faint">{parts[row.key] === false ? "nur auf diesem Gerät" : row.hint}</span>
+              </span>
+              <Switch checked={parts[row.key] !== false} />
+            </button>
           </li>
         ))}
       </ul>

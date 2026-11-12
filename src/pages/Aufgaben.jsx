@@ -93,11 +93,12 @@ const Aufgaben = () => {
     }
     return (
       <>
+        {list.done.length === 0 && <HowTo />}
         {groups.map((group) => (
           <section key={group.title} className="flex flex-col gap-2">
             <h2 className="mb-0.75 text-hint font-extrabold text-faint">{group.title}</h2>
-            {group.items.map((row) => (
-              <OpenRow key={row.key} row={row} highlight={row.key === first} {...rowProps} />
+            {group.items.map((row, i) => (
+              <OpenRow key={row.key} row={row} highlight={row.key === first} style={stagger(i)} {...rowProps} />
             ))}
           </section>
         ))}
@@ -153,6 +154,19 @@ function eyebrowText(open, done, wide) {
   return wide && done > 0 ? `${head} · ${done} erledigt` : head;
 }
 
+// Строки появляются по очереди, с маленькой задержкой (не больше ~0,3 с на весь список)
+const stagger = (i) => ({ animationDelay: `${Math.min(i, 8) * 35}ms` });
+
+// Подсказка, пока ничего не отмечено: что куда нажимать
+const HowTo = () => (
+  <p className="flex items-center gap-3 rounded-field bg-tint px-3.5 py-3 text-label text-accent-ink motion-safe:animate-rise-in">
+    <span className="grid size-6.5 shrink-0 place-items-center rounded-full border-2 border-accent" aria-hidden="true" />
+    <span>
+      <b className="font-extrabold">Kreis antippen</b> = erledigt. <b className="font-extrabold">Zeile antippen</b> = Details oder ändern.
+    </span>
+  </p>
+);
+
 // Открытая строка: нажатие — детали домашки или правка своей задачи
 const OpenRow = (props) => {
   const { openSheet } = useSheet();
@@ -160,35 +174,43 @@ const OpenRow = (props) => {
   return <AufgabeRow {...props} onOpen={open} />;
 };
 
-// «Erledigt · 3» внизу: на телефоне свёрнуто карточкой, на ПК сразу открыто
+// «Erledigt · 3» внизу: на телефоне свёрнуто, по нажатию плавно раскрывается; на ПК сразу открыто
 const DoneSection = ({ rows, rowProps }) => {
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const [opened, setOpened] = useState(false);
   const open = isDesktop || opened;
 
-  if (!open) {
-    return (
-      <button type="button" onClick={() => setOpened(true)} className="flex h-12.5 items-center gap-3 rounded-card bg-card px-3.5 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
-        <span className="grid size-6 place-items-center rounded-full bg-accent text-on-accent">
-          <CheckIcon className="size-3.5" />
-        </span>
-        <span className="flex-1 text-row font-bold text-ink">Erledigt · {rows.length}</span>
-        <span className="text-label text-faint">anzeigen</span>
-        <ChevronDown className="size-4 text-faint2" />
-      </button>
-    );
-  }
   return (
     <section className="flex flex-col gap-2">
-      <div className="mb-0.75 flex items-center justify-between">
-        <h2 className="text-hint font-extrabold text-faint">Erledigt · {rows.length}</h2>
-        <button type="button" onClick={() => setOpened(false)} className={cn("text-hint font-bold text-accent-ink", isDesktop && "hidden")}>
-          Zuklappen
-        </button>
+      <button
+        type="button"
+        onClick={() => setOpened(!opened)}
+        disabled={isDesktop}
+        aria-expanded={open}
+        className={cn(
+          "flex items-center gap-3 text-left outline-none transition-[background-color,padding] duration-300 ease-soft focus-visible:ring-2 focus-visible:ring-accent/50 active:scale-99",
+          open ? "rounded-field py-1" : "h-12.5 rounded-card bg-card px-3.5",
+        )}
+      >
+        {!open && (
+          <span className="grid size-6 place-items-center rounded-full bg-accent text-on-accent motion-safe:animate-pop-in">
+            <CheckIcon className="size-3.5" />
+          </span>
+        )}
+        <span className={cn("flex-1 font-extrabold", open ? "text-hint text-faint" : "text-row text-ink")}>Erledigt · {rows.length}</span>
+        {!isDesktop && (
+          <>
+            <span className={cn("text-label", open ? "font-bold text-accent-ink" : "text-faint")}>{open ? "Zuklappen" : "anzeigen"}</span>
+            <ChevronDown className={cn("size-4 text-faint2 transition-transform duration-300", open && "rotate-180")} />
+          </>
+        )}
+      </button>
+      {/* Плавная высота 0fr → 1fr, как в «Neuigkeiten»; закрытые строки не ловят Tab (inert) */}
+      <div className={cn("grid transition-[grid-template-rows] duration-350 ease-soft motion-reduce:transition-none", open ? "grid-rows-[1fr]" : "grid-rows-[0fr]")} inert={!open}>
+        <div className="flex min-h-0 flex-col gap-2 overflow-hidden">
+          {rows.map((row, i) => <OpenRow key={row.key} row={row} style={stagger(i)} {...rowProps} />)}
+        </div>
       </div>
-      {rows.map((row) => (
-        <OpenRow key={row.key} row={row} {...rowProps} />
-      ))}
     </section>
   );
 };

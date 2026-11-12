@@ -9,7 +9,7 @@ import { usePrint } from "../../shared/hooks/usePrint";
 
 // Строка «Blatt für die Klasse drucken» в окне «Einladen» (макет 25 handy-10)
 export const PrintRow = ({ onClick }) => (
-  <button type="button" onClick={onClick} className="flex items-center gap-3 rounded-card border border-accent bg-card px-3.5 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
+  <button type="button" onClick={onClick} className="flex items-center gap-3 rounded-card border border-accent bg-card px-3.5 py-3 text-left outline-none transition-[background-color,scale] duration-150 hover:bg-tint focus-visible:ring-2 focus-visible:ring-accent/50 active:scale-98">
     <Printer className="size-5 shrink-0 text-accent-ink" />
     <span className="min-w-0 flex-1">
       <span className="block text-row font-bold text-accent-ink">Blatt für die Klasse drucken</span>
@@ -56,8 +56,8 @@ const PrintChooser = ({ url, className, onBack }) => {
   const sheet = <ClassSheet kind={kind} url={url} className={className} steps={steps} />;
 
   return (
-    <div className="flex flex-col gap-4">
-      <button type="button" onClick={onBack} className="-mt-2 flex items-center gap-1 self-start text-hint font-extrabold text-muted">
+    <div className="flex flex-col gap-4 motion-safe:animate-rise-in">
+      <button type="button" onClick={onBack} className="-mt-2 -ml-1 flex min-h-11 items-center gap-1 self-start rounded-full px-1 text-hint font-extrabold text-muted hover:text-ink">
         <ChevronLeft className="size-3.5" /> Zurück zu Link und QR
       </button>
       <div className="flex gap-6">
@@ -70,10 +70,10 @@ const PrintChooser = ({ url, className, onBack }) => {
                 role="radio"
                 aria-checked={kind === item.kind}
                 onClick={() => setKind(item.kind)}
-                className={cn("relative flex flex-col gap-3 rounded-card border px-3 pt-4 pb-3.5 text-center outline-none focus-visible:ring-2 focus-visible:ring-accent/50", kind === item.kind ? "border-accent bg-tint" : "border-transparent bg-card")}
+                className={cn("relative flex flex-col gap-3 rounded-card border px-3 pt-4 pb-3.5 text-center outline-none transition-[background-color,border-color,scale] duration-200 focus-visible:ring-2 focus-visible:ring-accent/50 active:scale-97", kind === item.kind ? "border-accent bg-tint" : "border-transparent bg-card hover:border-rule")}
               >
                 {kind === item.kind && (
-                  <span className="absolute top-2.5 right-2.5 grid size-6 place-items-center rounded-full bg-accent text-on-accent">
+                  <span className="absolute top-2.5 right-2.5 grid size-6 place-items-center rounded-full bg-accent text-on-accent motion-safe:animate-check-pop">
                     <CheckIcon className="size-3.5" />
                   </span>
                 )}
@@ -98,7 +98,7 @@ const PrintChooser = ({ url, className, onBack }) => {
         </div>
         {/* ПК: настоящий лист, уменьшенный (zoom меняет и место в разметке, не только картинку) */}
         <div aria-hidden="true" className="hidden shrink-0 rounded-card bg-sand p-3 lg:block">
-          <div className="overflow-hidden shadow-raise" style={{ zoom: 0.3 }}>
+          <div key={`${kind}-${steps}`} className="overflow-hidden shadow-raise motion-safe:animate-fade-in" style={{ zoom: 0.3 }}>
             {sheet}
           </div>
         </div>

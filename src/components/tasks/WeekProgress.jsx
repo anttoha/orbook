@@ -13,7 +13,7 @@ const WeekProgress = ({ list, today }) => {
           <span className="text-subhead font-extrabold text-ink">von {total} erledigt</span>
         </p>
         <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-sand">
-          <div className="h-full rounded-full bg-accent transition-[width]" style={{ width: total > 0 ? `${(done / total) * 100}%` : "0%" }} />
+          <div className="h-full rounded-full bg-accent transition-[width] duration-500 ease-soft" style={{ width: total > 0 ? `${(done / total) * 100}%` : "0%" }} />
         </div>
         <p className="mt-3 text-label text-faint">{dueSoon > 0 ? `Noch offen bis morgen: ${dueSoon}` : "Bis morgen ist nichts offen."}</p>
       </div>

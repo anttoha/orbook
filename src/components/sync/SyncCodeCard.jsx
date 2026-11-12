@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { QrCode as QrIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useSheet } from "../../shared/hooks/useSheet";
@@ -12,9 +13,16 @@ import { CheckIcon, CopyIcon, SyncIcon, WarningIcon } from "../ui/icons";
 // ─────────────────────────────────────────────────────────────
 const SyncCodeCard = ({ code }) => {
   const { openSheet } = useSheet();
+  const [copied, setCopied] = useState(false); // 1,5 с вместо значка «копировать» — галочка
+  useEffect(() => {
+    if (!copied) return undefined;
+    const timer = setTimeout(() => setCopied(false), 1500);
+    return () => clearTimeout(timer);
+  }, [copied]);
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(code);
+      setCopied(true);
       toast.success("Code kopiert");
     } catch {
       toast.error("Kopieren nicht möglich"); // браузер запретил доступ к буферу
@@ -26,11 +34,11 @@ const SyncCodeCard = ({ code }) => {
       <p className="text-hint font-extrabold text-faint">Dein Sync-Code</p>
       <div className="mt-2.5 flex items-start gap-2">
         <p className="min-w-0 flex-1 text-number tracking-code text-ink">{code}</p>
-        <button type="button" onClick={() => openSheet("syncqr")} aria-label="Code als QR zeigen" className="-mt-1 grid size-9.5 shrink-0 place-items-center rounded-full bg-tint text-accent-ink lg:hidden">
+        <button type="button" onClick={() => openSheet("syncqr")} aria-label="Code als QR zeigen" className="-mt-1 grid size-11 shrink-0 place-items-center rounded-full bg-tint text-accent-ink transition-transform duration-150 active:scale-90 lg:hidden">
           <QrIcon className="size-4.25" />
         </button>
-        <button type="button" onClick={copy} aria-label="Code kopieren" className="-mt-1 grid size-9.5 shrink-0 place-items-center rounded-full bg-sand text-ink hover:bg-paper">
-          <CopyIcon className="size-4.25" />
+        <button type="button" onClick={copy} aria-label="Code kopieren" className={cn("-mt-1 grid size-11 shrink-0 place-items-center rounded-full transition-[background-color,scale] duration-200 active:scale-90", copied ? "bg-ok-tint text-ok" : "bg-sand text-ink hover:bg-paper")}>
+          {copied ? <CheckIcon key="ok" className="size-4.25 motion-safe:animate-check-pop" /> : <CopyIcon className="size-4.25" />}
         </button>
       </div>
       <SyncStatus />

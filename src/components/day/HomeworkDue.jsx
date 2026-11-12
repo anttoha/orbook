@@ -9,6 +9,7 @@ import { subjectName } from "../../shared/utils/format";
 import { authorShort } from "../../shared/utils/homework";
 import { aufgabenOfDay } from "../../shared/utils/tasks";
 import CheckCircle from "../tasks/CheckCircle";
+import DoneText from "../tasks/DoneText";
 import SubjectBadge from "../ui/SubjectBadge";
 
 // Вторая строка: «Mathe · von Mü» у домашки, «Eigene Aufgabe» у своей
@@ -46,9 +47,9 @@ const HomeworkDue = ({ date, className }) => {
             <button
               type="button"
               onClick={() => (row.kind === "own" ? openSheet("aufgabe", { id: row.id }) : openSheet("hausaufgabe", { id: row.id }))}
-              className="flex min-w-0 flex-1 items-center gap-3 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+              className="flex min-w-0 flex-1 items-center gap-3 py-3 text-left outline-none transition-transform duration-150 focus-visible:ring-2 focus-visible:ring-accent/50 active:scale-98"
             >
-              <span className={cn("shrink-0", row.done && "opacity-50")}>
+              <span className={cn("shrink-0 transition-opacity duration-300", row.done && "opacity-50")}>
                 {row.subject ? (
                   <SubjectBadge subject={{ code: row.subject }} />
                 ) : (
@@ -58,7 +59,9 @@ const HomeworkDue = ({ date, className }) => {
                 )}
               </span>
               <span className="min-w-0 flex-1">
-                <span className={cn("block truncate text-body", row.done ? "text-faint line-through" : "text-ink")}>{row.text}</span>
+                <DoneText done={row.done} className="text-body">
+                  {row.text}
+                </DoneText>
                 <span className={cn("mt-0.5 block truncate text-caption", row.kind === "own" && !row.done ? "text-accent-ink" : "text-faint")}>{subline(row, names)}</span>
               </span>
             </button>

@@ -5,8 +5,8 @@ import { useSheet } from "../../shared/hooks/useSheet";
 import { cn } from "../../shared/utils/cn";
 import { menuContentClass, menuIconClass, menuItemClass } from "../ui/menuStyles";
 
-const round = "grid size-9.5 shrink-0 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50";
-const pill = "ml-0.5 flex h-12 items-center gap-2 rounded-full bg-accent px-5 text-row font-bold text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50";
+const round = "grid size-11 shrink-0 place-items-center rounded-full bg-accent text-on-accent outline-none transition-transform duration-150 focus-visible:ring-2 focus-visible:ring-accent/50 active:scale-90";
+const pill = "ml-0.5 flex h-12 items-center gap-2 rounded-full bg-accent px-5 text-row font-bold text-on-accent outline-none transition-transform duration-150 focus-visible:ring-2 focus-visible:ring-accent/50 active:scale-96";
 
 // ─────────────────────────────────────────────────────────────
 // «+» в Aufgaben (часть 25). У всех — своя задача (шторка «aufgabe»).

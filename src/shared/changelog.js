@@ -11,6 +11,7 @@ export const changelog = [
       "Sync-Code als QR: mit dem anderen Handy scannen, fertig.",
       "Blatt für die Klasse drucken: großer QR für die Pinnwand oder 8 Kärtchen zum Verteilen.",
       "„Kurz erklärt“ unter Mehr: drei Tipps für den Anfang.",
+      "Mehr Bewegung: Häkchen springen, erledigte Aufgaben werden durchgestrichen und rutschen nach unten.",
     ],
   },
   {

@@ -4,7 +4,7 @@ import { isIsoDate, numericDate, weekdayShort } from "../../shared/utils/format"
 import { dueChoices } from "../../shared/utils/tasks";
 import { CalendarIcon } from "../ui/icons";
 
-const chip = "h-9 rounded-full border px-4 text-label font-bold outline-none focus-visible:ring-2 focus-visible:ring-accent/50";
+const chip = "h-10 rounded-full border px-4 text-label font-bold outline-none transition-[background-color,border-color,color,scale] duration-200 focus-visible:ring-2 focus-visible:ring-accent/50 active:scale-95";
 const on = "border-accent bg-accent text-on-accent";
 const off = "border-rule text-muted";
 
@@ -30,7 +30,7 @@ const DueChips = ({ value, today, onChange }) => {
           {c.label}
         </button>
       ))}
-      <button type="button" onClick={openPicker} aria-label="Anderes Datum" className={cn(chip, "flex items-center gap-1.5", custom ? on : cn(off, "w-9 justify-center px-0"))}>
+      <button type="button" onClick={openPicker} aria-label="Anderes Datum" className={cn(chip, "flex items-center gap-1.5", custom ? on : cn(off, "w-10 justify-center px-0"))}>
         <CalendarIcon className="size-4 shrink-0" />
         {custom && `${weekdayShort(value)} ${numericDate(value)}`}
       </button>
