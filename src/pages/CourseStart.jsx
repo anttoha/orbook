@@ -6,7 +6,7 @@ import CourseLists from "../components/courses/CourseLists";
 import StepBar from "../components/courses/StepBar";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
-import { withNumbers } from "../shared/utils/courses";
+import { startChoice, withNumbers } from "../shared/utils/courses";
 
 // Екран першого запуску «Welche Kurse hast du?» (макет 03).
 // Вибір зберігається лише після «Weiter»: до цього він живе у стані екрана.
@@ -55,7 +55,7 @@ const CourseStart = () => {
               Zurück
             </Button>
             {status === "ready" && (
-              <Button variant="primary" onClick={() => finishCourseChoice(picked, hiddenRequired)} className="gap-1.5 lg:flex-none lg:px-4.5">
+              <Button variant="primary" onClick={() => finishCourseChoice(startChoice(picked), hiddenRequired)} className="gap-1.5 lg:flex-none lg:px-4.5">
                 <ChevronRight className="size-4" /> Weiter
               </Button>
             )}

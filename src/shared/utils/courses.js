@@ -23,6 +23,13 @@ export function courseTitle(course) {
 // Такого номера курсу немає, тож фільтри плану просто не знаходять жодного вибіркового курсу.
 export const NO_OPTIONAL = ["keine"];
 
+// Вибір з першого запуску: порожній список там означає «жодного Wahl-курсу», а в сховищі [] — «усі».
+// Тому порожній вибір зберігаємо як NO_OPTIONAL (баг 20a: інакше в «Meine Kurse» вмикалось усе)
+export function startChoice(picked) {
+  const real = picked.filter((nr) => nr !== NO_OPTIONAL[0]);
+  return real.length ? real : NO_OPTIONAL;
+}
+
 // Номери всіх вибіркових курсів: їх просить switchCourses
 export const optionalNumbers = (courses) =>
   (courses ?? [])

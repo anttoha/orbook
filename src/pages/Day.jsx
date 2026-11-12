@@ -55,7 +55,7 @@ const Day = () => {
   const navigate = useNavigate(); // перехід на інший день
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // ≥ 1024px — комп'ютерний вигляд
   const filter = useLessonFilter(); // «Meine Kurse»
-  const showAllCourses = useUserStore((s) => s.showAllCourses); // показати всі курси
+  const setAllCourses = useUserStore((s) => s.setAllCourses); // режим «Alle Kurse» (вибір не змінює)
   const holidays = usePlanStore((s) => s.meta?.holidays); // вільні дні (для гортання)
   const loadWeek = usePlanStore((s) => s.loadWeek); // «Erneut versuchen»
   const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // «Teilen» увімкнене?
@@ -147,8 +147,8 @@ const Day = () => {
 
   // Кнопка «показати сховані курси»
   const restoreHidden = hiddenHere > 0 && (
-    <button type="button" onClick={showAllCourses} className="flex items-center justify-center gap-2 text-label font-extrabold text-accent">
-      <Eye className="size-4" /> {hiddenHere} {hiddenHere === 1 ? "Stunde" : "Stunden"} ausgeblendet · einblenden
+    <button type="button" onClick={() => setAllCourses(true)} className="flex items-center justify-center gap-2 text-label font-extrabold text-accent">
+      <Eye className="size-4" /> {hiddenHere} {hiddenHere === 1 ? "Stunde" : "Stunden"} ausgeblendet · alle zeigen
     </button>
   );
 

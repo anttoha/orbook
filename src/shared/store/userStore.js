@@ -33,6 +33,7 @@ export const useUserStore = create(
       dayView: "liste", // вигляд дня: "liste" | "zeitleiste"
       compactWeek: true, // менші клітинки тижня
       fontScale: 2, // шрифт: 1 — A, 2 — A+ (як на макетах), 3 — A++
+      allCourses: false, // режим «Alle Kurse»: видно й чужі курси (пунктиром)
       checkedPlan: [], // «So lassen» у «Einträge prüfen» (частина 19): ключі з shared/utils/muster.js checkKey
 
       // ── нотатки ──
@@ -79,8 +80,9 @@ export const useUserStore = create(
       // «Weiter» на екрані першого запуску: зберегти вибір і більше не питати
       finishCourseChoice: (picked, hiddenRequired = []) => set({ picked, hiddenRequired, coursesChosen: true }),
 
-      // Показати всі курси знову
-      showAllCourses: () => set({ picked: [], hiddenRequired: [] }),
+      // «Alle Kurse» (частина 22): лише показати весь план класу. Вибір «Meine Kurse» НЕ змінюється
+      // (раніше кнопки «показати все» стирали picked — це й був баг 20a)
+      setAllCourses: (allCourses) => set({ allCourses }),
 
       // ── вигляд ──
 

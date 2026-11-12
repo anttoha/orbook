@@ -7,6 +7,7 @@ import {
   isCourseVisible,
   mergeCourses,
   splitCourses,
+  startChoice,
   switchCourses,
   visibleSubjects,
   withNumbers,
@@ -189,5 +190,18 @@ describe("isCourseVisible — обов'язкові теж можна схова
   it("за вибором — як раніше", () => {
     expect(isCourseVisible(optional, [], ["131"])).toBe(true);
     expect(isCourseVisible(optional, ["keine"], [])).toBe(false);
+  });
+});
+
+// Баг 20a (12.11.2026): на старте не включили ни одного Wahl-курса → сохранялось [], а [] значит «все».
+describe("startChoice — выбор с экрана «Welche Kurse hast du?»", () => {
+  it("ничего не выбрано — ни одного Wahl-курса, а не «все»", () => {
+    expect(startChoice([])).toEqual(NO_OPTIONAL);
+    expect(isCourseOn(startChoice([]), "141")).toBe(false);
+  });
+
+  it("выбран один курс — только он", () => {
+    expect(startChoice(["150"])).toEqual(["150"]);
+    expect(isCourseOn(startChoice(["150"]), "141")).toBe(false);
   });
 });

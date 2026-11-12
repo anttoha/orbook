@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Calendar, CalendarCheck, CalendarRange, Check, Eye, List, MoreVertical, Printer, RefreshCw, Share } from "lucide-react";
+import { Calendar, CalendarCheck, CalendarRange, Check, Layers, List, MoreVertical, Printer, RefreshCw, Share } from "lucide-react";
 import { DESKTOP_QUERY, useMediaQuery } from "../../shared/hooks/useMediaQuery";
 import { useSheet } from "../../shared/hooks/useSheet";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
 import Kbd from "../ui/Kbd";
+import Switch from "../ui/Switch";
 import { menuContentClass, menuIconClass, menuItemClass, menuSeparatorClass } from "../ui/menuStyles";
 
 // ─────────────────────────────────────────────────────────────
@@ -23,8 +24,8 @@ const WeekMenu = ({ monday, onToday, onPickWeek }) => {
   const { openSheet } = useSheet(); // відкрити шторку
   const showWeekend = useUserStore((s) => s.showWeekend); // вихідні показано?
   const toggleWeekend = useUserStore((s) => s.toggleWeekend); // перемкнути вихідні
-  const hasPicked = useUserStore((s) => s.picked.length > 0 || s.hiddenRequired.length > 0); // чи є приховані курси
-  const showAllCourses = useUserStore((s) => s.showAllCourses); // показати всі курси
+  const allCourses = useUserStore((s) => s.allCourses); // режим «Alle Kurse» (частина 22)
+  const setAllCourses = useUserStore((s) => s.setAllCourses);
   const refreshPlan = usePlanStore((s) => s.refreshPlan); // «Plan neu laden» (POST /api/plan/refresh)
   const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // «Teilen» може бути вимкнене адміном
 
@@ -42,9 +43,11 @@ const WeekMenu = ({ monday, onToday, onPickWeek }) => {
         <button
           type="button"
           aria-label="Weitere Optionen"
-          className="flex size-9.5 items-center justify-center rounded-full bg-card outline-none data-[state=open]:bg-sand focus-visible:ring-2 focus-visible:ring-accent/50"
+          className="relative flex size-9.5 items-center justify-center rounded-full bg-card outline-none data-[state=open]:bg-sand focus-visible:ring-2 focus-visible:ring-accent/50"
         >
           <MoreVertical className="size-4.25" />
+          {/* фіолетова крапка: увімкнено «Alle Kurse» — видно, що це не лише мій план */}
+          {allCourses && <span aria-hidden="true" className="absolute top-0 right-0 size-2.75 rounded-full border-2 border-paper bg-accent" />}
         </button>
       </DropdownMenu.Trigger>
 
@@ -72,6 +75,13 @@ const WeekMenu = ({ monday, onToday, onPickWeek }) => {
             </DropdownMenu.ItemIndicator>
           </DropdownMenu.CheckboxItem>
 
+          {/* «Alle Kurse zeigen»: весь план класу, чужі курси пунктиром. «Meine Kurse» не змінюється */}
+          <DropdownMenu.Separator className={menuSeparatorClass} />
+          <DropdownMenu.CheckboxItem className={menuItemClass} checked={allCourses} onCheckedChange={setAllCourses}>
+            <Layers className={menuIconClass} /> Alle Kurse zeigen
+            <Switch checked={allCourses} className="ml-auto" />
+          </DropdownMenu.CheckboxItem>
+
           <DropdownMenu.Separator className={menuSeparatorClass} />
 
           <DropdownMenu.Item className={menuItemClass} onSelect={refreshPlan}>
@@ -89,15 +99,6 @@ const WeekMenu = ({ monday, onToday, onPickWeek }) => {
             </DropdownMenu.Item>
           )}
 
-          {/* тільки якщо якісь курси приховані */}
-          {hasPicked && (
-            <>
-              <DropdownMenu.Separator className={menuSeparatorClass} />
-              <DropdownMenu.Item className={menuItemClass} onSelect={showAllCourses}>
-                <Eye className={menuIconClass} /> Alle Kurse zeigen
-              </DropdownMenu.Item>
-            </>
-          )}
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
