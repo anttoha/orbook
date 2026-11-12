@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useParams, useSearchParams } from "react-router-dom";
 import HomeworkForm from "../components/homework/HomeworkForm";
 import { Skeleton } from "../components/ui/PlanState";
 import PageHeader from "../components/ui/PageHeader";
 import { useHomeworkItem } from "../shared/hooks/useHomework";
 import { usePlanStore } from "../shared/store/planStore";
-import { addHomeworkTarget, canCreateHomework } from "../shared/utils/examRules";
+import { addHomeworkTarget, canCreateHomework, examPreset } from "../shared/utils/examRules";
 
 const Placeholder = ({ text }) => (
   <section className="flex flex-col gap-5 lg:max-w-186">
@@ -25,17 +25,19 @@ const EditExisting = ({ id }) => {
 
 // ─────────────────────────────────────────────────────────────
 // Сторінка запису Hausaufgabe: /testen/hausaufgaben/neu і …/4/bearbeiten (частина 14).
+// Из меню урока — /testen/hausaufgaben/neu?datum=…&stunde=…&fach=… (часть 24): «Aufgegeben in» этот урок.
 // Права ще раз перевіряємо тут (адресу можна відкрити напряму), остаточно — сервер.
 // ─────────────────────────────────────────────────────────────
 const HomeworkEdit = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams(); // из меню урока: ?datum=…&stunde=…&fach=… (часть 24)
   const me = usePlanStore((s) => s.me);
   // лише при вході: якщо код застаріє посеред запису, сервер скаже при збереженні
-  const [redirect] = useState(() => (canCreateHomework(me) ? null : addHomeworkTarget(me) ?? "/testen?liste=hausaufgaben"));
+  const [redirect] = useState(() => (canCreateHomework(me) ? null : (addHomeworkTarget(me) ?? "/testen?liste=hausaufgaben")));
 
   if (id) return <EditExisting id={id} />;
   if (redirect) return <Navigate to={redirect} replace />;
-  return <HomeworkForm item={null} />;
+  return <HomeworkForm item={null} preset={examPreset(searchParams)} />;
 };
 
 export default HomeworkEdit;

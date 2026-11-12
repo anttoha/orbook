@@ -42,7 +42,7 @@ const MonthGrid = ({ month, today, highlight, rowShape = "pill", examDays = NO_D
               key={day}
               type="button"
               onClick={() => onPick(day)}
-              aria-label={`${weekdayLong(day)}, ${longDate(day)}${hasExam ? " · Klausur" : ""}${isFree ? " · frei" : ""}`}
+              aria-label={`${weekdayLong(day)}, ${longDate(day)}${hasExam ? " · Test" : ""}${isFree ? " · frei" : ""}`}
               className="relative mx-auto grid size-9 place-items-center"
             >
               <span

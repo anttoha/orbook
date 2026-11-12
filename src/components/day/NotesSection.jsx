@@ -53,6 +53,8 @@ const NotesSection = ({ date, lessons = [], variant = "list", hideEmpty = false 
       </header>
 
       {notes.length === 0 && <p className={cn("text-label text-faint", isCard ? "mt-2.5 font-bold" : "rounded-card bg-card px-3.5 py-3")}>Noch keine Notizen für diesen Tag.</p>}
+      {/* подсказка про записи на урок (макет 24 handy-07): на ПК — правый клик, на телефоне — долгое нажатие */}
+      {notes.length === 0 && !isCard && <p className="mt-2 text-label text-faint">Lange auf eine Stunde drücken: Hausaufgabe oder Test eintragen.</p>}
 
       {/* на ПК нотатки йдуть списком із лініями-розділювачами всередині картки */}
       <div className={cn("flex flex-col", isCard ? "mt-1 divide-y divide-hair" : "gap-2.5")}>

@@ -116,7 +116,7 @@ describe("Editor-Codes", () => {
   });
 });
 
-describe("Klausuren", () => {
+describe("Tests", () => {
   it("Autor gelöscht → unbekannt", () => {
     expect(authorText({ createdBy: null })).toBe("unbekannt");
     expect(authorText({ createdBy: { label: "Code A" } })).toBe("Code A");
@@ -187,9 +187,9 @@ describe("Kurse und Fächer", () => {
 
 describe("Lehrer-Codes (Teil 14)", () => {
   it("Rechte-Text", () => {
-    expect(rightsText({ create: true, homework: true }, "teacher")).toBe("Klausuren · Hausaufgaben");
-    expect(rightsText({ create: true, homework: false }, "teacher")).toBe("Nur Klausuren");
-    expect(rightsText({ create: true, homework: true, materials: true }, "teacher")).toBe("Klausuren · Hausaufgaben · Materialien");
+    expect(rightsText({ create: true, homework: true }, "teacher")).toBe("Tests · Hausaufgaben");
+    expect(rightsText({ create: true, homework: false }, "teacher")).toBe("Nur Tests");
+    expect(rightsText({ create: true, homework: true, materials: true }, "teacher")).toBe("Tests · Hausaufgaben · Materialien");
     expect(rightsText({ create: false, homework: false, materials: true }, "teacher")).toBe("Nur Materialien");
     expect(rightsText({ create: true, editOwn: true, materials: true })).toBe("Eintragen · eigene bearbeiten · Materialien");
     expect(rightsText({ materials: true })).toBe("Materialien");

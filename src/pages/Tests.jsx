@@ -77,11 +77,11 @@ const ExamList = () => {
   const groups = filter.past ? [{ title: "Vergangen", exams: shown }] : groupExams(shown, today);
 
   const body = () => {
-    if (resource.status === "error") return <PlanError resource={resource} onRetry={reload} title="Klausuren konnten nicht geladen werden" />;
+    if (resource.status === "error") return <PlanError resource={resource} onRetry={reload} title="Tests konnten nicht geladen werden" />;
     if (list.length === 0 && resource.status === "loading") return <ExamSkeleton />;
     if (list.length === 0 && !filterActive) {
       return (
-        <StateScreen icon={FlagIcon} title="Keine Klausuren in Sicht" text="Sobald jemand mit Editor-Code eine Klausur einträgt, steht sie hier — mit Countdown.">
+        <StateScreen icon={FlagIcon} title="Keine Tests in Sicht" text="Sobald jemand mit Editor-Code einen Test einträgt, steht er hier — mit Countdown.">
           {!me?.editor && (
             <Button onClick={() => navigate("/editor-code")} className="flex-none">
               <KeyIcon className="size-4" /> Editor-Code eingeben
@@ -135,13 +135,13 @@ const ExamList = () => {
       <header className="flex items-end justify-between gap-3">
         <div className="min-w-0 space-y-1">
           <p className="text-hint font-extrabold text-faint">{eyebrowText(filter.past, list.length)}</p>
-          <h1 className="text-title text-ink lg:text-hero">Klausuren</h1>
+          <h1 className="text-title text-ink lg:text-hero">Tests</h1>
         </div>
         {isDesktop ? (
           <ExamsToolbar query={query} onQuery={setQuery} filter={{ open: filterOpen, onOpenChange: setFilterOpen, active: isFilterActive(filter) }} addTarget={addTarget} />
         ) : (
           addTarget && (
-            <Link to={addTarget} aria-label="Klausur eintragen" className="grid size-9.5 shrink-0 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
+            <Link to={addTarget} aria-label="Test eintragen" className="grid size-9.5 shrink-0 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
               <Plus className="size-4.25" />
             </Link>
           )

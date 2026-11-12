@@ -1,10 +1,13 @@
 import { cn } from "../../shared/utils/cn";
 import { examWhen, subjectName } from "../../shared/utils/format";
+import { movedFromText } from "../../shared/utils/entries";
+import Badge from "../ui/Badge";
+import MovedLine from "../entries/MovedLine";
 import ExamBadge from "./ExamBadge";
 import ExamDateTile from "./ExamDateTile";
 
 // ─────────────────────────────────────────────────────────────
-// Рядок списку Klausuren:
+// Рядок списку Tests (часть 24: перенесённый — VERSCHOBEN и «von Mi 17.09., 3. Std – fiel aus»):
 //   [19 FR]  KLAUSUR Mathe · 1. Std           in 2 Tagen
 //            Quadratische Funktionen
 // highlight — найближча: фіолетова рамка і фіолетове «in 2 Tagen»
@@ -20,6 +23,7 @@ const ExamRow = ({ exam, overrides, highlight, onClick }) => (
     <span className="min-w-0 flex-1">
       <span className="flex items-center gap-1.75">
         <ExamBadge type={exam.type} />
+        {exam.movedFrom && <Badge variant="changed">Verschoben</Badge>}
         <span className="truncate text-note text-faint">
           {subjectName(exam.subject)}
           {exam.lesson && ` · ${exam.lesson}. Std`}
@@ -27,6 +31,7 @@ const ExamRow = ({ exam, overrides, highlight, onClick }) => (
       </span>
       {/* тема буває порожньою: тоді назва предмета */}
       <span className="mt-1 block truncate text-row font-extrabold text-ink">{exam.topic || subjectName(exam.subject)}</span>
+      {movedFromText(exam) && <MovedLine>{movedFromText(exam)} – fiel aus</MovedLine>}
     </span>
 
     <span className={cn("shrink-0 text-caption font-bold", highlight ? "text-accent-ink" : "text-faint")}>{examWhen(exam)}</span>

@@ -9,7 +9,7 @@ export const inviteUrl = (token, origin = window.location.origin) => `${origin}/
 export const shortUrl = (url) => url.replace(/^https?:\/\//, "");
 
 // Текст для WhatsApp. className може бути порожнім — тоді без назви класу
-export const inviteMessage = (url, className) => `Hier ist der ORBook-Link${className ? ` für die ${className}` : ""}: Stundenplan, Vertretungen und Klausuren.\n${url}`;
+export const inviteMessage = (url, className) => `Hier ist der ORBook-Link${className ? ` für die ${className}` : ""}: Stundenplan, Vertretungen und Tests.\n${url}`;
 
 // Помилка «Beitreten» → що показати:
 //   invalid — посилання вже не діє (показуємо звичайне поле коду)

@@ -2,6 +2,7 @@
 // examRules.js — перевірки форми «Klausur eintragen» (з гайду, docs/frontend/04-klausuren.md).
 // Сервер перевіряє те саме і відповість 422. Тут — щоб показати помилку ще до відправки.
 // ─────────────────────────────────────────────────────────────
+import { validateDetails } from "./entries";
 import { subjectName, weekdayShort } from "./format";
 
 export const TOPIC_MAX = 60;
@@ -42,6 +43,8 @@ export function validateExamForm(form, today, originalDate = null) {
   if (dateError) errors.date = dateError.message;
   const topicError = validateTopic(form.topic);
   if (topicError) errors.topic = topicError.message;
+  const detailsError = validateDetails(form.details);
+  if (detailsError) errors.details = detailsError;
   return errors;
 }
 
@@ -60,7 +63,16 @@ export function examPreset(params) {
   };
 }
 
-export const examToForm = (exam) => ({ type: exam?.type ?? null, subject: exam?.subject?.code ?? null, date: exam?.date ?? "", lesson: exam?.lesson ?? null, topic: exam?.topic ?? "" });
+// details и materialIds — часть 24 (описание и ссылки из Materialien); null с сервера → пусто
+export const examToForm = (exam) => ({
+  type: exam?.type ?? null,
+  subject: exam?.subject?.code ?? null,
+  date: exam?.date ?? "",
+  lesson: exam?.lesson ?? null,
+  topic: exam?.topic ?? "",
+  details: exam?.details ?? "",
+  materialIds: (exam?.materials ?? []).map((item) => item.id),
+});
 
 // «Mathe · Fr 19.09.» для діалогів
 export function examLabel(exam) {

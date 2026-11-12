@@ -30,6 +30,13 @@ export const loadTeachers = () => api("/admin/teachers");
 // Один Kürzel — один діючий код: другий → 409 teacher_exists. → { code, item }, код ORB-L-… лише тут
 export const createTeacherCode = ({ teacher, rights, valid }) => api("/admin/codes", { method: "POST", body: { kind: "teacher", teacher, rights, valid } });
 
+// ── Arten von Tests (часть 24) ──
+// → { types: [{ name, short, count }], examsAutoMove, homeworkAutoMove }
+export const loadExamTypes = () => api("/admin/exam-types");
+// Весь список по порядку: { name, short, was? } (was — старое имя при переименовании).
+// replaceWith: { "Abgabe": "Test" } — замена для удалённого вида с записями; без неё 409 type_in_use
+export const saveExamTypes = (types, replaceWith = {}) => api("/admin/exam-types", { method: "PUT", body: { types, replaceWith } });
+
 // ── Hausaufgaben ──
 // «Hausaufgaben jetzt aufräumen»: за строком homework.keepDays → { removed }
 export const purgeHomework = () => api("/admin/homework/purge", { method: "POST" });

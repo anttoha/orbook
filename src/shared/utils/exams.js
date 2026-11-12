@@ -66,7 +66,7 @@ export const withDaysLeft = (exams, daysPassed) => exams.map((exam) => ({ ...exa
 export const freshenExams = (exams, daysPassed) => withDaysLeft(exams, daysPassed).filter((exam) => exam.daysLeft >= 0);
 
 // Вид запису в давальному відмінку: види задає адмін, тому для незнайомого є запасний текст
-const UNTIL = { Klausur: "zur Klausur", Test: "zum Test", Abgabe: "zur Abgabe" };
+const UNTIL = { Klausur: "zur Klausur", Klassenarbeit: "zur Klassenarbeit", Leistungskontrolle: "zur Leistungskontrolle", Test: "zum Test", Abgabe: "zur Abgabe" };
 
 // Картка відліку у вікні: велике число і підпис. Сьогодні й минуле — без числа
 export function examCountdown(exam) {

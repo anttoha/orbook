@@ -156,7 +156,7 @@ const JoinPage = () => {
         <div className="lg:hidden">
           <OrbitMark className="size-13.5" />
           <h1 className="mt-3 text-display text-ink">ORBook</h1>
-          <p className="mt-2.75 text-input leading-6 text-muted">Stundenplan, Vertretungen und Klausuren{className ? ` der ${className}` : ""} — an einem Ort.</p>
+          <p className="mt-2.75 text-input leading-6 text-muted">Stundenplan, Vertretungen und Tests{className ? ` der ${className}` : ""} — an einem Ort.</p>
         </div>
         <div className="mt-auto w-full lg:mt-0 lg:w-95">
           {/* заголовок ПК */}
@@ -164,7 +164,7 @@ const JoinPage = () => {
             <p className="text-hint font-extrabold text-accent-ink">Du wurdest eingeladen</p>
             <h2 className="mt-2.5 text-lobby text-ink">{classTitle(className)}</h2>
             <p className="mt-3 text-body leading-5.75 text-muted">
-              {invalid ? "Dieser Einladungslink gilt nicht mehr — mit Zugangscode oder Klassenpasswort geht es trotzdem." : `ORBook zeigt Stundenplan, Vertretungen und Klausuren${className ? ` der ${className}` : ""}. Kein Konto, keine E-Mail.`}
+              {invalid ? "Dieser Einladungslink gilt nicht mehr — mit Zugangscode oder Klassenpasswort geht es trotzdem." : `ORBook zeigt Stundenplan, Vertretungen und Tests${className ? ` der ${className}` : ""}. Kein Konto, keine E-Mail.`}
             </p>
           </div>
           {renderBottom()}

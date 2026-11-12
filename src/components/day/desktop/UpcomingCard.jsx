@@ -7,7 +7,7 @@ import { upcomingChanges } from "../../../shared/utils/lessons";
 import { FlagIcon } from "../../ui/icons";
 
 // Бейдж уроку → слово праворуч у рядку
-const CHANGE_WORDS = { VERTRETUNG: "Vertretung", "FÄLLT AUS": "fällt aus", RAUM: "Raumwechsel", KLAUSUR: "Klausur" };
+const CHANGE_WORDS = { VERTRETUNG: "Vertretung", "FÄLLT AUS": "fällt aus", RAUM: "Raumwechsel", TEST: "Test" };
 
 // ─────────────────────────────────────────────────────────────
 // «Kommt noch» у правій колонці дня (ПК): що зміниться найближчим часом.

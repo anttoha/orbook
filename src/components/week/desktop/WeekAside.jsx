@@ -39,7 +39,7 @@ const WeekAside = ({ days }) => {
       {exams.length > 0 && (
         <section className="flex flex-col gap-2 lg:col-span-2 desktop:col-span-1">
           <header className="mt-1 flex items-center justify-between px-0.5">
-            <h2 className="text-label font-extrabold text-muted">Nächste Klausuren</h2>
+            <h2 className="text-label font-extrabold text-muted">Nächste Tests</h2>
             <Link to="/testen" className="text-label font-extrabold text-accent">
               Alle
             </Link>

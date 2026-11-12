@@ -32,7 +32,7 @@ const HistoryList = ({ kind, entry, noun }) => {
           ))}
         </ol>
       )}
-      <p className="text-caption text-faint">Der Verlauf wird mit der {noun} gelöscht.</p>
+      <p className="text-caption text-faint">Der Verlauf wird mit {noun === "Test" ? "dem Test" : `der ${noun}`} gelöscht.</p>
     </section>
   );
 };

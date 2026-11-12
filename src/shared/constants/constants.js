@@ -8,7 +8,7 @@ export const navTabs = [
   { to: "/woche", label: "Woche", icon: Table2, end: true, mobile: true, activeOn: ["/", "/heute", "/tag"] },
   { to: "/woche", label: "Woche", icon: Table2, end: true, desktop: true, activeOn: ["/", "/tag"] },
   { to: "/heute", label: "Heute", icon: List, desktop: true },
-  { to: "/testen", label: "Klausuren", icon: FlagIcon, mobile: true, desktop: true, },
+  { to: "/testen", label: "Tests", icon: FlagIcon, mobile: true, desktop: true, },
   // Materialien (частина 15): на ПК — пункт меню, на телефоні — з «Mehr»
   { to: "/materialien", label: "Materialien", icon: Folder, desktop: true },
   // Materialien і Statistik (частина 22) відкриваються з «Mehr»
@@ -23,7 +23,7 @@ export const adminTabs = [
   { to: "/admin/lehrer", label: "Lehrer-Codes", icon: UserRound, desktop: true, count: "teachers" },
   // Passwörter: на ПК — пункт меню, на телефоні — з Einstellungen і «Übersicht → Schnell» (частина 14b)
   { to: "/admin/zugang", label: "Zugangscodes", icon: LockIcon, desktop: true, count: "access", activeOn: ["/admin/passwoerter"] }, // частина 14c; паролі (14b) — підсторінка
-  { to: "/admin/klausuren", label: "Klausuren", icon: FlagIcon, mobile: true, desktop: true, count: "exams" },
+  { to: "/admin/klausuren", label: "Tests", icon: FlagIcon, mobile: true, desktop: true, count: "exams" },
   { to: "/admin/kurse", label: "Kurse & Fächer", icon: Table2, desktop: true },
   { to: "/admin/muster", label: "Muster", icon: Layers, desktop: true }, // частина 19b; телефон — з Einstellungen і «Übersicht → Schnell»
   { to: "/admin/materialien", label: "Materialien", icon: Folder, desktop: true }, // частина 15; телефон — «Übersicht → Schnell»

@@ -120,7 +120,7 @@ export const isTeacherCode = (code) => code?.kind === "teacher";
 
 // Права Lehrer-Code → «Klausuren · Hausaufgaben» / «Nur Klausuren» (макет handy-10); + «Materialien» (частина 15)
 function teacherRightsText(rights) {
-  const parts = [rights?.create && "Klausuren", rights?.homework && "Hausaufgaben", rights?.materials && "Materialien"].filter(Boolean);
+  const parts = [rights?.create && "Tests", rights?.homework && "Hausaufgaben", rights?.materials && "Materialien"].filter(Boolean);
   if (parts.length === 0) return "—";
   return parts.length === 1 ? `Nur ${parts[0]}` : parts.join(" · ");
 }

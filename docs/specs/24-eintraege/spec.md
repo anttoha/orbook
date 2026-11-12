@@ -1,6 +1,6 @@
 # 24 · Einträge zur Stunde (Hausaufgabe и Test на урок)
 
-**Статус:** дизайн ок 2026-11-12; ждёт «ок» плана бэкенда
+**Статус:** дизайн ок 2026-11-12; план бэкенда ок 2026-11-12; бэкенд и фронт на демо 2026-11-12; бэкенд на прод — ждёт владельца
 **Источники:** `design/neu/24-eintraege/` (артефакт https://claude.ai/artifact/DSHTkfwYtzetzmLpWw1gwG), идеи 10.11 и 11.11 (`docs/ideas/2026-11-11/ideas.md`), часть 21 из `docs/specs/README.md`, `/opt/orbook-be/docs/API.md` (Klausuren, Hausaufgaben, Materialien), код `src/components/lesson/LessonContextMenu.jsx`, `src/components/sheets/LessonSheet.jsx`, `/opt/orbook-be/src/orbook/{db.py,appsettings.py,exams,homework,plan/store.py}`.
 
 ## Зачем
@@ -40,7 +40,7 @@
 | Урок домашки | Homework → **новое** `lesson` (1…12) | да → «bis Fr» без урока |
 | Перенос | Exam/Homework → **новое** `movedFrom {date, lesson}` | обычно `null` |
 
-## Бэкенд (в `/opt/orbook-be`, план — ждёт «ок» владельца)
+## Бэкенд (в `/opt/orbook-be`, план — «ок» владельца 12.11.2026; коммит 1dc7094)
 1. **Миграция 0012** (с бэкапом): `exams.details`, `exams.moved_from_date`, `exams.moved_from_lesson`; `homework.lesson`, `homework.moved_from_*`; таблицы-связки `exam_materials`, `homework_materials` (`ON DELETE CASCADE` — удалили ссылку, она пропадает из записи). Данные: `type = 'Klausur'` → `'Klassenarbeit'`.
 2. **Настройка видов:** `exams.types` → список `{name, short}` (старое значение-строки читается и переводится, по умолчанию KA/LK/T/AB); `exams.autoMove`, `homework.autoMove` (по умолчанию `true`). Админ: переименование вида меняет его у записей; удаление занятого вида — только с `replaceWith`. `meta.examTypes` остаётся списком имён (совместимость), рядом `meta.examTypeList`.
 3. **API записей:** `POST/PATCH /api/exams` и `/api/homework` принимают `details` (≤ 300, многострочно, без e-mail/ссылок/телефонов — те же проверки, что у `text`), `materialIds` (≤ 5, только существующие; ссылка своего предмета не обязательна), у Homework — `lesson`. Ответ отдаёт `details`, `materials`, `movedFrom`. История: ключи `details`, `materials`, `lesson`, действие `moved` (by `system`).
@@ -65,8 +65,15 @@
 ## Чего здесь НЕТ
 - Уведомлений о переносе (часть 17), экрана «что сделано» (часть 25), переноса без урока (запись «на день»).
 
+## Решения при сборке
+- `exams.types` остаётся списком имён (старый фронт на проде читает его), Kürzel — отдельно в `exams.shorts`; наружу — `meta.examTypeList`.
+- У Hausaufgabe нет отдельного `details`: описание — это и есть «Aufgabe» (`text`), как в макете handy-06.
+- Авто-перенос запускается поллером после того, как план дня сохранён (отдельный commit: ошибка переноса не мешает плану).
+- «Bis wann?» считает фронт по загруженным неделям (план, иначе Muster); неделю урока и следующую подгружает сам.
+
 ## Отличия от дизайна
-- Пока нет.
+- ПК «Test eintragen» (pc-02): форма — страница, как остальные формы, а не окно поверх недели.
+- Перетаскивание в «Arten von Tests» — за «⋮⋮» (мышь и палец), отдельного режима сортировки нет.
 
 ## Слова
 - **Art / вид** — Klassenarbeit, Leistungskontrolle, Test …; список задаёт админ.
@@ -75,4 +82,5 @@
 - **movedFrom** — откуда запись переехала (первое место), чтобы показать «verschoben von …».
 
 ## Открытые вопросы
-- [ ] «ок» плана бэкенда (правило `/opt/orbook-be/CLAUDE.md`) — владелец.
+- [x] «ок» плана бэкенда — владелец, 12.11.2026.
+- [ ] Выложить бэкенд на прод (`/opt/orbook-be/scripts/update.sh`) — владелец (автоматический фильтр не дал Claude запустить выкладку на прод).

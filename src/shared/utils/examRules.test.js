@@ -60,11 +60,17 @@ describe("validateExamForm", () => {
 
 describe("examToForm", () => {
   it("нова форма порожня", () => {
-    expect(examToForm(null)).toEqual({ type: null, subject: null, date: "", lesson: null, topic: "" });
+    expect(examToForm(null)).toEqual({ type: null, subject: null, date: "", lesson: null, topic: "", details: "", materialIds: [] });
   });
 
   it("запис без уроку і предмета", () => {
-    expect(examToForm({ type: "Test", subject: null, date: "2026-09-19", lesson: null, topic: "T" })).toEqual({ type: "Test", subject: null, date: "2026-09-19", lesson: null, topic: "T" });
+    expect(examToForm({ type: "Test", subject: null, date: "2026-09-19", lesson: null, topic: "T" })).toEqual({ type: "Test", subject: null, date: "2026-09-19", lesson: null, topic: "T", details: "", materialIds: [] });
+  });
+
+  it("details null und Materialien (часть 24)", () => {
+    const form = examToForm({ type: "Test", date: "2026-09-19", topic: "", details: null, materials: [{ id: 3 }, { id: 5 }] });
+    expect(form.details).toBe("");
+    expect(form.materialIds).toEqual([3, 5]);
   });
 });
 

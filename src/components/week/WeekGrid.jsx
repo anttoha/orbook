@@ -3,7 +3,8 @@ import { useLessonFilter } from "../../shared/hooks/usePlan";
 import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
 import { berlinParts, isLessonPast, toMinutes } from "../../shared/utils/lessonClock";
-import { freeText, lessonKey, periodRows } from "../../shared/utils/lessons";
+import { freeText, lessonExam, lessonKey, periodRows } from "../../shared/utils/lessons";
+import { typeList, typeShort } from "../../shared/utils/entries";
 import { usePlanStore } from "../../shared/store/planStore";
 import LessonContextMenu from "../lesson/LessonContextMenu";
 import DayAppointmentPills from "../appointments/DayAppointmentPills";
@@ -32,6 +33,7 @@ const WeekGrid = ({ days, onLessonClick }) => {
   const filter = useLessonFilter(); // «Meine Kurse»
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
   const lessonTimes = usePlanStore((s) => s.meta?.lessonTimes); // час уроків
+  const meta = usePlanStore((s) => s.meta); // виды Tests с Kürzel (часть 24)
   const compact = useUserStore((s) => s.compactWeek); // «Kompakte Woche»
   const cellHeight = compact ? "min-h-13" : "min-h-16"; // висота рядка уроку
 
@@ -85,7 +87,7 @@ const WeekGrid = ({ days, onLessonClick }) => {
             <div key={`${day.date}-${row.period}`} style={style} className={cn("flex flex-col gap-0.5", cellHeight)}>
               {lessons.map((lesson) => (
                 <LessonContextMenu key={lessonKey(lesson)} lesson={lesson} date={day.date}>
-                  <LessonCell lesson={lesson} isPast={isLessonPast(lesson, day.date, now)} overrides={overrides} onClick={() => onLessonClick(day, lesson)} />
+                  <LessonCell lesson={lesson} isPast={isLessonPast(lesson, day.date, now)} overrides={overrides} examShort={lesson.examId ? typeShort(lessonExam(day, lesson)?.type ?? "Test", typeList(meta)) : null} onClick={() => onLessonClick(day, lesson)} />
                 </LessonContextMenu>
               ))}
             </div>

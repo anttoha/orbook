@@ -7,7 +7,7 @@ import { daysLeftText, longDate, subjectName, weekdayLong, weekdayShort } from "
 import { visibleNotes } from "./notes";
 
 // Скільки рядків у кожній групі, щоб вікно не ставало вищим за екран
-const LIMITS = { Stunden: 4, Klausuren: 3, Notizen: 3, Einstellungen: 3 };
+const LIMITS = { Stunden: 4, Tests: 3, Notizen: 3, Einstellungen: 3 };
 
 // Статус уроку словами — перший шматок другого рядка: «Vertretung · Kle · Raum 204»
 const STATUS_WORDS = { substitution: "Vertretung", moved: "Verlegt", added: "Zusatzstunde", cancelled: "Fällt aus", room_change: "Raumänderung" };
@@ -47,7 +47,7 @@ const examItems = (exams) =>
       subject: exam.subject ?? null,
       title: `${exam.type} ${name} · ${weekdayShort(exam.date)} ${dottedDate(exam.date)}`,
       subtitle: [exam.topic, daysLeftText(exam.daysLeft)].filter(Boolean).join(" · "),
-      haystack: [exam.type, name, exam.subject?.code, exam.topic, "Klausur"],
+      haystack: [exam.type, name, exam.subject?.code, exam.topic, "Test"],
       target: { sheet: "klausur", params: { id: exam.id } },
     };
   });
@@ -79,7 +79,7 @@ export function searchGroups(query, { days = [], exams = [], notes = [], section
   if (words.length === 0) return [];
   const groups = [
     { title: "Stunden", items: lessonItems(days) },
-    { title: "Klausuren", items: examItems(exams) },
+    { title: "Tests", items: examItems(exams) },
     { title: "Notizen", items: noteItems(notes) },
     { title: "Einstellungen", items: settingItems(sections) },
   ];
@@ -92,7 +92,7 @@ export function searchGroups(query, { days = [], exams = [], notes = [], section
 export const searchActions = ({ canCreate, today, dark }) => ({
   title: "Aktionen",
   items: [
-    { id: "a-exam", icon: "plus", title: "Klausur eintragen", subtitle: canCreate ? "Für die ganze Klasse" : "braucht Editor-Code", kbd: "K", target: { action: "exam" } },
+    { id: "a-exam", icon: "plus", title: "Test eintragen", subtitle: canCreate ? "Für die ganze Klasse" : "braucht Editor-Code", kbd: "K", target: { action: "exam" } },
     { id: "a-today", icon: "calendar", title: "Zu heute springen", subtitle: `${weekdayLong(today)}, ${longDate(today)}`, kbd: "T", target: { path: "/heute" } },
     { id: "a-theme", icon: dark ? "sun" : "moon", title: dark ? "Helles Design" : "Dunkles Design", subtitle: "Darstellung umschalten", target: { action: "theme" } },
   ],

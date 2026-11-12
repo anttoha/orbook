@@ -10,7 +10,7 @@ const TODAY = 2;
 // Клітинка: [предмет, кабінет, особливість]. "changed" — заміна, "cancelled" — fällt aus,
 // "exam" — Klausur, null — уроку немає
 const ROWS = [
-  { period: 1, time: "07:30", cells: [["De", "102"], ["Ma", "108"], ["De", "102"], ["De", "102"], ["Ma", "Klausur", "exam"]] },
+  { period: 1, time: "07:30", cells: [["De", "102"], ["Ma", "108"], ["De", "102"], ["De", "102"], ["Ma", "Test", "exam"]] },
   { period: 2, time: "08:20", cells: [["Ma", "108"], ["Ph", "301"], ["Ma", "204", "changed"], ["Ma", "108"], ["En", "210"]] },
   { period: 3, time: "09:25", cells: [["En", "210"], ["De", "102"], ["En", "fällt aus", "cancelled"], ["Ph", "301"], ["De", "102"]] },
   { period: 4, time: "10:30", cells: [["Sp", "Halle"], ["En", "fällt aus", "cancelled"], ["Ph", "301"], ["Ge", "B12", "changed"], ["Bi", "305"]] },

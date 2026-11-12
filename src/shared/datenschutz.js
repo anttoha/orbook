@@ -7,7 +7,7 @@ export const STAND = "2026-11-12";
 // Коротко — первые строки страницы (макет 27). Иконки подставляет страница по id.
 export const FACTS = [
   { id: "konten", title: "Keine Konten", text: "Keine Namen, keine E-Mails von Schülerinnen und Schülern. Du meldest dich mit dem Klassenpasswort oder einem Zugangscode an." },
-  { id: "server", title: "Was auf dem Server liegt", text: "Der Stundenplan der Klasse und was ihr eintragt: Klausuren, Hausaufgaben, Termine, Links zu Materialien. Bei Schülern steht kein Name dabei." },
+  { id: "server", title: "Was auf dem Server liegt", text: "Der Stundenplan der Klasse und was ihr eintragt: Tests, Hausaufgaben, Termine, Links zu Materialien. Bei Schülern steht kein Name dabei." },
   { id: "notizen", title: "Deine Notizen", text: "Bleiben auf deinem Gerät. Beim Synchronisieren liegen sie verschlüsselt unter einem zufälligen Code. Der Server kann sie nicht lesen." },
   { id: "tracking", title: "Kein Tracking", text: "Keine Werbung, keine Analyse, keine IP-Adressen. Cookies nur für die Anmeldung und gegen Passwort-Raten." },
 ];
@@ -28,7 +28,7 @@ export const SECTIONS = [
     title: "Plan und Einträge",
     intro: [
       "Den Stundenplan holt der Server dort, wo die Schule ihn veröffentlicht (stundenplan24.de): Stunden, Fächer, Räume, Vertretungen, Ausfälle und die Kürzel der Lehrkräfte. Volle Namen von Lehrkräften kommen nicht vor.",
-      "Was ihr eintragt: Klausuren und Tests (Datum, Stunde, Art, Fach, Thema), Hausaufgaben (Fach, bis wann, Text), Termine (Titel, Datum, Uhrzeit, Ort, Notiz) und Links zu Materialien bei Google Drive oder OneDrive. Die Dateien selbst liegen nicht bei uns.",
+      "Was ihr eintragt: Tests (Datum, Stunde, Art, Fach, Thema, was man lernen und mitbringen soll, angehängte Links), Hausaufgaben (Fach, bis wann, Stunde, Text, angehängte Links), Termine (Titel, Datum, Uhrzeit, Ort, Notiz) und Links zu Materialien bei Google Drive oder OneDrive. Die Dateien selbst liegen nicht bei uns.",
       "Wer etwas eingetragen hat: Bei Schülern steht kein Name. Gespeichert wird nur, mit welchem Code es war — das sieht allein der Admin, als „Code A“. Bei Lehrkräften steht ihr Kürzel, zum Beispiel „eingetragen von Mü“. Bei Änderungen wird festgehalten, was sich geändert hat und ob es ein Schüler, eine Lehrkraft oder der Admin war.",
       "Bitte schreib keine Namen, Telefonnummern oder anderes Persönliches in Einträge.",
     ],
@@ -68,7 +68,7 @@ export const SECTIONS = [
     intro: ["So ist es voreingestellt. Einige Zeiten kann der Admin ändern."],
     rows: [
       ["Stundenpläne", "365 Tage, der Verlauf der Änderungen 30 Tage"],
-      ["Klausuren und Tests", "365 Tage nach dem Datum, gelöschte noch 30 Tage"],
+      ["Tests", "365 Tage nach dem Datum, gelöschte noch 30 Tage"],
       ["Hausaufgaben, Termine", "30 Tage nach dem Datum"],
       ["Materialien", "bis sie jemand löscht"],
       ["Anmeldung", "bis die Sitzung abläuft: 30 Tage, Admin 12 Stunden"],

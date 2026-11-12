@@ -28,10 +28,10 @@ const ExamEditForm = ({ exam, types, onSaved }) => {
     setError(null);
     try {
       await updateAdminExam(exam, { ...form, topic: form.topic.trim() });
-      onSaved("Klausur gespeichert");
+      onSaved("Test gespeichert");
     } catch (err) {
       // 409: хтось змінив запис, поки вікно було відкрите — показуємо і перезавантажуємо список
-      if (err.code === "conflict") onSaved(null, "Die Klausur wurde inzwischen geändert. Die Liste ist jetzt aktuell.");
+      if (err.code === "conflict") onSaved(null, "Der Test wurde inzwischen geändert. Die Liste ist jetzt aktuell.");
       else setError(err.message);
     } finally {
       setBusy(false);
@@ -57,7 +57,7 @@ const ExamEditForm = ({ exam, types, onSaved }) => {
 
 // Вікно «Klausur ändern» в адмінці. onSaved(повідомлення, помилка?) — закрити і оновити список
 const AdminExamSheet = ({ exam, types, onClose, onSaved }) => (
-  <Sheet open={Boolean(exam)} onClose={onClose} desktop="dialog" eyebrow={exam ? examLabel(exam) : ""} title="Klausur ändern">
+  <Sheet open={Boolean(exam)} onClose={onClose} desktop="dialog" eyebrow={exam ? examLabel(exam) : ""} title="Test ändern">
     {exam && <ExamEditForm exam={exam} types={types} onSaved={onSaved} />}
   </Sheet>
 );

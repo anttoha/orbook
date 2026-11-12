@@ -9,10 +9,10 @@ import DangerDialog from "../DangerDialog";
 const dangers = (counts) => [
   {
     action: "deleteExams",
-    label: "Alle Klausuren löschen",
+    label: "Alle Tests löschen",
     icon: TrashIcon,
-    title: "Alle Klausuren löschen?",
-    text: `${counts?.examsUpcoming ?? 0} kommende und alle vergangenen Klausuren verschwinden für die ganze Klasse, auch bereits gelöschte.`,
+    title: "Alle Tests löschen?",
+    text: `${counts?.examsUpcoming ?? 0} kommende und alle vergangenen Tests verschwinden für die ganze Klasse, auch bereits gelöschte.`,
   },
   {
     action: "deleteSync",

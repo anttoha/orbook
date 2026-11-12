@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import AdminHeader from "../components/admin/AdminHeader";
 import { AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import PasswordLinks from "../components/admin/settings/PasswordLinks";
+import ExamTypesLink from "../components/admin/settings/ExamTypesLink";
 import DangerZone from "../components/admin/settings/DangerZone";
 import { AppointmentsCard, FeaturesCard, HomeworkCard, MusterCard, SecurityCard, UpdateCard } from "../components/admin/settings/OptionCards";
 import { purgeHomework } from "../shared/api/admin";
@@ -49,6 +50,7 @@ const SettingsForm = ({ data }) => {
       <div className="flex flex-col gap-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4">
         <div className={column}>
           <PasswordLinks className="order-1" />
+          <ExamTypesLink className="order-1" count={form.exams?.types?.length} />
           <SchoolCard
             className="order-2"
             school={form.school}

@@ -13,7 +13,7 @@ const NAVIGATION = [
 ];
 const ACTIONS = [
   ["Suchen", ["⌘", "K"]],
-  ["Klausur eintragen", ["K"]],
+  ["Test eintragen", ["K"]],
   ["Notiz", ["N"]],
   ["Teilen", ["S"]],
   ["Plan neu laden", ["R"]],

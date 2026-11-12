@@ -110,7 +110,7 @@ const ShareOptions = ({ sheet }) => {
           onChange={change(setIncludeChanges)}
         />
         <Checkbox
-          label="Klausuren"
+          label="Tests"
           checked={includeExams}
           onChange={change(setIncludeExams)}
         />

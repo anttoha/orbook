@@ -15,7 +15,7 @@ const AuthAside = ({ className: schoolClass }) => (
       <br />
       Vertretungen und
       <br />
-      Klausuren{schoolClass ? ` der ${schoolClass}` : ""}.
+      Tests{schoolClass ? ` der ${schoolClass}` : ""}.
     </p>
 
     <div className="mt-8 mb-8">

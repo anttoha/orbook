@@ -3,6 +3,17 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.9.0",
+    date: "2026-11-12",
+    neu: [
+      "Lange auf eine Stunde drücken: Hausaufgabe oder Test direkt für diese Stunde eintragen.",
+      "Zu Tests kannst du schreiben, was man lernen und mitbringen soll, und Links aus Materialien anhängen.",
+      "Statt „Klausur“ gibt es jetzt Klassenarbeit, Leistungskontrolle, Test und Abgabe. In der Woche steht das Kürzel.",
+      "Fällt eine Stunde aus, rutscht der Test von selbst auf die nächste Stunde des Fachs. Dort steht dann „verschoben“.",
+    ],
+    entfernt: ["Die Seite heißt jetzt „Tests“ statt „Klausuren“."],
+  },
+  {
     version: "0.8.4",
     date: "2026-11-12",
     picture: "alleKurse",

@@ -74,7 +74,7 @@ const CoursesForm = ({ data, settings, onSaved }) => {
 
         <div className="flex flex-col gap-5 lg:gap-4">
           <SettingsCard title="Fächer">
-            <Lead>Namen stehen in Woche, Tag und Klausuren. Ohne Namen zeigt die App den Code.</Lead>
+            <Lead>Namen stehen in Woche, Tag und Tests. Ohne Namen zeigt die App den Code.</Lead>
             <div className="py-3">
               <SubjectNames subjects={data.subjects} edited={edited} onChange={(code, text) => setEdited({ ...edited, [code]: text })} />
             </div>

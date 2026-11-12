@@ -1,6 +1,8 @@
 import { cn } from "../../shared/utils/cn";
 import { examWhen, subjectName } from "../../shared/utils/format";
 import { authorShort } from "../../shared/utils/homework";
+import { movedFromText } from "../../shared/utils/entries";
+import MovedLine from "../entries/MovedLine";
 import ExamDateTile from "../exams/ExamDateTile";
 
 // ─────────────────────────────────────────────────────────────
@@ -23,9 +25,11 @@ const HomeworkRow = ({ item, overrides, highlight, onClick }) => {
       <span className="min-w-0 flex-1">
         <span className="block truncate text-note text-faint">
           {subjectName(item.subject)}
+          {item.lesson && ` · ${item.lesson}. Std`}
           {short && ` · von ${short}`}
         </span>
         <span className="mt-1 block truncate text-row font-extrabold text-ink">{firstLine}</span>
+        {movedFromText(item) && <MovedLine>{movedFromText(item)} – fiel aus</MovedLine>}
       </span>
       <span className={cn("shrink-0 text-caption font-bold", highlight ? "text-accent-ink" : "text-faint")}>{examWhen({ daysLeft: item.daysLeft, date: item.due })}</span>
     </button>

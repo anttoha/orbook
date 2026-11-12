@@ -6,6 +6,8 @@ import { usePlanStore } from "../../shared/store/planStore";
 import { subjectName } from "../../shared/utils/format";
 import { dueTitle } from "../../shared/utils/homework";
 import { homeworkText, shareText } from "../../shared/utils/share";
+import EntryExtras from "../entries/EntryExtras";
+import MovedNote from "../entries/MovedNote";
 import AuthorNote from "../homework/AuthorNote";
 import HistoryList from "../homework/HistoryList";
 import Badge from "../ui/Badge";
@@ -46,7 +48,7 @@ const HomeworkSheet = ({ open, onClose, sheet }) => {
           <span className="truncate text-hint font-normal">{subjectName(item.subject)}</span>
         </span>
       }
-      title={dueTitle(item.due, today)}
+      title={`${dueTitle(item.due, today)}${item.lesson ? ` · ${item.lesson}. Std` : ""}`}
       titleClassName="text-brand"
       hideClose
       icon={<SubjectBadge subject={item.subject} size="lg" />}
@@ -68,7 +70,9 @@ const HomeworkSheet = ({ open, onClose, sheet }) => {
       }
     >
       <p className="rounded-card bg-card px-3.75 py-3.5 text-body whitespace-pre-line text-ink">{item.text}</p>
-      <AuthorNote entry={item} privacyText="Nur Fach, Abgabe und Aufgabe — ohne Namen." />
+      <MovedNote entry={item} />
+      <EntryExtras entry={item} />
+      <AuthorNote entry={item} privacyText="Nur Fach, Abgabe, Aufgabe und Links — ohne Namen." />
       <HistoryList kind="homework" entry={item} noun="Hausaufgabe" />
     </Sheet>
   );

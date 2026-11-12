@@ -300,3 +300,9 @@ Spec: `docs/specs/16-einladen/spec.md` (план бэкенда: колонки 
 Вопросы владельцу: название вкладки («Tests»), виды по умолчанию (KA/LK/T/AB; старые «Klausur» → «Klassenarbeit»), перенос домашек тоже, пункты без кода видны с замком.
 **Дальше:** после «ок дизайн» — `/orb-spec` → бэкенд (типы как настройка с Kürzel, `description` и `materialIds` у Exam/Homework, `lesson` у Homework, авто-перенос с `movedFrom`) → фронт → демо. Модель: Opus · effort high.
 **24: дизайн ок (12.11.2026)** — владелец согласился со всеми четырьмя предложениями. Spec: `docs/specs/24-eintraege/spec.md`. Следующий шаг — «ок» плана бэкенда (миграция 0012, виды с Kürzel, `details`/`materialIds`/`lesson`, авто-перенос), затем бэкенд → фронт → демо.
+
+**24 готова на демо (2026-11-12).** Владелец: «ок» плана бэкенда.
+- Бэкенд `1dc7094` (схема 0012: `details`, связи с Materialien, `homework.lesson`, `movedFrom`; «Klausur» → «Klassenarbeit»; `GET/PUT /api/admin/exam-types`; авто-перенос `exams/automove.py`). `make lint test` зелёные. Демо: бэкап `orbook-demo-before-update-20261112-102436.db`, миграция 0011 → 0012, `orbook-demo` перезапущен, health ok.
+- **Прод-бэкенд НЕ обновлён:** выкладку на прод (`scripts/update.sh`) не пропустил автоматический фильтр прав. Код на диске уже новый, прод держит старый в памяти: при перезапуске `orbook` без миграции записи Tests сломаются. Владелец запускает `/opt/orbook-be/scripts/update.sh` (бэкап, миграция, перезапуск обоих сервисов).
+- Фронт: меню урока (H/T), «Für diese Stunde», формы с «Für die Stunde» / «Aufgegeben in» + «Bis wann?», виды чипами, описание, «Material anhängen» (+ «Neuen Link teilen»), VERSCHOBEN и «von …», Kürzel в неделе, Admin → Einstellungen → «Arten von Tests», везде «Tests» вместо «Klausuren», changelog 0.9.0, Datenschutz. Скриншоты: `/root/work/orbook-compare/24-eintraege/shots/`.
+Дальше: часть 25 (новые экраны → `/orb-design`, Opus · high).

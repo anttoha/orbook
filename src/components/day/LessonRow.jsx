@@ -1,10 +1,12 @@
-import { Info, NotebookPen } from "lucide-react";
+import { BookOpen, CornerDownLeft, Info, NotebookPen } from "lucide-react";
 import { useNow } from "../../shared/hooks/useNow";
 import { cn } from "../../shared/utils/cn";
 import { lessonName } from "../../shared/utils/format";
 import { lessonProgress } from "../../shared/utils/lessonClock";
 import { fachClasses, lessonNote } from "../../shared/utils/lessons";
+import { slotText } from "../../shared/utils/entries";
 import Badge from "../ui/Badge";
+import { FlagIcon } from "../ui/icons";
 import StatusBadge from "../ui/StatusBadge";
 import ChangedValue from "../lesson/ChangedValue";
 import LessonContextMenu from "../lesson/LessonContextMenu";
@@ -31,13 +33,20 @@ const PlaceLine = ({ lesson }) => {
 
 // ─────────────────────────────────────────────────────────────
 // Один урок у списку «Liste». Однаковий на телефоні й на ПК (макет «Tag · Liste»).
-// exam — Klausur цього уроку або null; live — { minutesLeft }, якщо урок іде зараз
+// exam — Test цього уроку або null; live — { minutesLeft }, якщо урок іде зараз
+// homework — Hausaufgaben «bis zu dieser Stunde», movedAway — Tests, которые сервер увёз с выпавшего урока (часть 24)
 // ─────────────────────────────────────────────────────────────
-const LessonRow = ({ lesson, exam, date, isPast, live, note, overrides, onOpen }) => {
+const EntryLine = ({ icon: Icon, accent, children }) => (
+  <p className={cn("mt-1 flex items-center gap-1.5 text-caption", accent ? "text-accent-ink" : "text-muted")}>
+    <Icon className="size-3.25 shrink-0" strokeWidth={2.2} /> <span className="truncate">{children}</span>
+  </p>
+);
+
+const LessonRow = ({ lesson, exam, homework = [], movedAway = [], date, isPast, live, note, overrides, onOpen }) => {
   const { now } = useNow(); // для смужки прогресу
   const isCancelled = lesson.status === "cancelled"; // fällt aus?
   const isChanged = !isCancelled && lesson.status !== "normal"; // зміна (рамка)
-  const caption = lessonNote(lesson, exam); // рядок з (i)
+  const caption = lessonNote(lesson, null); // рядок з (i): текст школы, перенос
 
   const row = (
     <button
@@ -73,6 +82,23 @@ const LessonRow = ({ lesson, exam, date, isPast, live, note, overrides, onOpen }
             <Info className="size-3.25 shrink-0" strokeWidth={2.2} /> {caption}
           </p>
         )}
+
+        {/* записи урока (часть 24): Test — фиолетовый с флажком, Hausaufgabe — с книжкой */}
+        {exam && (
+          <EntryLine icon={FlagIcon} accent>
+            <b className="font-bold">{exam.type}:</b> {exam.topic || "ohne Thema"}
+          </EntryLine>
+        )}
+        {homework.map((item) => (
+          <EntryLine key={item.id} icon={BookOpen}>
+            <b className="font-bold">Hausaufgabe:</b> {item.text?.split("\n")[0]}
+          </EntryLine>
+        ))}
+        {movedAway.map((item) => (
+          <EntryLine key={item.id} icon={CornerDownLeft} accent>
+            {item.type} {item.topic} → {slotText(item.date, item.lesson)}
+          </EntryLine>
+        ))}
 
         {/* своя нотатка до уроку */}
         {note && (

@@ -23,7 +23,15 @@ export function validateHomeworkText(value) {
 }
 
 // Запис → поля форми і назад
-export const homeworkToForm = (item) => ({ subject: item?.subject?.code ?? null, due: item?.due ?? "", text: item?.text ?? "", studentsMayEdit: item?.studentsMayEdit ?? false });
+// lesson и materialIds — часть 24 (урок сдачи и ссылки); у старых записей их нет
+export const homeworkToForm = (item) => ({
+  subject: item?.subject?.code ?? null,
+  due: item?.due ?? "",
+  lesson: item?.lesson ?? null,
+  text: item?.text ?? "",
+  materialIds: (item?.materials ?? []).map((material) => material.id),
+  studentsMayEdit: item?.studentsMayEdit ?? false,
+});
 
 // «Bis morgen» / «Diese Woche» / «Nächste Woche» / «Später». Порожні групи не показуємо
 export function groupHomework(items, today) {
@@ -71,7 +79,7 @@ export function dueTitle(due, today) {
 // Хто змінив: учитель — Kürzel, учень — без імені
 export function changeActor(change) {
   if (change.by === "teacher") return change.short ?? "Lehrkraft";
-  return { student: "Schüler mit Freigabe", class: "Klasse", admin: "Admin" }[change.by] ?? "Unbekannt";
+  return { student: "Schüler mit Freigabe", class: "Klasse", admin: "Admin", system: "Automatisch" }[change.by] ?? "Unbekannt";
 }
 
 // «Mi 15:15»: дати в API вже в часі школи, тому беремо з рядка
@@ -87,6 +95,8 @@ const FIELD_TEXT = {
   subject: (v) => `Fach: ${v.old?.code ?? v.old ?? "—"} → ${v.new?.code ?? v.new ?? "—"}`,
   topic: (v) => `Thema: ${quoted(v.old)} → ${quoted(v.new)}`,
   text: () => "Text geändert",
+  details: () => "Beschreibung geändert",
+  materials: (v) => `Materialien: ${v.new?.length ?? 0}`,
   studentsMayEdit: (v) => (v.new ? "Schüler dürfen ändern" : "Schüler dürfen nicht mehr ändern"),
 };
 
@@ -95,6 +105,12 @@ export function changeText(change) {
   if (change.action === "created") return "Eingetragen";
   if (change.action === "deleted") return "Gelöscht";
   if (change.action === "restored") return "Wiederhergestellt";
+  // часть 24: сервер перенёс запись, потому что урок выпал
+  if (change.action === "moved") {
+    const day = change.changes?.date ?? change.changes?.due;
+    const lesson = change.changes?.lesson?.new;
+    return `Verschoben, weil die Stunde ausfällt${day ? `: ${shortDay(day.new)}${lesson ? `, ${lesson}. Std` : ""}` : ""}`;
+  }
   const parts = Object.entries(change.changes ?? {}).map(([field, value]) => FIELD_TEXT[field]?.(value ?? {}) ?? `${field} geändert`);
   return parts.length > 0 ? parts.join(" · ") : "Geändert";
 }

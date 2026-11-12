@@ -55,7 +55,7 @@ const WeekPicker = ({ initialWeek, onOpenWeek }) => {
       {/* ── легенда ── */}
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-caption font-bold text-muted">
         <span className="flex items-center gap-1.5">
-          <span className="size-1.5 rounded-full bg-accent" /> Klausur
+          <span className="size-1.5 rounded-full bg-accent" /> Test
         </span>
         <span className="flex items-center gap-1.5">
           <span className="size-1.5 rounded-full bg-faint2" /> frei

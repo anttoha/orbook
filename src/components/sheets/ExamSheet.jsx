@@ -8,7 +8,10 @@ import { cn } from "../../shared/utils/cn";
 import { examCountdown } from "../../shared/utils/exams";
 import { longDate, subjectName, weekdayLong } from "../../shared/utils/format";
 import { examText, shareText } from "../../shared/utils/share";
+import EntryExtras from "../entries/EntryExtras";
+import MovedNote from "../entries/MovedNote";
 import ExamBadge from "../exams/ExamBadge";
+import Badge from "../ui/Badge";
 import AuthorNote from "../homework/AuthorNote";
 import HistoryList from "../homework/HistoryList";
 import Button from "../ui/Button";
@@ -35,13 +38,13 @@ const Countdown = ({ exam }) => {
 
 // Вікно без запису: вантажиться, не знайдена або помилка
 const ExamPlaceholder = ({ open, onClose, status, error }) => (
-  <Sheet open={open} onClose={onClose} panelLabel="Klausur" title="Klausur">
-    {status === "loading" ? <Skeleton className="h-19 rounded-card" /> : <p className="text-body-sm text-muted">{status === "missing" ? "Diese Klausur gibt es nicht (mehr)." : error?.message}</p>}
+  <Sheet open={open} onClose={onClose} panelLabel="Test" title="Test">
+    {status === "loading" ? <Skeleton className="h-19 rounded-card" /> : <p className="text-body-sm text-muted">{status === "missing" ? "Diesen Test gibt es nicht (mehr)." : error?.message}</p>}
   </Sheet>
 );
 
 // ─────────────────────────────────────────────────────────────
-// Вікно Klausur. Адреса: ?sheet=klausur&id=12 (посилання можна переслати).
+// Вікно Test (раньше «Klausur»). Адреса: ?sheet=klausur&id=12 (посилання можна переслати).
 // «Bearbeiten» — лише коли ця сесія може міняти запис (exam.canEdit).
 // Автор-учитель, хто може міняти і «Verlauf» — частина 14 (AuthorNote, HistoryList).
 // ─────────────────────────────────────────────────────────────
@@ -56,10 +59,11 @@ const ExamSheet = ({ open, onClose, sheet }) => {
     <Sheet
       open={open}
       onClose={onClose}
-      panelLabel="Klausur"
+      panelLabel="Test"
       eyebrow={
         <span className="flex items-center gap-2">
           <ExamBadge type={exam.type} />
+          {exam.movedFrom && <Badge variant="changed">Verschoben</Badge>}
           <span className="truncate text-hint font-normal">{subjectName(exam.subject)}</span>
         </span>
       }
@@ -88,9 +92,11 @@ const ExamSheet = ({ open, onClose, sheet }) => {
       }
     >
       <Countdown exam={exam} />
+      <MovedNote entry={exam} />
+      <EntryExtras entry={exam} />
 
-      <AuthorNote entry={exam} privacyText="Nur Fach, Datum, Stunde und Thema — ohne Namen." />
-      <HistoryList kind="exams" entry={exam} noun="Klausur" />
+      <AuthorNote entry={exam} privacyText="Nur Fach, Datum, Stunde, Thema, Beschreibung und Links — ohne Namen." />
+      <HistoryList kind="exams" entry={exam} noun="Test" />
     </Sheet>
   );
 };

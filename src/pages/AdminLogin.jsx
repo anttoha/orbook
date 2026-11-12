@@ -18,7 +18,7 @@ const AdminLogin = ({ className: schoolClass }) => (
         </span>
         <p className="mt-5 text-landing text-ink">Admin</p>
         <p className="mt-6 max-w-120 text-lead leading-6 text-accent-ink">
-          Codes, Klausuren, Klassenpasswort und Plan-Einstellungen{schoolClass ? ` der ${schoolClass}` : ""}.
+          Codes, Tests, Klassenpasswort und Plan-Einstellungen{schoolClass ? ` der ${schoolClass}` : ""}.
         </p>
       </div>
     </aside>

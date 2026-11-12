@@ -164,7 +164,7 @@ const BADGES = {
   cancelled: "FÄLLT AUS",
   room_change: "RAUM",
 };
-export const lessonBadge = (lesson) => (lesson.examId ? "KLAUSUR" : BADGES[lesson.status] ?? null);
+export const lessonBadge = (lesson) => (lesson.examId ? "TEST" : BADGES[lesson.status] ?? null);
 
 // Підпис переносу: «verlegt auf Fr (2.10.) 1. Std» / «verlegt von 3. Std»
 export function movedText(moved) {

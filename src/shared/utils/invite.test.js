@@ -9,7 +9,7 @@ describe("invite", () => {
   });
 
   it("текст для WhatsApp — з класом і без", () => {
-    expect(inviteMessage("u", "9b")).toBe("Hier ist der ORBook-Link für die 9b: Stundenplan, Vertretungen und Klausuren.\nu");
+    expect(inviteMessage("u", "9b")).toBe("Hier ist der ORBook-Link für die 9b: Stundenplan, Vertretungen und Tests.\nu");
     expect(inviteMessage("u", null)).toMatch(/^Hier ist der ORBook-Link: /);
   });
 

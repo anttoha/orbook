@@ -113,7 +113,7 @@ const SearchPalette = ({ open, onOpenChange }) => {
                 setActive(0); // новий запит — вибір на першому
               }}
               onKeyDown={handleKeyDown}
-              placeholder="Stunde, Klausur, Notiz suchen"
+              placeholder="Stunde, Test, Notiz suchen"
               aria-label="Suchen"
               className="min-w-0 flex-1 bg-transparent text-cell-sm font-normal text-ink outline-none placeholder:text-faint2"
             />
@@ -142,7 +142,7 @@ const SearchPalette = ({ open, onOpenChange }) => {
             <span>wählen</span>
             <Kbd className="ml-2">↵</Kbd>
             <span>öffnen</span>
-            <span className="ml-auto truncate">Stunden, Klausuren, Notizen, Einstellungen</span>
+            <span className="ml-auto truncate">Stunden, Tests, Notizen, Einstellungen</span>
           </footer>
         </Dialog.Content>
       </Dialog.Portal>

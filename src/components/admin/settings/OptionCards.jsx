@@ -56,7 +56,7 @@ export const FeaturesCard = ({ className, ...props }) => (
       <SwitchRow label="Statistik zeigen" section="features" field="statistics" {...props} />
       <SwitchRow label="Notizen-Sync erlauben" hint="Zufällige Codes, ohne Namen" section="features" field="notesSync" {...props} />
       <SwitchRow label="Teilen-Knopf" hint="Text für WhatsApp erzeugen" section="features" field="share" {...props} />
-      <SwitchRow label="Klausuren ohne Editor-Code" hint="Jeder mit Klassenpasswort darf eintragen" section="features" field="examsWithoutCode" {...props} />
+      <SwitchRow label="Tests ohne Editor-Code" hint="Jeder mit Klassenpasswort darf eintragen" section="features" field="examsWithoutCode" {...props} />
     </div>
   </SettingsCard>
 );

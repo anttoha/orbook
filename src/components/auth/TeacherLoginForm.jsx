@@ -52,7 +52,7 @@ const TeacherLoginForm = ({ schoolClass }) => {
 
   return (
     <form onSubmit={submit} className="flex flex-1 flex-col">
-      <p className="mt-5 text-row text-muted lg:hidden">Mit Ihrem Lehrer-Code sehen Sie den Plan {classText} und tragen Klausuren, Tests und Hausaufgaben für die Klasse ein.</p>
+      <p className="mt-5 text-row text-muted lg:hidden">Mit Ihrem Lehrer-Code sehen Sie den Plan {classText} und tragen Tests und Hausaufgaben für die Klasse ein.</p>
       <TextField
         ref={inputRef}
         id="teacher-code"

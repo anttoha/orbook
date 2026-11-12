@@ -21,7 +21,7 @@ const UnlockForm = ({ backTo }) => {
 
   return (
     <form onSubmit={submit} className="mt-5 flex flex-1 flex-col gap-4.5">
-      <p className="text-row text-muted">Mit einem Editor-Code kannst du Klausuren und Tests für die ganze Klasse eintragen. Den Code bekommst du vom Admin.</p>
+      <p className="text-row text-muted">Mit einem Editor-Code kannst du Tests für die ganze Klasse eintragen. Den Code bekommst du vom Admin.</p>
       <EditorCodeField code={code} onChange={setCode} error={error} />
       <Button variant="primary" type="submit" disabled={busy} className="flex-none">
         <KeyIcon className="size-4" /> Freischalten

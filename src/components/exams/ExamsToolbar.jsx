@@ -8,7 +8,7 @@ import ExamFilterPopover from "./ExamFilterPopover";
 // addTarget — куди веде «eintragen» (null — кнопки немає, див. addExamTarget).
 // Hausaufgaben (pc-03): інший підпис пошуку і кнопки, фільтра немає (filter = null)
 // ─────────────────────────────────────────────────────────────
-const ExamsToolbar = ({ query, onQuery, filter, addTarget, placeholder = "Thema oder Fach suchen", addLabel = "Klausur eintragen" }) => (
+const ExamsToolbar = ({ query, onQuery, filter, addTarget, placeholder = "Thema oder Fach suchen", addLabel = "Test eintragen" }) => (
   <div className="flex items-center gap-2">
     <label className="flex h-9.5 w-57.5 items-center gap-2 rounded-full border border-hair bg-card px-3.5 focus-within:border-accent">
       <Search className="size-3.75 shrink-0 text-faint" />

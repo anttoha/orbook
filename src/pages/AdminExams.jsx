@@ -15,7 +15,7 @@ import { useAdminStore } from "../shared/store/adminStore";
 import { authorText } from "../shared/utils/admin";
 import { subjectName } from "../shared/utils/format";
 
-const DEFAULT_TYPES = ["Klausur", "Test", "Abgabe"];
+const DEFAULT_TYPES = ["Klassenarbeit", "Leistungskontrolle", "Test", "Abgabe"];
 
 // Пошук прямо в завантажених списках: тема, предмет, тип, назва коду (як q на сервері)
 const matches = (exam, query) => [exam.topic, subjectName(exam.subject), exam.type, authorText(exam)].join(" ").toLowerCase().includes(query.trim().toLowerCase());
@@ -55,7 +55,7 @@ const AdminExams = () => {
     try {
       await deleteAdminExam(exam);
       changed();
-      toast("Klausur gelöscht", {
+      toast("Test gelöscht", {
         duration: 8000,
         action: { label: "Rückgängig", onClick: () => restoreAdminExam(exam).then(changed, (error) => toast.error(error.message)) },
       });
@@ -95,13 +95,13 @@ const AdminExams = () => {
   const renderList = () => {
     if (exams.status === "loading") return <AdminSkeleton />;
     if (exams.status === "error") return <AdminError error={exams.error} onRetry={exams.reload} />;
-    if (!list.length) return <AdminEmpty text={query ? "Keine Klausur passt zur Suche." : "Keine Klausuren"} />;
+    if (!list.length) return <AdminEmpty text={query ? "Kein Test passt zur Suche." : "Keine Tests"} />;
     return <AdminExamList isDesktop={isDesktop} exams={list} now={now} onEdit={setEditing} onDelete={remove} />;
   };
 
   return (
     <section className="flex flex-col gap-4 lg:gap-5">
-      <AdminHeader title="Klausuren" actions={isDesktop && [<span key="tabs">{tabs}</span>, <SearchField key="search" value={query} onChange={setQuery} className="w-45" />, <span key="purge">{purgeLink}</span>]} />
+      <AdminHeader title="Tests" actions={isDesktop && [<span key="tabs">{tabs}</span>, <SearchField key="search" value={query} onChange={setQuery} className="w-45" />, <span key="purge">{purgeLink}</span>]} />
       {!isDesktop && (
         <div className="flex items-center gap-3">
           {tabs}
@@ -118,8 +118,8 @@ const AdminExams = () => {
         action="purge"
         withDate
         today={today}
-        title="Alte Klausuren löschen?"
-        text="Alle Klausuren vor diesem Datum verschwinden endgültig für die ganze Klasse, auch bereits gelöschte."
+        title="Alte Tests löschen?"
+        text="Alle Tests vor diesem Datum verschwinden endgültig für die ganze Klasse, auch bereits gelöschte."
         onDone={changed}
       />
     </section>

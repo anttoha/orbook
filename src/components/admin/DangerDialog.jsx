@@ -57,7 +57,7 @@ const DangerForm = ({ action, title, text, confirmLabel, withDate, today, onClos
   const ready = word === "LÖSCHEN" && password && (!withDate || before) && !busy && !locked;
   const body = (
     <>
-      {withDate && <TextField id="danger-before" label="Klausuren vor dem" type="date" max={today} value={before} onChange={(event) => setBefore(event.target.value)} />}
+      {withDate && <TextField id="danger-before" label="Tests vor dem" type="date" max={today} value={before} onChange={(event) => setBefore(event.target.value)} />}
       <TextField id="danger-word" label="Zum Bestätigen LÖSCHEN eintippen" value={word} autoComplete="off" autoCapitalize="characters" spellCheck={false} onChange={(event) => setWord(event.target.value)} />
       <TextField id="danger-password" label="Admin-Passwort" type="password" autoComplete="current-password" value={password} error={error} onChange={(event) => setPassword(event.target.value)} />
       <p className="text-label text-faint">Vorher wird automatisch ein Backup angelegt.</p>

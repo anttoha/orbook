@@ -8,7 +8,8 @@ import { FlagIcon } from "../ui/icons";
 // Це кнопка (клік → шторка уроку). Її обгортає LessonContextMenu, тому всі зайві
 // пропси (...props: onClick, onContextMenu, ref від Radix) передаємо прямо на <button>.
 // ─────────────────────────────────────────────────────────────
-const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
+// examShort — Kürzel вида Test («KA», «LK»; часть 24) вместо слова в клетке
+const LessonCell = ({ lesson, isPast, overrides, examShort, className, ...props }) => {
   // Спільні класи клітинки; кнопка: текст зліва, без виділення тексту і системного меню iOS
   const base =
     "relative flex min-h-0 flex-1 flex-col justify-between gap-1 overflow-hidden rounded-cell px-2 py-2 text-left leading-none select-none [-webkit-touch-callout:none] transition-transform active:scale-[0.97]";
@@ -52,10 +53,10 @@ const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
     >
       <span className="truncate text-hint font-black">{lessonCode(lesson)}</span>
       <span className={cn("truncate", lesson.examId ? "text-nano font-extrabold text-accent-ink" : "text-room", isChanged && !lesson.examId && "font-extrabold text-accent-ink", !isChanged && !lesson.examId && "font-semibold opacity-85")}>
-        {lesson.examId ? "Klausur" : lesson.room}
+        {lesson.examId ? (examShort ?? "Test") : lesson.room}
       </span>
 
-      {/* прапорець Klausur у куті */}
+      {/* прапорець Test у куті */}
       {lesson.examId && (
         <span className="absolute top-px right-px grid place-items-center rounded-tr-cell rounded-bl-chip bg-accent p-1.25 text-on-accent">
           <FlagIcon className="size-2.5" strokeWidth={3} />

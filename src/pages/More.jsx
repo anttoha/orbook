@@ -96,7 +96,7 @@ const PhoneMenu = () => {
         <MenuRow to="/mehr/fachfarben" icon={Palette} label="Fachfarben" />
         {/* праворуч — перша група коду, як у макеті: «K7QM-…» */}
         {syncAllowed && <MenuRow to="/mehr/sync" icon={SyncIcon} label="Notizen synchronisieren" value={syncCode ? `${syncCode.slice(0, 4)}-…` : "Aus"} />}
-        {!isTeacher(me) && <MenuRow to="/mehr/editor-code" icon={KeyIcon} label="Klausuren eintragen" value={me?.editor?.label ?? "Editor-Code"} />}
+        {!isTeacher(me) && <MenuRow to="/mehr/editor-code" icon={KeyIcon} label="Tests eintragen" value={me?.editor?.label ?? "Editor-Code"} />}
       </ListCard>
 
       <ListCard>

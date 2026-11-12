@@ -5,9 +5,9 @@ import Field from "../ui/Field";
 
 // isNew — бейдж «NEU» (права частини 14), hint — сірий рядок під галочкою
 const EDITOR_RIGHTS = [
-  { key: "create", label: "Klausuren eintragen" },
+  { key: "create", label: "Tests eintragen" },
   { key: "editOwn", label: "Eigene bearbeiten und löschen" },
-  { key: "editAll", label: "Alle Klausuren bearbeiten" },
+  { key: "editAll", label: "Alle Tests bearbeiten" },
   { key: "homework", label: "Hausaufgaben eintragen", isNew: true },
   { key: "editTeacher", label: "Lehrer-Einträge ändern", isNew: true, hint: "nur wenn die Lehrkraft es beim Eintrag erlaubt" },
   { key: "materials", label: "Materialien teilen", isNew: true }, // частина 15
@@ -15,7 +15,7 @@ const EDITOR_RIGHTS = [
 ];
 // Lehrer-Code: міняти й видаляти — завжди лише свої, тому тут лише такі галочки (макет handy-11)
 const TEACHER_RIGHTS = [
-  { key: "create", label: "Klausuren und Tests eintragen" },
+  { key: "create", label: "Tests eintragen" },
   { key: "homework", label: "Hausaufgaben eintragen" },
   { key: "materials", label: "Materialien teilen", isNew: true, hint: "nur für die eigenen Fächer" },
   { key: "appointments", label: "Termine eintragen", isNew: true, hint: "Kurs-Termine nur für die eigenen Fächer" },

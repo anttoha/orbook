@@ -14,7 +14,7 @@ const EditorCodeSheet = ({ open, onClose }) => {
   return (
     <Sheet open={open} onClose={onClose} desktop="dialog" title="Editor-Code eingeben">
       <form onSubmit={submit} className="flex flex-col gap-4">
-        <p className="text-row text-muted">Klausuren für die ganze Klasse eintragen darf nur, wer einen Editor-Code vom Admin hat.</p>
+        <p className="text-row text-muted">Tests für die ganze Klasse eintragen darf nur, wer einen Editor-Code vom Admin hat.</p>
         <EditorCodeField code={code} onChange={setCode} error={error} />
         <EditorCodeNote />
         <div className="flex gap-2">

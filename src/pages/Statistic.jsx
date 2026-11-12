@@ -34,7 +34,7 @@ const StatCards = ({ data, long }) => {
     <div className="grid grid-cols-3 gap-2 lg:grid-cols-4 lg:gap-3">
       <StatCard value={cancelled} label={cancelled === 1 ? "Stunde fällt aus" : "Stunden fallen aus"} note={cancelledDiff?.text} tone={cancelledDiff?.tone} />
       <StatCard value={changed} label={changed === 1 ? "Vertretung" : "Vertretungen"} note={changedDiff?.text} tone={changedDiff?.tone} />
-      <StatCard value={totals?.exams ?? 0} label={totals?.exams === 1 ? "Klausur" : "Klausuren"} note={untilText(data, { long })} />
+      <StatCard value={totals?.exams ?? 0} label={totals?.exams === 1 ? "Test" : "Tests"} note={untilText(data, { long })} />
       {long && <StatCard value={cancelRateText(totals?.cancelRate)} label="Ausfallquote" note={lessonsText(totals?.lessons)} />}
     </div>
   );
@@ -77,7 +77,7 @@ const Statistic = () => {
         <div className="mt-0.5 flex flex-col gap-6 lg:mt-0 lg:grid lg:grid-cols-3 lg:items-start lg:gap-3">
           <SubjectBars title="Fällt am häufigsten aus" items={main.topCancelledSubjects} valueKey="cancelled" />
           {isDesktop && <PeriodChart byPeriod={main.byPeriod} />}
-          <SubjectBars title="Klausuren nach Fach" items={main.examsBySubject} valueKey="count" />
+          <SubjectBars title="Tests nach Fach" items={main.examsBySubject} valueKey="count" />
         </div>
       </>
     );

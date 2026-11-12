@@ -1,8 +1,8 @@
 import { cn } from "../../shared/utils/cn";
 
-const VARIANTS = { primary: "bg-accent text-on-accent", secondary: "bg-sand text-ink", danger: "bg-danger-tint text-danger" };
+const VARIANTS = { primary: "bg-accent text-on-accent", secondary: "bg-sand text-ink", tint: "bg-tint text-accent-ink", danger: "bg-danger-tint text-danger" };
 
-// Кнопка для шторок: variant="primary" (фіолетова), "secondary" (світла) або "danger" («Löschen»).
+// Кнопка для шторок: variant="primary" (фіолетова), "secondary" (світла), "tint" (сиреневая, «+ Test») или "danger" («Löschen»).
 // З href стає посиланням такого самого вигляду (наприклад, завантажити файл)
 const Button = ({ variant = "secondary", className, children, href, ...props }) => {
   const classes = cn(

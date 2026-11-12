@@ -70,7 +70,8 @@ describe("Verlauf", () => {
 
 describe("homeworkToForm", () => {
   it("leer und aus Eintrag", () => {
-    expect(homeworkToForm(null)).toEqual({ subject: null, due: "", text: "", studentsMayEdit: false });
+    expect(homeworkToForm(null)).toEqual({ subject: null, due: "", lesson: null, text: "", materialIds: [], studentsMayEdit: false });
+    expect(homeworkToForm(item("2025-09-18", { lesson: 3, materials: [{ id: 4 }] }))).toMatchObject({ lesson: 3, materialIds: [4] });
     expect(homeworkToForm(item("2025-09-18", { subject: null })).subject).toBeNull();
   });
 });
@@ -103,5 +104,15 @@ describe("Formular", async () => {
   it("Fehler je Feld", () => {
     expect(validateHomeworkForm({ subject: null, due: "2025-09-18", text: "" }, "2025-09-17", validateExamDate)).toEqual({ subject: "Bitte ein Fach wählen.", text: "Bitte die Aufgabe eintragen." });
     expect(validateHomeworkForm({ subject: "Ma", due: "2024-01-01", text: "x" }, "2025-09-17", validateExamDate, "2024-01-01")).toEqual({});
+  });
+});
+
+describe("Verlauf · Auto-Verschiebung (Teil 24)", async () => {
+  const { changeActor, changeText } = await import("./homework");
+  it("system und moved", () => {
+    expect(changeActor({ by: "system" })).toBe("Automatisch");
+    expect(changeText({ action: "moved", changes: { date: { old: "2026-10-05", new: "2026-10-09" }, lesson: { old: 3, new: 4 } } })).toBe("Verschoben, weil die Stunde ausfällt: Fr 9.10., 4. Std");
+    expect(changeText({ action: "moved", changes: {} })).toBe("Verschoben, weil die Stunde ausfällt");
+    expect(changeText({ action: "updated", changes: { materials: { old: [], new: ["A", "B"] }, details: { old: null, new: "x" } } })).toBe("Materialien: 2 · Beschreibung geändert");
   });
 });

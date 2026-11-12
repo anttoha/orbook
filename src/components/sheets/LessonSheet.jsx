@@ -1,6 +1,6 @@
 import SubjectBadge from "../ui/SubjectBadge";
 import { useNavigate } from "react-router-dom";
-import { File, Share } from "lucide-react";
+import { File, Plus, Share } from "lucide-react";
 import { useDay } from "../../shared/hooks/usePlan";
 import { useSheet } from "../../shared/hooks/useSheet";
 import { usePlanStore } from "../../shared/store/planStore";
@@ -15,8 +15,9 @@ import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
 import StatusBadge from "../ui/StatusBadge";
 import MusterBadge from "../muster/MusterBadge";
-import { FlagIcon } from "../ui/icons";
-import { canCreateExam } from "../../shared/utils/examRules";
+import LessonEntries from "../entries/LessonEntries";
+import { addExamTarget, addHomeworkTarget, canCreateExam, canCreateHomework } from "../../shared/utils/examRules";
+import { lessonEntries } from "../../shared/utils/entries";
 
 // Рядок «Lehrer / Raum / Kurs / Info»: однаковий на телефоні й на ПК
 const Row = ({ label, children }) => (
@@ -37,7 +38,8 @@ const LessonSheet = ({ open, onClose, sheet }) => {
   const note = useUserStore((s) => findNote(s.notes, `${sheet.datum}#${sheet.stunde}`)); // нотатка до уроку
   const { day } = useDay(sheet.datum); // день із тижня
   const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // адмін міг вимкнути «Teilen»
-  const me = usePlanStore((s) => s.me); // право вносити Klausuren (для уроку з Muster)
+  const me = usePlanStore((s) => s.me); // права на записи (часть 24)
+  const homework = usePlanStore((s) => s.homework); // Hausaufgaben «bis zu dieser Stunde»
   const navigate = useNavigate();
 
   const lesson = day ? findLesson(day.lessons, sheet.stunde, sheet.fach) : null; // сам урок
@@ -45,6 +47,11 @@ const LessonSheet = ({ open, onClose, sheet }) => {
 
   const exam = lessonExam(day, lesson); // Klausur цього уроку
   const info = lessonNote(lesson, null); // пояснення школи / перенос
+  const entries = lessonEntries(day.exams ?? [], homework, sheet.datum, lesson); // «Für diese Stunde»
+  // Куда ведут «+ Hausaufgabe» / «+ Test»: форма на этот урок; без кода — ввод Editor-Code; код без права — кнопки нет
+  const query = `?datum=${sheet.datum}&stunde=${lesson.period}&fach=${encodeURIComponent(lesson.subject?.code ?? "")}${lesson.muster ? "&muster=1" : ""}`;
+  const homeworkTarget = !lesson.subject ? null : canCreateHomework(me) ? `/testen/hausaufgaben/neu${query}` : addHomeworkTarget(me);
+  const examTarget = !lesson.subject ? null : canCreateExam(me) ? `/testen/neu${query}` : addExamTarget(me);
 
   return (
     <Sheet
@@ -60,23 +67,24 @@ const LessonSheet = ({ open, onClose, sheet }) => {
       icon={<SubjectBadge subject={lesson.subject} size="lg" />}
       footer={
         <>
+          {/* записи на этот урок (часть 24; урок из Muster тоже можно) */}
+          {homeworkTarget && (
+            <Button variant="tint" className="grow basis-2/5" onClick={() => navigate(homeworkTarget)}>
+              <Plus className="size-4.5" /> Hausaufgabe
+            </Button>
+          )}
+          {examTarget && (
+            <Button variant="tint" className="grow basis-2/5" onClick={() => navigate(examTarget)}>
+              <Plus className="size-4.5" /> Test
+            </Button>
+          )}
           {/* replace: true — «Назад» із нотатки не поверне в цю шторку */}
-          <Button onClick={() => openSheet("notiz", { datum: sheet.datum, stunde: lesson.period }, { replace: true })}>
+          <Button className="grow basis-2/5" onClick={() => openSheet("notiz", { datum: sheet.datum, stunde: lesson.period }, { replace: true })}>
             <File className="size-4.5" /> Notiz
           </Button>
           {shareEnabled && (
-            <Button onClick={() => shareText(lessonText(lesson, sheet.datum))}>
+            <Button className="grow basis-2/5" onClick={() => shareText(lessonText(lesson, sheet.datum))}>
               <Share className="size-4.5" /> Teilen
-            </Button>
-          )}
-          {/* урок із Muster (частина 19): Klausur одразу на цю дату й урок — лише з правом */}
-          {lesson.muster && !exam && canCreateExam(me) && (
-            <Button
-              variant="primary"
-              className="basis-full"
-              onClick={() => navigate(`/testen/neu?datum=${sheet.datum}&stunde=${lesson.period}${lesson.subject?.code ? `&fach=${lesson.subject.code}` : ""}&muster=1`)}
-            >
-              <FlagIcon className="size-4.5" /> Test oder Klausur eintragen
             </Button>
           )}
         </>
@@ -97,10 +105,12 @@ const LessonSheet = ({ open, onClose, sheet }) => {
           </>
         )}
         {lesson.course && <Row label="Kurs">{lesson.course.label}</Row>}
-        {exam && <Row label={exam.type}>{exam.topic || "—"}</Row>}
         {info && <Row label="Info">{info}</Row>}
         {lesson.muster && <Row label="Info">aus dem Muster – kann sich noch ändern</Row>}
       </dl>
+
+      {/* Tests и Hausaufgaben этого урока (часть 24) */}
+      <LessonEntries exams={entries.exams} homework={entries.homework} />
 
       {/* посилання на Drive цього предмета (частина 15) */}
       <LessonMaterials subject={lesson.subject} overrides={overrides} />

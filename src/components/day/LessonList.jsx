@@ -1,6 +1,8 @@
 import { Fragment } from "react";
 import { useNow } from "../../shared/hooks/useNow";
+import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
+import { lessonEntries, movedAway } from "../../shared/utils/entries";
 import { berlinParts, isLessonNow, isLessonPast, toMinutes } from "../../shared/utils/lessonClock";
 import { lessonExam, lessonKey } from "../../shared/utils/lessons";
 import { findNote } from "../../shared/utils/notes";
@@ -20,6 +22,8 @@ const LessonList = ({ day, lessons, onOpen, preliminary = false }) => {
   const { now } = useNow(); // час школи
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
   const notes = useUserStore((s) => s.notes); // усі нотатки (фільтруємо нижче)
+  const homework = usePlanStore((s) => s.homework); // Hausaufgaben «bis zu dieser Stunde» (часть 24)
+  const exams = usePlanStore((s) => s.exams); // предстоящие Tests: какие сервер увёз с выпавшего урока
   const minutes = berlinParts(now).minutes; // зараз у хвилинах
 
   // Спершу уроки з часом (за часом), уроки без часу (10) — у кінець
@@ -40,6 +44,8 @@ const LessonList = ({ day, lessons, onOpen, preliminary = false }) => {
             <LessonRow
               lesson={lesson}
               exam={lessonExam(day, lesson)}
+              homework={lessonEntries([], homework, day.date, lesson).homework}
+              movedAway={lesson.status === "cancelled" ? movedAway(exams, day.date, lesson) : undefined}
               date={day.date}
               isPast={preliminary || isLessonPast(lesson, day.date, now)}
               live={live}

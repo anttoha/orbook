@@ -3,7 +3,7 @@
 const CountTiles = ({ counts }) => (
   <>
     {[
-      [counts.examsUpcoming, "Klausuren kommend"],
+      [counts.examsUpcoming, "Tests kommend"],
       [counts.editorCodesActive, "Editor-Codes aktiv"],
       [counts.syncBlocks, "Sync-Codes"],
     ].map(([value, label]) => (

@@ -39,7 +39,7 @@ const ListSwitch = ({ className }) => {
       className={cn("shrink-0", className)}
       value={shown}
       options={[
-        { value: "exams", label: label("Klausuren", examCount) },
+        { value: "exams", label: label("Tests", examCount) },
         { value: "homework", label: label("Hausaufgaben", homeworkCount) },
         { value: "appointments", label: label("Termine", appointmentCount) },
       ]}

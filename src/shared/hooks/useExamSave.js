@@ -21,13 +21,13 @@ const notify = (show, text, options) => {
   lastToast = show(text, options);
 };
 // Поля форми, під якими можна показати помилку сервера
-const FORM_FIELDS = ["type", "subject", "date", "lesson", "topic", "due", "text", "studentsMayEdit", "title", "url", "kind", "dateFrom", "dateTo", "timeFrom", "timeTo", "place", "note"];
+const FORM_FIELDS = ["type", "subject", "date", "lesson", "topic", "due", "text", "studentsMayEdit", "title", "url", "kind", "dateFrom", "dateTo", "timeFrom", "timeTo", "place", "note", "details", "materialIds"];
 
 // Що саме зберігаємо: Klausur або Hausaufgabe (частина 14). Відповіді сервера однакові,
 // тому одна логіка на обидва. changed — ім'я дії planStore, що перечитує списки;
 // onChanged(saved) — замість неї, якщо список живе не в planStore (Materialien, частина 15).
 // savedText / deletedText — свій текст сповіщення замість «<noun> gespeichert / gelöscht»
-export const EXAM_OPS = { noun: "Klausur", listPath: "/testen", save: saveExam, remove: deleteExam, restore: undoDelete, toForm: examToForm, changed: "examsChanged" };
+export const EXAM_OPS = { noun: "Test", listPath: "/testen", save: saveExam, remove: deleteExam, restore: undoDelete, toForm: examToForm, changed: "examsChanged" };
 export const HOMEWORK_OPS = {
   noun: "Hausaufgabe",
   listPath: "/testen?liste=hausaufgaben",
