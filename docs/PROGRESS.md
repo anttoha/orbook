@@ -346,3 +346,10 @@ Spec и план бэкенда: `docs/specs/26-live-verlauf/spec.md`. Глав�
 
 ## v0.11.1 (2026-11-12)
 Владелец: «на прод». Окно урока показывает все Hausaufgaben предмета на день (сдвоенный урок, домашка к 3. Stunde видна во 2.). Тег `v0.11.1` → Release через Actions → прод.
+
+## Часть 17 «App + Mitteilungen» — дизайн и план ждут «ок» (2026-11-12)
+Макеты: `design/neu/17-pwa-push/` (генератор `gen.py`, обзор `build.py` → `index.html`, PNG с Nunito — `render.sh`), артефакт https://claude.ai/artifact/SiBC6tpLWYEizB79FjNiU8, PNG — `/root/work/orbook-compare/17-pwa-push/png/`.
+Что нарисовано: Mitteilungen (статус «An auf diesem Gerät» + «Test senden», 4 пункта, «Für welche Kurse» Meine Kurse / Ganze Klasse, Ruhezeit, выключить), «aus» с «Einschalten», iPhone «Erst zum Home-Bildschirm» + шаги, «Im Browser blockiert», шторка Ruhezeit, тост теста/ошибки, Mehr с карточкой «ORBook als App · Installieren», Admin → «Mitteilungen» (вкл., время напоминания, число устройств, «Zuletzt gesendet»), ПК (вкл./выкл. + «Als App installieren»).
+Spec и план бэкенда: `docs/specs/17-pwa-push/spec.md` (миграция 0013 `push_subscriptions`/`push_sent`, `/api/push/*`, свой модуль Web Push на `cryptography` без `pywebpush`, ключи VAPID: демо сейчас, прод — при «на прод»).
+Вопросы владельцу: «ок дизайн?»; приватность (сервер знает номера Wahl-курсов устройства); набор уведомлений и что включено сразу; «ок» плана бэкенда.
+**Дальше:** после «ок» — в этом же чате (Opus · high): бэкенд в `/opt/orbook-be` (`make lint test`, docs, `scripts/update.sh` на демо), затем `/orb-build` (manifest, `sw.js`, иконки, `Mitteilungen.jsx`) и `/orb-check`.
