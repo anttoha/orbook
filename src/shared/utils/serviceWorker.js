@@ -18,8 +18,9 @@ export function startPwa() {
     deferredPrompt = null;
     notify();
   });
-  // В разработке (vite dev) sw.js не нужен: он мешал бы горячей перезагрузке
-  if (import.meta.env.PROD && "serviceWorker" in navigator) {
+  // В разработке (vite dev, есть import.meta.hot) sw.js не нужен: он мешал бы горячей перезагрузке.
+  // Не import.meta.env.PROD: сервер собирает с NODE_ENV=development, и PROD там false
+  if (!import.meta.hot && "serviceWorker" in navigator) {
     window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
   }
 }
