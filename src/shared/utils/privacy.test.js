@@ -11,7 +11,7 @@ describe("responsibleText", () => {
   });
 
   it("пусто или данных нет", () => {
-    const empty = "Noch nicht angegeben. Server in Deutschland.";
+    const empty = "Noch nicht eingetragen. Bis dahin hilft der Admin deiner Klasse. Server in Deutschland.";
     expect(responsibleText({ responsibleName: "", responsibleEmail: "" })).toBe(empty);
     expect(responsibleText(null)).toBe(empty);
   });

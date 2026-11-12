@@ -1,6 +1,6 @@
 # 23 · Datenschutz
 
-**Статус:** на демо, ждёт проверки текста владельцем
+**Статус:** готово (2026-11-12, демо)
 **Источники:** макет `ORBook Soft` 27 (телефон) и 29 (ПК); код бэкенда `/opt/orbook-be/src/orbook` (миграции 0001–0011, `cleanup.py`, `appsettings.py`, `security/sessions.py`); `/opt/orbook-be/docs/DATENSCHUTZ.md` (от 11.10 — устарел, сверено по коду); 2026-11-12.
 
 ## Зачем
@@ -44,6 +44,6 @@ Anmelden · Plan und Einträge · Notizen und Sync · Auf deinem Gerät · Cooki
 - **Art. 6 Abs. 1 lit. f DSGVO** — основание «законный интерес» для обработки данных.
 
 ## Открытые вопросы (решает владелец)
-- [ ] Основание: «berechtigtes Interesse» (lit. f) — подходит? (это не юридическая консультация)
-- [ ] «Der Server steht in Deutschland» и «Wir geben keine Daten weiter» — верно?
-- [ ] Контакт «Verantwortlich» на демо/проде заполнен в админке?
+- [x] Основание — владелец не знает; оставлено lit. f (обычное для технически нужной обработки без согласия). При желании проверить у юриста.
+- [x] «Server in Deutschland», «keine Weitergabe» — владелец подтвердил.
+- [ ] Контакт «Verantwortlich» пока не заполнен (решение владельца). На странице: «Noch nicht eingetragen. Bis dahin hilft der Admin deiner Klasse.» Без контакта текст по DSGVO неполный — заполнить до широкого запуска.
