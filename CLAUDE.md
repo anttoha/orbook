@@ -48,7 +48,7 @@ src/
 
 ## Проверки
 `npm run lint`, `npm test` (Vitest), `npm run build`. В окружении сервера стоит `NODE_ENV=production`, из-за чего `npm install` пропускает dev-зависимости: ставь `npm install --include=dev`, а тесты/линтер запускай с `NODE_ENV=development`. Разработка — против демо (`vite.config.js`: proxy `/api` → `https://orbook-demo.orbitium.net`).
-Выкладка: `git push` в `main` → таймер на сервере сам выкладывает демо (до ~2 минут). Прод — только по слову пользователя «на прод» (публикуется GitHub Release).
+Выкладка: `git push` в `main` → таймер на сервере сам выкладывает демо (до ~2 минут). Прод — только по слову пользователя «на прод»: запись в `src/shared/changelog.js` + `docs/releases/vX.Y.Z.md`, коммит, затем тег `git tag -a vX.Y.Z` и `git push origin vX.Y.Z`. GitHub Actions (`.github/workflows/release.yml`) сам публикует Release, таймер выкладывает прод (до ~2 минут). Тег без «на прод» не пушить — он сразу уходит на прод.
 
 ## Где что лежит (источники правды лежат в репозитории бэкенда)
 - Дизайн: `/opt/orbook-be/design/ORBook Soft/` (1 Handy Hell, 2 Handy Dunkel, 3 PC Hell, 4 PC Dunkel). Новые экраны (`/orb-design`) — в `design/neu/` этого репозитория.

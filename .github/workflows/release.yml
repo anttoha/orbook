@@ -1,0 +1,45 @@
+# GitHub Release из тега — сам, без ручной публикации.
+# Тег vX.Y.Z пушится только по слову владельца «на прод». Release → таймер на сервере
+# (fe_sync.py) берёт «последний Release» и выкладывает прод.
+# Текст — docs/releases/<тег>.md. Заодно создаются Release для старых тегов, у которых его нет:
+# они помечаются «не последний» (--latest=false), чтобы прод не откатился на старую версию.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+    branches: [main]
+    paths: [".github/workflows/release.yml"] # правка этого файла — догнать старые теги
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Release für Tags ohne Release anlegen
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # «последний» — самый большой номер версии среди тегов vX.Y.Z
+          newest=$(git tag -l 'v[0-9]*' --sort=-v:refname | head -1)
+          for tag in $(git tag -l 'v[0-9]*' --sort=v:refname); do
+            if gh release view "$tag" >/dev/null 2>&1; then continue; fi
+            notes="docs/releases/$tag.md"
+            if [ -f "$notes" ]; then cp "$notes" /tmp/notes.md
+            elif git cat-file -e "$tag:$notes" 2>/dev/null; then git show "$tag:$notes" > /tmp/notes.md
+            else echo "ORBook $tag" > /tmp/notes.md
+            fi
+            latest=false
+            [ "$tag" = "$newest" ] && latest=true
+            echo "Release $tag (latest=$latest)"
+            gh release create "$tag" --verify-tag --title "ORBook $tag" --notes-file /tmp/notes.md --latest="$latest"
+          done
