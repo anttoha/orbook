@@ -1,17 +1,15 @@
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { EyeOff, FileText, Server, Shield, Users } from "lucide-react";
+import PrivacySection from "../components/datenschutz/PrivacySection";
 import DeleteSyncNotes from "../components/sync/DeleteSyncNotes";
 import PageHeader from "../components/ui/PageHeader";
+import { FACTS, SECTIONS, STAND } from "../shared/datenschutz";
 import { usePublicInfo } from "../shared/hooks/usePublicInfo";
+import { longDate } from "../shared/utils/format";
 import { responsibleText } from "../shared/utils/privacy";
 
-const FACTS = [
-  { Icon: Users, title: "Keine Konten", text: "Keine Namen, keine E-Mails. Die Klasse öffnet die App mit einem gemeinsamen Passwort." },
-  { Icon: Server, title: "Was auf dem Server liegt", text: "Der Stundenplan der Klasse und die Klausurenliste: Fach, Datum, Art, Thema — ohne Autor." },
-  { Icon: FileText, title: "Deine Notizen", text: "Bleiben auf deinem Gerät. Beim Synchronisieren liegen sie unter einem zufälligen Code, der nicht mit dir verknüpft ist." },
-  // Текст точніший за макет: сервер ставить ще cookie, що рахує неправильні паролі (docs/frontend/07-einstellungen.md)
-  { Icon: EyeOff, title: "Kein Tracking", text: "Keine Werbung, keine Analyse, keine Cookies außer Anmeldung und Schutz vor Fehlversuchen." },
-];
+const ICONS = { konten: Users, server: Server, notizen: FileText, tracking: EyeOff };
 
 const Fact = ({ Icon, title, text }) => (
   <li className="flex gap-3">
@@ -23,13 +21,15 @@ const Fact = ({ Icon, title, text }) => (
   </li>
 );
 
-// Екран «Datenschutz» (макет 27). Відкривається і без входу: посилання є на екрані «Zugang».
-// Унизу «Meine Sync-Notizen löschen» — тільки після входу і коли на пристрої є Sync-Code.
+// Экран «Datenschutz» (макет 27, часть 23). Сверху — коротко, как в макете; ниже «Genauer» — всё подробно, по разделам.
+// Открывается и без входа: ссылка есть на экране «Zugang». Тексты — в shared/datenschutz.js.
+// Внизу «Meine Sync-Notizen löschen» — только после входа и когда на устройстве есть Sync-Code.
 const Datenschutz = () => {
   const info = usePublicInfo();
   const { pathname } = useLocation();
-  // /mehr/datenschutz — усередині застосунку (меню і відступи дає HomePage),
-  // /datenschutz — окрема сторінка з екрана входу
+  const [openId, setOpenId] = useState(null); // открыт один раздел за раз — страница не превращается в простыню
+  // /mehr/datenschutz — внутри приложения (меню и отступы даёт HomePage),
+  // /datenschutz — отдельная страница с экрана входа
   const inApp = pathname.startsWith("/mehr");
   const Wrapper = inApp ? "div" : "main";
 
@@ -39,10 +39,21 @@ const Datenschutz = () => {
 
       <ul className="mt-5 flex flex-col gap-5">
         {FACTS.map((fact) => (
-          <Fact key={fact.title} {...fact} />
+          <Fact key={fact.id} Icon={ICONS[fact.id]} title={fact.title} text={fact.text} />
         ))}
         <Fact Icon={Shield} title="Verantwortlich" text={responsibleText(info?.privacy)} />
       </ul>
+
+      <h2 className="mt-7 text-hint font-extrabold text-faint">Genauer</h2>
+      <ul className="mt-2.5 flex flex-col gap-2.5">
+        {SECTIONS.map((section) => (
+          <PrivacySection key={section.id} section={section} open={openId === section.id} onToggle={() => setOpenId(openId === section.id ? null : section.id)} />
+        ))}
+      </ul>
+      <p className="mt-3 text-caption text-faint">
+        Stand: {longDate(STAND)} {STAND.slice(0, 4)}
+      </p>
+
       <DeleteSyncNotes />
     </Wrapper>
   );
