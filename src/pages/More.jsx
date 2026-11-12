@@ -1,4 +1,4 @@
-import { Folder, Info, Palette, Sparkles, Sun, Table2, UserPlus } from "lucide-react";
+import { Bell, Folder, Info, Palette, Sparkles, Sun, Table2, UserPlus } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { version } from "../../package.json";
@@ -6,6 +6,9 @@ import NewBadge from "../components/changelog/NewBadge";
 import LeaveClass from "../components/more/LeaveClass";
 import SettingsTiles from "../components/settings/SettingsTiles";
 import MenuRow from "../components/more/MenuRow";
+import InstallCard from "../components/push/InstallCard";
+import { usePushStore } from "../shared/store/pushStore";
+import { prefsSummary } from "../shared/utils/push";
 import { KeyIcon, ShieldIcon, StatsIcon, SyncIcon } from "../components/ui/icons";
 import { changelog } from "../shared/changelog";
 import { settingsGroups } from "../shared/constants/constants";
@@ -35,6 +38,7 @@ const Footer = () => (
 const DesktopOverview = () => (
   <section className="flex flex-col gap-5">
     <h2 className="text-heading text-ink">Übersicht</h2>
+    <InstallCard />
     <SettingsTiles />
     <Footer />
   </section>
@@ -42,7 +46,7 @@ const DesktopOverview = () => (
 
 // ─────────────────────────────────────────────────────────────
 // Сторінка «Mehr» (макет 22). Своїх запитів немає: me і courses уже завантажені.
-// Mitteilungen з'являться в частині 17. «Synchronisieren» ховаємо, якщо школа вимкнула синхронізацію.
+// «Mitteilungen» і «Synchronisieren» ховаємо, якщо школа їх вимкнула. Зверху — «ORBook als App» (частина 17).
 // ─────────────────────────────────────────────────────────────
 const More = () => {
   const inPanel = useInSettingsPanel(); // ПК: сторінка всередині «Einstellungen»
@@ -58,6 +62,9 @@ const PhoneMenu = () => {
   const theme = useTheme((s) => s.theme);
   const syncCode = useSyncStore((s) => s.code);
   const syncAllowed = useSyncAllowed();
+  const pushOn = usePushStore((s) => s.enabled);
+  const pushPrefs = usePushStore((s) => s.prefs);
+  const pushAllowed = me?.features?.push !== false;
 
   const school = [me?.className, me?.schoolName].filter(Boolean).join(" · "); // обидва поля бувають порожні
   const hiddenRequired = useUserStore((s) => s.hiddenRequired);
@@ -79,6 +86,8 @@ const PhoneMenu = () => {
         <h1 className="text-title text-ink">Mehr</h1>
       </header>
 
+      <InstallCard />
+
       {/* «Seiten» — просто сторінки й вікна; Statistik переїхала сюди з нижнього меню (частина 22) */}
       <ListCard title={seiten.title} hint={seiten.hint}>
         {statsEnabled && <MenuRow to="/statistik" icon={StatsIcon} label="Statistik" value="Woche · Monat" />}
@@ -96,6 +105,7 @@ const PhoneMenu = () => {
         <MenuRow to="/mehr/kurse" icon={Table2} label="Meine Kurse" value={count.all > 0 ? `${count.on} von ${count.all}` : null} />
         <MenuRow to="/mehr/darstellung" icon={Sun} label="Darstellung" value={THEME_LABELS[theme]} />
         <MenuRow to="/mehr/fachfarben" icon={Palette} label="Fachfarben" />
+        {pushAllowed && <MenuRow to="/mehr/mitteilungen" icon={Bell} label="Mitteilungen" value={prefsSummary(pushOn, pushPrefs)} />}
         {/* праворуч — перша група коду, як у макеті: «K7QM-…» */}
         {syncAllowed && <MenuRow to="/mehr/sync" icon={SyncIcon} label="Synchronisieren" value={syncCode ? `${syncCode.slice(0, 4)}-…` : "Aus"} />}
         {!isTeacher(me) && <MenuRow to="/mehr/editor-code" icon={KeyIcon} label="Tests eintragen" value={me?.editor?.label ?? "Editor-Code"} />}

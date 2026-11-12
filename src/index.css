@@ -30,6 +30,11 @@
 }
 
 /* Ряд чипів гортається пальцем, смуга прокрутки в ньому зайва */
+/* Прокрутка всередині панелі: місце під смугу є завжди, вміст не зсувається, коли смуга з'являється */
+@utility scroll-stable {
+  scrollbar-gutter: stable;
+}
+
 @utility no-scrollbar {
   scrollbar-width: none;
 }
@@ -432,6 +437,15 @@
         color-scheme: light;
         /* Свайп по тижню і дню — наш. Без цього браузер на той самий рух ще й іде «назад» в історії */
         overscroll-behavior-x: none;
+        /* Місце під смугу прокрутки є завжди: довга й коротка сторінка однакової ширини, нічого не «стрибає» */
+        scrollbar-gutter: stable;
+    }
+
+    /* Відкрите вікно (Radix) ховає прокрутку і додає відступ праворуч на ширину смуги.
+       Місце під смугу вже зарезервоване (scrollbar-gutter), тож другий відступ зсунув би сторінку */
+    html body[data-scroll-locked] {
+        margin-right: 0 !important;
+        padding-right: 0 !important;
     }
 
     /* «Schriftgröße» (Darstellung): A і A++. A+ — це 100 %, як на макетах.

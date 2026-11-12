@@ -120,7 +120,7 @@ const SearchPalette = ({ open, onOpenChange }) => {
             <Kbd>Esc</Kbd>
           </div>
 
-          <div role="listbox" aria-label="Ergebnisse" className="min-h-0 flex-1 overflow-y-auto px-2.5 pt-3 pb-2">
+          <div role="listbox" aria-label="Ergebnisse" className="min-h-0 flex-1 overflow-y-auto scroll-stable px-2.5 pt-3 pb-2">
             {query.trim() && groups.length === 1 && <p className="px-3 pb-3 text-body-sm font-bold text-faint">Nichts gefunden</p>}
             {groups.map((group) => (
               <section key={group.title} className="mb-2">

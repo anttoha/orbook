@@ -1,6 +1,6 @@
 # 17 · ORBook als App + Mitteilungen (PWA + Web Push)
 
-**Статус:** дизайн и план бэкенда ждут «ок» владельца (2026-11-12)
+**Статус:** дизайн ок, план ок (2026-11-12, «тексты — по-человечески»; приватность — на усмотрение: храним только номера Wahl-курсов); бэкенд `e4f868b` + `reminderTime` на демо (схема 0013); фронт на демо 2026-11-12; прод — ждёт «на прод»
 **Источники:** `design/neu/17-pwa-push/` (генератор `gen.py`, обзор `build.py` → `index.html`), Soft 26 «Mitteilungen» и PC 26 «Einstellungen · Mitteilungen», `/opt/orbook-be/docs/SPEC.md` §13 (Web Push), §5.2 (`features.push`), `docs/frontend/07-einstellungen.md`, `08-zustaende.md` (PWA), `10-build-sicherheit.md` (Push), `DATENSCHUTZ.md` («В будущем (этап 8)»).
 
 ## Зачем
@@ -57,11 +57,11 @@ ORBook ставится на телефон и компьютер как при�
 
 ## PWA (фронт)
 - `public/manifest.webmanifest`: `name: ORBook`, `display: standalone`, `start_url: /woche`, `scope: /`, цвета из токенов `paper` (светлая), иконки PNG 192/512 + maskable 512 + `apple-touch-icon` 180 (рисуем из `favicon.svg`, логотип Soft). В `index.html` — ссылки и `apple-mobile-web-app-*`.
-- `public/sw.js` (без Workbox, ~80 строк, чтобы было понятно): кэш оболочки (`index.html` — сеть сначала, ассеты Vite с хешами — кэш сначала), `/api/` не кэшируется (это делает `offlineCache.js`); `push` → `showNotification(title, {body, tag, data: {url}, icon, badge})`; `notificationclick` → открыть/сфокусировать окно с `url`. Новая версия — `skipWaiting` после перезагрузки, чтобы выкладка не застревала.
+- `public/sw.js` (без Workbox, ~50 строк): **ничего не кэширует** (решение при сборке: офлайн-план уже хранит `offlineCache.js`, а кэш оболочки задерживал бы новую версию после выкладки; Chrome давно не требует fetch-обработчик для установки). `push` → `showNotification(title, {body, tag, data: {url}, icon, badge})`; `notificationclick` → открыть/сфокусировать окно с `url`. `skipWaiting` + `clients.claim`.
 - Регистрация в `main.jsx` только в production-сборке.
 
 ## Бэкенд (в `/opt/orbook-be`; план ждёт «ок» владельца). Миграция 0013
-1. **Ключи:** `orbook vapid-keys` создаёт пару ключей P-256 и пишет `ORBOOK_VAPID_PUBLIC_KEY/PRIVATE_KEY/SUBJECT` в `orbook.env` (прод и демо отдельно). Без ключей `features.push` в `/api/me` = `false`.
+1. **Ключи:** сервер создаёт пару P-256 сам при первом `GET /api/push/key` и хранит приватный ключ зашифрованным в `settings` (`internal.push.vapidPrivate`) — env не нужен (решение при сборке: так демо и прод получают свои ключи без ручной правки `orbook.env`). `orbook vapid-keys` показывает публичный, `--new` — новый (все подписки удаляются).
 2. **Без новой библиотеки:** шифрование Web Push (RFC 8291, `aes128gcm`) и подпись VAPID (ES256) — через уже установленный `cryptography`, отправка — через `httpx` (как запросы к школе). `pywebpush` тянет `requests` и ещё три пакета; свой модуль ~120 строк с тестами по примерам из RFC.
 3. **Таблицы (0013):** `push_subscriptions` (`endpoint` уникально, ключи `p256dh`/`auth`, `prefs` JSON, `courses` JSON|null, `quiet_from/to`, `created_at`, `last_sent_at`, `fail_count`, `class_epoch`); `push_sent` (`subscription_id`, `key` — например `plan:2026-11-13:<hash>`, `sent_at`; хранится 14 дней).
 4. **API:** `GET /api/push/key` (публичный ключ), `PUT /api/push/subscription` `{subscription, prefs, courses, quiet}`, `GET /api/push/subscription?endpoint=` (`lastSentAt`), `DELETE /api/push/subscription`, `POST /api/push/test` (лимит раз в 30 с на подписку); админ — `GET /api/admin/push` (`devices`, последние 10 рассылок без endpoint), настройки `features.push`, `push.reminderTime` (`HH:MM`, по умолчанию `18:00`). Нужна сессия класса; смена пароля класса (эпоха) или выключенный код доступа удаляет подписки его устройств.

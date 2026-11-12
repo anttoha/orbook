@@ -31,7 +31,7 @@ const ExamFilterPopover = ({ open, onOpenChange, active }) => {
           align="end"
           sideOffset={4}
           collisionPadding={16} // не вилазити за край екрана
-          className="z-50 flex max-h-[calc(100dvh-2rem)] w-filter flex-col gap-4 overflow-y-auto rounded-box bg-card p-4.5 shadow-sheet shadow-ink/15 outline-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
+          className="z-50 flex max-h-[calc(100dvh-2rem)] w-filter flex-col gap-4 overflow-y-auto scroll-stable rounded-box bg-card p-4.5 shadow-sheet shadow-ink/15 outline-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
         >
           <header className="flex items-center justify-between">
             <h2 className="text-number text-ink">Filter</h2>

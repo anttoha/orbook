@@ -12,6 +12,8 @@ import { courseCount, visibleSubjects } from "../../shared/utils/courses";
 import { newsDate } from "../../shared/utils/changelog";
 import { isTeacher } from "../../shared/utils/examRules";
 import NewBadge from "../changelog/NewBadge";
+import { usePushStore } from "../../shared/store/pushStore";
+import { prefsSummary } from "../../shared/utils/push";
 import { appearanceHint, coursesHint, editorHint, sectionVisible, subjectsHint, syncHint } from "../../shared/utils/settings";
 
 // Вміст плитки: кругла іконка, назва, підпис, стрілка
@@ -44,12 +46,15 @@ const useHints = () => {
   const theme = useTheme((s) => s.theme);
   const syncCode = useSyncStore((s) => s.code);
   const lastSyncAt = useSyncStore((s) => s.lastSyncAt);
+  const pushOn = usePushStore((s) => s.enabled);
+  const pushPrefs = usePushStore((s) => s.prefs);
 
   return {
     courses: coursesHint(courseCount(courses, picked, hiddenRequired)),
     appearance: appearanceHint(theme, startView),
     subjects: subjectsHint(visibleSubjects(courses, picked, metaSubjects, hiddenRequired).length), // як на сторінці «Fachfarben»
     sync: syncHint(syncCode, lastSyncAt),
+    push: prefsSummary(pushOn, pushPrefs),
     editor: editorHint(me?.editor),
     privacy: "Keine Konten, kein Tracking",
     stats: "Stunden, Ausfälle, Vertretungen",

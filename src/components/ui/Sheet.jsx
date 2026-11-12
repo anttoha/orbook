@@ -94,7 +94,7 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
           <Dialog.Overlay className="fixed inset-0 z-40 bg-overlay data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in" />
           <Dialog.Content
             className={cn(
-              "fixed z-50 overflow-y-auto bg-paper p-6.5 shadow-sheet outline-none",
+              "fixed z-50 overflow-y-auto scroll-stable bg-paper p-6.5 shadow-sheet outline-none",
               isPanel
                 ? // панель: праворуч, відступ 16px від країв екрана, ширина 440px (як на макеті)
                   "top-4 right-4 bottom-4 w-sheet max-w-[calc(100%-2rem)] rounded-panel data-[state=closed]:animate-slide-out-right data-[state=open]:animate-slide-in-right"
@@ -121,7 +121,7 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
           {/* «ручка» зверху — за неї зручно тягнути */}
           <div aria-hidden className="mx-auto mt-2.5 h-1 w-9.5 shrink-0 rounded-full bg-faint2" />
           {/* прокручувана частина; знизу враховуємо смужку жестів iPhone */}
-          <div className="overflow-y-auto px-gutter pt-3 pb-[calc(1.875rem+env(safe-area-inset-bottom))]">
+          <div className="overflow-y-auto scroll-stable px-gutter pt-3 pb-[calc(1.875rem+env(safe-area-inset-bottom))]">
             {renderHeader(Drawer.Title, Drawer.Description, Drawer.Close)}
             {body}
           </div>

@@ -33,7 +33,7 @@ const QrFullscreen = ({ open, onClose, url, className }) => {
     <Dialog.Root open={open} onOpenChange={(next) => !next && onClose()}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-overlay" />
-        <Dialog.Content className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-paper px-gutter pt-8 pb-6 outline-none lg:inset-x-auto lg:inset-y-10 lg:left-1/2 lg:w-150 lg:-translate-x-1/2 lg:rounded-panel lg:px-8 lg:pt-6 lg:shadow-sheet">
+        <Dialog.Content className="fixed inset-0 z-50 flex flex-col overflow-y-auto scroll-stable bg-paper px-gutter pt-8 pb-6 outline-none lg:inset-x-auto lg:inset-y-10 lg:left-1/2 lg:w-150 lg:-translate-x-1/2 lg:rounded-panel lg:px-8 lg:pt-6 lg:shadow-sheet">
           <header className="flex items-end gap-3 lg:flex-col lg:items-center lg:text-center">
             <Dialog.Close aria-label="Schließen" className="grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink lg:absolute lg:top-6 lg:right-6 lg:size-8.5">
               <X className="size-4" />

@@ -77,7 +77,7 @@ const PickerList = ({ items, selected, onChoose, autoFocus = false, keys = false
         />
       </label>
 
-      <div className="mt-2 min-h-0 overflow-y-auto">
+      <div className="mt-2 min-h-0 overflow-y-auto scroll-stable">
         {found.length === 0 && <p className="px-2.5 py-4 text-body-sm text-muted">Nichts gefunden für „{query.trim()}“.</p>}
         {groups.map(({ group, items: list }) => (
           <section key={group ?? "-"} className="mt-1">

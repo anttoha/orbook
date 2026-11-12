@@ -18,6 +18,7 @@ import { useAppHotkeys } from "../shared/hooks/useAppHotkeys";
 import { useNewsOnStart } from "../shared/hooks/useNewsOnStart";
 import { useTipsOnStart } from "../shared/hooks/useTipsOnStart";
 import { usePlanLive } from "../shared/hooks/usePlanLive";
+import { usePushOnStart } from "../shared/hooks/usePushOnStart";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { cn } from "../shared/utils/cn";
@@ -52,6 +53,7 @@ const HomePage = () => {
   useAppHotkeys(Boolean(me) && coursesChosen); // W, D, N, K, R, «?» — на будь-якій сторінці
   useNewsOnStart(Boolean(me) && coursesChosen); // «Was ist neu» — один раз после новой версии (часть 22b)
   useTipsOnStart(Boolean(me) && coursesChosen && !link); // «Kurz erklärt» — один раз новичку (часть 25)
+  usePushOnStart(Boolean(me) && me.features?.push !== false); // часть 17: Mitteilungen — курсы и «я ещё здесь»
   usePlanLive(Boolean(me)); // часть 26: новый план приходит сам (поток), без потока — опрос раз в минуту
   useNotesSync(Boolean(me) && me.features?.notesSync !== false); // нотатки на інших пристроях (якщо є Sync-Code)
 

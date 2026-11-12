@@ -1,0 +1,17 @@
+{
+  "name": "ORBook",
+  "short_name": "ORBook",
+  "description": "Stundenplan, Vertretungen und Tests deiner Klasse",
+  "lang": "de",
+  "id": "/",
+  "start_url": "/woche",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fbf7f2",
+  "theme_color": "#fbf7f2",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

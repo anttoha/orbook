@@ -30,6 +30,8 @@ const FAST = [
 const VERSIONS = [7, 14, 30, 90].map((value) => ({ value, label: `${value} Tage` }));
 const SESSION = [1, 7, 14, 30, 90, 180, 365].map((value) => ({ value, label: value === 1 ? "1 Tag" : `${value} Tage` }));
 const ATTEMPTS = [3, 5, 10, 20].map((value) => ({ value, label: String(value) }));
+// Часть 17: когда приходит «Für morgen» (сервер принимает 14:00–21:59)
+const REMINDER = ["16:00", "17:00", "18:00", "19:00", "20:00"].map((value) => ({ value, label: value }));
 
 const divided = "divide-y divide-hair";
 
@@ -65,6 +67,18 @@ export const UpdateCard = ({ className, ...props }) => (
     </div>
   </SettingsCard>
 );
+
+// «Mitteilungen» (часть 17): включить для класса и когда напоминать. Число устройств — PushStats ниже
+export const PushCard = ({ className, children, ...props }) =>
+  props.form.push ? (
+    <SettingsCard title="Mitteilungen" className={className}>
+      <div className={divided}>
+        <SwitchRow label="Mitteilungen erlauben" hint="Jeder kann sie unter „Mehr“ für sich einschalten" section="features" field="push" {...props} />
+        <SelectRow label="Erinnerung für morgen" hint="Tests und Hausaufgaben am Vortag" section="push" field="reminderTime" options={REMINDER} {...props} />
+      </div>
+      {children}
+    </SettingsCard>
+  ) : null;
 
 // «Funktionen»: що бачить клас
 export const FeaturesCard = ({ className, ...props }) => (

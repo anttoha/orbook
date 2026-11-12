@@ -20,6 +20,8 @@ import NoteSheet from "./NoteSheet";
 import ShareSheet from "./ShareSheet";
 import ShortcutsSheet from "./ShortcutsSheet";
 import WeekPickerSheet from "./WeekPickerSheet";
+import QuietSheet from "../push/QuietSheet";
+import IosInstallSheet from "../push/IosInstallSheet";
 import PlanCheckSheet from "../muster/PlanCheckSheet";
 
 // Яке ім'я в адресі (?sheet=…) якій шторці відповідає
@@ -45,6 +47,8 @@ const SHEETS = {
   tasten: ShortcutsSheet, // Tastenkürzel (клавіша «?»)
   news: NewsSheet, // «Was ist neu» после новой версии (часть 22b)
   einladen: ClassInviteSheet, // «Klasse einladen»: посилання і QR (частина 16)
+  ruhezeit: QuietSheet, // Mitteilungen → Ruhezeit (частина 17)
+  installieren: IosInstallSheet, // «ORBook installieren» на iPhone (частина 17)
 };
 
 // ─────────────────────────────────────────────────────────────

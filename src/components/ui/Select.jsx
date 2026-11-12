@@ -41,7 +41,7 @@ const Select = ({ value, options, onChange, label, variant = "pill", invalid = f
           align="end"
           sideOffset={6}
           collisionPadding={12}
-          className={cn(menuContentClass, "max-h-(--radix-dropdown-menu-content-available-height) min-w-(--radix-dropdown-menu-trigger-width) overflow-y-auto")}
+          className={cn(menuContentClass, "max-h-(--radix-dropdown-menu-content-available-height) min-w-(--radix-dropdown-menu-trigger-width) overflow-y-auto scroll-stable")}
         >
           <DropdownMenu.RadioGroup value={String(value ?? "")} onValueChange={(next) => onChange(options.find((option) => String(option.value) === next)?.value)}>
             {options.map((option) => (

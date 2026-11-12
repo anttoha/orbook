@@ -1,4 +1,4 @@
-import { CalendarDays, Ellipsis, FileText, Folder, House, Layers, List, Palette, Server, Sparkles, Sun, Table2, UserRound } from "lucide-react";
+import { Bell, CalendarDays, Ellipsis, FileText, Folder, House, Layers, List, Palette, Server, Sparkles, Sun, Table2, UserRound } from "lucide-react";
 import { FlagIcon, KeyIcon, LockIcon, ShieldIcon, StatsIcon, SyncIcon } from "../../components/ui/icons";
 
 // Масштаб «Schriftgröße» (ті самі відсотки, що в index.css): шкали часу множать на нього пікселі
@@ -35,7 +35,7 @@ export const adminTabs = [
 // Розділи «Mehr» на ПК (макети 22–29, частина 22): меню зліва і плитки «Übersicht», у двох групах.
 // group — «seiten» (просто сторінки) або «einstellungen» (те, що налаштовується).
 // hint — ключ підпису під плиткою (shared/utils/settings.js); sync — ховаємо, якщо школа вимкнула синхронізацію;
-// feature — ховаємо, якщо школа вимкнула розділ (me.features). «Mitteilungen» з'явиться в частині 17.
+// feature — ховаємо, якщо школа вимкнула розділ (me.features).
 export const settingsSections = [
   { to: "/mehr", label: "Übersicht", icon: House, exact: true },
   { to: "/statistik", label: "Statistik", icon: StatsIcon, hint: "stats", group: "seiten", feature: "statistics" },
@@ -44,6 +44,7 @@ export const settingsSections = [
   { to: "/mehr/kurse", label: "Meine Kurse", icon: Table2, hint: "courses", group: "einstellungen" },
   { to: "/mehr/darstellung", label: "Darstellung", icon: Sun, hint: "appearance", group: "einstellungen" },
   { to: "/mehr/fachfarben", label: "Fachfarben", icon: Palette, hint: "subjects", group: "einstellungen" },
+  { to: "/mehr/mitteilungen", label: "Mitteilungen", icon: Bell, hint: "push", group: "einstellungen", feature: "push" }, // частина 17
   { to: "/mehr/sync", label: "Synchronisieren", icon: SyncIcon, hint: "sync", sync: true, group: "einstellungen" },
   { to: "/mehr/editor-code", label: "Editor-Code", icon: KeyIcon, hint: "editor", classOnly: true, group: "einstellungen" }, // учителю код не потрібен
 ];

@@ -47,6 +47,16 @@ export const SECTIONS = [
     ],
   },
   {
+    id: "mitteilungen",
+    title: "Mitteilungen",
+    intro: [
+      "Nur wenn du sie auf einem Gerät einschaltest. Dann merkt sich der Server: eine Adresse, über die dein Browser Mitteilungen bekommt (bei Google, Apple, Mozilla oder Microsoft), was du bekommen willst, deine Ruhezeit und, bei „Meine Kurse“, die Nummern deiner Wahlkurse. Keinen Namen, keine IP.",
+      "Der Text jeder Mitteilung ist für deinen Browser verschlüsselt. Der Dienst dazwischen kann ihn nicht lesen.",
+      "Weg ist das alles, wenn du „Auf diesem Gerät ausschalten“ tippst, dich abmeldest oder deine Anmeldung abläuft. Kommt 60 Tage lang nichts an und du öffnest die App nicht, löscht der Server es auch von selbst.",
+      "Der Admin sieht nur, wie viele Geräte Mitteilungen an haben, nicht welche.",
+    ],
+  },
+  {
     id: "geraet",
     title: "Auf deinem Gerät",
     intro: [
@@ -76,6 +86,7 @@ export const SECTIONS = [
       ["Materialien", "bis sie jemand löscht"],
       ["Anmeldung", "bis die Sitzung abläuft: 30 Tage, Admin 12 Stunden"],
       ["Sync-Daten", "365 Tage ohne Zugriff"],
+      ["Mitteilungen", "bis du sie ausschaltest, höchstens 60 Tage ohne Zustellung; was schon geschickt wurde: 14 Tage"],
       ["Protokoll für den Admin", "30 Tage, ohne IP und ohne Namen"],
       ["Sicherungskopien", "14 Tage, vor größeren Änderungen bis zu 60 Tage"],
     ],
@@ -84,7 +95,7 @@ export const SECTIONS = [
     id: "draussen",
     title: "Links nach draußen",
     intro: [
-      "Materialien öffnen Google Drive oder OneDrive. „Teilen“ öffnet WhatsApp oder das Teilen-Menü deines Geräts. Dort gelten die Regeln dieser Anbieter. Die App schickt ihnen vorher nichts.",
+      "Materialien öffnen Google Drive oder OneDrive. „Teilen“ öffnet WhatsApp oder das Teilen-Menü deines Geräts. Dort gelten die Regeln dieser Anbieter. Die App schickt ihnen vorher nichts. Mitteilungen laufen über den Dienst deines Browsers, verschlüsselt (siehe oben).",
       "Wir geben keine Daten weiter und verkaufen nichts. Der Server steht in Deutschland.",
     ],
   },

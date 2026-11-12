@@ -5,7 +5,8 @@ import { AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import PasswordLinks from "../components/admin/settings/PasswordLinks";
 import ExamTypesLink from "../components/admin/settings/ExamTypesLink";
 import DangerZone from "../components/admin/settings/DangerZone";
-import { AppointmentsCard, FeaturesCard, HomeworkCard, MusterCard, SecurityCard, UpdateCard } from "../components/admin/settings/OptionCards";
+import { AppointmentsCard, FeaturesCard, HomeworkCard, MusterCard, PushCard, SecurityCard, UpdateCard } from "../components/admin/settings/OptionCards";
+import PushStats from "../components/admin/settings/PushStats";
 import { purgeHomework } from "../shared/api/admin";
 import MaterialSitesCard from "../components/admin/settings/MaterialSitesCard";
 import PrivacyCard from "../components/admin/settings/PrivacyCard";
@@ -67,6 +68,9 @@ const SettingsForm = ({ data }) => {
           <UpdateCard className="order-3" {...rows} />
           <MaterialSitesCard className="order-4" />
           <FeaturesCard className="order-4" {...rows} />
+          <PushCard className="order-4" {...rows}>
+            <PushStats />
+          </PushCard>
           <SecurityCard className="order-5" {...rows} />
           <HomeworkCard className="order-5" {...rows} onPurge={purge} purging={purging} />
           <AppointmentsCard className="order-5" {...rows} />

@@ -3,6 +3,16 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.12.0",
+    date: "2026-11-12",
+    neu: [
+      "Mitteilungen: ORBook meldet sich, wenn sich der Plan für morgen ändert, heute was ausfällt oder morgen ein Test ist. Einschalten unter Mehr → Mitteilungen.",
+      "Du bestimmst, was kommt: nur deine Kurse oder die ganze Klasse, und nachts ist Ruhe.",
+      "ORBook als App: unter Mehr auf „Installieren“ tippen. Auf dem iPhone zeigen wir dir, wie es geht.",
+    ],
+    behoben: ["Die Seite springt nicht mehr zur Seite, wenn sie mal scrollt und mal nicht."],
+  },
+  {
     version: "0.11.1",
     date: "2026-11-12",
     behoben: ["Doppelstunde: Die Hausaufgabe siehst du jetzt in beiden Stunden, nicht nur in der, zu der sie eingetragen wurde."],

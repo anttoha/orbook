@@ -14,6 +14,7 @@ import MyCourses from "../../pages/MyCourses";
 import Appearance from "../../pages/Appearance";
 import SubjectColors from "../../pages/SubjectColors";
 import NotesSync from "../../pages/NotesSync";
+import Mitteilungen from "../../pages/Mitteilungen";
 import StartPage from "../../pages/StartPage";
 import Week from "../../pages/Week";
 import Day from "../../pages/Day";
@@ -107,6 +108,7 @@ export const router = createBrowserRouter([
               page({ path: "darstellung", Component: Appearance }),
               page({ path: "fachfarben", Component: SubjectColors }),
               page({ path: "sync", Component: NotesSync }), // Notizen synchronisieren
+              page({ path: "mitteilungen", Component: Mitteilungen }), // Web Push (частина 17)
               page({ path: "editor-code", Component: EditorCode }),
               page({ path: "neuigkeiten", Component: Neuigkeiten }), // «Was ist neu», все версии (часть 22b)
               page({ path: "datenschutz", Component: Datenschutz }),
