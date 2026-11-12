@@ -343,3 +343,6 @@ Spec и план бэкенда: `docs/specs/26-live-verlauf/spec.md`. Глав�
 ## Релизы без ручной публикации (2026-11-12)
 Владелец: «так неудобно». `.github/workflows/release.yml`: push тега `vX.Y.Z` → GitHub Actions публикует Release с текстом `docs/releases/vX.Y.Z.md`; теги без Release догоняются с `--latest=false` (прод не откатывается). Первый запуск (коммит 2a580e2) — success: созданы v0.8.2 и v0.8.3, последний — v0.11.0. Правило в `CLAUDE.md` и `/orb-check` обновлено: тег пушить только по «на прод».
 **Дальше:** часть 17 (PWA + Web Push), Opus · effort high, новый чат `/orb-auto`.
+
+## v0.11.1 (2026-11-12)
+Владелец: «на прод». Окно урока показывает все Hausaufgaben предмета на день (сдвоенный урок, домашка к 3. Stunde видна во 2.). Тег `v0.11.1` → Release через Actions → прод.
