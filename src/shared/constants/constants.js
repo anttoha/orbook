@@ -1,4 +1,4 @@
-import { Bell, CalendarDays, Ellipsis, FileText, Folder, House, Layers, List, Palette, Server, Sparkles, Sun, Table2, UserRound } from "lucide-react";
+import { Bell, CalendarDays, Ellipsis, FileText, Folder, House, Layers, List, Megaphone, Palette, Server, Sparkles, Sun, Table2, UserRound } from "lucide-react";
 import { FlagIcon, KeyIcon, LockIcon, ShieldIcon, StatsIcon, SyncIcon } from "../../components/ui/icons";
 
 // Масштаб «Schriftgröße» (ті самі відсотки, що в index.css): шкали часу множать на нього пікселі
@@ -28,6 +28,7 @@ export const adminTabs = [
   { to: "/admin/muster", label: "Muster", icon: Layers, desktop: true }, // частина 19b; телефон — з Einstellungen і «Übersicht → Schnell»
   { to: "/admin/materialien", label: "Materialien", icon: Folder, desktop: true }, // частина 15; телефон — «Übersicht → Schnell»
   { to: "/admin/termine", label: "Termine", icon: CalendarDays, desktop: true }, // частина 18; телефон — «Übersicht → Schnell»
+  { to: "/admin/kanaele", label: "Kanäle", icon: Megaphone, desktop: true }, // частина 27; телефон — з Einstellungen і «Übersicht → Schnell»
   { to: "/admin/protokoll", label: "Protokoll", icon: FileText, desktop: true },
   { to: "/admin/einstellungen", label: "Einstellungen", icon: Server, mobile: true, desktop: true },
 ];

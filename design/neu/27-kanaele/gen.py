@@ -21,8 +21,8 @@ SEND = P("M22 2L11 13") + P("M22 2l-7 20-4-9-9-4z")
 CHAT = P("M7.9 20A9 9 0 1 0 4 16.1L2 22z")
 CLOCK = '<circle cx="12" cy="12" r="9"/>' + P("M12 7v5l3 2")
 SEARCHING = P("M21 12a9 9 0 1 1-6.2-8.6")  # дуга «ищем…»
-CHAN = "9b Plan"          # название канала в примерах (без имён людей)
-BOT = "@ORBook9bBot"
+CHAN = "9b Klasse"        # название группы класса в примерах (без имён людей)
+BOT = "@ORBookBot"        # один общий бот ORBook для всех классов
 LINK = "orbook.orbitium.net"
 
 def head(c, eb="Admin · Einstellungen", ttl="Kanäle"):
@@ -39,7 +39,7 @@ def tg_status(x, y, w, c, state="ok", pc=False):
     ok = state == "ok"
     bg, fg = (c["oktint"], c["ok"]) if ok else (c["dtint"], c["danger"])
     ttl = "Telegram · verbunden" if ok else "Nicht angekommen"
-    sub = f"„{CHAN}“ · Kanal · 27 Mitglieder" if ok else "ORBook ist dort kein Admin mehr"
+    sub = f"„{CHAN}“ · 27 Mitglieder" if ok else "Bot wurde aus der Gruppe entfernt"
     btn = "Test senden" if ok else "Neu verbinden"
     bw = est(btn, 12.5) + 30
     return (R(x, y, w, 64, 20, bg) + f'<circle cx="{x + 30}" cy="{y + 32}" r="16" fill="{c["card"]}"/>' + ICON(x + 21, y + 23, 0.75, fg, SEND if ok else WARN, 2)
@@ -49,9 +49,9 @@ def tg_status(x, y, w, c, state="ok", pc=False):
 # ── «Was wird gesendet»: (заголовок, подпись-части, вкл.) ──
 def what_card(x, y, w, c, dim=False, minutes="30 Min."):
     rh = 73.5
-    rows = [("Neuer Plan", [("Sofort · nur das, was sich geändert hat", 400, "faint")], True),
-            ("Für morgen", [("Tests und Aufgaben · ", 400, "faint"), (minutes, 700, "accink"), (" nach Schulschluss", 400, "faint")], True),
-            ("Neuer Test eingetragen", [("Wenn jemand einen Test einträgt", 400, "faint")], False)]
+    rows = [("Neuer Plan", [("Sofort, nur die Änderungen", 400, "faint")], True),
+            ("Für morgen", [("Tests, Aufgaben, erste Stunde", 400, "faint")], True),
+            ("Neuer Test eingetragen", [("Sobald er eingetragen ist", 400, "faint")], False)]
     out = [R(x, y, w, rh * 4, 22, c["card"])]
     for i, (t, parts, on) in enumerate(rows):
         ry = y + i * rh
@@ -61,32 +61,31 @@ def what_card(x, y, w, c, dim=False, minutes="30 Min."):
         out.append(switch(x + w - 56, ry + 26, on and not dim, c))
     ry = y + 3 * rh
     out.append(HLINE(x + 14, x + w - 14, ry, c))
-    out.append(T(x + 14, ry + 34, "Wann kommt „Für morgen“?", 14.5, 400, c["ink"]) + T(x + 14, ry + 53, "Heute: letzte Stunde bis 13:05 → 13:35", 12, 400, c["faint"]))
+    out.append(T(x + 14, ry + 34, "„Für morgen“ nach Schulschluss", 14.5, 400, c["ink"]) + T(x + 14, ry + 53, "Heute um 13:35", 12, 400, c["faint"]))
     pill, pw = wpill(0, 0, minutes, c)
     out.append(f'<g transform="translate({x + w - 14 - pw} {ry + 21})">{pill}</g>')
     body = "".join(out)
     return (f'<g opacity="0.55">{body}</g>' if dim else body), rh * 4
 
 # ── Пример сообщения в Telegram ──
-PLAN_MSG = [[("Neuer Plan für Donnerstag, 13.11.", 800, "ink")],
-            [("3 Änderungen:", 400, "ink")],
-            [("2. Std Mathe", 800, "ink"), (" – fällt aus", 400, "ink")],
-            [("4. Std Geschichte", 800, "ink"), (" – Vertretung Roth, B12", 400, "ink")],
-            [("6. Std Sport", 800, "ink"), (" – in Halle 2", 400, "ink")],
-            [("Alles ansehen: ", 400, "ink"), (LINK, 700, "accink")]]
-MORGEN_MSG = [[("Für morgen, Freitag 14.11.", 800, "ink")],
-              [("Test: ", 800, "ink"), ("Mathe – Klassenarbeit, Kapitel 3", 400, "ink")],
-              [("Aufgaben: ", 800, "ink"), ("Deutsch – Gedicht, Strophe 1–2", 400, "ink")],
+PLAN_MSG = [[("Neuer Plan für Do, 13.11.", 800, "ink")],
+            [("2. Std Mathe – fällt aus", 400, "ink")],
+            [("4. Std Geschichte – Vertretung, Raum B12", 400, "ink")],
+            [("6. Std Sport – in Raum Halle 2", 400, "ink")],
+            [(LINK, 700, "accink")]]
+MORGEN_MSG = [[("Für morgen, Fr 14.11.", 800, "ink")],
+              [("Test: ", 800, "ink"), ("Mathe – Klassenarbeit", 400, "ink")],
+              [("Aufgaben: ", 800, "ink"), ("Deutsch – Gedicht, Str. 1–2", 400, "ink")],
               [("Englisch – Workbook S. 34", 400, "ink")],
               [("Erste Stunde: ", 800, "ink"), ("07:30 Deutsch, Raum 102", 400, "ink")],
-              [("Planänderungen kommen sofort.", 400, "faint")]]
+              [(LINK, 700, "accink")]]
 
 def bubble(x, y, w, c, msg, time="15:40", head_line=True):
     """Сообщение бота в канале: песочная карточка (как «So sieht es aus» в Soft 26), логотип, имя канала, текст, время."""
     lh = 20
     h = 50 + len(msg) * lh + 14
-    out = [R(x, y, w, h, 22, c["sand"]), logo(x + 14, y + 12, c), T(x + 56, y + 27, CHAN, 13, 800, c["ink"])]
-    bd, _ = badge(x + 56 + est(CHAN, 13) + 14, y + 15, "BOT", c, "tint"); out.append(bd)
+    out = [R(x, y, w, h, 22, c["sand"]), logo(x + 14, y + 12, c), T(x + 56, y + 27, "ORBook", 13, 800, c["ink"])]
+    bd, _ = badge(x + 56 + est("ORBook", 13) + 14, y + 15, "BOT", c, "tint"); out.append(bd)
     for i, parts in enumerate(msg):
         indent = 0 if i == 0 or parts[0][1] == 800 or parts[0][2] == "faint" or len(parts) > 1 or msg is not MORGEN_MSG else est("Aufgaben: ", 13.5) + 4
         out.append(T(x + 56 + indent, y + 50 + i * lh, "".join(S(t, wt, c[col]) for t, wt, col in parts), 13.5, 400, c["ink"], raw=True))
@@ -100,12 +99,11 @@ def preview(x, y, w, c, which=0):
 
 # ── WhatsApp: только «Teilen» ──
 def wa_card(x, y, w, c):
-    h = 158
+    h = 136
     return (label(x, y, "WhatsApp", c) + R(x, y + 14, w, h, 22, c["card"]) + f'<circle cx="{x + 30}" cy="{y + 46}" r="16" fill="{c["sand"]}"/>'
             + ICON(x + 21, y + 37, 0.75, c["muted"], CHAT, 2) + T(x + 56, y + 42, "Nur zum Teilen", 14.5, 800, c["ink"])
-            + T(x + 56, y + 61, "WhatsApp lässt keine Apps in Gruppen", 12.5, 400, c["muted"])
-            + T(x + 56, y + 78, "schreiben. Du teilst die Nachricht selbst.", 12.5, 400, c["muted"])
-            + button(x + 14, y + 104, w - 28, "Nachricht teilen", c, "sand", m15.SHARE, h=48)), h + 14
+            + T(x + 56, y + 61, "Automatisch geht es bei WhatsApp nicht.", 12.5, 400, c["muted"])
+            + button(x + 14, y + 80, w - 28, "Nachricht teilen", c, "sand", m15.SHARE, h=48)), h + 14
 
 SENT = [("Heute 13:35", "Für morgen · Fr 14.11.", "Telegram"), ("Heute 07:14", "Neuer Plan · Do 13.11.", "Telegram"), ("Gestern 13:50", "Für morgen · Do 13.11.", "Telegram")]
 
@@ -120,7 +118,7 @@ def sent_card(x, y, w, c, rows=SENT):
 def off_button(x, y, w, c, text="Telegram trennen"):
     return R(x, y, w, 48, 24, c["card"]) + ICON(x + w / 2 - est(text, 14) / 2 - 16, y + 16, 0.67, c["danger"], CLOSE, 2) + T(x + w / 2 + 10, y + 29, text, 14, 700, c["danger"], "middle")
 
-PRIV = "Im Kanal stehen Fächer, Kürzel und Räume – keine Namen."
+PRIV = ""
 
 # ════════════════ Telefon ════════════════
 def main_body(c, state="ok", which=0):
@@ -128,12 +126,11 @@ def main_body(c, state="ok", which=0):
     y = 92 + 64 + 34
     b.append(label(18, y, "Was wird gesendet", c))
     card, ch = what_card(18, y + 14, 354, c); b.append(card); y += 14 + ch + 12
-    b.append(T(18, y + 12, "Der Kanal bekommt immer die ganze Klasse.", 12, 400, c["faint"])); y += 46
+    y += 22
     pv, ph = preview(18, y, 354, c, which); b.append(pv); y += ph + 34
     wa, wh = wa_card(18, y, 354, c); b.append(wa); y += wh + 34
     sc, sh = sent_card(18, y, 354, c); b.append(sc); y += sh + 18
-    b.append(off_button(18, y, 354, c)); y += 48 + 26
-    b.append(T(195, y, PRIV, 11.5, 400, c["faint"], "middle"))
+    b.append(off_button(18, y, 354, c)); y += 48
     return "".join(b), y + 30
 
 def p_main(c, theme, sub):
@@ -143,17 +140,17 @@ def p_main(c, theme, sub):
 def p_fehler(c, theme, sub):
     """Бот удалён из канала (или канал удалён): красная карточка и «Neu verbinden» вместо «Test senden»."""
     body, H = main_body(c, "fehler")
-    return page(390, 844, c, body + toast(18, 770, 354, "„Für morgen“ nicht angekommen – neu verbinden", c, WARN))
+    return page(390, 844, c, body + toast(18, 770, 354, "Nicht angekommen – bitte neu verbinden", c, WARN))
 
 def p_test(c, theme, sub):
     body, H = main_body(c)
-    return page(390, 844, c, body + toast(18, 770, 354, f"Test gesendet · schau in „{CHAN}“", c, SEND))
+    return page(390, 844, c, body + toast(18, 770, 354, "Test gesendet", c, SEND))
 
 def p_leer(c, theme, sub):
     """Ещё не подключено: большая карточка «Telegram verbinden», ниже серым — что будет приходить; WhatsApp работает и так."""
-    hc, hh = hero(18, 92, 354, c, MEGA, "Noch kein Kanal",
-                  ["ORBook schreibt in den Telegram-Kanal", "der Klasse, wenn sich der Plan ändert."],
-                  "Telegram verbinden", SEND, "Dauert 2 Minuten · du brauchst Telegram")
+    hc, hh = hero(18, 92, 354, c, MEGA, "Noch keine Gruppe",
+                  ["Neuer Plan und „Für morgen“", "direkt in die Telegram-Gruppe."],
+                  "Telegram verbinden", SEND)
     y = 92 + hh + 34
     b = [head(c), hc, f'<g opacity="0.55">{label(18, y, "Was wird gesendet", c)}</g>']
     card, ch = what_card(18, y + 14, 354, c, dim=True); b.append(card); y += 14 + ch + 34
@@ -174,10 +171,9 @@ def p_laden(c, theme, sub):
 
 # ── Шторка «Für morgen · wann?» ──
 def wann_body(c, x, y, w, pc=False):
-    b = [T(x, y, "Minuten nach der letzten Stunde der Klasse.", 13.5, 400, c["muted"])]
+    b = [T(x, y, "Minuten nach der letzten Stunde.", 13.5, 400, c["muted"])]
     b.append(segmented(x, y + 22, w, ["15", "30", "45", "60", "90"], 1, c, h=40))
-    b.append(T(x + w, y + 82, "Minuten", 12, 400, c["faint"], "end"))
-    y += 116
+    y += 90
     rows = [("Heute · Do", "bis 13:05", "13:35"), ("Morgen · Fr", "bis 12:20", "12:50"), ("Montag · 17.11.", "bis 15:10", "15:40")]
     b.append(label(x, y, "Dann kommt die Nachricht", c) + R(x, y + 14, w, 52 * 3, 22, c["card"]))
     for i, (d, last, at) in enumerate(rows):
@@ -186,8 +182,8 @@ def wann_body(c, x, y, w, pc=False):
         b.append(T(x + 14, ry + 23, d, 14, 600, c["ink"]) + T(x + 14, ry + 40, "letzte Stunde " + last, 12, 400, c["faint"]))
         b.append(R(x + w - 74, ry + 12, 60, 28, 14, c["tint"]) + T(x + w - 44, ry + 31, at, 13, 800, c["accink"], "middle"))
     y += 14 + 156 + 14
-    b.append(note_box(x, y, w, ["Fällt die letzte Stunde aus, zählt die davor.", "An freien Tagen kommt nichts."], c, INFO))
-    return "".join(b), y + 60
+    b.append(note_box(x, y, w, ["Fällt die letzte Stunde aus, zählt die davor."], c, INFO))
+    return "".join(b), y + 41
 
 def p_wann(c, theme, sub):
     top = 300
@@ -204,20 +200,18 @@ def step_head(x, y, n, ttl, sub, c, done=False):
     return circ + T(x + 40, y + 11, ttl, 14.5, 800, c["ink"]) + T(x + 40, y + 30, "".join(S(t, wt, c[col]) for t, wt, col in sub), 12.5, 400, c["muted"], raw=True)
 
 def connect_body(c, x, y, w, found=False):
-    b = []
-    b.append(step_head(x, y, 1, "Bot anlegen", [("In Telegram ", 400, "muted"), ("@BotFather", 800, "ink"), (" → ", 400, "muted"), ("/newbot", 800, "ink")], c, done=True))
-    b.append(T(x + 40, y + 60, "Bot-Token", 12.5, 800, c["faint"]))
-    b.append(R(x + 40.5, y + 70.5, w - 41, 49, 16, c["field"], c["rule"]) + T(x + 56, y + 101, "7718••••:AAH••••••••••••", 15, 700, c["ink"]))
-    b.append(ICON(x + 40, y + 129, 0.54, c["ok"], CHECK, 2.4) + T(x + 56, y + 140, f"Gefunden: {BOT}", 12, 700, c["ok"]))
-    y += 172
-    b.append(step_head(x, y, 2, "Bot in den Kanal holen", [("Als ", 400, "muted"), ("Admin", 800, "ink"), (", darf Nachrichten senden", 400, "muted")], c, done=found))
-    b.append(R(x + 40, y + 46, w - 40, 36, 18, c["sand"]) + ICON(x + 54, y + 55, 0.75, c["accink"], COPY, 2) + T(x + 80, y + 69, BOT + " kopieren", 13, 800, c["accink"]))
-    y += 104
-    b.append(step_head(x, y, 3, "Kanal finden", [("ORBook merkt es von selbst", 400, "muted")], c, done=found))
-    y += 46
+    """1 — открыть Telegram (ссылка t.me/…?startgroup=код), 2 — выбрать группу, 3 — ORBook видит код и подключается сам."""
+    b = [step_head(x, y, 1, "Telegram öffnen", [("Der Bot ", 400, "muted"), (BOT, 800, "ink")], c, done=found)]
+    b.append(R(x + 40, y + 46, w - 40, 44, 22, c["accent"] if not found else c["sand"]) + ICON(x + 40 + (w - 40) / 2 + 12 - est("In Telegram öffnen", 14) / 2 - 28, y + 58, 0.83, c["on"] if not found else c["accink"], SEND, 2)
+             + T(x + 40 + (w - 40) / 2 + 12, y + 73, "In Telegram öffnen", 14, 800, c["on"] if not found else c["accink"], "middle"))
+    y += 112
+    b.append(step_head(x, y, 2, "Gruppe der Klasse wählen", [("Telegram fügt den Bot hinzu", 400, "muted")], c, done=found))
+    y += 66
+    b.append(step_head(x, y, 3, "Fertig", [("ORBook verbindet sich selbst", 400, "muted")], c, done=found))
+    y += 50
     if found:
-        b.append(R(x + 40, y, w - 40, 64, 18, c["tint"]) + logo(x + 52, y + 13, c) + T(x + 92, y + 28, f"„{CHAN}“", 14.5, 800, c["ink"])
-                 + T(x + 92, y + 47, "Kanal · 27 Mitglieder", 12, 400, c["muted"]) + ICON(x + w - 34, y + 22, 0.83, c["accink"], CHECK, 2.4))
+        b.append(R(x + 40, y, w - 40, 64, 18, c["oktint"]) + logo(x + 52, y + 13, c) + T(x + 92, y + 28, f"„{CHAN}“", 14.5, 800, c["ink"])
+                 + T(x + 92, y + 47, "Gruppe · 27 Mitglieder", 12, 400, c["muted"]) + ICON(x + w - 34, y + 22, 0.83, c["ok"], CHECK, 2.4))
         y += 64
     else:
         b.append(R(x + 40, y, w - 40, 52, 18, c["sand"]) + ICON(x + 54, y + 16, 0.83, c["accink"], SEARCHING, 2.4)
@@ -229,18 +223,16 @@ def connect_sheet(c, top, found=False):
     b = [sheet_bg(c, top, 390, 844), eyebrow(18, top + 41, "Kanäle", c), title(18, top + 70, "Telegram verbinden", c, 26), round_btn(338, top + 42, c, CLOSE, size=34)]
     body, end = connect_body(c, 18, top + 102, 354, found); b.append(body)
     if found:
-        b.append(wide_button(18, end + 20, 354, f"Mit „{CHAN}“ verbinden", c, CHECK))
-        b.append(T(195, end + 92, "Falscher Kanal? Bot dort entfernen – ORBook sucht neu.", 12, 400, c["faint"], "middle"))
+        b.append(button(18, end + 22, 354, "Fertig", c))
     else:
-        b.append(R(18, end + 20, 354, 48, 24, c["sand"]) + T(195, end + 49, "Verbinden", 14.5, 700, c["faint"], "middle"))
-        b.append(T(195, end + 92, "Den Token sieht später niemand mehr – er bleibt auf dem Server.", 12, 400, c["faint"], "middle"))
+        b.append(T(195, end + 40, "Der Link gilt 15 Minuten.", 12, 400, c["faint"], "middle"))
     return "".join(b)
 
 def p_leer_base(c, theme, sub):
     return m26.strip(p_leer(c, theme, sub))
 
-def p_verbinden(c, theme, sub): return page(390, 844, c, p_leer_base(c, theme, sub) + connect_sheet(c, 150))
-def p_gefunden(c, theme, sub): return page(390, 844, c, p_leer_base(c, theme, sub) + connect_sheet(c, 140, True))
+def p_verbinden(c, theme, sub): return page(390, 844, c, p_leer_base(c, theme, sub) + connect_sheet(c, 330))
+def p_gefunden(c, theme, sub): return page(390, 844, c, p_leer_base(c, theme, sub) + connect_sheet(c, 270, True))
 
 # ── Шторка «Nachricht teilen» (WhatsApp) ──
 def p_teilen(c, theme, sub):
@@ -252,15 +244,13 @@ def p_teilen(c, theme, sub):
     y = top + 146 + bh + 18
     b.append(wide_button(18, y, 354, "In WhatsApp teilen", c, CHAT))
     b.append(button(18, y + 60, 354, "Text kopieren", c, "sand", COPY))
-    b.append(T(195, y + 134, "WhatsApp öffnet sich – du wählst die Gruppe.", 12, 400, c["faint"], "middle"))
     return page(390, 844, c, "".join(b))
 
 # ── Диалог «Telegram trennen?» ──
 def dialog(c, x, y, w):
     b = [R(x, y, w, 232, 28, c["paper"], extra=' filter="url(#nsh0)"'), f'<circle cx="{x + w / 2}" cy="{y + 44}" r="22" fill="{c["dtint"]}"/>',
          ICON(x + w / 2 - 10, y + 34, 0.83, c["danger"], CLOSE, 2.2), T(x + w / 2, y + 96, "Telegram trennen?", 18, 900, c["ink"], "middle"),
-         T(x + w / 2, y + 120, f"ORBook schreibt nicht mehr in „{CHAN}“.", 13.5, 400, c["muted"], "middle"),
-         T(x + w / 2, y + 139, "Den Bot entfernst du dort selbst.", 13.5, 400, c["muted"], "middle")]
+         T(x + w / 2, y + 126, f"Der Bot verlässt „{CHAN}“.", 13.5, 400, c["muted"], "middle")]
     half = (w - 52) / 2
     b.append(button(x + 20, y + 164, half, "Abbrechen", c, "sand", None) + button(x + 32 + half, y + 164, half, "Trennen", c, "danger", None))
     return "".join(b)
@@ -306,8 +296,7 @@ def pc_main(c, theme, sub, state="ok"):
     b = [pc_head(c, False), tg_status(L, 110, LW, c, state)]  # «Test senden» — уже в зелёной карточке
     b.append(label(L, 210, "Was wird gesendet", c))
     card, ch = what_card(L, 224, LW, c); b.append(card)
-    b.append(T(L, 224 + ch + 24, "Der Kanal bekommt immer die ganze Klasse. " + PRIV, 12, 400, c["faint"]))
-    b.append(off_button(L, 224 + ch + 48, 220, c))
+    b.append(off_button(L, 224 + ch + 24, 220, c))
     pv, ph = preview(RX, 110, RW, c, 0); b.append(pv)
     wa, wh = wa_card(RX, 110 + ph + 30, RW, c); b.append(wa)
     sc, _ = sent_card(RX, 110 + ph + 30 + wh + 30, RW, c, SENT[:2]); b.append(sc)
@@ -315,21 +304,20 @@ def pc_main(c, theme, sub, state="ok"):
 
 def pc_verbinden(c, theme, sub):
     b = [m26.strip(pc_leer(c, theme, sub)), overlay(c, 1440, 900)]
-    X, W, H = 450, 540, 640
+    X, W, H = 450, 540, 470
     Y = (900 - H) / 2
     for f in ("nsh0", "nsh1", None):
         b.append(R(X, Y, W, H, 28, c["paper"], extra=f' filter="url(#{f})"' if f else ""))
     b.append(g.modal_head(X, Y, W, "Kanäle", "Telegram verbinden", c))
-    body, end = connect_body(c, X + 26, Y + 104, W - 52, found=True); b.append(body)
-    b.append(wide_button(X + 26, end + 22, W - 52, f"Mit „{CHAN}“ verbinden", c, CHECK))
-    b.append(T(X + W / 2, end + 96, "Falscher Kanal? Bot dort entfernen – ORBook sucht neu.", 12, 400, c["faint"], "middle"))
+    body, end = connect_body(c, X + 26, Y + 104, W - 52, found=False); b.append(body)
+    b.append(T(X + W / 2, end + 40, "Der Link gilt 15 Minuten.", 12, 400, c["faint"], "middle"))
     return page(1440, 900, c, "".join(b))
 
 def pc_leer(c, theme, sub):
     b = [pc_head(c, False)]
     hc = (R(L, 110, LW, 150, 22, c["card"]) + f'<circle cx="{L + 44}" cy="154" r="24" fill="{c["tint"]}"/>' + ICON(L + 32, 142, 1, c["accink"], MEGA, 2)
-          + T(L + 84, 148, "Noch kein Kanal", 17, 900, c["ink"]) + T(L + 84, 169, "ORBook schreibt in den Telegram-Kanal der Klasse, wenn sich der Plan ändert.", 12.5, 400, c["muted"])
-          + wide_button(L + 20, 196, 260, "Telegram verbinden", c, SEND, h=44) + T(L + 300, 223, "Dauert 2 Minuten", 12, 400, c["faint"]))
+          + T(L + 84, 148, "Noch keine Gruppe", 17, 900, c["ink"]) + T(L + 84, 169, "Neuer Plan und „Für morgen“ direkt in die Telegram-Gruppe.", 12.5, 400, c["muted"])
+          + wide_button(L + 20, 196, 260, "Telegram verbinden", c, SEND, h=44))
     b.append(hc)
     b.append(f'<g opacity="0.55">{label(L, 300, "Was wird gesendet", c)}</g>')
     card, _ = what_card(L, 314, LW, c, dim=True); b.append(card)

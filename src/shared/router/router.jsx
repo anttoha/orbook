@@ -29,6 +29,7 @@ import AdminMuster from "../../pages/AdminMuster";
 import AdminLog from "../../pages/AdminLog";
 import AdminAccessCodes from "../../pages/AdminAccessCodes";
 import AdminPasswords from "../../pages/AdminPasswords";
+import AdminChannels from "../../pages/AdminChannels";
 import AdminMaterials from "../../pages/AdminMaterials";
 import AdminAppointments from "../../pages/AdminAppointments";
 import AdminAppointmentEdit from "../../pages/AdminAppointmentEdit";
@@ -73,6 +74,7 @@ export const router = createBrowserRouter([
           page({ path: "passwoerter", Component: AdminPasswords }), // пароль класу і адміна (частина 14b)
           page({ path: "materialien", Component: AdminMaterials }), // усі посилання, видалення (частина 15)
           page({ path: "termine", Component: AdminAppointments }), // усі терміни (частина 18)
+          page({ path: "kanaele", Component: AdminChannels }), // Telegram-група класу (частина 27)
           page({ path: "termine/neu", Component: AdminAppointmentEdit }),
           page({ path: "termine/:id/bearbeiten", Component: AdminAppointmentEdit }),
         ],

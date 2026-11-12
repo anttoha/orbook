@@ -134,3 +134,13 @@ export const showAccessCode = (id) => api(`/admin/access-codes/${id}/code`);
 export const renewInvite = (id) => api(`/admin/access-codes/${id}/invite`, { method: "POST" }); // → { item }
 // { active?, shared? }: вимкнути посилання / показати його учням (таке посилання одне на клас) → { item }
 export const updateInvite = (id, changes) => api(`/admin/access-codes/${id}/invite`, { method: "PATCH", body: changes });
+
+// ── Kanäle (часть 27): Telegram-группа класса ──
+// → { botConfigured, botUsername, group: { title, members, connectedAt, lastOkAt, error } | null, tomorrowAt, recent: [{ kind, title, sentAt, ok }] }
+export const loadChannels = () => api("/admin/channels");
+// → { link, expiresAt }: t.me/…?startgroup=… на 15 минут; 409 telegram_missing — бот на сервере не настроен
+export const telegramLink = () => api("/admin/channels/telegram/link", { method: "POST" });
+export const telegramTest = () => api("/admin/channels/test", { method: "POST" }); // → { ok }
+export const telegramDisconnect = () => api("/admin/channels/telegram", { method: "DELETE" });
+// kind: "plan" | "tomorrow" → { text } (text может быть null — сказать нечего)
+export const loadChannelText = (kind) => api(`/admin/channels/text?kind=${kind}`);

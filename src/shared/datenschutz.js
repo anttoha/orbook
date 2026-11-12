@@ -57,6 +57,14 @@ export const SECTIONS = [
     ],
   },
   {
+    id: "telegram",
+    title: "Telegram-Gruppe",
+    intro: [
+      "Nur wenn der Admin eine Telegram-Gruppe der Klasse verbindet. Dann schreibt ORBook dorthin: Planänderungen, Tests und Aufgaben für morgen. Darin stehen Fächer, Kürzel der Lehrkräfte und Räume, keine Namen von Schülern.",
+      "Der Server merkt sich nur die Nummer und den Namen der Gruppe und was er zuletzt geschickt hat (30 Tage). Wer in der Gruppe ist, weiß ORBook nicht. Für die Gruppe gelten die Regeln von Telegram.",
+    ],
+  },
+  {
     id: "geraet",
     title: "Auf deinem Gerät",
     intro: [
@@ -87,6 +95,7 @@ export const SECTIONS = [
       ["Anmeldung", "bis die Sitzung abläuft: 30 Tage, Admin 12 Stunden"],
       ["Sync-Daten", "365 Tage ohne Zugriff"],
       ["Mitteilungen", "bis du sie ausschaltest, höchstens 60 Tage ohne Zustellung; was schon geschickt wurde: 14 Tage"],
+      ["Telegram-Gruppe", "bis der Admin sie trennt; was geschickt wurde: 30 Tage"],
       ["Protokoll für den Admin", "30 Tage, ohne IP und ohne Namen"],
       ["Sicherungskopien", "14 Tage, vor größeren Änderungen bis zu 60 Tage"],
     ],

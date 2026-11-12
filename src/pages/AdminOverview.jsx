@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { CalendarDays, FileText, Folder, Layers, LogOut, Plus, Server, Table2 } from "lucide-react";
+import { CalendarDays, FileText, Folder, Layers, LogOut, Megaphone, Plus, Server, Table2 } from "lucide-react";
 import AdminHeader from "../components/admin/AdminHeader";
 import { AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import CodeDialogs from "../components/admin/CodeDialogs";
@@ -47,6 +47,7 @@ const QuickLinks = ({ baseUrl }) => (
     <MenuRow to="/admin/muster" icon={Layers} label="Muster" />
     <MenuRow to="/admin/materialien" icon={Folder} label="Materialien" />
     <MenuRow to="/admin/termine" icon={CalendarDays} label="Termine" />
+    <MenuRow to="/admin/kanaele" icon={Megaphone} label="Kanäle" value="Telegram" />
   </ListCard>
 );
 

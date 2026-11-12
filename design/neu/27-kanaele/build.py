@@ -115,18 +115,13 @@ def page():
 <li><b>Für morgen</b> <span>«Für morgen, Freitag 14.11. · Test: Mathe – Klassenarbeit · Aufgaben: Deutsch …, Englisch … · Erste Stunde: 07:30 Deutsch, Raum 102». Если на завтра нет ни тестов, ни домашек — только «Erste Stunde». Перед выходными — про понедельник, в пятницу.</span></li>
 <li><b>Neuer Test eingetragen</b> <span>«Neu: Englisch – Test am Do 20.11.» (по умолчанию выключено).</span></li>
 </ul></div>''')
-    out.append('''<div class="box"><h2>Что изменится на сервере</h2><ul>
-<li><b>Telegram-бот класса.</b> <span>Токен бота хранится на сервере зашифрованным (как ключи Mitteilungen), назад не показывается. Сервер сам спрашивает Telegram (без вебхука, nginx не трогаем) и узнаёт канал, куда бота добавили.</span></li>
-<li><b>Отправка.</b> <span>«Neuer Plan» — по тому же событию, что Live и Mitteilungen; «Für morgen» — такт раз в минуту: конец последнего урока + N минут. Одно и то же дважды не уходит, история — 30 дней (как «Zuletzt gesendet»).</span></li>
-<li><b>Без новых библиотек.</b> <span>Telegram Bot API — обычные HTTPS-запросы через уже установленный httpx.</span></li>
+    out.append('''<div class="box"><h2>Решено (ответы 12.11.)</h2><ul>
+<li><b>Один общий бот</b> <span>@ORBookBot на сервер; у каждого класса — своя Telegram-группа. Токен бота владелец вводит один раз: <code>orbook telegram-token</code> (скрытый ввод).</span></li>
+<li><b>Подключение</b> <span>ссылка t.me/ORBookBot?startgroup=КОД: выбираешь группу, бот добавляется, ORBook видит код и подключается сам.</span></li>
+<li><b>В группе</b> <span>предметы, Kürzel, кабинеты, тесты и домашки, без имён учеников; группа закрытая.</span></li>
+<li><b>Сообщения</b> <span>Neuer Plan и Für morgen включены, Neuer Test выключен, N = 30 минут.</span></li>
+<li><b>WhatsApp</b> <span>«Nachricht teilen» в админке; ученикам — галочка «Aufgaben» в обычном «Teilen».</span></li>
 </ul></div>''')
-    out.append('''<div class="box"><h2>Что нужно решить</h2><ol>
-<li><b>Ок дизайн?</b> <span>Что поменять.</span></li>
-<li><b>Бот.</b> <span>Каждый класс создаёт своего бота у @BotFather (2 минуты, токен вставляется в админке, в чат его слать не надо) — ок? Или один общий бот ORBook, который ты создашь сам?</span></li>
-<li><b>Приватность.</b> <span>В канале — предметы, Kürzel учителей, кабинеты, тесты и домашки; имён учеников нет. Канал лучше закрытый (по приглашению). Ок так?</span></li>
-<li><b>Что слать.</b> <span>Neuer Plan и Für morgen включены, Neuer Test выключен; N = 30 минут. Ок?</span></li>
-<li><b>WhatsApp.</b> <span>Автоматически нельзя — только «Nachricht teilen» в админке. Нужна ли такая кнопка ещё и ученикам (например, в «Info zum Tag»)?</span></li>
-</ol></div>''')
     out.append(f'</div><script>{JS}</script>')
     return "\n".join(out)
 

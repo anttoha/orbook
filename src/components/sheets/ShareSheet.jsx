@@ -45,6 +45,7 @@ const ShareOptions = ({ sheet }) => {
   ); // період
   const [includeChanges, setIncludeChanges] = useState(true); // галочка «Vertretungen»
   const [includeExams, setIncludeExams] = useState(true); // галочка «Klausuren»
+  const [includeHomework, setIncludeHomework] = useState(true); // галочка «Aufgaben» (часть 27)
   const [result, setResult] = useState({
     status: "loading",
     text: "",
@@ -58,6 +59,7 @@ const ShareOptions = ({ sheet }) => {
       ? ["substitutions", "cancellations", "roomChanges"]
       : []),
     ...(includeExams ? ["exams"] : []),
+    ...(includeHomework ? ["homework"] : []),
   ];
   const nothing = include.length === 0; // обидві галочки вимкнені
   const includeKey = include.join(","); // рядок — щоб ефект бачив зміну
@@ -113,6 +115,11 @@ const ShareOptions = ({ sheet }) => {
           label="Tests"
           checked={includeExams}
           onChange={change(setIncludeExams)}
+        />
+        <Checkbox
+          label="Aufgaben"
+          checked={includeHomework}
+          onChange={change(setIncludeHomework)}
         />
       </div>
 
@@ -170,7 +177,7 @@ const Checkbox = ({ label, checked, onChange }) => (
 
 // Поле з текстом (можна правити) + кнопки надсилання.
 // loading — текст ще вантажиться: на місці поля скелет такої самої висоти, кнопки неактивні
-const Composer = ({ initialText = "", loading = false }) => {
+export const Composer = ({ initialText = "", loading = false }) => {
   const [text, setText] = useState(initialText); // текст, який надішлемо
 
   return (

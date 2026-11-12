@@ -4,6 +4,7 @@ import AdminHeader from "../components/admin/AdminHeader";
 import { AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import PasswordLinks from "../components/admin/settings/PasswordLinks";
 import ExamTypesLink from "../components/admin/settings/ExamTypesLink";
+import ChannelsLink from "../components/admin/settings/ChannelsLink";
 import DangerZone from "../components/admin/settings/DangerZone";
 import { AppointmentsCard, FeaturesCard, HomeworkCard, MusterCard, PushCard, SecurityCard, UpdateCard } from "../components/admin/settings/OptionCards";
 import PushStats from "../components/admin/settings/PushStats";
@@ -52,6 +53,7 @@ const SettingsForm = ({ data }) => {
         <div className={column}>
           <PasswordLinks className="order-1" />
           <ExamTypesLink className="order-1" count={form.exams?.types?.length} />
+          <ChannelsLink className="order-1" />
           <SchoolCard
             className="order-2"
             school={form.school}
