@@ -19,6 +19,7 @@ import { FlagIcon, TimelineIcon } from "../components/ui/icons";
 import NewPlanBanner from "../components/ui/NewPlanBanner";
 import { PlanBanner, PlanDown, PlanError } from "../components/ui/PlanState";
 import Segmented from "../components/ui/Segmented";
+import { AllCoursesButton, AllCoursesLegend } from "../components/week/AllCourses";
 import { useHotkeys } from "../shared/hooks/useHotkeys";
 import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useNow } from "../shared/hooks/useNow";
@@ -27,7 +28,7 @@ import { useSheet } from "../shared/hooks/useSheet";
 import { useSwipe } from "../shared/hooks/useSwipe";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
-import { isIsoDate, mondayOf, nextSchoolDay, subjectName, weekdayLong } from "../shared/utils/format";
+import { isIsoDate, mineOnly, mondayOf, nextSchoolDay, subjectName, weekdayLong } from "../shared/utils/format";
 import { lessonState } from "../shared/utils/lessonClock";
 import { freeText, isPlanDown } from "../shared/utils/lessons";
 import MusterNote from "../components/muster/MusterNote";
@@ -95,7 +96,7 @@ const Day = () => {
 
   const lessons = day?.status === "ok" ? filter(day.lessons) : []; // уроки без прихованих курсів
   const hiddenHere = day?.status === "ok" ? day.lessons.length - lessons.length : 0; // скільки сховано
-  const live = day && date === today ? lessonState(lessons, now) : null; // що йде зараз (тільки сьогодні)
+  const live = day && date === today ? lessonState(mineOnly(lessons), now) : null; // що йде зараз (тільки сьогодні)
   const showLive = Boolean(live?.current || live?.next); // картка «Jetzt / Gleich»
   const free = day ? freeText(day) : null; // «Wochenende» / «Schulfrei» / «Plan fehlt noch»
   const isWeekendDay = day?.freeReason === "weekend"; // вихідні складаємо самі, вони не залежать від відповіді сервера
@@ -186,6 +187,7 @@ const Day = () => {
                 {allHidden}
                 {lessons.length > 0 && view === "liste" && <LessonList day={day} lessons={lessons} onOpen={openLesson} />}
                 {lessons.length > 0 && view === "zeitleiste" && <Timeline day={day} lessons={lessons} onOpen={openLesson} />}
+                <AllCoursesLegend />
                 {musterHint}
                 {restoreHidden}
               </>
@@ -216,7 +218,13 @@ const Day = () => {
         <PlanDown resource={week} onRetry={reload} />
       ) : (
         <>
-          {(lessons.length > 0 || isLoading) && <Segmented label="Ansicht" options={VIEWS} value={view} onChange={setView} className="mt-0.5" />}
+          {/* «Liste / Zeitleiste» і поруч кнопка «Alle Kurse» (частина 22) */}
+          {(lessons.length > 0 || isLoading) && (
+            <div className="mt-0.5 flex items-center gap-2">
+              <Segmented label="Ansicht" options={VIEWS} value={view} onChange={setView} className="min-w-0 flex-1" />
+              <AllCoursesButton />
+            </div>
+          )}
 
           <PlanBanner resource={week} onRetry={reload} />
           {day?.info.length > 0 && <DayInfoBanner info={day.info} onClick={openInfo} />}
@@ -247,6 +255,7 @@ const Day = () => {
             </>
           )}
 
+          <AllCoursesLegend className="px-1" />
           {musterHint}
           {restoreHidden}
 

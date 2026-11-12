@@ -69,7 +69,7 @@ const Timeline = ({ day, lessons, onOpen }) => {
         const siblings = items.filter((l) => l.period === lesson.period); // паралельні курси
         const k = siblings.indexOf(lesson); // який по рахунку
         const isCancelled = lesson.status === "cancelled";
-        const isHighlighted = !isCancelled && (lesson.status !== "normal" || isLessonNow(lesson, day.date, now)); // зміна або урок, що йде
+        const isHighlighted = !isCancelled && !lesson.notMine && (lesson.status !== "normal" || isLessonNow(lesson, day.date, now)); // зміна або урок, що йде
 
         return (
           <LessonContextMenu key={lessonKey(lesson)} lesson={lesson} date={day.date}>
@@ -78,7 +78,7 @@ const Timeline = ({ day, lessons, onOpen }) => {
               onClick={() => onOpen(lesson)}
               className={cn(
                 "absolute flex flex-col justify-center gap-0.5 overflow-hidden text-left select-none [-webkit-touch-callout:none]",
-                isCancelled ? "rounded-cell border border-dashed border-faint2 text-faint" : cn("rounded-block", fachClasses(lesson.subject?.code, overrides)),
+                isCancelled || lesson.notMine ? "rounded-cell border border-dashed border-faint2 text-faint" : cn("rounded-block", fachClasses(lesson.subject?.code, overrides)),
                 isHighlighted && "ring-2 ring-accent",
                 isLessonPast(lesson, day.date, now) && "opacity-50",
               )}
@@ -94,7 +94,7 @@ const Timeline = ({ day, lessons, onOpen }) => {
               <div className="flex items-center gap-2">
                 <span className={cn("truncate text-body-sm font-black", isCancelled && "line-through")}>{subjectName(lesson.subject)}</span>
                 {/* у відміненого бейдж не потрібен: нижче написано «fällt aus» */}
-                {!isCancelled && <StatusBadge lesson={lesson} exam={lessonExam(day, lesson)} />}
+                {!isCancelled && !lesson.notMine && <StatusBadge lesson={lesson} exam={lessonExam(day, lesson)} />}
                 <span className="ml-auto shrink-0 text-small text-faint">
                   {lesson.start}–{lesson.end}
                 </span>

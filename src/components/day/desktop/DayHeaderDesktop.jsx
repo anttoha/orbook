@@ -5,6 +5,7 @@ import { longDate, nextSchoolDay, relativeDayWord, weekdayLong } from "../../../
 import ChangedLine from "../../week/ChangedLine";
 import { TimelineIcon } from "../../ui/icons";
 import Segmented from "../../ui/Segmented";
+import { AllCoursesButton } from "../../week/AllCourses";
 
 // Кругла біла кнопка 38×38 (як на макеті)
 const roundButton =
@@ -39,7 +40,10 @@ const DayHeaderDesktop = ({ date, today, day, view, onViewChange, onInfo, onShar
       </div>
 
       <div className="flex items-center gap-6">
-        <Segmented label="Ansicht" options={VIEWS} value={view} onChange={onViewChange} variant="accent" size="sm" className="shrink-0" />
+        <div className="flex items-center gap-2">
+          <AllCoursesButton variant="pill" />
+          <Segmented label="Ansicht" options={VIEWS} value={view} onChange={onViewChange} variant="accent" size="sm" className="shrink-0" />
+        </div>
         <div className="flex items-center gap-2">
           <Link to={`/tag/${nextSchoolDay(date, holidays, -1)}`} aria-label="Vortag" className={roundButton}>
             <ChevronLeft className="size-4.25" />

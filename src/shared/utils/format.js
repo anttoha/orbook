@@ -177,6 +177,15 @@ export function visibleLessons(lessons, courses, picked, hiddenRequired = new Se
   return lessons.filter((l) => !l.course || shown(l.course.nr));
 }
 
+// Режим «Alle Kurse» (частина 22): нічого не ховаємо, але чужі уроки позначаємо notMine — їх малюють пунктиром
+export function markedLessons(lessons, courses, picked, hiddenRequired = new Set()) {
+  const mine = new Set(visibleLessons(lessons, courses, picked, hiddenRequired));
+  return lessons.map((lesson) => (mine.has(lesson) ? lesson : { ...lesson, notMine: true }));
+}
+
+// Тільки мої уроки (для «що йде зараз»: чужий урок не має бути «Jetzt»)
+export const mineOnly = (lessons) => lessons.filter((lesson) => !lesson.notMine);
+
 const NO_SUBJECT_NAME = "Ohne Fach";
 const NO_SUBJECT_CODE = "–";
 

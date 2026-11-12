@@ -20,14 +20,14 @@ const DesktopLessonCard = ({ lesson, isPast, overrides, className, ...props }) =
   return (
     <button
       type="button"
-      aria-label={[subjectName(lesson.subject), badge].filter(Boolean).join(", ")}
+      aria-label={[subjectName(lesson.subject), badge, lesson.notMine && "nicht dein Kurs"].filter(Boolean).join(", ")}
       {...props}
       className={cn(
         "flex min-h-0 flex-col items-start overflow-hidden rounded-cell px-2.75 py-2.25 text-left select-none",
         "transition-[transform,box-shadow] outline-none hover:shadow-raise focus-visible:ring-2 focus-visible:ring-accent/60 active:scale-[0.98]",
-        isCancelled ? "border-[1.5px] border-dashed border-faint2 text-faint" : fachClasses(lesson.subject?.code, overrides),
-        isChanged && "bg-tint ring-2 ring-accent ring-inset", // зміна: фіолетовий фон і рамка
-        lesson.examId && "ring-2 ring-accent ring-inset", // Klausur: фіолетова рамка
+        isCancelled || lesson.notMine ? "border-[1.5px] border-dashed border-faint2 text-faint" : fachClasses(lesson.subject?.code, overrides),
+        isChanged && !lesson.notMine && "bg-tint ring-2 ring-accent ring-inset", // зміна: фіолетовий фон і рамка
+        lesson.examId && !lesson.notMine && "ring-2 ring-accent ring-inset", // Klausur: фіолетова рамка
         lesson.muster && "hatch-muster", // урок із Muster (частина 19): смуги поверх кольору
         isPast && "opacity-45", // минулий урок
         className,
@@ -38,7 +38,7 @@ const DesktopLessonCard = ({ lesson, isPast, overrides, className, ...props }) =
 
       {/* вчитель · кабінет (у скасованого їх немає) */}
       {!isCancelled && (
-        <span className={cn("mt-0.5 w-full truncate text-caption", isChanged ? "font-extrabold text-accent-ink" : "font-semibold opacity-75")}>
+        <span className={cn("mt-0.5 w-full truncate text-caption", lesson.notMine ? "font-semibold text-faint2" : isChanged ? "font-extrabold text-accent-ink" : "font-semibold opacity-75")}>
           {[lesson.teacher, lesson.room].filter(Boolean).join(" · ")}
         </span>
       )}

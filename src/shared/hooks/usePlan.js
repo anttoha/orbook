@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { usePlanStore } from "../store/planStore";
 import { useUserStore } from "../store/userStore";
-import { isWeekend, mondayOf, visibleLessons } from "../utils/format";
+import { isWeekend, markedLessons, mondayOf, visibleLessons } from "../utils/format";
 import { weekendDay } from "../utils/lessons";
 import { musterWeek } from "../utils/muster";
 
@@ -37,11 +37,13 @@ export const useDay = (iso) => {
 };
 
 // Фільтр «Meine Kurse»: const filter = useLessonFilter(); filter(day.lessons)
-export const useLessonFilter = () => {
+// Увімкнено «Alle Kurse» — нічого не ховаємо, чужі уроки позначені notMine. mine: true — завжди лише мої (банер «Neuer Plan»)
+export const useLessonFilter = ({ mine = false } = {}) => {
   const courses = usePlanStore((s) => s.courses);
   const picked = useUserStore((s) => s.picked);
   const hiddenRequired = useUserStore((s) => s.hiddenRequired);
+  const allCourses = useUserStore((s) => s.allCourses) && !mine;
   const set = new Set(picked);
   const hidden = new Set(hiddenRequired);
-  return (lessons) => visibleLessons(lessons, courses, set, hidden);
+  return (lessons) => (allCourses ? markedLessons : visibleLessons)(lessons, courses, set, hidden);
 };

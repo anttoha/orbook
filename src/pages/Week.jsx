@@ -2,6 +2,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { CalendarDays, ChartNoAxesColumn, ChevronLeft, ChevronRight, Layers } from "lucide-react";
 import WeekGrid from "../components/week/WeekGrid";
 import WeekMenu from "../components/week/WeekMenu";
+import { AllCoursesLegend } from "../components/week/AllCourses";
 import WeekUpdated from "../components/week/WeekUpdated";
 import RefreshButton from "../components/week/RefreshButton";
 import DayPanel from "../components/week/desktop/DayPanel";
@@ -173,6 +174,7 @@ const Week = () => {
         <NewPlanBanner />
         {!down && <PlanBanner resource={week} onRetry={reload} />}
         {musterNote}
+        <AllCoursesLegend />
 
         {/* сітка + права частина; на екрані ≥ 1440px — поруч, на 1024–1439px — права частина під сіткою */}
         <div className={cn("grid items-start gap-8", view === "stunden" ? "desktop:grid-cols-[minmax(0,1fr)_420px]" : "desktop:grid-cols-[minmax(0,1fr)_330px]")}>
@@ -231,6 +233,7 @@ const Week = () => {
 
       {/* клік по уроку → шторка уроку; клік по дню — посилання всередині сітки */}
       {gridState(<WeekGrid days={days} onLessonClick={openLesson} />)}
+      <AllCoursesLegend className="px-1" />
 
       {/* поки вантажиться, заглушка вже показує ці рядки; при збої їх немає зовсім (макет «Plan nicht erreichbar») */}
       {days && !down && !noMuster && (

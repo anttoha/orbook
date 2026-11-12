@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { badgeCode, changedLabel, lastStandLabel, planMomentText, standText, subjectCode, subjectName, updatedAgoText, visibleLessons } from "./format";
+import { badgeCode, changedLabel, lastStandLabel, planMomentText, standText, subjectCode, subjectName, markedLessons, mineOnly, updatedAgoText, visibleLessons } from "./format";
 
 describe("standText", () => {
   it("сегодня, вчера и другой день", () => {
@@ -107,5 +107,19 @@ describe("badgeCode", () => {
   it("короткі коди як є, довгі — 3 літери", () => {
     expect(badgeCode("Ma")).toBe("Ma");
     expect(badgeCode("AGTan")).toBe("AGT");
+  });
+});
+
+describe("markedLessons — режим «Alle Kurse»", () => {
+  const courses = [{ nr: "131", optional: false }, { nr: "141", optional: true }, { nr: "142", optional: true }];
+  const lessons = [{ course: { nr: "131" } }, { course: { nr: "141" } }, { course: { nr: "142" } }, { course: null }];
+  it("нічого не ховає, чужі позначає notMine", () => {
+    const marked = markedLessons(lessons, courses, new Set(["142"]));
+    expect(marked).toHaveLength(4);
+    expect(marked.map((l) => Boolean(l.notMine))).toEqual([false, true, false, false]);
+  });
+  it("урок без курсу і обов'язковий — мої; mineOnly лишає тільки їх", () => {
+    const marked = markedLessons(lessons, courses, new Set(["keine"]));
+    expect(mineOnly(marked)).toEqual([lessons[0], lessons[3]]);
   });
 });

@@ -24,6 +24,16 @@ const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
     );
   }
 
+  // Чужий курс у режимі «Alle Kurse»: пунктир і сірий текст, без кольору предмета (макет 22)
+  if (lesson.notMine) {
+    return (
+      <button type="button" aria-label={`${label}, nicht dein Kurs`} {...props} className={cn(base, "border border-dashed border-faint2 text-faint", isPast && "opacity-50", className)}>
+        <span className="truncate text-hint font-extrabold">{subjectCode(lesson.subject)}</span>
+        <span className="truncate text-room font-semibold text-faint2">{lesson.status === "cancelled" ? "fällt aus" : lesson.room}</span>
+      </button>
+    );
+  }
+
   const isChanged = lesson.status !== "normal"; // Vertretung, Raumänderung, перенос
 
   return (

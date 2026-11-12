@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight, Clock, List } from "lucide-react";
 import { addDays } from "../../../shared/utils/format";
 import Segmented from "../../ui/Segmented";
 import WeekMenu from "../WeekMenu";
+import { AllCoursesButton } from "../AllCourses";
 import WeekPickerPopover from "./WeekPickerPopover";
 import MusterBadge from "../../muster/MusterBadge";
 import WeekLetter from "../../muster/WeekLetter";
@@ -52,6 +53,7 @@ const WeekHeaderDesktop = ({ monday, subtitle, title, letter, muster = false, vi
 
         {/* вигляд тижня + меню */}
         <div className="flex items-center gap-2">
+          <AllCoursesButton variant="pill" />
           <Segmented label="Ansicht" options={VIEWS} value={view} onChange={onViewChange} variant="accent" size="sm" className="shrink-0" />
           <WeekMenu monday={monday} onToday={onToday} />
         </div>

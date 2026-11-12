@@ -9,7 +9,7 @@ import { changeText } from "../../shared/utils/planDiff";
 const NewPlanBanner = () => {
   const newPlan = usePlanStore((s) => s.newPlan);
   const seeNewPlan = usePlanStore((s) => s.seeNewPlan);
-  const filter = useLessonFilter();
+  const filter = useLessonFilter({ mine: true }); // банер — лише про мої курси
   const { today } = useNow();
 
   if (!newPlan) return null;

@@ -6,6 +6,7 @@ import { useSheet } from "../../../shared/hooks/useSheet";
 import { usePlanStore } from "../../../shared/store/planStore";
 import { useUserStore } from "../../../shared/store/userStore";
 import { lessonState } from "../../../shared/utils/lessonClock";
+import { mineOnly } from "../../../shared/utils/format";
 import CurrentLessonCard from "../../day/CurrentLessonCard";
 import DayInfoBanner from "../../day/DayInfoBanner";
 import ExamCard from "./ExamCard";
@@ -25,7 +26,7 @@ const WeekAside = ({ days }) => {
   const exams = usePlanStore((s) => s.exams).slice(0, 3); // 3 найближчі Klausuren (GET /api/exams)
   const { day: todayDay } = useDay(today); // сьогоднішній день (може бути в іншому тижні)
 
-  const live = todayDay ? lessonState(filter(todayDay.lessons), now) : null; // що йде зараз
+  const live = todayDay ? lessonState(mineOnly(filter(todayDay.lessons)), now) : null; // що йде зараз
   const showLive = live && (live.current || live.next); // картка «Jetzt / Gleich»
 
   return (

@@ -46,7 +46,7 @@ const LessonRow = ({ lesson, exam, date, isPast, live, note, overrides, onOpen }
       disabled={!onOpen}
       className={cn(
         "relative flex min-h-16 w-full rounded-box px-3.5 py-3 text-left transition-shadow outline-none select-none [-webkit-touch-callout:none] hover:shadow-raise focus-visible:ring-2 focus-visible:ring-accent/60",
-        isCancelled ? "bg-sand text-faint" : fachClasses(lesson.subject?.code, overrides),
+        lesson.notMine ? "border border-dashed border-faint2 text-faint" : isCancelled ? "bg-sand text-faint" : fachClasses(lesson.subject?.code, overrides),
         lesson.muster && "hatch-muster", // урок із Muster (частина 19)
         (isChanged || live) && "ring-2 ring-accent", // рамка в зміни й в уроку, що йде
         live && "pb-5", // місце під смужку прогресу
@@ -62,7 +62,8 @@ const LessonRow = ({ lesson, exam, date, isPast, live, note, overrides, onOpen }
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
           <span className={cn("truncate text-body font-extrabold", isCancelled && "line-through")}>{subjectName(lesson.subject)}</span>
-          {live ? <Badge variant="live">Läuft · {live.minutesLeft} min</Badge> : <StatusBadge lesson={lesson} exam={exam} />}
+          {/* чужий курс у режимі «Alle Kurse» (частина 22) */}
+          {lesson.notMine ? <Badge variant="cancelled">Nicht dein Kurs</Badge> : live ? <Badge variant="live">Läuft · {live.minutesLeft} min</Badge> : <StatusBadge lesson={lesson} exam={exam} />}
         </div>
 
         {!isCancelled && <PlaceLine lesson={lesson} />}
