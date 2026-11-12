@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ChevronRight, CircleSlash, RefreshCw } from "lucide-react";
 import { useSheet } from "../../../shared/hooks/useSheet";
 import { usePlanStore } from "../../../shared/store/planStore";
-import { examWhen, lessonBadge, subjectName, weekdayShort } from "../../../shared/utils/format";
+import { examWhen, lessonBadge, lessonName, subjectName, weekdayShort } from "../../../shared/utils/format";
 import { upcomingChanges } from "../../../shared/utils/lessons";
 import { FlagIcon } from "../../ui/icons";
 
@@ -42,7 +42,7 @@ const UpcomingCard = ({ days, today }) => {
               <Icon className="size-4.5 shrink-0 text-muted" />
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-body font-semibold text-ink">
-                  {weekday} · {lesson.period}. Std {subjectName(lesson.subject)}
+                  {weekday} · {lesson.period}. Std {lessonName(lesson)}
                 </span>
                 {lesson.room && (
                   <span className="block truncate text-caption font-semibold text-faint">

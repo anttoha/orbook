@@ -1,5 +1,5 @@
 import { cn } from "../../../shared/utils/cn";
-import { lessonBadge, subjectName } from "../../../shared/utils/format";
+import { lessonBadge, lessonName } from "../../../shared/utils/format";
 import { fachClasses } from "../../../shared/utils/lessons";
 
 // ─────────────────────────────────────────────────────────────
@@ -20,7 +20,7 @@ const DesktopLessonCard = ({ lesson, isPast, overrides, className, ...props }) =
   return (
     <button
       type="button"
-      aria-label={[subjectName(lesson.subject), badge, lesson.notMine && "nicht dein Kurs"].filter(Boolean).join(", ")}
+      aria-label={[lessonName(lesson), badge, lesson.notMine && "nicht dein Kurs"].filter(Boolean).join(", ")}
       {...props}
       className={cn(
         "flex min-h-0 flex-col items-start overflow-hidden rounded-cell px-2.75 py-2.25 text-left select-none",
@@ -34,7 +34,7 @@ const DesktopLessonCard = ({ lesson, isPast, overrides, className, ...props }) =
       )}
     >
       {/* назва предмета */}
-      <span className={cn("w-full truncate text-body leading-tight font-extrabold", isCancelled && "line-through")}>{subjectName(lesson.subject)}</span>
+      <span className={cn("w-full truncate text-body leading-tight font-extrabold", isCancelled && "line-through")}>{lessonName(lesson)}</span>
 
       {/* вчитель · кабінет (у скасованого їх немає) */}
       {!isCancelled && (

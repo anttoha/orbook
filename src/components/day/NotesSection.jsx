@@ -4,7 +4,7 @@ import { useSheet } from "../../shared/hooks/useSheet";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
-import { subjectName } from "../../shared/utils/format";
+import { lessonName } from "../../shared/utils/format";
 import { noteMeta, visibleNotes } from "../../shared/utils/notes";
 import { LockIcon, SyncIcon } from "../ui/icons";
 
@@ -38,7 +38,7 @@ const NotesSection = ({ date, lessons = [], variant = "list", hideEmpty = false 
   const meta = (note) => {
     if (synced && !isCard) return "synchronisiert · nur für dich";
     const lesson = note.period ? lessons.find((l) => l.period === note.period) : null;
-    const label = lesson ? subjectName(lesson.subject) : note.subject ? (subjectNames?.[note.subject] ?? note.subject) : null;
+    const label = lesson ? lessonName(lesson) : note.subject ? (subjectNames?.[note.subject] ?? note.subject) : null;
     return noteMeta(label, note.period);
   };
 

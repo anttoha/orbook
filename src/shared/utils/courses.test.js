@@ -3,6 +3,7 @@ import {
   NO_OPTIONAL,
   courseCount,
   courseTitle,
+  groupName,
   isCourseOn,
   isCourseVisible,
   mergeCourses,
@@ -43,7 +44,7 @@ describe("courseTitle", () => {
     expect(courseTitle(course())).toBe("Mathe");
   });
 
-  it("группа различает курсы одного предмета", () => {
+  it("группа различает курсы одного предмета (Sport — словами, 20b)", () => {
     expect(
       courseTitle(
         course({
@@ -52,7 +53,7 @@ describe("courseTitle", () => {
           label: "SpJu",
         }),
       ),
-    ).toBe("Sport · SpJu");
+    ).toBe("Sport · Jungen");
   });
 
   it("group = null, но label другой", () => {
@@ -60,7 +61,7 @@ describe("courseTitle", () => {
       courseTitle(
         course({ subject: { code: "Sp", name: "Sport" }, label: "SpMä" }),
       ),
-    ).toBe("Sport · SpMä");
+    ).toBe("Sport · Mädchen");
   });
 
   it("subject.name = null: показываем код и не повторяем его", () => {
@@ -203,5 +204,20 @@ describe("startChoice — выбор с экрана «Welche Kurse hast du?»",
   it("выбран один курс — только он", () => {
     expect(startChoice(["150"])).toEqual(["150"]);
     expect(isCourseOn(startChoice(["150"]), "141")).toBe(false);
+  });
+});
+
+describe("groupName — группы Sport словами", () => {
+  it("SpMä / SpJu → Mädchen / Jungen, другое — null", () => {
+    expect(groupName("SpMä")).toBe("Mädchen");
+    expect(groupName("SpJu")).toBe("Jungen");
+    expect(groupName("Fr2")).toBeNull();
+    expect(groupName(null)).toBeNull();
+  });
+});
+
+describe("courseTitle — другие группы как есть", () => {
+  it("Französisch · Fr2", () => {
+    expect(courseTitle(course({ subject: { code: "Fr", name: "Französisch" }, group: "Fr2", label: "Fr2" }))).toBe("Französisch · Fr2");
   });
 });

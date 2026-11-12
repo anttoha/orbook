@@ -5,7 +5,7 @@ import { useDay } from "../../shared/hooks/usePlan";
 import { useSheet } from "../../shared/hooks/useSheet";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
-import { subjectName } from "../../shared/utils/format";
+import { lessonName } from "../../shared/utils/format";
 import { fachTextClass, findLesson, lessonExam, lessonNote } from "../../shared/utils/lessons";
 import { findNote } from "../../shared/utils/notes";
 import { lessonText, shareText } from "../../shared/utils/share";
@@ -52,7 +52,7 @@ const LessonSheet = ({ open, onClose, sheet }) => {
       onClose={onClose}
       panelLabel="Stunde"
       eyebrow={`${lesson.period}. Stunde${lesson.start ? ` · ${lesson.start}–${lesson.end}` : ""}`}
-      title={subjectName(lesson.subject)}
+      title={lessonName(lesson)}
       titleAside={lesson.muster ? <MusterBadge /> : <StatusBadge lesson={lesson} exam={exam} />}
       titleClassName={fachTextClass(lesson.subject?.code, overrides)}
       hideClose

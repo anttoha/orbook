@@ -2,7 +2,7 @@ import { useNow } from "../../shared/hooks/useNow";
 import { FONT_SCALES } from "../../shared/constants/constants";
 import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
-import { subjectName } from "../../shared/utils/format";
+import { lessonName } from "../../shared/utils/format";
 import { berlinParts, isLessonNow, isLessonPast, toMinutes } from "../../shared/utils/lessonClock";
 import { fachClasses, lessonExam, lessonKey } from "../../shared/utils/lessons";
 import StatusBadge from "../ui/StatusBadge";
@@ -92,7 +92,7 @@ const Timeline = ({ day, lessons, onOpen }) => {
               }}
             >
               <div className="flex items-center gap-2">
-                <span className={cn("truncate text-body-sm font-black", isCancelled && "line-through")}>{subjectName(lesson.subject)}</span>
+                <span className={cn("truncate text-body-sm font-black", isCancelled && "line-through")}>{lessonName(lesson)}</span>
                 {/* у відміненого бейдж не потрібен: нижче написано «fällt aus» */}
                 {!isCancelled && !lesson.notMine && <StatusBadge lesson={lesson} exam={lessonExam(day, lesson)} />}
                 <span className="ml-auto shrink-0 text-small text-faint">

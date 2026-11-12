@@ -1,7 +1,7 @@
 import { Info, NotebookPen } from "lucide-react";
 import { useNow } from "../../shared/hooks/useNow";
 import { cn } from "../../shared/utils/cn";
-import { subjectName } from "../../shared/utils/format";
+import { lessonName } from "../../shared/utils/format";
 import { lessonProgress } from "../../shared/utils/lessonClock";
 import { fachClasses, lessonNote } from "../../shared/utils/lessons";
 import Badge from "../ui/Badge";
@@ -61,7 +61,7 @@ const LessonRow = ({ lesson, exam, date, isPast, live, note, overrides, onOpen }
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
-          <span className={cn("truncate text-body font-extrabold", isCancelled && "line-through")}>{subjectName(lesson.subject)}</span>
+          <span className={cn("truncate text-body font-extrabold", isCancelled && "line-through")}>{lessonName(lesson)}</span>
           {/* чужий курс у режимі «Alle Kurse» (частина 22) */}
           {lesson.notMine ? <Badge variant="cancelled">Nicht dein Kurs</Badge> : live ? <Badge variant="live">Läuft · {live.minutesLeft} min</Badge> : <StatusBadge lesson={lesson} exam={exam} />}
         </div>

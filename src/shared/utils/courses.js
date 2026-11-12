@@ -9,14 +9,19 @@ export function splitCourses(courses) {
   };
 }
 
-// «Sport · SpJu»: група відрізняє курси одного предмета.
+// Зрозумілі назви груп Sport (частина 20b): школа пише SpMä / SpJu. Інші групи лишаються як є
+const GROUP_NAMES = { SpMä: "Mädchen", SpMa: "Mädchen", SpM: "Mädchen", SpJu: "Jungen", SpJ: "Jungen" };
+export const groupName = (label) => GROUP_NAMES[label] ?? null;
+
+// «Sport · Jungen», «Französisch · Fr2»: група відрізняє курси одного предмета.
 // subject.name буває null: тоді показуємо код. group теж буває null.
 export function courseTitle(course) {
   const name =
     course.subject?.name ?? course.subject?.code ?? course.label ?? "";
   const label = course.label !== course.subject?.code ? course.label : null;
   const hint = course.group ?? label;
-  return hint && hint !== name ? `${name} · ${hint}` : name;
+  const text = groupName(hint) ?? hint;
+  return text && text !== name ? `${name} · ${text}` : name;
 }
 
 // Порожній picked означає «показати все», тому «усі курси за вибором вимкнено» записуємо так.

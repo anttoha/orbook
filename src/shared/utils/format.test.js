@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { badgeCode, changedLabel, lastStandLabel, planMomentText, standText, subjectCode, subjectName, markedLessons, mineOnly, updatedAgoText, visibleLessons } from "./format";
+import { badgeCode, changedLabel, lastStandLabel, planMomentText, standText, subjectCode, subjectName, lessonCode, lessonName, markedLessons, mineOnly, updatedAgoText, visibleLessons } from "./format";
 
 describe("standText", () => {
   it("сегодня, вчера и другой день", () => {
@@ -121,5 +121,18 @@ describe("markedLessons — режим «Alle Kurse»", () => {
   it("урок без курсу і обов'язковий — мої; mineOnly лишає тільки їх", () => {
     const marked = markedLessons(lessons, courses, new Set(["keine"]));
     expect(mineOnly(marked)).toEqual([lessons[0], lessons[3]]);
+  });
+});
+
+describe("lessonName / lessonCode — Sport Mädchen/Jungen (20b)", () => {
+  const sport = (label) => ({ subject: { code: "Sp", name: "Sport" }, course: label ? { nr: "141", label } : null });
+  it("група Sport словами і кодом групи", () => {
+    expect(lessonName(sport("SpMä"))).toBe("Sport · Mädchen");
+    expect(lessonCode(sport("SpJu"))).toBe("SpJu");
+  });
+  it("без курсу або звичайний курс — предмет", () => {
+    expect(lessonName(sport(null))).toBe("Sport");
+    expect(lessonCode(sport("Sp"))).toBe("Sp");
+    expect(lessonName({ subject: null, course: null })).toBe("Ohne Fach");
   });
 });

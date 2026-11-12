@@ -7,6 +7,8 @@
 // Так не буває зсувів часового поясу, і рядки можна порівнювати: "2026-10-05" < "2026-10-07".
 // ─────────────────────────────────────────────────────────────
 
+import { groupName } from "./courses";
+
 const MONTHS = ["Jan", "Feb", "März", "Apr", "Mai", "Juni", "Juli", "Aug", "Sept", "Okt", "Nov", "Dez"];
 const MONTHS_LONG = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
 const WEEKDAYS_LONG = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
@@ -191,6 +193,16 @@ const NO_SUBJECT_CODE = "–";
 
 // Назва предмета: з відповіді, інакше код (так у TW, Spr, SF, HS)
 export const subjectName = (subject) => subject?.name ?? subject?.code ?? NO_SUBJECT_NAME;
+
+// Назва уроку: «Sport · Mädchen», якщо курс — група Sport (20b), інакше назва предмета.
+// course буває null («лишній» урок), label теж — тоді просто предмет
+export const lessonName = (lesson) => {
+  const group = groupName(lesson?.course?.label);
+  return group ? `${subjectName(lesson.subject)} · ${group}` : subjectName(lesson?.subject);
+};
+
+// Код у клітинці тижня: «SpMä» / «SpJu» для груп Sport, інакше код предмета
+export const lessonCode = (lesson) => (groupName(lesson?.course?.label) ? lesson.course.label : subjectCode(lesson?.subject));
 
 // Код предмета в клітинці. subject буває null: так школа записує заміну чи захід без предмета.
 export const subjectCode = (subject) => subject?.code ?? NO_SUBJECT_CODE;

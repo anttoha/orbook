@@ -1,5 +1,5 @@
 import { useNow } from "../../shared/hooks/useNow";
-import { subjectName } from "../../shared/utils/format";
+import { lessonName, subjectName } from "../../shared/utils/format";
 import { afterText, lessonProgress } from "../../shared/utils/lessonClock";
 
 // ─────────────────────────────────────────────────────────────
@@ -23,7 +23,7 @@ const CurrentLessonCard = ({ live, onOpen }) => {
       <div className="flex items-baseline gap-2">
         <span className="text-hint font-extrabold text-today-sub">{isRunning ? "Jetzt" : "Gleich"}</span>
         <span className="min-w-0 flex-1 truncate text-lead font-bold">
-          {subjectName(lesson.subject)}
+          {lessonName(lesson)}
           {lesson.room && ` · ${lesson.room}`}
         </span>
         <span className="shrink-0 text-label font-bold">{isRunning ? `noch ${live.minutesLeft} min` : `in ${live.breakMinutes} min`}</span>

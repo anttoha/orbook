@@ -4,7 +4,7 @@
 // ─────────────────────────────────────────────────────────────
 import { toast } from "sonner";
 import { api } from "../api/api";
-import { numericDate, subjectName, weekdayShort } from "./format";
+import { lessonName, numericDate, subjectName, weekdayShort } from "./format";
 
 // range: "today" | "tomorrow" | "week"; include: ["substitutions", "cancellations", "roomChanges", "exams"]
 export async function loadShareText(range, { date, include } = {}) {
@@ -59,7 +59,7 @@ export function homeworkText(item) {
 // Без імен — лише предмет, час, кабінет і що змінилось.
 export function lessonText(lesson, dateIso) {
   const time = lesson.start ? ` (${lesson.start}–${lesson.end})` : "";
-  const lines = [`${weekdayShort(dateIso)}, ${numericDate(dateIso)} · ${lesson.period}. Std ${subjectName(lesson.subject)}${time}`];
+  const lines = [`${weekdayShort(dateIso)}, ${numericDate(dateIso)} · ${lesson.period}. Std ${lessonName(lesson)}${time}`];
   if (lesson.status === "cancelled") lines.push("Fällt aus");
   else if (lesson.status === "room_change") lines.push(`Raumänderung: Raum ${lesson.room}`);
   else if (lesson.status !== "normal") lines.push(`Vertretung${lesson.room ? `, Raum ${lesson.room}` : ""}`);

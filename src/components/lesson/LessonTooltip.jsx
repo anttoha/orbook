@@ -1,5 +1,5 @@
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { lessonBadge, subjectName } from "../../shared/utils/format";
+import { lessonBadge, lessonName } from "../../shared/utils/format";
 import { lessonNote } from "../../shared/utils/lessons";
 
 // ─────────────────────────────────────────────────────────────
@@ -31,7 +31,7 @@ const LessonTooltip = ({ lesson, children, ...props }) => {
           className="z-50 max-w-64 rounded-tile bg-ink px-3 py-2 text-caption font-semibold text-paper shadow-menu data-[state=closed]:animate-fade-out data-[state=delayed-open]:animate-fade-in"
         >
           <p className="text-body-sm font-extrabold">
-            {subjectName(lesson.subject)} · {lesson.period}. Std
+            {lessonName(lesson)} · {lesson.period}. Std
           </p>
           {details && <p className="opacity-80">{details}</p>}
           {badge && <p className="mt-0.5 font-extrabold text-today-sub">{badge}</p>}
