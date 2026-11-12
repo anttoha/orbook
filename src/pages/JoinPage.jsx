@@ -138,6 +138,13 @@ const JoinPage = () => {
             Mit Code anmelden
           </Link>
         </p>
+        {/* часть 25: учитель по этой же ссылке входит или как ученик («Beitreten»), или своим Lehrer-Code */}
+        <p className="mt-2 text-center text-label text-muted">
+          Lehrkraft?{" "}
+          <Link to="/?zugang=lehrkraft" className="font-extrabold text-accent-ink">
+            Mit Lehrer-Code anmelden
+          </Link>
+        </p>
         <div className="mt-4 flex items-center justify-between lg:mt-5">
           <Link to="/datenschutz" className="text-caption font-semibold text-muted lg:text-hint">
             Datenschutz

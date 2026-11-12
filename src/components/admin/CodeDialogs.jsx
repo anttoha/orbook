@@ -11,6 +11,7 @@ import { CheckIcon, RenewIcon, TrashIcon } from "../ui/icons";
 import Sheet from "../ui/Sheet";
 import TextField from "../ui/TextField";
 import { codeActions } from "./codeActions";
+import CodeQr from "./CodeQr";
 import CodeReveal from "./CodeReveal";
 import RightsFields from "./RightsFields";
 import ValidFields from "./ValidFields";
@@ -166,6 +167,7 @@ const CodeDialogs = ({ action, onChange }) => {
     return (
       <Sheet open onClose={close} desktop="dialog" eyebrow={`Admin · ${code.label}`} title="Neuer Code">
         <CodeReveal code={action.result.code} masked={action.result.item.masked} />
+        <CodeQr code={action.result.code} kind={code.kind} teacher={code.kind === "teacher" ? code.label : null} rights={code.rights} />
         <Button variant="primary" className="flex-none" onClick={close}>
           <CheckIcon className="size-4" /> Fertig
         </Button>

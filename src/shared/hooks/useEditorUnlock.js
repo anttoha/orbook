@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { retryText } from "../api/api";
+import { linkCodeOf, useLinkCode } from "../store/linkCodeStore";
 import { usePlanStore } from "../store/planStore";
 import { unlockErrorText } from "../utils/examRules";
 
@@ -10,7 +11,8 @@ import { unlockErrorText } from "../utils/examRules";
 // ─────────────────────────────────────────────────────────────
 export const useEditorUnlock = (onUnlocked) => {
   const unlockEditor = usePlanStore((s) => s.unlockEditor);
-  const [code, setCode] = useState("");
+  // часть 25: открыли QR с Editor-Code — код уже вписан, «Freischalten» человек жмёт сам
+  const [code, setCode] = useState(() => linkCodeOf(useLinkCode.getState().link, "editor") ?? "");
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
 
@@ -22,6 +24,7 @@ export const useEditorUnlock = (onUnlocked) => {
     try {
       await unlockEditor(code);
       setCode("");
+      useLinkCode.getState().clear(); // код из ссылки больше не нужен
       toast.success("Editor-Code freigeschaltet", { duration: 3000 });
       onUnlocked();
     } catch (e) {

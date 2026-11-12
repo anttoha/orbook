@@ -5,7 +5,9 @@ import Button from "../ui/Button";
 import { KeyIcon } from "../ui/icons";
 import TextField from "../ui/TextField";
 import { DESKTOP_QUERY, useMediaQuery } from "../../shared/hooks/useMediaQuery";
+import { linkCodeOf, useLinkCode } from "../../shared/store/linkCodeStore";
 import { usePlanStore } from "../../shared/store/planStore";
+import { useUserStore } from "../../shared/store/userStore";
 import { lockDuration, teacherLoginErrorText } from "../../shared/utils/authErrors";
 
 // ─────────────────────────────────────────────────────────────
@@ -19,7 +21,8 @@ const TeacherLoginForm = ({ schoolClass }) => {
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // на ПК підказка під полем, на телефоні — плашка внизу
   const inputRef = useRef(null);
   const timerRef = useRef(null);
-  const [code, setCode] = useState("");
+  // часть 25: QR с листа учителя — код уже вписан (из ссылки после «#»), «Anmelden» человек жмёт сам
+  const [code, setCode] = useState(() => linkCodeOf(useLinkCode.getState().link, "teacher") ?? "");
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   const [locked, setLocked] = useState(false);
@@ -40,6 +43,8 @@ const TeacherLoginForm = ({ schoolClass }) => {
     setError(null);
     try {
       await loginTeacher(code);
+      useLinkCode.getState().clear();
+      useUserStore.getState().setTipsPending(true); // часть 25: «Kurz erklärt» после первого входа
       navigate("/", { replace: true }); // прибрати ?zugang=lehrkraft з адреси
     } catch (err) {
       setError(teacherLoginErrorText(err));

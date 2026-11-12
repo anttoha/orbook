@@ -13,7 +13,7 @@ const CheckCircle = ({ done, label, onToggle, className }) => (
     className={cn("grid size-11 shrink-0 place-items-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent/50", className)}
   >
     <span className={cn("grid size-6.5 place-items-center rounded-full transition-colors", done ? "bg-accent text-on-accent" : "border-2 border-faint2")}>
-      {done && <CheckIcon className="size-3.75 motion-safe:animate-badge-pop" />}
+      {done && <CheckIcon className="size-3.75" />}
     </span>
   </button>
 );

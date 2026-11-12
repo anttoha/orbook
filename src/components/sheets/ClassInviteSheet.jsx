@@ -7,6 +7,7 @@ import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
 import InviteCard, { InviteCardSkeleton } from "../invite/InviteCard";
 import QrFullscreen from "../invite/QrFullscreen";
+import PrintChooser, { PrintRow } from "../print/PrintChooser";
 
 // «Einladen ist gerade aus» (макет handy-10): адмін не дав посилання для учнів
 const Off = ({ onClose }) => (
@@ -30,6 +31,7 @@ const ClassInviteSheet = ({ open, onClose }) => {
   const [state, setState] = useState({ status: "loading" }); // loading | ready | off | error
   const [attempt, setAttempt] = useState(0); // «Erneut versuchen» → запит ще раз
   const [big, setBig] = useState(false);
+  const [printing, setPrinting] = useState(false); // «Blatt drucken» вместо QR (часть 25)
   const myClass = usePlanStore((s) => s.me?.className ?? null); // поки посилання не прийшло (або вимкнене)
 
   useEffect(() => {
@@ -52,8 +54,8 @@ const ClassInviteSheet = ({ open, onClose }) => {
   const intro = state.status === "off" ? null : "Zeig den QR deinen Mitschülern oder schick den Link in die Klassengruppe.";
 
   return (
-    <Sheet open={open} onClose={onClose} desktop="qr" eyebrow={className ? `${className} · Meine Schule` : "Meine Schule"} title="Klasse einladen">
-      {intro && <p className="-mt-2 text-body-sm text-muted">{intro}</p>}
+    <Sheet open={open} onClose={() => { setPrinting(false); onClose(); }} desktop="qr" eyebrow={className ? `${className} · Meine Schule` : "Meine Schule"} title={printing && url ? "Blatt drucken" : "Klasse einladen"}>
+      {intro && !printing && <p className="-mt-2 text-body-sm text-muted">{intro}</p>}
       {state.status === "loading" && <InviteCardSkeleton />}
       {state.status === "off" && <Off onClose={onClose} />}
       {state.status === "error" && (
@@ -64,12 +66,14 @@ const ClassInviteSheet = ({ open, onClose }) => {
           </button>
         </div>
       )}
-      {url && (
+      {url && printing && <PrintChooser url={url} className={className} onBack={() => setPrinting(false)} />}
+      {url && !printing && (
         <>
           <InviteCard url={url} className={className} onBig={() => setBig(true)} caption={`Ein Tippen — und der Plan der ${className ?? "Klasse"} ist da`} />
           <p className="flex items-center gap-1.5 text-caption text-faint">
             <ShieldCheck className="size-3.5 shrink-0" /> Nur für die {className ?? "Klasse"} — bitte nicht öffentlich posten.
           </p>
+          <PrintRow onClick={() => setPrinting(true)} />
           <QrFullscreen open={big} onClose={() => setBig(false)} url={url} className={className} />
         </>
       )}

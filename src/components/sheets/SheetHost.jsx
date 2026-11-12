@@ -10,6 +10,7 @@ import ExamSheet from "./ExamSheet";
 import HomeworkSheet from "./HomeworkSheet";
 import TaskSheet from "../tasks/TaskSheet";
 import SyncQrSheet from "./SyncQrSheet";
+import TipsSheet from "./TipsSheet";
 import LessonSheet from "./LessonSheet";
 import MaterialSheet from "./MaterialSheet";
 import NewsSheet from "./NewsSheet";
@@ -32,6 +33,7 @@ const SHEETS = {
   hausaufgabe: HomeworkSheet, // деталі Hausaufgabe (частина 14)
   aufgabe: TaskSheet, // «Eigene Aufgabe» (частина 25)
   syncqr: SyncQrSheet, // Sync-Code als QR (частина 25)
+  tipps: TipsSheet, // «Kurz erklärt» (частина 25)
   material: MaterialSheet, // дії з посиланням Materialien (частина 15)
   termin: AppointmentSheet, // деталі Termin (частина 18)
   pruefen: PlanCheckSheet, // «Einträge prüfen» після справжнього плану (частина 19)

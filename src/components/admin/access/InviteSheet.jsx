@@ -11,6 +11,7 @@ import Sheet from "../../ui/Sheet";
 import Switch from "../../ui/Switch";
 import InviteCard, { InviteCardSkeleton } from "../../invite/InviteCard";
 import QrFullscreen from "../../invite/QrFullscreen";
+import PrintChooser, { PrintRow } from "../../print/PrintChooser";
 
 // Рядок картки: значок, підпис, праворуч перемикач або «›»
 const Row = ({ icon: Icon, label, hint, checked, onToggle, onClick }) => {
@@ -38,6 +39,7 @@ const InviteSheet = ({ code: start, onClose, onRenew }) => {
   const code = useAdminStore((s) => s.access.data?.codes.find((c) => c.id === start.id)) ?? start;
   const className = useAdminStore((s) => s.settings.data?.settings.school.className ?? null);
   const [big, setBig] = useState(false);
+  const [printing, setPrinting] = useState(false); // «Blatt drucken» вместо QR (часть 25)
   const invite = code.invite;
   const { createInvite } = actions;
   const created = useRef(false); // actions нові на кожен рендер — без цього прапорця POST летів би щоразу
@@ -70,7 +72,15 @@ const InviteSheet = ({ code: start, onClose, onRenew }) => {
   };
 
   return (
-    <Sheet open onClose={onClose} desktop="qr" eyebrow={off ? `${code.label} · Link ausgeschaltet` : `${code.label} · ${audienceChip(code.audience)} · ${devicesText(code.devices, code.maxDevices)}`} title="Einladen">
+    <Sheet open onClose={onClose} desktop="qr" eyebrow={off ? `${code.label} · Link ausgeschaltet` : `${code.label} · ${audienceChip(code.audience)} · ${devicesText(code.devices, code.maxDevices)}`} title={printing ? "Blatt drucken" : "Einladen"}>
+      {printing && url ? <PrintChooser url={url} className={className} onBack={() => setPrinting(false)} /> : renderBody()}
+    </Sheet>
+  );
+
+  // Обычный вид: QR, переключатели, «Blatt drucken» (только у ссылки группы — личную не раздают классу)
+  function renderBody() {
+    return (
+      <>
       {renderCard()}
       {invite && (
         <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
@@ -86,9 +96,11 @@ const InviteSheet = ({ code: start, onClose, onRenew }) => {
           ? `Wer den Link hat, kommt in die ${className ?? "Klasse"} und zählt zu »${code.label}«. Nur in der Klassengruppe teilen.`
           : `Persönlicher Link: nur an diese eine Person schicken. Er zählt zum Geräte-Limit von »${code.label}«.`}
       </p>
+      {url && !off && code.audience === "group" && <PrintRow onClick={() => setPrinting(true)} />}
       {url && <QrFullscreen open={big} onClose={() => setBig(false)} url={url} className={className} />}
-    </Sheet>
-  );
+      </>
+    );
+  }
 };
 
 export default InviteSheet;

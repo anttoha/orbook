@@ -9,6 +9,7 @@ import Button from "../ui/Button";
 import { CheckIcon, KeyIcon } from "../ui/icons";
 import Sheet from "../ui/Sheet";
 import TextField from "../ui/TextField";
+import CodeQr from "./CodeQr";
 import CodeReveal from "./CodeReveal";
 import RightsFields from "./RightsFields";
 import ValidFields from "./ValidFields";
@@ -106,6 +107,8 @@ const NewCodeForm = ({ yearEnd, onDone, kind }) => {
       {created ? (
         <>
           <CodeReveal code={created.code} masked={created.item.masked} />
+          {/* часть 25: QR и (у Lehrer-Code) лист для печати */}
+          <CodeQr code={created.code} kind={kind} teacher={teacherCode ? label.trim() : null} rights={rights} />
           <Button variant="primary" className="flex-none" onClick={onDone}>
             <CheckIcon className="size-4" /> Fertig
           </Button>

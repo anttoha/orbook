@@ -3,6 +3,17 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.10.0",
+    date: "2026-11-12",
+    neu: [
+      "„Aufgaben“ statt „Hausaufgaben“: Hausaufgaben abhaken und eigene Aufgaben dazuschreiben. Das sieht nur du.",
+      "Der Sync-Code nimmt jetzt alles mit: Notizen, Aufgaben, Kurse und Darstellung. Was genau, stellst du selbst ein.",
+      "Sync-Code als QR: mit dem anderen Handy scannen, fertig.",
+      "Blatt für die Klasse drucken: großer QR für die Pinnwand oder 8 Kärtchen zum Verteilen.",
+      "„Kurz erklärt“ unter Mehr: drei Tipps für den Anfang.",
+    ],
+  },
+  {
     version: "0.9.0",
     date: "2026-11-12",
     neu: [

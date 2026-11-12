@@ -38,6 +38,7 @@ export const useUserStore = create(
       allCourses: false, // режим «Alle Kurse»: видно й чужі курси (пунктиром)
       seenNews: null, // версия из changelog, для которой окно «Was ist neu» уже показано
       readNews: null, // версия, список которой открыт в «Neuigkeiten» (пока не совпадает — в «Mehr» горит метка NEU)
+      tipsPending: false, // «Kurz erklärt» ещё не показано новичку (часть 25)
       checkedPlan: [], // «So lassen» у «Einträge prüfen» (частина 19): ключі з shared/utils/muster.js checkKey
 
       // ── нотатки ──
@@ -83,7 +84,10 @@ export const useUserStore = create(
 
       // «Weiter» на екрані першого запуску: зберегти вибір і більше не питати
       // Новичку окно «Was ist neu» не нужно: для него всё и так новое, поэтому текущую версию считаем увиденной
-      finishCourseChoice: (picked, hiddenRequired = []) => set({ picked, hiddenRequired, coursesChosen: true, seenNews: get().seenNews ?? changelog[0]?.version ?? null, readNews: get().readNews ?? changelog[0]?.version ?? null }),
+      finishCourseChoice: (picked, hiddenRequired = []) => set({ picked, hiddenRequired, coursesChosen: true, tipsPending: !get().coursesChosen, seenNews: get().seenNews ?? changelog[0]?.version ?? null, readNews: get().readNews ?? changelog[0]?.version ?? null }),
+
+      // «Kurz erklärt»: показать при следующем старте / уже показано
+      setTipsPending: (tipsPending) => set({ tipsPending }),
 
       // Окно «Was ist neu» показано — повторно само не откроется
       markNewsShown: () => set({ seenNews: changelog[0]?.version ?? null }),

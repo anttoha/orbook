@@ -252,6 +252,8 @@
     /* ── Відступи. Решта — звичайна шкала: p-4 = 16px, gap-1.5 = 6px (крок 4px) ── */
     --spacing-gutter: 18px; /* край екрана телефона: контент 354 із 390 */
     --spacing-gutter-auth: 28px; /* край на екрані входу */
+    --spacing-a4w: 210mm; /* лист A4 для печати (часть 25): ширина … */
+    --spacing-a4h: 296mm; /* … и высота (на 1 мм меньше — иначе браузер добавит пустую вторую страницу) */
 
     /* ── Ширини на ПК: w-sidebar, w-sheet … ── */
     --container-sidebar: 232px;
@@ -521,4 +523,20 @@
     @keyframes panel-in { from { opacity: 0; translate: 0 8px; } }
     @keyframes rise-in { from { opacity: 0; translate: 0 14px; } }
     @keyframes badge-pop { from { opacity: 0; scale: 0.5; } }
+}
+
+/* ── Печать (часть 25): на бумаге только лист из PrintArea, приложение и окна скрыты.
+   Цвета фона печатаем как есть (иначе браузер выбросит серые плашки) ── */
+@media print {
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    body > *:not(.print-area) {
+        display: none !important;
+    }
+    .print-area {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
 }

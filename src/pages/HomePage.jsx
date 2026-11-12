@@ -16,6 +16,7 @@ import { usePageAnimation } from "../shared/hooks/usePageAnimation";
 import { useNotesSync } from "../shared/hooks/useNotesSync";
 import { useAppHotkeys } from "../shared/hooks/useAppHotkeys";
 import { useNewsOnStart } from "../shared/hooks/useNewsOnStart";
+import { useTipsOnStart } from "../shared/hooks/useTipsOnStart";
 import { usePlanPolling } from "../shared/hooks/usePlanPolling";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
@@ -50,6 +51,7 @@ const HomePage = () => {
 
   useAppHotkeys(Boolean(me) && coursesChosen); // W, D, N, K, R, «?» — на будь-якій сторінці
   useNewsOnStart(Boolean(me) && coursesChosen); // «Was ist neu» — один раз после новой версии (часть 22b)
+  useTipsOnStart(Boolean(me) && coursesChosen && !link); // «Kurz erklärt» — один раз новичку (часть 25)
   usePlanPolling(Boolean(me)); // кожні 10 секунд питаємо, чи змінився план
   useNotesSync(Boolean(me) && me.features?.notesSync !== false); // нотатки на інших пристроях (якщо є Sync-Code)
 
