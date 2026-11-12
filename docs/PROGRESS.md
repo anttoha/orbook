@@ -384,3 +384,9 @@ Spec и план бэкенда: `docs/specs/17-pwa-push/spec.md` (миграц�
 **Дальше:** после ответов — новый чат, Fable · effort high: `/orb 27b` (дизайн диалогов и экранов → «ок» → код на Opus · high).
 Ответы владельца (2026-11-12): 1) вход — и кнопка в приложении, и Zugangscode в боте; 2) хранить номер Telegram-чата (без имени и username) — ок, **обязательно описать в Datenschutz и держать его актуальным**; 3) группа остаётся **дополнительной опцией** в админке (код части 27 не удалять); 4) команды /heute /morgen /woche /einstellungen /stop — ок.
 **Дальше:** новый чат, Fable · effort high → `/orb 27b` (дизайн диалогов бота, «Telegram» в Mitteilungen, админка: личный бот + группа как опция) → «ок» → Opus · effort high.
+
+## Часть 27b «Telegram-бот» — дизайн ждёт «ок» (2026-11-12)
+Макеты (только 2 места в приложении, экономно): `design/neu/27b-telegram-bot/` (`gen.py` на основе частей 17/27, `build.py` → `index.html`, PNG — `render.sh`), артефакт https://claude.ai/artifact/W5YoH7nHZqKL5hDWUN57Vo.
+Нарисовано: Mitteilungen с карточкой «Telegram» (не подключено → шторка «Mit Telegram verbinden» с ожиданием → «verbunden», «Bot öffnen», «Trennen»); Admin → Kanäle: «Bot läuft», «Persönlicher Bot erlauben», число чатов, группа — одна строка «zusätzlich, optional», «Zuletzt gesendet» с числом чатов.
+Spec, диалоги бота текстом и план бэкенда: `docs/specs/27b-telegram-bot/spec.md` (миграция 0014 `telegram_chats` + `telegram_links`, `/api/telegram/link|status`, `DELETE /api/telegram`, тот же опрос getUpdates и тексты части 27).
+**Дальше:** после «ок дизайн» и «ок» плана бэкенда — в этом же чате или новом (Opus · effort medium): бэкенд в `/opt/orbook-be`, затем `/orb-build`, `/orb-check`.
