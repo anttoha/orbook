@@ -43,6 +43,7 @@ src/
 - `useEffect` — только когда правда нужно, с очисткой.
 - На каждом маршруте `errorElement` с немецким текстом «Etwas ist schiefgelaufen».
 - В плашке дня второй строкой под датой, с маленькой иконкой обновления: время из `changedAt` (иначе `publishedAt`), в тот же день «07:08», раньше «Mi 15:15» (`changedLabel`). Цвет `text-faint`, на сегодняшнем дне `text-on-accent/70`. Место под строку зарезервировано, высота плашки фиксированная. Под заголовком недели — «● Live · geprüft vor N Sek.» (`LiveLine`, `status.lastOkAt`). Подробности — в окне «Info zum Tag»: «Verlauf des Tages» (Fassungen дня) и «Zuletzt geprüft»; под неделей — строка «Live».
+- **Datenschutz** (`src/shared/datenschutz.js`) обновлять в той же части, где меняется, что хранит или куда отправляет сервер (новые поля, сроки, внешние сервисы вроде Telegram) — решение владельца 2026-11-12.
 - Changelog «Was ist neu» (часть 22b): при каждом релизе дописывай запись **сверху** в `src/shared/changelog.js` вместе с `docs/releases/vX.Y.Z.md`. Тексты — по-немецки, коротко, по-человечески (как одноклассник, не как пресс-релиз); группы `neu` / `behoben` / `entfernt`.
 - Новый план приходит потоком `GET /api/plan/stream` (часть 26, `usePlanLive` + `shared/api/planStream.js`), только пока вкладка видима. Без потока (503, сеть) — опрос `/api/plan/status` раз в минуту (`conditional: true` в `api`: при 304 ничего не перерисовываем).
 
