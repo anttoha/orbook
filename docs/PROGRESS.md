@@ -267,3 +267,14 @@ Spec: `docs/specs/16-einladen/spec.md` (план бэкенда: колонки 
 ## План по идеям владельца (2026-11-12)
 Идеи 08–11.11.2026 и скрины VpMobil — `docs/ideas/2026-11-11/`. Владелец согласовал порядок частей: 22 → 22b → 23 → 24 → 25 → 26 → 17 → 27 → 28 → 29 → 30 → 31 (таблица в `docs/specs/README.md`; 20a/20b входят в 22, 21 — в 24, 20c — в 26).
 **Дальше:** `/orb 22` (модель Sonnet).
+
+
+## Часть 22 «Kleinigkeiten» — на демо (2026-11-12)
+Дизайн `design/neu/22-kleinigkeiten` — ок владельца 12.11 (после двух правок: без плашки; «Alle Kurse» — пункт в меню ⋮ недели, в дне — круглая кнопка). Spec: `docs/specs/22-kleinigkeiten/spec.md`.
+- **20a «Wahl»:** выбор курсов стирали кнопки «Alle Kurse zeigen» (меню недели) и «… einblenden» (день); пустой выбор на старте значил «все». Теперь старт сохраняет `NO_OPTIONAL`, кнопки включают только режим просмотра `allCourses`.
+- **Alle Kurse:** чужие курсы пунктиром (`notMine`), точка на ⋮, легенда; «Jetzt» и баннер «Neuer Plan» — по своим курсам.
+- **20b Sport:** «Sport · Mädchen / Jungen», в клетке «SpMä / SpJu».
+- **Darstellung:** «Änderung unter dem Tag» — Mi 15:15 / 15.09. / 15.09. 15:15 с превью.
+- **Mehr:** «Seiten» / «Einstellungen»; Statistik из нижней панели (Woche · Klausuren · Mehr) и ПК-меню переехала в Mehr; на ПК «Mehr» вместо «Einstellungen».
+Проверки: lint, 393 теста, build; скриншоты на подменённом API — `/root/work/orbook-compare/22-kleinigkeiten/shots/`.
+**Дальше:** владельцу проверить на демо; потом часть 22b (Neuigkeiten).
