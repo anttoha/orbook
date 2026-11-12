@@ -12,18 +12,21 @@ export const OwnDevicesOnly = ({ className }) => (
 );
 
 // ─────────────────────────────────────────────────────────────
-// QR справа на ПК (макет 25 pc-02): главный путь «ПК → телефон», поэтому виден сразу.
+// QR на ПК (макет 25 pc-02): главный путь «ПК → телефон», поэтому виден сразу, под кодом.
+// На телефоне его нет — там кнопка «QR» в карточке кода открывает шторку
 // ─────────────────────────────────────────────────────────────
 export const SyncQrCard = () => {
   const code = useSyncStore((s) => s.code);
   if (!code) return null;
   return (
-    <aside className="hidden w-86 shrink-0 flex-col items-center rounded-panel bg-card px-5.5 pt-5.5 pb-5.5 text-center lg:flex">
-      <p className="self-start text-hint font-extrabold text-faint">Aufs Handy holen</p>
-      <QrCode value={codeLink("sync", code, window.location.origin)} label="QR-Code mit deinem Sync-Code" className="mt-4 size-60" />
-      <p className="mt-5 text-row font-extrabold text-ink">Mit der Handy-Kamera scannen</p>
-      <p className="mt-1 text-label text-faint">ORBook öffnet sich und fragt kurz nach.</p>
-      <OwnDevicesOnly className="mt-5 flex gap-2 rounded-field bg-sand px-3.25 py-2.5 text-left text-label text-muted" />
-    </aside>
+    <div className="hidden items-center gap-5 rounded-card bg-card p-4 lg:flex">
+      <QrCode value={codeLink("sync", code, window.location.origin)} label="QR-Code mit deinem Sync-Code" className="size-40 shrink-0" />
+      <div className="min-w-0">
+        <p className="text-hint font-extrabold text-faint">Aufs Handy holen</p>
+        <p className="mt-2 text-row font-extrabold text-ink">Mit der Handy-Kamera scannen</p>
+        <p className="mt-1 text-label text-faint">ORBook öffnet sich und fragt kurz nach.</p>
+        <OwnDevicesOnly className="mt-3 flex gap-2 rounded-field bg-sand px-3 py-2.5 text-label text-muted" />
+      </div>
+    </div>
   );
 };

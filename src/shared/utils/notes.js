@@ -59,9 +59,9 @@ export const findNote = (notes, id) => notes.find((n) => n.id === id && !n.delet
 
 // Тексти помилок синхронізації (docs/frontend/06-notizen.md, «Состояния и ошибки»)
 export function syncErrorText(error) {
-  if (error?.message === "wrong_code") return "Code passt nicht zu den Notizen";
-  if (error?.message === "conflict") return "Notizen konnten nicht abgeglichen werden. Später erneut versuchen.";
-  if (error?.message === "too_big") return "Zu viele Notizen zum Synchronisieren";
+  if (error?.message === "wrong_code") return "Code passt nicht zu den Daten";
+  if (error?.message === "conflict") return "Konnte nicht abgeglichen werden. Später erneut versuchen.";
+  if (error?.message === "too_big") return "Zu viel zum Synchronisieren — lösch ein paar alte Notizen oder Aufgaben.";
   if (error?.code === "sync_full") return "Der Sync-Speicher ist voll.";
   if (error?.code === "offline" || error?.code === "timeout") return "Nicht synchronisiert — keine Verbindung";
   return error?.message || "Nicht synchronisiert";

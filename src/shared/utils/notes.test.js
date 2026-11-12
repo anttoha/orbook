@@ -70,7 +70,7 @@ describe("підписи", () => {
   });
 
   it("тексти помилок", () => {
-    expect(syncErrorText(new Error("wrong_code"))).toBe("Code passt nicht zu den Notizen");
+    expect(syncErrorText(new Error("wrong_code"))).toBe("Code passt nicht zu den Daten");
     expect(syncErrorText({ code: "offline" })).toBe("Nicht synchronisiert — keine Verbindung");
     expect(syncErrorText({ code: "sync_full", message: "x" })).toBe("Der Sync-Speicher ist voll.");
   });

@@ -14,7 +14,7 @@ import { useSyncStore } from "../shared/store/syncStore";
 
 // ─────────────────────────────────────────────────────────────
 // «Synchronisieren» (макет 21 / PC 27; часть 25 — handy-07, pc-02): один Sync-Code для всего —
-// Notizen, Aufgaben, Meine Kurse, Darstellung. Что именно — переключатели. На ПК справа QR для телефона.
+// Notizen, Aufgaben, Meine Kurse, Darstellung. Что именно — переключатели. На ПК под кодом сразу QR для телефона.
 // Код создаёт только приложение: свой придумать нельзя.
 // ─────────────────────────────────────────────────────────────
 const NotesSync = () => {
@@ -29,10 +29,10 @@ const NotesSync = () => {
       {!allowed ? (
         <StateScreen icon={SyncIcon} title="Ausgeschaltet" text="Deine Schule hat das Synchronisieren ausgeschaltet. Alles bleibt auf diesem Gerät." />
       ) : (
-        <div className="flex items-start gap-8">
-          <div className="flex min-w-0 flex-1 flex-col gap-4.5 lg:max-w-117.5">
+        <div className="flex flex-col gap-4.5 lg:max-w-186">
             <p className="text-body-sm leading-5.5 text-muted">Alles von diesem Gerät auch auf deinem anderen — ohne Konto und ohne Namen. Code eingeben oder QR scannen, fertig.</p>
             {code ? <SyncCodeCard code={code} /> : <StartSync />}
+            <SyncQrCard />
             <SyncParts />
             <p className="flex gap-2.5 rounded-field bg-tint px-3.25 py-3 text-label text-accent-ink">
               <WarningIcon className="mt-0.5 size-4 shrink-0" />
@@ -40,8 +40,6 @@ const NotesSync = () => {
             </p>
             <ConnectDevice />
             {code && <RenewCode />}
-          </div>
-          <SyncQrCard />
         </div>
       )}
     </section>
