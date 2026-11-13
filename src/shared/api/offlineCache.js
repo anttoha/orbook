@@ -55,7 +55,9 @@ function removeKeys(prefix) {
 // Якщо збереженого немає — кидає помилку далі (екран «Fehler»).
 // Інші помилки (401, 403, 422, 429 …) теж летять далі: це не «немає мережі».
 // classId — кеш іншого класу (карточки «Meine Klassen»); без нього — активний клас
-export async function loadWithCache(key, loader, classId) {
+// classId берём В МОМЕНТ ЗАПРОСА (часть 29): ответ может прийти, когда открыт уже другой класс —
+// тогда копия всё равно ляжет к тому классу, для которого её спрашивали
+export async function loadWithCache(key, loader, classId = currentClassId()) {
   try {
     const data = await loader();
     if (data !== null) cache.save(key, data, classId); // null = 304 «не змінилось» — лишаємо збережене

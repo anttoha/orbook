@@ -8,6 +8,7 @@ export const changelog = [
     version: "0.14.5",
     date: "2026-11-13",
     neu: ["Warst du länger nicht da? „Was ist neu“ zeigt jetzt alles, was du verpasst hast – nicht nur das letzte Update."],
+    behoben: ["Mehrere Klassen: Nach dem Wechseln zeigten Materialien und Termine manchmal noch die der anderen Klasse. Jetzt siehst du immer nur die der Klasse, die offen ist."],
   },
   {
     version: "0.14.4",
