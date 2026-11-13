@@ -3,6 +3,17 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.14.0",
+    date: "2026-11-13",
+    neu: [
+      "Mehrere Klassen auf einem Gerät: deine, die vom kleinen Bruder, eine aus einer anderen Schule. Unter „Meine Klassen“ siehst du alle auf einen Blick – was heute ausfällt und wann der nächste Test ist.",
+      "Klasse wechseln geht mit einem Tipp oben auf „8a ⌄“. Neue Klasse? Einfach den Zugangscode eingeben oder den Einladungslink öffnen.",
+      "„Nebeneinander“: ein Tag, deine Klassen als Spalten – Stunde für Stunde.",
+      "Jede Klasse hat ihre eigenen Kurse, Notizen und Mitteilungen. Name und Farbe der Klasse stellst du selbst ein.",
+      "ORBook gibt’s jetzt auch auf Englisch und Ukrainisch: Mehr → Darstellung → Sprache. Noch nicht alles ist übersetzt, der Rest kommt.",
+    ],
+  },
+  {
     version: "0.13.0",
     date: "2026-11-13",
     neu: [
