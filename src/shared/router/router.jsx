@@ -34,6 +34,8 @@ import AdminChannels from "../../pages/AdminChannels";
 import AdminMaterials from "../../pages/AdminMaterials";
 import AdminAppointments from "../../pages/AdminAppointments";
 import AdminAppointmentEdit from "../../pages/AdminAppointmentEdit";
+import AdminSchools from "../../pages/AdminSchools";
+import ClassManage from "../../pages/ClassManage";
 import AdminSettings from "../../pages/AdminSettings";
 import RouteError from "../../pages/RouteError";
 import Datenschutz from "../../pages/Datenschutz";
@@ -76,6 +78,7 @@ export const router = createBrowserRouter([
           page({ path: "materialien", Component: AdminMaterials }), // усі посилання, видалення (частина 15)
           page({ path: "termine", Component: AdminAppointments }), // усі терміни (частина 18)
           page({ path: "kanaele", Component: AdminChannels }), // Telegram-група класу (частина 27)
+          page({ path: "schulen", Component: AdminSchools }), // школи і класи сервера (частина 29c)
           page({ path: "termine/neu", Component: AdminAppointmentEdit }),
           page({ path: "termine/:id/bearbeiten", Component: AdminAppointmentEdit }),
         ],
@@ -114,6 +117,7 @@ export const router = createBrowserRouter([
               page({ path: "sync", Component: NotesSync }), // Notizen synchronisieren
               page({ path: "mitteilungen", Component: Mitteilungen }), // Web Push (частина 17)
               page({ path: "editor-code", Component: EditorCode }),
+              page({ path: "klasse-verwalten", Component: ClassManage }), // Zugangscodes своего класса (часть 29c)
               page({ path: "neuigkeiten", Component: Neuigkeiten }), // «Was ist neu», все версии (часть 22b)
               page({ path: "datenschutz", Component: Datenschutz }),
             ],

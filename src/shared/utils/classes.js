@@ -190,19 +190,3 @@ export function addClassErrorText(error, t = (s) => s) {
 
 // Lehrer-Code (ORB-L-…) входит через /auth/teacher, всё остальное — через /auth/login
 export const isTeacherCode = (code) => /^ORB-?L-?/i.test(code.trim());
-
-// Админка, поле «Klasse» у нового кода (часть 29, макет handy-14): классы всех школ одним списком.
-// schools — GET /admin/schools; planClasses — { [schoolId]: GET /admin/schools/{id}/classes } (может не быть).
-// Пункт: { value: "1:8b", code: "8b", title: "Klasse 8b", subtitle: "Goethe · neu", schoolId, className, isNew }
-export function adminClassItems(schools, planClasses = {}, t = (s) => s) {
-  return (schools ?? []).flatMap((school) => {
-    const known = new Map((school.classes ?? []).map((c) => [c.name, c.id]));
-    const names = [...new Set([...(planClasses[school.id]?.classes ?? []).map((c) => c.name), ...known.keys()])];
-    names.sort((a, b) => a.localeCompare(b, "de", { numeric: true }));
-    return names.map((name) => {
-      const isNew = !known.has(name);
-      const where = (schools.length > 1 ? [school.name] : []).concat(isNew ? [t("neu")] : []);
-      return { value: `${school.id}:${name}`, code: name, title: `${t("Klasse")} ${name}`, subtitle: where.join(" · ") || null, schoolId: school.id, className: name, isNew };
-    });
-  });
-}

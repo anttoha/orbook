@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addClassErrorText, adminClassItems, classPrefs, classTitle, daySummary, isTeacherCode, mergeClasses, myLessons, nextClassColor, nextClassExam, startTarget, swapClassData, todayCells } from "./classes";
+import { addClassErrorText, classPrefs, classTitle, daySummary, isTeacherCode, mergeClasses, myLessons, nextClassColor, nextClassExam, startTarget, swapClassData, todayCells } from "./classes";
 
 const lesson = (period, code, status = "normal", extra = {}) => ({ period, start: `0${period + 6}:00`, end: `0${period + 6}:45`, status, subject: { code, name: { De: "Deutsch", Ma: "Mathe", En: "Englisch", Ku: "Kunst" }[code] ?? code }, course: null, ...extra });
 
@@ -145,17 +145,3 @@ describe("add class helpers", () => {
   });
 });
 
-describe("adminClassItems", () => {
-  it("lists plan classes, marks new ones, sorts naturally", () => {
-    const schools = [{ id: 1, name: "Goethe", classes: [{ id: 1, name: "8a" }] }];
-    const plan = { 1: { classes: [{ name: "10a", id: null }, { name: "8b", id: null }, { name: "8a", id: 1 }] } };
-    const items = adminClassItems(schools, plan);
-    expect(items.map((i) => i.value)).toEqual(["1:8a", "1:8b", "1:10a"]);
-    expect(items[1]).toMatchObject({ isNew: true, subtitle: "neu", schoolId: 1, className: "8b" });
-    expect(items[0].subtitle).toBeNull();
-  });
-  it("without a plan list shows the existing classes", () => {
-    expect(adminClassItems([{ id: 1, name: "G", classes: [{ id: 2, name: "8b" }] }], {}).map((i) => i.code)).toEqual(["8b"]);
-    expect(adminClassItems(null)).toEqual([]);
-  });
-});

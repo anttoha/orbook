@@ -3,6 +3,9 @@ import Badge from "../ui/Badge";
 import Checkbox from "../ui/Checkbox";
 import Field from "../ui/Field";
 
+// Часть 29: «Klasse verwalten» — Zugangscodes и приглашения своего класса (у Editor- и Lehrer-Code, по умолчанию выкл.)
+const MANAGE_CLASS = { key: "manageClass", label: "Klasse verwalten", isNew: true, hint: "Zugangscodes und Einladungen dieser Klasse" };
+
 // isNew — бейдж «NEU» (права частини 14), hint — сірий рядок під галочкою
 const EDITOR_RIGHTS = [
   { key: "create", label: "Tests eintragen" },
@@ -12,6 +15,7 @@ const EDITOR_RIGHTS = [
   { key: "editTeacher", label: "Lehrer-Einträge ändern", isNew: true, hint: "nur wenn die Lehrkraft es beim Eintrag erlaubt" },
   { key: "materials", label: "Materialien teilen", isNew: true }, // частина 15
   { key: "appointments", label: "Termine eintragen", isNew: true, hint: "Ausflüge, Elternabende, freie Tage" }, // частина 18
+  MANAGE_CLASS,
 ];
 // Lehrer-Code: міняти й видаляти — завжди лише свої, тому тут лише такі галочки (макет handy-11)
 const TEACHER_RIGHTS = [
@@ -19,6 +23,7 @@ const TEACHER_RIGHTS = [
   { key: "homework", label: "Hausaufgaben eintragen" },
   { key: "materials", label: "Materialien teilen", isNew: true, hint: "nur für die eigenen Fächer" },
   { key: "appointments", label: "Termine eintragen", isNew: true, hint: "Kurs-Termine nur für die eigenen Fächer" },
+  MANAGE_CLASS,
 ];
 
 const RightLabel = ({ right }) => (

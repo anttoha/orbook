@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { ChevronRight, Info } from "lucide-react";
 import { useAccessActions } from "../../../shared/hooks/useAccessActions";
+import { useAccessScope } from "../../../shared/hooks/useAccessScope";
 import { useNow } from "../../../shared/hooks/useNow";
-import { useAdminStore } from "../../../shared/store/adminStore";
 import { accessValidChoices, accessValidUntil, audienceChip, choiceFromDevices, customDevicesError, devicesFromChoice, devicesText } from "../../../shared/utils/accessCodes";
 import { labelError, lastUsedText, validText } from "../../../shared/utils/admin";
 import { cn } from "../../../shared/utils/cn";
@@ -128,7 +128,7 @@ const LimitSheet = ({ code, actions, onClose }) => {
 
 const ValiditySheet = ({ code, actions, onClose }) => {
   const { today } = useNow();
-  const yearEnd = useAdminStore((s) => s.settings.data?.settings.school.yearEnd ?? null);
+  const { yearEnd } = useAccessScope();
   const [choice, setChoice] = useState(yearEnd ? "schuljahresende" : "halbjahr");
   const save = () => actions.setValidUntil(code, accessValidUntil(choice, today, yearEnd));
   return (

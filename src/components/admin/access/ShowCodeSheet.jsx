@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { showAccessCode } from "../../../shared/api/admin";
+import { useAccessScope } from "../../../shared/hooks/useAccessScope";
 import Button from "../../ui/Button";
 import { CheckIcon, RenewIcon } from "../../ui/icons";
 import Sheet from "../../ui/Sheet";
@@ -11,16 +11,18 @@ import CodeReveal from "../CodeReveal";
 // ─────────────────────────────────────────────────────────────
 const ShowCodeSheet = ({ code, onClose, onRegenerate }) => {
   const [state, setState] = useState({ status: "loading" }); // loading | ready | hidden | error
+  const { api } = useAccessScope();
 
   useEffect(() => {
     let cancelled = false;
-    showAccessCode(code.id)
+    api
+      .show(code.id)
       .then(({ code: full }) => !cancelled && setState({ status: "ready", full }))
       .catch((error) => !cancelled && setState({ status: error.code === "code_hidden" ? "hidden" : "error", error }));
     return () => {
       cancelled = true;
     };
-  }, [code.id]);
+  }, [api, code.id]);
 
   return (
     <Sheet open onClose={onClose} desktop="dialog" eyebrow={`Zugangscode · ${code.label}`} title="Code anzeigen">

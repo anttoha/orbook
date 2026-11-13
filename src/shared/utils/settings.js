@@ -32,6 +32,7 @@ export const syncHint = (code, lastSyncAt, now = new Date()) => {
 // «Code A» (мітка коду) або «nicht freigeschaltet»
 export const editorHint = (editor) => editor?.label ?? (editor ? "freigeschaltet" : "nicht freigeschaltet");
 
-// Чи показувати розділ «Mehr»: Sync і Statistik школа могла вимкнути, Editor-Code учителю не потрібен
-export const sectionVisible = (section, { syncAllowed, teacher, features }) =>
-  (!section.sync || syncAllowed) && !(section.classOnly && teacher) && isTabEnabled(section, features);
+// Чи показувати розділ «Mehr»: Sync і Statistik школа могла вимкнути, Editor-Code учителю не потрібен,
+// «Klasse verwalten» — лише з правом canManageClass (частина 29c)
+export const sectionVisible = (section, { syncAllowed, teacher, features, canManage = false }) =>
+  (!section.sync || syncAllowed) && !(section.classOnly && teacher) && !(section.manage && !canManage) && isTabEnabled(section, features);

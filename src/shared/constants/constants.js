@@ -1,5 +1,5 @@
-import { Bell, CalendarDays, Ellipsis, FileText, Folder, House, Layers, List, Megaphone, Palette, Server, Sparkles, Sun, Table2, UserRound } from "lucide-react";
-import { FlagIcon, KeyIcon, LockIcon, ShieldIcon, StatsIcon, SyncIcon } from "../../components/ui/icons";
+import { Bell, CalendarDays, Ellipsis, FileText, Folder, House, Layers, List, Megaphone, Palette, Server, Sparkles, Sun, Table2, UserRound, UsersRound } from "lucide-react";
+import { FlagIcon, KeyIcon, LockIcon, SchoolIcon, ShieldIcon, StatsIcon, SyncIcon } from "../../components/ui/icons";
 
 // Масштаб «Schriftgröße» (ті самі відсотки, що в index.css): шкали часу множать на нього пікселі
 export const FONT_SCALES = { 1: 0.9375, 2: 1, 3: 1.125 };
@@ -18,6 +18,8 @@ export const navTabs = [
 // count — лічильник праворуч: "codes" (усі Editor-Codes) або "exams" (найближчі Klausuren)
 export const adminTabs = [
   { to: "/admin", label: "Übersicht", icon: House, exact: true, mobile: true, desktop: true },
+  // часть 29c: школы и классы сервера; телефон — из чипа класса и Einstellungen
+  { to: "/admin/schulen", label: "Schulen & Klassen", icon: SchoolIcon, desktop: true },
   // Lehrer-Codes: на ПК — окремий пункт, на телефоні — друга половина вкладки «Codes» (перемикач, Admin.jsx)
   { to: "/admin/codes", label: "Editor-Codes", short: "Codes", icon: KeyIcon, mobile: true, desktop: true, count: "codes" },
   { to: "/admin/lehrer", label: "Lehrer-Codes", icon: UserRound, desktop: true, count: "teachers" },
@@ -48,6 +50,8 @@ export const settingsSections = [
   { to: "/mehr/mitteilungen", label: "Mitteilungen", icon: Bell, hint: "push", group: "einstellungen", feature: "push" }, // частина 17
   { to: "/mehr/sync", label: "Synchronisieren", icon: SyncIcon, hint: "sync", sync: true, group: "einstellungen" },
   { to: "/mehr/editor-code", label: "Editor-Code", icon: KeyIcon, hint: "editor", classOnly: true, group: "einstellungen" }, // учителю код не потрібен
+  // часть 29c: Zugangscodes своего класса — только с правом «Klasse verwalten» (manage)
+  { to: "/mehr/klasse-verwalten", label: "Klasse verwalten", icon: UsersRound, hint: "manage", manage: true, group: "einstellungen" },
 ];
 
 // Дві групи «Mehr» з підписом праворуч від заголовка (макет 22, частина 22)

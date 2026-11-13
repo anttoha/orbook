@@ -39,9 +39,17 @@ export function setClassHandlers(handlers) {
 }
 export const currentClassId = () => classHandlers.current();
 
-// Запросы без класса: вход, админка (свой выбор класса — часть 29c), Sync (код устройства, не класса)
-const NO_CLASS = ["/admin", "/auth/login", "/auth/teacher", "/auth/join", "/auth/logout", "/auth/leave", "/public", "/sync", "/health"];
+// Часть 29c: у админки свой выбор класса (чип «Admin · 9b ⌄»), он не зависит от класса приложения
+let adminClass = () => null;
+export function setAdminClassHandler(fn) {
+  adminClass = fn;
+}
+
+// Запросы без класса: вход, вход админа, Sync (код устройства, не класса)
+const NO_CLASS = ["/admin/auth", "/auth/login", "/auth/teacher", "/auth/join", "/auth/logout", "/auth/leave", "/public", "/sync", "/health"];
 const classHeader = (path, classId) => (classId != null && !NO_CLASS.some((prefix) => path.startsWith(prefix)) ? { "X-ORBook-Class": String(classId) } : {});
+// Класс по умолчанию: в админке — выбранный админом, в приложении — открытый
+const defaultClass = (path) => (path.startsWith("/admin") ? adminClass() : currentClassId());
 
 // Заголовок для PATCH/DELETE Klausur: версія з останньої відповіді (поле version)
 export const ifMatch = (version) => ({ "If-Match": `"v${version}"` });
@@ -57,7 +65,7 @@ export const examIcsUrl = (id) => `/api/exams/${id}.ics`;
 // Сервер відповів 304 → api повертає null.
 const savedEtags = new Map(); // «клас:шлях» → останній ETag
 
-export async function api(path, { method = "GET", body, signal, headers = {}, timeout = TIMEOUT_MS, conditional = false, classId = currentClassId() } = {}) {
+export async function api(path, { method = "GET", body, signal, headers = {}, timeout = TIMEOUT_MS, conditional = false, classId = defaultClass(path) } = {}) {
   const etagKey = `${classId ?? ""}:${path}`; // у кожного класу свій ETag
   const etagHeader = conditional && savedEtags.has(etagKey) ? { "If-None-Match": savedEtags.get(etagKey) } : {};
   const timer = new AbortController(); // щоб обірвати запит по таймауту

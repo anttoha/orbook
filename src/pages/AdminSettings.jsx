@@ -5,6 +5,7 @@ import { AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import PasswordLinks from "../components/admin/settings/PasswordLinks";
 import ExamTypesLink from "../components/admin/settings/ExamTypesLink";
 import ChannelsLink from "../components/admin/settings/ChannelsLink";
+import ClassesCard from "../components/admin/settings/ClassesCard";
 import DangerZone from "../components/admin/settings/DangerZone";
 import { AppointmentsCard, FeaturesCard, HomeworkCard, MusterCard, PushCard, SecurityCard, UpdateCard } from "../components/admin/settings/OptionCards";
 import PushStats from "../components/admin/settings/PushStats";
@@ -51,6 +52,7 @@ const SettingsForm = ({ data }) => {
       <AdminHeader title="Einstellungen" actions={isDesktop && <SaveButton {...draft} onSave={draft.save} />} />
       <div className="flex flex-col gap-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4">
         <div className={column}>
+          <ClassesCard className="order-1" {...rows} />
           <PasswordLinks className="order-1" />
           <ExamTypesLink className="order-1" count={form.exams?.types?.length} />
           <ChannelsLink className="order-1" />

@@ -59,3 +59,6 @@ export const CalendarIcon = ({ className }) => <Outline d="M6 5h12a3 3 0 0 1 3 3
 
 // «Erzeugen» (пароль придумує сервер): вісім променів, як іскра
 export const SparkIcon = ({ className }) => <Outline d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6" className={className} />;
+
+// Школа (часть 29): дом с дверью — «Schulen & Klassen», «Schule hinzufügen»
+export const SchoolIcon = ({ className }) => <Outline d="M3 21h18M5 21V10l7-5 7 5v11M10 21v-5h4v5M12 10.5v.01" className={className} />;

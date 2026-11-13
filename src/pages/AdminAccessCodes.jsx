@@ -113,7 +113,7 @@ const AdminAccessCodes = () => {
       <AdminNote>{isDesktop ? `${NOTE} Sperren oder Löschen meldet die Geräte dieses Codes sofort ab.` : NOTE}</AdminNote>
       <div>{renderBody()}</div>
 
-      <NewAccessSheet open={params.get("neu") === "1"} onClose={() => setParams({}, { replace: true })} />
+      <NewAccessSheet open={params.get("neu") === "1"} schoolId={Number(params.get("schule")) || null} onClose={() => setParams({}, { replace: true })} />
       <AccessDialogs action={action} password={password} onChange={setAction} onPasswordAction={onAction} />
     </section>
   );

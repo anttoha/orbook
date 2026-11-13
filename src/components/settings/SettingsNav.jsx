@@ -48,7 +48,7 @@ const SettingsNav = () => {
   const syncAllowed = useSyncAllowed(); // школа могла вимкнути синхронізацію
   const me = usePlanStore((s) => s.me);
   const { openSheet } = useSheet();
-  const visible = settingsSections.filter((section) => sectionVisible(section, { syncAllowed, teacher: isTeacher(me), features: me?.features }));
+  const visible = settingsSections.filter((section) => sectionVisible(section, { syncAllowed, teacher: isTeacher(me), features: me?.features, canManage: Boolean(me?.canManageClass) }));
 
   return (
     <nav aria-label="Mehr" className="w-settings-nav shrink-0">

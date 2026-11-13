@@ -1,4 +1,4 @@
-import { Bell, Folder, Info, Palette, Sparkles, Sun, Table2, UserPlus } from "lucide-react";
+import { Bell, Folder, Info, Palette, Sparkles, Sun, Table2, UserPlus, UsersRound } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { version } from "../../package.json";
@@ -111,6 +111,8 @@ const PhoneMenu = () => {
         {/* праворуч — перша група коду, як у макеті: «K7QM-…» */}
         {syncAllowed && <MenuRow to="/mehr/sync" icon={SyncIcon} label="Synchronisieren" value={syncCode ? `${syncCode.slice(0, 4)}-…` : "Aus"} />}
         {!isTeacher(me) && <MenuRow to="/mehr/editor-code" icon={KeyIcon} label="Tests eintragen" value={me?.editor?.label ?? "Editor-Code"} />}
+        {/* часть 29c: учитель или староста с правом «Klasse verwalten» — Zugangscodes своего класса */}
+        {me?.canManageClass && <MenuRow to="/mehr/klasse-verwalten" icon={UsersRound} label="Klasse verwalten" value="Zugangscodes" />}
       </ListCard>
 
       <ListCard>

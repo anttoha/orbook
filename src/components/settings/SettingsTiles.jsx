@@ -56,6 +56,7 @@ const useHints = () => {
     sync: syncHint(syncCode, lastSyncAt),
     push: prefsSummary(pushOn, pushPrefs),
     editor: editorHint(me?.editor),
+    manage: "Zugangscodes · Einladen",
     privacy: "Keine Konten, kein Tracking",
     stats: "Stunden, Ausfälle, Vertretungen",
     news: changelog[0] ? `Neu in ${changelog[0].version} · ${newsDate(changelog[0].date)}` : null,
@@ -79,7 +80,7 @@ const SettingsTiles = () => {
   const syncAllowed = useSyncAllowed();
   const me = usePlanStore((s) => s.me);
   const { openSheet } = useSheet();
-  const visible = settingsSections.filter((section) => section.hint && sectionVisible(section, { syncAllowed, teacher: isTeacher(me), features: me?.features }));
+  const visible = settingsSections.filter((section) => section.hint && sectionVisible(section, { syncAllowed, teacher: isTeacher(me), features: me?.features, canManage: Boolean(me?.canManageClass) }));
 
   return (
     <div className="flex flex-col gap-6">

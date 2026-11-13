@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronRight, Link2, Maximize, Users } from "lucide-react";
 import { useAccessActions } from "../../../shared/hooks/useAccessActions";
 import { DESKTOP_QUERY, useMediaQuery } from "../../../shared/hooks/useMediaQuery";
-import { useAdminStore } from "../../../shared/store/adminStore";
+import { useAccessScope } from "../../../shared/hooks/useAccessScope";
 import { audienceChip, devicesText } from "../../../shared/utils/accessCodes";
 import { inviteUrl } from "../../../shared/utils/invite";
 import Button from "../../ui/Button";
@@ -36,8 +36,8 @@ const Row = ({ icon: Icon, label, hint, checked, onToggle, onClick }) => {
 const InviteSheet = ({ code: start, onClose, onRenew }) => {
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const actions = useAccessActions();
-  const code = useAdminStore((s) => s.access.data?.codes.find((c) => c.id === start.id)) ?? start;
-  const className = useAdminStore((s) => s.settings.data?.settings.school.className ?? null);
+  const { access, className } = useAccessScope();
+  const code = access.data?.codes.find((c) => c.id === start.id) ?? start;
   const [big, setBig] = useState(false);
   const [printing, setPrinting] = useState(false); // «Blatt drucken» вместо QR (часть 25)
   const invite = code.invite;

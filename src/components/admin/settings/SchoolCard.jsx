@@ -10,7 +10,7 @@ import OptionRow from "./OptionRow";
 import SettingsCard from "./SettingsCard";
 
 // Результат «Verbindung testen»: зелена або червона плашка
-const TestResult = ({ result }) => (
+export const TestResult = ({ result }) => (
   <p className={cn("flex min-h-10.5 items-center gap-2 rounded-full px-3.5 text-label", result.ok ? "bg-ok-tint text-ok" : "bg-danger-tint text-danger")}>
     {result.ok ? <CheckIcon className="size-4 shrink-0" /> : <WarningIcon className="size-4 shrink-0" />}
     <span>{result.text}</span>
