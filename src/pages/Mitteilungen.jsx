@@ -10,6 +10,7 @@ import PushPreview from "../components/push/PushPreview";
 import PushPrefs from "../components/push/PushPrefs";
 import PushStatus from "../components/push/PushStatus";
 import QuietCard from "../components/push/QuietCard";
+import TelegramCard from "../components/push/TelegramCard";
 import Button from "../components/ui/Button";
 import { RenewIcon } from "../components/ui/icons";
 import PageHeader from "../components/ui/PageHeader";
@@ -23,7 +24,7 @@ import { courseCount } from "../shared/utils/courses";
 // ─────────────────────────────────────────────────────────────
 // «Mitteilungen» (Soft 26 + макеты части 17). Что приходит и когда — docs/API.md «Mitteilungen».
 // Сверху — что с устройством: включено / ещё нет / iPhone без установки / заблокировано.
-// Ниже — пункты, курсы и Ruhezeit (пока не включено — серым: видно, что будет).
+// Под ней — личный бот Telegram (часть 27b), ниже — пункты, курсы и Ruhezeit (пока не включено — серым).
 // ─────────────────────────────────────────────────────────────
 const Mitteilungen = () => {
   const me = usePlanStore((s) => s.me);
@@ -57,6 +58,7 @@ const Mitteilungen = () => {
       <section className="flex flex-col gap-4.5">
         <PageHeader backTo="/mehr" eyebrow="Mehr" title="Mitteilungen" />
         <StateScreen icon={BellOff} title="Ausgeschaltet" text="Deine Schule hat Mitteilungen gerade ausgeschaltet." />
+        <TelegramCard />
       </section>
     );
   }
@@ -65,6 +67,7 @@ const Mitteilungen = () => {
     <section className="flex flex-col gap-6 lg:max-w-186">
       <PageHeader backTo="/mehr" eyebrow="Mehr" title="Mitteilungen" />
       <Top support={support} on={on} busy={busy} onEnable={turnOn} />
+      <TelegramCard />
       {!on && support !== "ios-install" && <InstallCard />}
       <PushPreview />
       <PushPrefs reminderTime={reminderTime} disabled={!on} />

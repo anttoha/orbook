@@ -91,7 +91,7 @@ const ConnectBody = ({ onClose, onConnected }) => {
 };
 
 // Шаг: номер в круге (или галочка), заголовок, подпись и что-то под ними
-const Step = ({ n, done, title, text, children }) => (
+export const Step = ({ n, done, title, text, children }) => (
   <div className="flex gap-3">
     <span className={cn("grid size-7 shrink-0 place-items-center rounded-full text-label font-black", done ? "bg-ok-tint text-ok" : "bg-tint text-accent-ink")}>
       {done ? <Check className="size-4" /> : n}

@@ -1,6 +1,7 @@
 import { sentLabel } from "../../../shared/utils/channels";
+import { sentWhere } from "../../../shared/utils/telegram";
 
-// «Zuletzt gesendet»: заголовок сообщения, когда и дошло ли
+// «Zuletzt gesendet»: заголовок сообщения, когда и куда (группа или «18 Chats» личного бота)
 const RecentList = ({ items }) => {
   if (!items?.length) return null;
   return (
@@ -14,7 +15,7 @@ const RecentList = ({ items }) => {
               <span className="block text-caption text-faint">{sentLabel(item.sentAt)}</span>
             </span>
             <span className={item.ok ? "shrink-0 text-caption text-muted" : "shrink-0 text-caption font-bold text-danger"}>
-              {item.ok ? "Telegram" : "nicht angekommen"}
+              {sentWhere(item)}
             </span>
           </li>
         ))}

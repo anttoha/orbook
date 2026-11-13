@@ -2,7 +2,7 @@
 // Меняется что-то в данных (новая таблица, cookie, срок) — поправь текст здесь и дату STAND.
 // Формат раздела: title, intro — абзацы, rows — пары [что, пояснение] (cookies, сроки).
 
-export const STAND = "2026-11-12";
+export const STAND = "2026-11-13";
 
 // Коротко — первые строки страницы (макет 27). Иконки подставляет страница по id.
 export const FACTS = [
@@ -65,6 +65,15 @@ export const SECTIONS = [
     ],
   },
   {
+    id: "telegram-bot",
+    title: "Telegram-Bot",
+    intro: [
+      "Nur wenn du ihn selbst verbindest (Mitteilungen → „Mit Telegram verbinden“ oder deinen Zugangscode an den Bot). Dann merkt sich der Server: die Nummer deines Telegram-Chats, was du bekommen willst, deine Ruhezeit und, bei „Meine Kurse“, die Nummern deiner Wahlkurse. Keinen Namen, keinen Benutzernamen, keine Telefonnummer.",
+      "Schickst du dem Bot deinen Zugangscode, löscht er die Nachricht sofort. Der Chat zählt dann als ein Gerät dieses Codes.",
+      "Weg ist alles bei /stop, „Trennen“ in der App, wenn du den Bot blockierst, wenn du dich abmeldest oder der Code ausgeschaltet wird. Die Nachrichten laufen über Telegram, dort gelten die Regeln von Telegram. Der Admin sieht nur, wie viele Chats verbunden sind.",
+    ],
+  },
+  {
     id: "geraet",
     title: "Auf deinem Gerät",
     intro: [
@@ -96,6 +105,7 @@ export const SECTIONS = [
       ["Sync-Daten", "365 Tage ohne Zugriff"],
       ["Mitteilungen", "bis du sie ausschaltest, höchstens 60 Tage ohne Zustellung; was schon geschickt wurde: 14 Tage"],
       ["Telegram-Gruppe", "bis der Admin sie trennt; was geschickt wurde: 30 Tage"],
+      ["Telegram-Bot", "bis du ihn trennst oder blockierst, höchstens 60 Tage ohne Nachricht; was schon geschickt wurde: 14 Tage"],
       ["Protokoll für den Admin", "30 Tage, ohne IP und ohne Namen"],
       ["Sicherungskopien", "14 Tage, vor größeren Änderungen bis zu 60 Tage"],
     ],

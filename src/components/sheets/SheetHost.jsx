@@ -22,6 +22,7 @@ import ShortcutsSheet from "./ShortcutsSheet";
 import WeekPickerSheet from "./WeekPickerSheet";
 import QuietSheet from "../push/QuietSheet";
 import IosInstallSheet from "../push/IosInstallSheet";
+import TelegramSheet from "../push/TelegramSheet";
 import PlanCheckSheet from "../muster/PlanCheckSheet";
 
 // Яке ім'я в адресі (?sheet=…) якій шторці відповідає
@@ -49,6 +50,7 @@ const SHEETS = {
   einladen: ClassInviteSheet, // «Klasse einladen»: посилання і QR (частина 16)
   ruhezeit: QuietSheet, // Mitteilungen → Ruhezeit (частина 17)
   installieren: IosInstallSheet, // «ORBook installieren» на iPhone (частина 17)
+  telegram: TelegramSheet, // «Mit Telegram verbinden» (часть 27b)
 };
 
 // ─────────────────────────────────────────────────────────────

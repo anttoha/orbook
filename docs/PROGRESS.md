@@ -390,3 +390,10 @@ Spec и план бэкенда: `docs/specs/17-pwa-push/spec.md` (миграц�
 Нарисовано: Mitteilungen с карточкой «Telegram» (не подключено → шторка «Mit Telegram verbinden» с ожиданием → «verbunden», «Bot öffnen», «Trennen»); Admin → Kanäle: «Bot läuft», «Persönlicher Bot erlauben», число чатов, группа — одна строка «zusätzlich, optional», «Zuletzt gesendet» с числом чатов.
 Spec, диалоги бота текстом и план бэкенда: `docs/specs/27b-telegram-bot/spec.md` (миграция 0014 `telegram_chats` + `telegram_links`, `/api/telegram/link|status`, `DELETE /api/telegram`, тот же опрос getUpdates и тексты части 27).
 **Дальше:** после «ок дизайн» и «ок» плана бэкенда — в этом же чате или новом (Opus · effort medium): бэкенд в `/opt/orbook-be`, затем `/orb-build`, `/orb-check`.
+**27b готова на демо (2026-11-13).** Владелец: «ок» дизайну и плану.
+- Бэкенд `/opt/orbook-be` `3fff9a2` (1000 тестов): без миграции — личный чат = подписка `telegram:<чат>` в `push_subscriptions`; `channels/chats.py`, `channels/bot.py`, `/api/telegram` (GET, POST link, DELETE), `channels.bot`, в админке `botChats` и `recent[].chats`. Демо перезапущено, health ok. Прод-бэкенд не тронут.
+- Фронт: `components/push/TelegramCard.jsx` + `TelegramSheet.jsx` (`?sheet=telegram`), `telegramStore`, `shared/api/telegram.js`, `shared/utils/telegram.js` (+ тест); админка: `BotCard`, `GroupRow` (группа раскрывается по нажатию), «N Chats» в «Zuletzt gesendet». Datenschutz: раздел «Telegram-Bot» и срок хранения.
+- Отличия от макета: «Für morgen» в боте — в `push.reminderTime` (18:00), как в приложении; WhatsApp-карточка в админке видна всегда.
+- Скриншоты: `/root/work/orbook-compare/27b-telegram-bot/shots/` (`_tools/p27b.mjs`).
+- **Проверить владельцу:** Mehr → Mitteilungen → «Mit Telegram verbinden» → «Starten» в Telegram; в боте /einstellungen, /heute, /stop. Бот на демо работает, если токен введён (`orbook-demo telegram-token`, часть 27).
+**Дальше:** часть 28 (языки), Sonnet · effort low.
