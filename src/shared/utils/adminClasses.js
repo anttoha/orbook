@@ -43,6 +43,13 @@ export function codeTarget(current, schoolId) {
 // Тело запроса нового кода: класс из чипа — без полей (сервер возьмёт X-ORBook-Class), иначе schoolId + className
 export const targetBody = (target, current) => (target?.className && target.id !== current?.id ? { schoolId: target.schoolId, className: target.className } : {});
 
+// Код создан не для класса из чипа → id класса, на который переключить админку (иначе null).
+// result — ответ создания кода: { class: { id, name } | undefined }; current — класс из чипа
+export const otherClassOf = (result, current) => {
+  const id = result?.class?.id ?? null;
+  return id && id !== current?.id ? id : null;
+};
+
 // Плашка у школы: «Plan ok» (план скачан, классы известны), «Nicht getestet», «Zugang fehlt»
 export function schoolStatus(school) {
   if (!school?.passwordSet) return { tone: "danger", label: "Zugang fehlt" };

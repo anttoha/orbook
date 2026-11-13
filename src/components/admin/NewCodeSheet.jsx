@@ -4,7 +4,7 @@ import { useAdminClasses } from "../../shared/hooks/useAdminClasses";
 import { useNow } from "../../shared/hooks/useNow";
 import { useAdminStore } from "../../shared/store/adminStore";
 import { hasRight, labelError } from "../../shared/utils/admin";
-import { codeTarget, targetBody } from "../../shared/utils/adminClasses";
+import { codeTarget, otherClassOf, targetBody } from "../../shared/utils/adminClasses";
 import { cn } from "../../shared/utils/cn";
 import Field from "../ui/Field";
 import Button from "../ui/Button";
@@ -81,7 +81,7 @@ const TeacherPicker = ({ classId, value, onChange, disabled, error }) => {
 
 // Форма: поки код не створено — поля і «Code erzeugen»; після — поля лише для читання, код і «Fertig».
 // kind = "teacher" — Lehrer-Code: замість назви — Kürzel, дві галочки
-const NewCodeForm = ({ yearEnd, onDone, kind }) => {
+const NewCodeForm = ({ yearEnd, onCreated, onDone, kind }) => {
   const { today } = useNow();
   const { current } = useAdminClasses();
   const [target, setTarget] = useState(() => codeTarget(current, null)); // для якого класу код (частина 29)
@@ -107,7 +107,9 @@ const NewCodeForm = ({ yearEnd, onDone, kind }) => {
     try {
       const validValue = valid.choice === "date" ? valid.date : valid.choice;
       const where = targetBody(target, current); // інший або новий клас: schoolId + className
-      setCreated(teacherCode ? await admin.createTeacherCode({ teacher: label.trim(), rights, valid: validValue, ...where }) : await admin.createCode({ label: label.trim(), rights, valid: validValue, ...where }));
+      const result = teacherCode ? await admin.createTeacherCode({ teacher: label.trim(), rights, valid: validValue, ...where }) : await admin.createCode({ label: label.trim(), rights, valid: validValue, ...where });
+      setCreated(result);
+      onCreated(otherClassOf(result, current)); // код другого класу — після закриття покажемо той клас
     } catch (error) {
       setErrors({ form: error.message });
     } finally {
@@ -129,7 +131,7 @@ const NewCodeForm = ({ yearEnd, onDone, kind }) => {
       {errors.form && <p role="alert" className="text-hint text-danger">{errors.form}</p>}
       {created ? (
         <>
-          <CodeReveal code={created.code} masked={created.item.masked} />
+          <CodeReveal code={created.code} masked={created.item.masked} {...(created.class?.name ? { title: `Neuer Code · Klasse ${created.class.name} · nur jetzt sichtbar` } : {})} />
           {/* часть 25: QR и (у Lehrer-Code) лист для печати */}
           <CodeQr code={created.code} kind={kind} teacher={teacherCode ? label.trim() : null} rights={rights} />
           <Button variant="primary" className="flex-none" onClick={onDone}>
@@ -154,18 +156,24 @@ const NewCodeSheet = ({ open, onClose, kind = "editor" }) => {
   const reloadCodes = useAdminStore((s) => s.reloadCodes);
   const reloadOverview = useAdminStore((s) => s.reloadOverview);
   const reloadSchools = useAdminStore((s) => s.reloadSchools);
+  const showClass = useAdminStore((s) => s.showClass);
+  const [otherClass, setOtherClass] = useState(null); // код створено для іншого класу — його id
 
   const close = () => {
-    reloadCodes();
-    reloadOverview();
-    reloadSchools(); // код міг створити новий клас — він з'явиться в чипі
+    if (otherClass) showClass(otherClass); // список покаже коди того класу, де новий код
+    else {
+      reloadCodes();
+      reloadOverview();
+      reloadSchools(); // код міг створити новий клас — він з'явиться в чипі
+    }
+    setOtherClass(null);
     onClose();
   };
 
   return (
     <Sheet open={open} onClose={close} desktop="dialog" eyebrow={kind === "teacher" ? "Admin · Lehrer-Codes" : "Admin · Editor-Codes"} title={kind === "teacher" ? "Neuer Lehrer-Code" : "Neuer Editor-Code"}>
       {/* поки вікно закрите, форми немає: кожне відкриття — нова порожня форма */}
-      {open && settingsReady && <NewCodeForm yearEnd={yearEnd} onDone={close} kind={kind} />}
+      {open && settingsReady && <NewCodeForm yearEnd={yearEnd} onCreated={setOtherClass} onDone={close} kind={kind} />}
     </Sheet>
   );
 };

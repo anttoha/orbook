@@ -5,7 +5,7 @@ import { useNow } from "../../../shared/hooks/useNow";
 import { useAdminStore } from "../../../shared/store/adminStore";
 import { AUDIENCES, accessValidChoices, accessValidUntil, accessValidValue, audienceHint, customDevicesError, defaultDevices, devicesFromChoice } from "../../../shared/utils/accessCodes";
 import { labelError } from "../../../shared/utils/admin";
-import { codeTarget, targetBody } from "../../../shared/utils/adminClasses";
+import { codeTarget, otherClassOf, targetBody } from "../../../shared/utils/adminClasses";
 import { copyText } from "../../../shared/utils/share";
 import { longDate } from "../../../shared/utils/format";
 import Button from "../../ui/Button";
@@ -29,7 +29,7 @@ const Choice = ({ label, hint, options, value, onChange, disabled }) => (
 const REVEAL_NOTE = () => "Gib ihn nur an die Person oder Gruppe weiter, für die er ist. Du siehst ihn später wieder: ⋮ → »Code anzeigen«.";
 
 // Форма: поки код не створено — поля і «Code erstellen»; після — поля лише для читання, код, «Kopieren», «Fertig»
-const NewAccessForm = ({ yearEnd, schoolId, onDone }) => {
+const NewAccessForm = ({ yearEnd, schoolId, onCreated, onDone }) => {
   const { today } = useNow();
   const { current } = useAdminClasses(); // в «Klasse verwalten» классов админки нет — полей «Schule/Klasse» тоже
   const { api } = useAccessScope();
@@ -56,7 +56,9 @@ const NewAccessForm = ({ yearEnd, schoolId, onDone }) => {
     setBusy(true);
     try {
       const body = { label: label.trim(), audience, maxDevices: devicesFromChoice(devices.choice, devices.custom), valid: accessValidValue(valid, today, yearEnd), ...targetBody(target, current) };
-      setCreated(await api.create(body));
+      const result = await api.create(body);
+      setCreated(result);
+      onCreated(otherClassOf(result, current)); // код другого класса — после закрытия покажем тот класс
     } catch (error) {
       setErrors({ form: error.message });
     } finally {
@@ -76,7 +78,7 @@ const NewAccessForm = ({ yearEnd, schoolId, onDone }) => {
       {errors.form && <p role="alert" className="text-hint text-danger">{errors.form}</p>}
       {created ? (
         <>
-          <CodeReveal code={created.code} masked={created.item.masked} title="Neuer Zugangscode" note={REVEAL_NOTE()} />
+          <CodeReveal code={created.code} masked={created.item.masked} title={created.class?.name ? `Neuer Zugangscode · Klasse ${created.class.name}` : "Neuer Zugangscode"} note={REVEAL_NOTE()} />
           <div className="grid grid-cols-2 gap-2.5">
             <Button className="flex-none" onClick={() => copyText(created.code)}>
               <CopyIcon className="size-4" /> Kopieren
@@ -101,14 +103,20 @@ const NewAccessSheet = ({ open, schoolId = null, onClose }) => {
   const { yearEnd, reload, admin } = useAccessScope();
   const settingsReady = useAdminStore((s) => !admin || s.settings.status !== "loading");
   const reloadSchools = useAdminStore((s) => s.reloadSchools);
+  const showClass = useAdminStore((s) => s.showClass);
+  const [otherClass, setOtherClass] = useState(null); // код створено для іншого класу — його id
   const close = () => {
-    reload();
-    if (admin) reloadSchools(); // код міг створити новий клас — він з'явиться в чипі
+    if (admin && otherClass) showClass(otherClass); // список покаже коди того класу, де новий код
+    else {
+      reload();
+      if (admin) reloadSchools(); // код міг створити новий клас — він з'явиться в чипі
+    }
+    setOtherClass(null);
     onClose();
   };
   return (
     <Sheet open={open} onClose={close} desktop="dialog" eyebrow={admin ? "Admin · Zugangscodes" : "Zugangscodes"} title="Neuer Zugangscode">
-      {open && settingsReady && <NewAccessForm yearEnd={yearEnd} schoolId={schoolId} onDone={close} />}
+      {open && settingsReady && <NewAccessForm yearEnd={yearEnd} schoolId={schoolId} onCreated={setOtherClass} onDone={close} />}
     </Sheet>
   );
 };

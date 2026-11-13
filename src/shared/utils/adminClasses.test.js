@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { adminClassColor, adminClassList, classStats, codeTarget, pickAdminClass, targetBody, schoolClassOptions, schoolLine, schoolStatus } from "./adminClasses";
+import { adminClassColor, adminClassList, classStats, codeTarget, otherClassOf, pickAdminClass, targetBody, schoolClassOptions, schoolLine, schoolStatus } from "./adminClasses";
 
 const SCHOOLS = [
   { id: 2, name: "Schiller-Schule", number: null, passwordSet: true, classesInPlan: 0, classes: [{ id: 3, name: "7c" }] },
@@ -71,5 +71,15 @@ describe("класс нового кода", () => {
     expect(targetBody({ schoolId: 1, className: "5a", id: 2 }, current)).toEqual({});
     expect(targetBody({ schoolId: 1, className: "8a", id: null, isNew: true }, current)).toEqual({ schoolId: 1, className: "8a" });
     expect(targetBody(null, current)).toEqual({});
+  });
+});
+
+describe("otherClassOf", () => {
+  it("код для другого класса — переключиться на него; для своего или старый сервер без class — нет", () => {
+    const current = { id: 1, name: "8a" };
+    expect(otherClassOf({ class: { id: 2, name: "07B" } }, current)).toBe(2);
+    expect(otherClassOf({ class: { id: 1, name: "8a" } }, current)).toBeNull();
+    expect(otherClassOf({ code: "X" }, current)).toBeNull();
+    expect(otherClassOf(null, current)).toBeNull();
   });
 });

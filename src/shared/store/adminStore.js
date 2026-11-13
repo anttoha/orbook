@@ -93,6 +93,13 @@ export const useAdminStore = create((set, get) => {
     reloadTeachers: () => load("teachers", admin.loadTeachers),
     reloadAccess: () => load("access", admin.loadAccessCodes),
     reloadSettings: () => load("settings", admin.loadSettings),
+    // Код создан для другого (или нового) класса: переключить админку на него — иначе код не виден в списке
+    // (список показывает коды класса из чипа). Сначала свежие классы: нового класса в чипе ещё нет
+    showClass: async (id) => {
+      if (!id || id === get().classId) return;
+      await get().reloadSchools();
+      get().setClass(id);
+    },
     reloadSchools: async () => {
       const data = await load("schools", admin.loadSchools);
       // Запомненного класса больше нет (удалили) — назад к первому классу сервера

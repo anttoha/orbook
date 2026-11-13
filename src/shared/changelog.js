@@ -3,6 +3,11 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.14.1",
+    date: "2026-11-13",
+    behoben: ["Admin: Ein Code für eine andere Klasse war gespeichert, aber nicht zu sehen. Jetzt springt die Liste nach „Fertig“ zu dieser Klasse, und beim neuen Code steht, für welche Klasse er ist."],
+  },
+  {
     version: "0.14.0",
     date: "2026-11-13",
     neu: [
