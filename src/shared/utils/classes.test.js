@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addClassErrorText, classPrefs, classTitle, daySummary, isTeacherCode, mergeClasses, myLessons, nextClassColor, nextClassExam, startTarget, swapClassData, todayCells } from "./classes";
+import { addClassErrorText, classPrefs, classTitle, daySummary, inDaysText, isTeacherCode, mergeClasses, myLessons, nextClassColor, nextClassExam, nextExamAcross, sideBySideRows, startTarget, swapClassData, todayCells } from "./classes";
 
 const lesson = (period, code, status = "normal", extra = {}) => ({ period, start: `0${period + 6}:00`, end: `0${period + 6}:45`, status, subject: { code, name: { De: "Deutsch", Ma: "Mathe", En: "Englisch", Ku: "Kunst" }[code] ?? code }, course: null, ...extra });
 
@@ -145,3 +145,23 @@ describe("add class helpers", () => {
   });
 });
 
+
+describe("Nebeneinander", () => {
+  it("строки по урокам, не меньше 7, время из Stundenzeiten или из урока", () => {
+    const rows = sideBySideRows([[lesson(1, "De"), lesson(2, "Ma"), lesson(2, "En")], [lesson(1, "Ma"), lesson(8, "Ku")]], [{ period: 1, start: "07:30" }]);
+    expect(rows).toHaveLength(8);
+    expect(rows[0].start).toBe("07:30");
+    expect(rows[1].start).toBe("08:00");
+    expect(rows[1].cells.map((cell) => cell.length)).toEqual([2, 0]);
+    expect(rows[6].cells).toEqual([[], []]);
+    expect(sideBySideRows([[], []])).toHaveLength(7);
+  });
+  it("ближайший тест среди классов", () => {
+    const a = { item: { id: 1 }, exams: [{ id: 1, date: "2026-09-18", type: "Test", subject: { code: "Ma", name: "Mathe" } }], subjects: new Set() };
+    const b = { item: { id: 2 }, exams: [{ id: 9, date: "2026-09-17", type: "Test", subject: { code: "Ku", name: "Kunst" } }], subjects: new Set(["Ma"]) };
+    expect(nextExamAcross([a, b], "2026-09-16")).toEqual({ item: { id: 1 }, text: "Fr · Mathe-Test", when: "in 2 Tagen" });
+    expect(nextExamAcross([], "2026-09-16")).toBeNull();
+    expect(inDaysText("2026-09-16", "2026-09-16")).toBe("heute");
+    expect(inDaysText("2026-09-16", "2026-09-17")).toBe("morgen");
+  });
+});

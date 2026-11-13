@@ -190,3 +190,39 @@ export function addClassErrorText(error, t = (s) => s) {
 
 // Lehrer-Code (ORB-L-…) входит через /auth/teacher, всё остальное — через /auth/login
 export const isTeacherCode = (code) => /^ORB-?L-?/i.test(code.trim());
+
+// ── «Nebeneinander» (часть 29c, макет handy-02): один день, классы колонками ──
+
+// Строки урок за уроком: { period, start, cells: [уроки колонки 1, уроки колонки 2, …] }.
+// columns — уроки каждого класса (уже по «Meine Kurse»). Строк не меньше 7 — сетка как на макете
+export function sideBySideRows(columns, lessonTimes = []) {
+  const all = columns.flat();
+  const last = Math.max(7, ...all.map((lesson) => lesson.period));
+  return Array.from({ length: last }, (_, i) => {
+    const period = i + 1;
+    const start = lessonTimes?.find((time) => time.period === period)?.start ?? all.find((lesson) => lesson.period === period)?.start ?? "";
+    return { period, start, cells: columns.map((lessons) => lessons.filter((lesson) => lesson.period === period)) };
+  });
+}
+
+// «heute», «morgen», «in 2 Tagen»
+export function inDaysText(today, date, t = (s) => s) {
+  const left = daysBetween(today, date);
+  if (left <= 0) return t("heute");
+  if (left === 1) return t("morgen");
+  return `${t("in")} ${left} ${t("Tagen")}`;
+}
+
+// Ближайший тест среди всех колонок: entries — [{ item, exams, subjects }] (subjects — коды «Meine Kurse»).
+// → { item, text: «Fr · Mathe-Test», when: «in 2 Tagen» } или null
+export function nextExamAcross(entries, today, t = (s) => s) {
+  const found = entries
+    .map((entry) => {
+      const next = nextClassExam(entry.exams, entry.subjects, today);
+      const exam = next && entry.exams.find((item) => item.id === next.id);
+      return exam ? { item: entry.item, text: next.text, date: exam.date } : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.date.localeCompare(b.date))[0];
+  return found ? { item: found.item, text: found.text, when: inDaysText(today, found.date, t) } : null;
+}
