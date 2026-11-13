@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { adminClassColor, adminClassList, classStats, codeTarget, otherClassOf, pickAdminClass, targetBody, schoolClassOptions, schoolLine, schoolStatus } from "./adminClasses";
+import { adminClassColor, adminClassList, classStats, codeTarget, mergeClassCodes, pickAdminClass, targetBody, schoolClassOptions, schoolLine, schoolStatus } from "./adminClasses";
 
 const SCHOOLS = [
   { id: 2, name: "Schiller-Schule", number: null, passwordSet: true, classesInPlan: 0, classes: [{ id: 3, name: "7c" }] },
@@ -74,12 +74,18 @@ describe("класс нового кода", () => {
   });
 });
 
-describe("otherClassOf", () => {
-  it("код для другого класса — переключиться на него; для своего или старый сервер без class — нет", () => {
-    const current = { id: 1, name: "8a" };
-    expect(otherClassOf({ class: { id: 2, name: "07B" } }, current)).toBe(2);
-    expect(otherClassOf({ class: { id: 1, name: "8a" } }, current)).toBeNull();
-    expect(otherClassOf({ code: "X" }, current)).toBeNull();
-    expect(otherClassOf(null, current)).toBeNull();
+describe("mergeClassCodes", () => {
+  it("коды всех классов с меткой класса, Klassenpasswort — от класса № 1", () => {
+    const merged = mergeClassCodes([
+      { item: { id: 1, name: "8a" }, data: { codes: [{ id: 1, label: "Eltern" }], classPassword: { enabled: true } } },
+      { item: { id: 2, name: "07B" }, data: { codes: [{ id: 3, label: "Turio" }, { id: 4, label: "Turio" }], classPassword: null } },
+    ]);
+    expect(merged.codes.map((c) => `${c.className}:${c.id}`)).toEqual(["8a:1", "07B:3", "07B:4"]);
+    expect(merged.classPassword).toEqual({ enabled: true });
+    expect(merged.classPasswordClassId).toBe(1);
+  });
+  it("класс без ответа (ошибка) — просто без кодов", () => {
+    expect(mergeClassCodes([{ item: { id: 2, name: "07B" }, data: null }]).codes).toEqual([]);
+    expect(mergeClassCodes([]).classPassword).toBeNull();
   });
 });

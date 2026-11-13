@@ -5,6 +5,9 @@
 // ─────────────────────────────────────────────────────────────
 import { api, ifMatch } from "./api";
 
+// Часть 29: запрос от имени класса кода (в списке коды всех классов). Нет classId — класс из чипа
+const asClass = (classId) => (classId ? { classId } : {});
+
 // ── Вхід ──
 export const adminMe = () => api("/admin/auth/me");
 export const adminLogin = (password) => api("/admin/auth/login", { method: "POST", body: { password } });
@@ -16,14 +19,15 @@ export const loadClasses = () => api("/admin/plan/classes");
 export const refreshPlan = () => api("/admin/plan/refresh", { method: "POST" });
 
 // ── Editor-Codes ──
-export const loadCodes = () => api("/admin/codes");
+export const loadCodes = (classId) => api("/admin/codes", asClass(classId));
 // → { code, item }: повний код є ТІЛЬКИ в цій відповіді
 // schoolId + className (частина 29) — код для цього класу; без них — клас із чипа адмінки
 export const createCode = ({ label, rights, valid, schoolId, className }) => api("/admin/codes", { method: "POST", body: { label, rights, valid, schoolId, className } });
 // changes: будь-що з { label, rights, validUntil, active }
-export const updateCode = (id, changes) => api(`/admin/codes/${id}`, { method: "PATCH", body: changes });
-export const regenerateCode = (id) => api(`/admin/codes/${id}/regenerate`, { method: "POST" });
-export const deleteCode = (id) => api(`/admin/codes/${id}`, { method: "DELETE" });
+// classId — класс этого кода (см. asClass)
+export const updateCode = (id, changes, classId) => api(`/admin/codes/${id}`, { method: "PATCH", body: changes, ...asClass(classId) });
+export const regenerateCode = (id, classId) => api(`/admin/codes/${id}/regenerate`, { method: "POST", ...asClass(classId) });
+export const deleteCode = (id, classId) => api(`/admin/codes/${id}`, { method: "DELETE", ...asClass(classId) });
 
 // ── Lehrer-Codes (частина 14) ──
 // → { teachers: [{ short, subjects: ["Ma"], codeId }] }: Kürzel із плану класу; codeId — діючий Lehrer-Code або null
@@ -126,21 +130,22 @@ function accessApi(base) {
   return {
     // → { codes: [{ id, label, masked, audience, maxDevices | null, devices, validUntil, active, status, lastUsedAt | null }],
     //     classPassword: { enabled, devices, changedAt | null, lastUsedAt | null } } (classPassword — только у админа)
-    list: () => api(base),
+    list: (classId) => api(base, asClass(classId)),
     // → { code, item }: повний код ORB-A-… є ТІЛЬКИ в цій відповіді. maxDevices: null — без ліміту
     // schoolId + className (частина 29, лише адмін) — код для іншого класу; клас, якого ще немає, з'являється з цим кодом
     create: ({ label, audience, maxDevices, valid, schoolId, className }) => api(base, { method: "POST", body: { label, audience, maxDevices, valid, schoolId, className } }),
     // changes: будь-що з { label, maxDevices, validUntil, active } → { item, signedOut }. active: false — пристрої коду виходять
-    update: (id, changes) => api(`${base}/${id}`, { method: "PATCH", body: changes }),
-    regenerate: (id) => api(`${base}/${id}/regenerate`, { method: "POST" }), // → { code, item, signedOut }
-    signOut: (id) => api(`${base}/${id}/sign-out`, { method: "POST" }), // → { signedOut }
-    remove: (id) => api(`${base}/${id}`, { method: "DELETE" }), // → { signedOut }
+    // classId (последний параметр везде) — класс этого кода; нет — класс из чипа / свой класс
+    update: (id, changes, classId) => api(`${base}/${id}`, { method: "PATCH", body: changes, ...asClass(classId) }),
+    regenerate: (id, classId) => api(`${base}/${id}/regenerate`, { method: "POST", ...asClass(classId) }), // → { code, item, signedOut }
+    signOut: (id, classId) => api(`${base}/${id}/sign-out`, { method: "POST", ...asClass(classId) }), // → { signedOut }
+    remove: (id, classId) => api(`${base}/${id}`, { method: "DELETE", ...asClass(classId) }), // → { signedOut }
     // Повний Zugangscode ще раз (власник 07.11) → { code }; старий код без шифру → 409 code_hidden
-    show: (id) => api(`${base}/${id}/code`),
+    show: (id, classId) => api(`${base}/${id}/code`, asClass(classId)),
     // Посилання-запрошення групового коду (частина 16): створити або замінити (стара адреса перестає працювати) → { item }
-    renewInvite: (id) => api(`${base}/${id}/invite`, { method: "POST" }),
+    renewInvite: (id, classId) => api(`${base}/${id}/invite`, { method: "POST", ...asClass(classId) }),
     // { active?, shared? }: вимкнути посилання / показати його учням (таке посилання одне на клас) → { item }
-    updateInvite: (id, changes) => api(`${base}/${id}/invite`, { method: "PATCH", body: changes }),
+    updateInvite: (id, changes, classId) => api(`${base}/${id}/invite`, { method: "PATCH", body: changes, ...asClass(classId) }),
   };
 }
 export const adminAccess = accessApi("/admin/access-codes");
@@ -148,8 +153,9 @@ export const classAccess = accessApi("/class/access-codes");
 export const loadAccessCodes = adminAccess.list;
 
 // Старий пароль класу: вимкнути можна лише при робочому коді (інакше 409 last_access). → { classPassword, signedOut }
-export const setClassPasswordEnabled = (enabled) => api("/admin/access-codes/class-password", { method: "PATCH", body: { enabled } });
-export const signOutClassPassword = () => api("/admin/access-codes/class-password/sign-out", { method: "POST" }); // → { signedOut }
+// classId — класс, у которого Klassenpasswort (№ 1), даже если в чипе другой класс
+export const setClassPasswordEnabled = (enabled, classId) => api("/admin/access-codes/class-password", { method: "PATCH", body: { enabled }, ...asClass(classId) });
+export const signOutClassPassword = (classId) => api("/admin/access-codes/class-password/sign-out", { method: "POST", ...asClass(classId) }); // → { signedOut }
 
 // ── Schulen & Klassen (часть 29) ──
 // → { schools: [{ id, name, number, baseUrl, passwordSet, classesInPlan, classes: [{ id, name, devices, codes, exams }] }] }

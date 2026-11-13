@@ -9,7 +9,8 @@ import { useAccessScope } from "./useAccessScope";
 // Запити — адміна або «Klasse verwalten» (useAccessScope).
 // ─────────────────────────────────────────────────────────────
 export function useAccessActions() {
-  const { api, reload: reloadAccess } = useAccessScope();
+  const { api, reload: reloadAccess, access } = useAccessScope();
+  const passwordClass = access.data?.classPasswordClassId ?? undefined; // Klassenpasswort — у класу № 1
 
   const run = async (request, title) => {
     try {
@@ -23,21 +24,21 @@ export function useAccessActions() {
     }
   };
   const name = (code) => `»${code.label}«`;
-  const update = (code, changes, title) => run(() => api.update(code.id, changes), title);
+  const update = (code, changes, title) => run(() => api.update(code.id, changes, code.classId), title);
 
   return {
     toggle: (code) => update(code, { active: !code.active }, `${name(code)} ${code.active ? "gesperrt" : "entsperrt"}`),
     rename: (code, label) => update(code, { label: label.trim() }, "Umbenannt"),
     setLimit: (code, maxDevices) => update(code, { maxDevices }, "Geräte-Limit geändert"),
     setValidUntil: (code, validUntil) => update(code, { validUntil }, "Gültigkeit geändert"),
-    signOut: (code) => run(() => api.signOut(code.id), name(code)),
-    regenerate: (code) => run(() => api.regenerate(code.id)), // → { code, item, signedOut }: показати новий код
-    remove: (code) => run(() => api.remove(code.id), `${name(code)} gelöscht`),
-    setPassword: (enabled) => run(() => admin.setClassPasswordEnabled(enabled), enabled ? "Klassenpasswort eingeschaltet" : "Klassenpasswort ausgeschaltet"),
-    signOutPassword: () => run(() => admin.signOutClassPassword(), "Klassenpasswort"),
+    signOut: (code) => run(() => api.signOut(code.id, code.classId), name(code)),
+    regenerate: (code) => run(() => api.regenerate(code.id, code.classId)), // → { code, item, signedOut }: показати новий код
+    remove: (code) => run(() => api.remove(code.id, code.classId), `${name(code)} gelöscht`),
+    setPassword: (enabled) => run(() => admin.setClassPasswordEnabled(enabled, passwordClass), enabled ? "Klassenpasswort eingeschaltet" : "Klassenpasswort ausgeschaltet"),
+    signOutPassword: () => run(() => admin.signOutClassPassword(passwordClass), "Klassenpasswort"),
     // Посилання-запрошення (частина 16). Перше створюємо мовчки — людина просто відкрила «Einladen»
-    createInvite: (code) => run(() => api.renewInvite(code.id)),
-    renewInvite: (code) => run(() => api.renewInvite(code.id), "Neuer Link erstellt · der alte geht nicht mehr"),
-    setInvite: (code, changes, title) => run(() => api.updateInvite(code.id, changes), title),
+    createInvite: (code) => run(() => api.renewInvite(code.id, code.classId)),
+    renewInvite: (code) => run(() => api.renewInvite(code.id, code.classId), "Neuer Link erstellt · der alte geht nicht mehr"),
+    setInvite: (code, changes, title) => run(() => api.updateInvite(code.id, changes, code.classId), title),
   };
 }

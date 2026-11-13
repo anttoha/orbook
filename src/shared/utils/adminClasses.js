@@ -43,12 +43,20 @@ export function codeTarget(current, schoolId) {
 // Тело запроса нового кода: класс из чипа — без полей (сервер возьмёт X-ORBook-Class), иначе schoolId + className
 export const targetBody = (target, current) => (target?.className && target.id !== current?.id ? { schoolId: target.schoolId, className: target.className } : {});
 
-// Код создан не для класса из чипа → id класса, на который переключить админку (иначе null).
-// result — ответ создания кода: { class: { id, name } | undefined }; current — класс из чипа
-export const otherClassOf = (result, current) => {
-  const id = result?.class?.id ?? null;
-  return id && id !== current?.id ? id : null;
-};
+// Коды всех классов одним списком (владелец 13.11: «в панели — все коды, что есть на сервере»).
+// parts — [{ item: { id, name }, data: ответ /admin/codes или /admin/access-codes этого класса }].
+// Каждому коду — classId/className (по ним действия идут от имени его класса и рисуется метка класса).
+// Klassenpasswort есть только у одного класса (№ 1) — запоминаем, у какого.
+export function mergeClassCodes(parts) {
+  const codes = parts.flatMap(({ item, data }) => (data?.codes ?? []).map((code) => ({ ...code, classId: item.id, className: item.name })));
+  const withPassword = parts.find(({ data }) => data?.classPassword);
+  return {
+    ...(parts[0]?.data ?? {}),
+    codes,
+    classPassword: withPassword?.data.classPassword ?? null,
+    classPasswordClassId: withPassword?.item.id ?? null,
+  };
+}
 
 // Плашка у школы: «Plan ok» (план скачан, классы известны), «Nicht getestet», «Zugang fehlt»
 export function schoolStatus(school) {

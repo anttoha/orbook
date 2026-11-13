@@ -6,6 +6,7 @@ import Switch from "../../ui/Switch";
 import CodeMenu from "../CodeMenu";
 import { accessActions, passwordActions } from "./accessActions";
 import { FullChip, LinkChip, StatusChip } from "./AccessChips";
+import ClassTag from "../schools/ClassTag";
 
 const th = "pb-3 text-left text-hint font-extrabold text-faint";
 const HEAD = ["Bezeichnung", "Für", "Code", "Geräte", "Gültig bis", "Zuletzt", "Status"];
@@ -51,7 +52,11 @@ const AccessTable = ({ codes, password, today, onToggle, onAction, onPasswordTog
         <Row
           key={code.id}
           active={code.active}
-          cells={[code.label, audienceShort(code.audience), code.masked, devicesShort(code.devices, code.maxDevices), validText(code), lastUsedDay(code.lastUsedAt, today)]}
+          cells={[
+            <span key="label" className="flex items-center gap-2">
+              {code.label} <ClassTag code={code} />
+            </span>,
+            audienceShort(code.audience), code.masked, devicesShort(code.devices, code.maxDevices), validText(code), lastUsedDay(code.lastUsedAt, today)]}
           status={
             <>
               <StatusChip code={code} />

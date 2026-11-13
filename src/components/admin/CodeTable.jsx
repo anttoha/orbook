@@ -2,6 +2,7 @@ import { entriesCount, lastUsedDay, rightsText, validText } from "../../shared/u
 import { cn } from "../../shared/utils/cn";
 import Switch from "../ui/Switch";
 import CodeChip from "./CodeChip";
+import ClassTag from "./schools/ClassTag";
 import CodeMenu from "./CodeMenu";
 
 const th = "pb-3 text-left text-hint font-extrabold text-faint";
@@ -28,7 +29,11 @@ const CodeTable = ({ codes, today, compact = false, onToggle, onAction, subjects
     <tbody className="divide-y divide-hair">
       {codes.map((code) => (
         <tr key={code.id} className={cn("text-body-sm text-muted", !code.active && "opacity-60")}>
-          <td className="py-4 pr-3 font-extrabold text-ink">{code.label}</td>
+          <td className="py-4 pr-3 font-extrabold text-ink">
+            <span className="flex items-center gap-2">
+              {code.label} <ClassTag code={code} />
+            </span>
+          </td>
           {subjectsOf && <td className="pr-3">{subjectsOf(code)}</td>}
           <td className="pr-3 whitespace-nowrap text-ink">{code.masked}</td>
           <td className="pr-3">{rightsText(code.rights, code.kind)}</td>

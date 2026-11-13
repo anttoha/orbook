@@ -1,6 +1,7 @@
 import { audienceChip, hasLink, isFull } from "../../../shared/utils/accessCodes";
 import { codeChip } from "../../../shared/utils/admin";
 import Badge from "../../ui/Badge";
+import ClassTag from "../schools/ClassTag";
 
 // Чипи коду: GRUPPE (фіолетовий) або PERSÖNLICH (пісочний); ще GESPERRT/ABGELAUFEN, якщо не діє.
 // withStatus — телефон (на ПК статус окремою колонкою)
@@ -18,6 +19,7 @@ export const LinkChip = ({ code }) => (hasLink(code) ? <Badge variant="ok">Link<
 
 export const CodeChips = ({ code }) => (
   <>
+    <ClassTag code={code} />
     <AudienceChip audience={code.audience} />
     {code.status !== "ok" ? <StatusChip code={code} /> : <FullChip code={code} />}
     <LinkChip code={code} />

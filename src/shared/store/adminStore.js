@@ -1,12 +1,13 @@
 import { create } from "zustand";
 import { setAdminClassHandler, setAdminUnauthorizedHandler } from "../api/api";
 import * as admin from "../api/admin";
+import { adminClassList, mergeClassCodes } from "../utils/adminClasses";
 
 // ─────────────────────────────────────────────────────────────
 // Стан адмінки, спільний для кількох екранів:
 //   authed    — undefined: ще питаємо сервер; false: показати «Admin · Login»; true: всередині
 //   overview  — GET /admin/overview (сайдбар, Übersicht, лічильники)
-//   codes     — GET /admin/codes (Übersicht на ПК, Editor-Codes, лічильник у меню)
+//   codes     — GET /admin/codes (Übersicht на ПК, Editor-Codes, лічильник у меню) — коды ВСЕХ классов
 //   settings  — GET /admin/settings (Einstellungen, Kurse, «Schuljahresende» коду)
 // Кожен ресурс: { status: "loading" | "ready" | "error", data, error }.
 //   schools   — GET /admin/schools (часть 29c: чип класса, «Schulen & Klassen», поля «Schule/Klasse»)
@@ -50,6 +51,17 @@ export const useAdminStore = create((set, get) => {
     }
   };
 
+  // Коды всех классов (владелец 13.11): по запросу на класс, вместе одним списком с меткой класса.
+  // Один класс (или старый сервер без школ) — один обычный запрос, как раньше
+  const allClasses = async (request) => {
+    const schools = get().schools.data ?? (await get().reloadSchools());
+    const list = adminClassList(schools?.schools);
+    if (list.length < 2) return request();
+    const parts = await Promise.all(list.map(async (item) => ({ item, data: await request(item.id).catch(() => null) })));
+    if (parts.every((part) => !part.data)) return request(); // ни один класс не ответил — покажем ошибку обычного запроса
+    return mergeClassCodes(parts);
+  };
+
   return {
     authed: undefined,
     loginNotice: null, // «Bitte erneut anmelden.», коли сесія закінчилась
@@ -89,17 +101,10 @@ export const useAdminStore = create((set, get) => {
     },
 
     reloadOverview: () => load("overview", admin.loadOverview),
-    reloadCodes: () => load("codes", admin.loadCodes),
+    reloadCodes: () => load("codes", () => allClasses(admin.loadCodes)),
     reloadTeachers: () => load("teachers", admin.loadTeachers),
-    reloadAccess: () => load("access", admin.loadAccessCodes),
+    reloadAccess: () => load("access", () => allClasses(admin.loadAccessCodes)),
     reloadSettings: () => load("settings", admin.loadSettings),
-    // Код создан для другого (или нового) класса: переключить админку на него — иначе код не виден в списке
-    // (список показывает коды класса из чипа). Сначала свежие классы: нового класса в чипе ещё нет
-    showClass: async (id) => {
-      if (!id || id === get().classId) return;
-      await get().reloadSchools();
-      get().setClass(id);
-    },
     reloadSchools: async () => {
       const data = await load("schools", admin.loadSchools);
       // Запомненного класса больше нет (удалили) — назад к первому классу сервера

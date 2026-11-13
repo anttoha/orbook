@@ -16,13 +16,13 @@ const ShowCodeSheet = ({ code, onClose, onRegenerate }) => {
   useEffect(() => {
     let cancelled = false;
     api
-      .show(code.id)
+      .show(code.id, code.classId)
       .then(({ code: full }) => !cancelled && setState({ status: "ready", full }))
       .catch((error) => !cancelled && setState({ status: error.code === "code_hidden" ? "hidden" : "error", error }));
     return () => {
       cancelled = true;
     };
-  }, [api, code.id]);
+  }, [api, code.id, code.classId]);
 
   return (
     <Sheet open onClose={onClose} desktop="dialog" eyebrow={`Zugangscode · ${code.label}`} title="Code anzeigen">
