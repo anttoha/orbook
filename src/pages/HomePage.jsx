@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { TriangleAlert } from "lucide-react";
 import AuthPage from "./AuthPage";
@@ -19,6 +19,7 @@ import { useNewsOnStart } from "../shared/hooks/useNewsOnStart";
 import { useTipsOnStart } from "../shared/hooks/useTipsOnStart";
 import { usePlanLive } from "../shared/hooks/usePlanLive";
 import { usePushOnStart } from "../shared/hooks/usePushOnStart";
+import { useActiveClass } from "../shared/store/classesStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { cn } from "../shared/utils/cn";
@@ -40,10 +41,12 @@ const HomePage = () => {
   const demo = usePlanStore((s) => s.meta?.demo); // демо-сервер?
   // чи пройдено вибір курсів. Учителю він не потрібен: бачить увесь план класу (змінити можна в «Meine Kurse»)
   const coursesChosen = useUserStore((s) => s.coursesChosen) || isTeacher(me);
-  const fullScreen = isFullScreenPage(useLocation().pathname); // форма: без меню, кнопки притиснуті донизу
+  const { pathname } = useLocation();
+  const fullScreen = isFullScreenPage(pathname); // форма: без меню, кнопки притиснуті донизу
   const page = usePageAnimation(); // перехід між сторінками: справа, зліва або плавно
   const link = useLinkCode((s) => s.link); // код із посилання (QR), частина 25
   const syncAllowed = me?.features?.notesSync !== false;
+  const activeGone = useActiveClass()?.gone; // код відкритого класу вимкнули (частина 29)
 
   // Один раз при відкритті: дізнатись, чи ми увійшли
   useEffect(() => {
@@ -82,7 +85,9 @@ const HomePage = () => {
   if (!me) return <AuthPage />; // не увійшли — екран входу
   // відкрили QR зі Sync-Code (частина 25): спершу «Gerät verbinden?» — курси, найімовірніше, прийдуть з коду
   if (link?.kind === "sync" && syncAllowed) return <SyncConnect code={link.code} />;
-  if (!coursesChosen) return <CourseStart />; // перший запуск на цьому пристрої
+  // відкритий клас більше не працює — на «Meine Klassen»: там картка «Zugang beendet», інші класи працюють
+  if (activeGone && pathname !== "/klassen") return <Navigate to="/klassen" replace />;
+  if (!coursesChosen && pathname !== "/klassen") return <CourseStart />; // перший запуск на цьому пристрої (або в новому класі)
 
   return (
     // Tooltip.Provider — спільний «пульт» для спливаючих підказок (затримка 300 мс)

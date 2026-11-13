@@ -24,6 +24,8 @@ import QuietSheet from "../push/QuietSheet";
 import IosInstallSheet from "../push/IosInstallSheet";
 import TelegramSheet from "../push/TelegramSheet";
 import PlanCheckSheet from "../muster/PlanCheckSheet";
+import AddClassSheet from "./AddClassSheet";
+import ClassSettingsSheet from "./ClassSettingsSheet";
 
 // Яке ім'я в адресі (?sheet=…) якій шторці відповідає
 const SHEETS = {
@@ -51,6 +53,8 @@ const SHEETS = {
   ruhezeit: QuietSheet, // Mitteilungen → Ruhezeit (частина 17)
   installieren: IosInstallSheet, // «ORBook installieren» на iPhone (частина 17)
   telegram: TelegramSheet, // «Mit Telegram verbinden» (часть 27b)
+  klasseneu: AddClassSheet, // «Klasse hinzufügen» (часть 29)
+  klasse: ClassSettingsSheet, // «Klasse einstellen» (часть 29), ?id=2
 };
 
 // ─────────────────────────────────────────────────────────────

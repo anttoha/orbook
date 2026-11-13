@@ -49,12 +49,6 @@ export const useUserStore = create(
 
       // Відкрили інший клас: поля старого класу — у byClass, поля нового — нагору
       swapClass: (from, to) => set(swapClassData(get(), from, to)),
-      // «Klasse entfernen»: його нотатки й курси більше не потрібні
-      dropClass: (id) => {
-        const byClass = { ...get().byClass };
-        delete byClass[id];
-        set({ byClass });
-      },
 
       // ── нотатки ──
 

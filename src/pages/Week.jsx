@@ -9,6 +9,7 @@ import DayPanel from "../components/week/desktop/DayPanel";
 import PeriodGrid from "../components/week/desktop/PeriodGrid";
 import TimeGrid from "../components/week/desktop/TimeGrid";
 import WeekAside from "../components/week/desktop/WeekAside";
+import ClassSwitcher from "../components/klassen/ClassSwitcher";
 import WeekHeaderDesktop from "../components/week/desktop/WeekHeaderDesktop";
 import NewPlanBanner from "../components/ui/NewPlanBanner";
 import { PlanBanner, PlanDown, PlanError, Skeleton } from "../components/ui/PlanState";
@@ -201,27 +202,29 @@ const Week = () => {
 
   return (
     <section className="flex flex-col gap-3.5" {...swipe}>
-      <header className="flex items-end justify-between gap-3">
-        <div className="min-w-0 space-y-1">
-          {/* «KW 41 · 5.–9. Okt» — по натисканню відкривається календар «Woche wählen» */}
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={() => openSheet("kalender", { kw: monday })} className="block truncate text-hint font-extrabold text-faint">
-              {title}
-            </button>
-            {/* на телефоні одна мітка в рядку KW: дві окремі обрізали б «KW 42 · 12.–16. Okt» */}
-            {allMuster ? <MusterBadge>{letter && ` · Woche ${letter}`}</MusterBadge> : <WeekLetter letter={letter} />}
-          </div>
-          <h1 className="truncate text-title text-ink">{heading}</h1>
+      <header className="space-y-1">
+        {/* «KW 41 · 5.–9. Okt» — по натисканню відкривається календар «Woche wählen».
+            Рядок на всю ширину (над кнопками): поруч із чипом класу (частина 29) інакше обрізався б */}
+        <div className="flex items-center gap-2">
+          <ClassSwitcher />
+          <button type="button" onClick={() => openSheet("kalender", { kw: monday })} className="block truncate text-hint font-extrabold text-faint">
+            {title}
+          </button>
+          {/* на телефоні одна мітка в рядку KW: дві окремі обрізали б «KW 42 · 12.–16. Okt» */}
+          {allMuster ? <MusterBadge>{letter && ` · Woche ${letter}`}</MusterBadge> : <WeekLetter letter={letter} />}
         </div>
-        {/* як на макеті: ‹ ⋮ › (календар — у меню «⋮» і по натисканню на рядок KW) */}
-        <div className="flex shrink-0 gap-1.5">
-          <button type="button" aria-label="Vorherige Woche" onClick={() => setWeek(addDays(monday, -7))} className={roundButton}>
-            <ChevronLeft className="size-4.5" />
-          </button>
-          <WeekMenu monday={monday} onToday={goToday} onPickWeek={() => openSheet("kalender", { kw: monday })} />
-          <button type="button" aria-label="Nächste Woche" onClick={() => setWeek(addDays(monday, 7))} className={roundButton}>
-            <ChevronRight className="size-4.5" />
-          </button>
+        <div className="flex items-end justify-between gap-3">
+          <h1 className="min-w-0 truncate text-title text-ink">{heading}</h1>
+          {/* як на макеті: ‹ ⋮ › (календар — у меню «⋮» і по натисканню на рядок KW) */}
+          <div className="flex shrink-0 gap-1.5">
+            <button type="button" aria-label="Vorherige Woche" onClick={() => setWeek(addDays(monday, -7))} className={roundButton}>
+              <ChevronLeft className="size-4.5" />
+            </button>
+            <WeekMenu monday={monday} onToday={goToday} onPickWeek={() => openSheet("kalender", { kw: monday })} />
+            <button type="button" aria-label="Nächste Woche" onClick={() => setWeek(addDays(monday, 7))} className={roundButton}>
+              <ChevronRight className="size-4.5" />
+            </button>
+          </div>
         </div>
       </header>
 

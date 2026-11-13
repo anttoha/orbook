@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useClasses } from "../../shared/store/classesStore";
 import { usePlanStore } from "../../shared/store/planStore";
 import { isTeacher } from "../../shared/utils/examRules";
 import Button from "../ui/Button";
@@ -9,7 +10,8 @@ import { LeaveIcon } from "../ui/icons";
 // Рядок «Klasse verlassen» і діалог підтвердження (макет 28).
 // Вихід стирає кеш плану, нотатки й налаштування лишаються (docs/frontend/02-zugang.md).
 // className — інший вигляд рядка (у меню «Einstellungen» на ПК він як пункт меню).
-// Учитель не «покидає клас», а виходить: «Abmelden» і текст на «Sie»
+// Учитель не «покидає клас», а виходить: «Abmelden» і текст на «Sie».
+// Частина 29: класів кілька — виходимо лише з відкритого (POST /auth/leave), решта лишаються
 const TEXTS = {
   class: { label: "Klasse verlassen", title: "Klasse verlassen?", text: "Du musst das Klassenpasswort erneut eingeben. Deine Notizen bleiben auf dem Gerät, solange du den Sync-Code hast.", stay: "Bleiben", go: "Verlassen" },
   teacher: { label: "Abmelden", title: "Abmelden?", text: "Danach müssen Sie den Lehrer-Code erneut eingeben.", stay: "Abbrechen", go: "Abmelden" },
@@ -18,14 +20,25 @@ const TEXTS = {
 const LeaveClass = ({ className }) => {
   const navigate = useNavigate();
   const logout = usePlanStore((s) => s.logout);
+  const leaveClass = usePlanStore((s) => s.leaveClass);
   const texts = TEXTS[usePlanStore((s) => (isTeacher(s.me) ? "teacher" : "class"))];
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
 
   const leave = async () => {
     setBusy(true);
-    await logout(); // без мережі теж виходить: помилку ковтає сам store
-    navigate("/", { replace: true }); // після нового входу — стартовий екран, а не «Mehr»
+    const { activeId, list } = useClasses.getState();
+    if (activeId == null || list.length <= 1) {
+      await logout(); // без мережі теж виходить: помилку ковтає сам store
+      navigate("/", { replace: true }); // після нового входу — стартовий екран, а не «Mehr»
+      return;
+    }
+    try {
+      await leaveClass(activeId);
+      navigate("/klassen", { replace: true }); // інші класи лишились
+    } catch {
+      setBusy(false); // немає мережі — лишаємось у класі
+    }
   };
 
   return (

@@ -121,14 +121,16 @@ export const usePlanStore = create((set, get) => ({
   planStamp: 0,
   newPlan: null,
   lastStandShown: false,
+  startPage: null, // частина 29: «/» при запуску веде на «Meine Klassen» (класів кілька, жоден не «Beim Start öffnen»)
 
   // ── Старт застосунку: хто я? ──
   start: async () => {
     set({ startError: null });
     if (!booted) {
       booted = true;
-      const { classId } = startTarget(useClasses.getState().list);
+      const { classId, page } = startTarget(useClasses.getState().list);
       if (classId != null) activate(classId); // «Beim Start öffnen»
+      set({ startPage: page });
     }
     try {
       // /auth/me відповідає 200 і без входу ({ authenticated: false })
@@ -156,6 +158,12 @@ export const usePlanStore = create((set, get) => ({
     await get().start();
   },
 
+  // ── Учень вибрав клас (карточка, перемикач): далі «/» відкриває план, а не «Meine Klassen» ──
+  openClass: async (id) => {
+    set({ startPage: null });
+    await get().switchClass(id);
+  },
+
   // ── «Klasse hinzufügen»: код другого класу ДОДАЄ клас (add: true), вхід лишається.
   // Повертає class { id, name, school }. Помилки (already_member, too_many_classes …) — формі ──
   addClass: async (code, label = "") => {
@@ -179,8 +187,7 @@ export const usePlanStore = create((set, get) => ({
     if (res?.authenticated === false || rest.length === 0) return get().logout();
     if (useClasses.getState().activeId === id) await get().switchClass((rest.find((item) => !item.gone) ?? rest[0]).id);
     useClasses.getState().remove(id);
-    useUserStore.getState().dropClass(id);
-    cache.clearClass(id);
+    cache.clearClass(id); // копию планів стираємо; нотатки класу лишаються (userStore.byClass) — як у «Klasse verlassen»
   },
 
   // ── Вхід паролем класу. Помилку (ApiError) кидаємо далі — її показує екран входу ──

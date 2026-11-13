@@ -21,6 +21,7 @@ export const SECTIONS = [
       "Du kommst mit dem Klassenpasswort, einem Zugangscode oder einem Einladungslink rein. Lehrkräfte haben einen eigenen Lehrer-Code.",
       "Codes heißen nur „Code A“ oder ähnlich, nie nach einer Person. Passwörter speichert der Server nur als Prüfwert (Hash). Zugangscodes liegen zusätzlich verschlüsselt, damit der Admin sie noch einmal anzeigen kann.",
       "Für jedes angemeldete Gerät merkt sich der Server eine Sitzung: eine zufällige Kennung (als Hash), wann sie angelegt und zuletzt benutzt wurde und wann sie abläuft. Daraus zählt er, wie viele Geräte mit einem Code angemeldet sind. IP-Adresse, Gerätetyp und Browser speichert er nicht.",
+      "Hast du mehrere Klassen auf einem Gerät, merkt sich der Server zu deiner Sitzung nur, welche Klassen mit welchem Code dazugehören. Namen gibt es dabei keine. „Klasse entfernen“ löscht diese Zuordnung sofort.",
     ],
   },
   {
@@ -77,8 +78,8 @@ export const SECTIONS = [
     id: "geraet",
     title: "Auf deinem Gerät",
     intro: [
-      "Im Browser (localStorage) liegen: deine Kurse, Darstellung (auch die Sprache) und Fachfarben, deine Notizen, Aufgaben und Häkchen, dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne, damit die App auch ohne Netz geht.",
-      "„Klasse verlassen“ löscht die Kopie der Pläne. Notizen und Einstellungen bleiben, bis du die Website-Daten im Browser löschst.",
+      "Im Browser (localStorage) liegen: deine Klassen mit dem Namen und der Farbe, die du ihnen gibst, deine Kurse, Darstellung (auch die Sprache) und Fachfarben, deine Notizen, Aufgaben und Häkchen, dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne, damit die App auch ohne Netz geht.",
+      "„Klasse verlassen“ oder „Klasse entfernen“ löscht die Kopie der Pläne dieser Klasse. Notizen und Einstellungen bleiben, bis du die Website-Daten im Browser löschst.",
       "Die App lädt nichts von fremden Servern: keine Schriften von Google, kein CDN, keine Analyse.",
     ],
   },

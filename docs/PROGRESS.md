@@ -436,3 +436,13 @@ Spec и план бэкенда: `docs/specs/29-klassen/spec.md`. Главное
 - Находка: в `/etc/orbook/orbook-demo.env` `ORBOOK_FIXTURES_DIR` указывает на несуществующий `/opt/orbook/tests/fixtures/vpmobil` (фикстуры лежат в `/opt/orbook-be/tests/fixtures/vpmobil`); `seed-demo` без папки падает. Не правил (конфиг сервера) — спросить владельца.
 - **Ждёт владельца — «на прод» для бэкенда:** код у демо и прода общий; прод-процесс пока на старом коде в памяти, база прода 0013. Пока прод не обновлён, ночное обслуживание прода (03:15) остановится на проверке схемы — **без ночного бэкапа**, а случайный перезапуск прода сломает его до `update.sh`. Совместимо со старым фронтом — можно выкладывать: `scripts/update.sh` (бэкап + откат).
 **Дальше:** «на прод» для бэкенда 29a (Claude: `scripts/update.sh`), потом новый чат, Opus · effort high → `/orb 29b`.
+
+## Часть 29b «Meine Klassen» во фронте — готова на демо (2026-11-13)
+- Новое: `shared/store/classesStore.js` (классы устройства: имя, цвет, порядок, «Beim Start öffnen», `activeId`, `homeId`), `shared/utils/classes.js` (+ тест: слияние со списком сервера, переезд данных между классами, «сегодня одной строкой», ближайший тест), `pages/Klassen.jsx` (`/klassen`), `components/klassen/` (карточка, строка дня, список дня на ПК, «Zugang beendet», чип-переключатель), шторки `?sheet=klasseneu` и `?sheet=klasse&id=…`, `ui/ClassBadge`, `hooks/useClassToday`.
+- `api.js` добавляет `X-ORBook-Class`; кеш офлайн, «Neuer Plan» и поток Live — по классу; `planStore`: `switchClass`, `openClass`, `addClass`, `leaveClass`, вход/ссылка открывают новый класс; старые ответы другого класса отбрасываются.
+- Данные класса (заметки, Meine Kurse, Alle Kurse) — `userStore` сверху у открытого, `byClass` у остальных. Старое устройство переезжает само (всё — классу из `me.class`).
+- Sync до 29d: заметки и курсы — только «домашнего» класса. Mitteilungen пока общие (29d).
+- Шапка недели: строка «KW …» теперь на всю ширину (рядом с чипом класса она обрезалась).
+- Datenschutz: членства на сервере и классы на устройстве. Скриншоты: `/root/work/orbook-compare/29b-klassen/shots/` (`_tools/p29b.mjs`).
+- Отличия от макета — в `docs/specs/29-klassen/spec.md` («Отличия от дизайна»).
+**Дальше:** часть 29c (Nebeneinander + админка «Schulen & Klassen») — новый чат, Opus · effort medium: `/orb 29c`. Прод для бэкенда 29a по-прежнему ждёт владельца.
