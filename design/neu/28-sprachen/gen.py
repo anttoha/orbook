@@ -39,29 +39,41 @@ def lang_row(x, y, w, c, sel, text, pw=164):
            ICON(px + pw - 26, py + 9.5, 0.7, c["faint"], CHEV_D, 2.2)]
     return "".join(out), h, (px, py + ph + 6)
 
-def lang_menu(x, y, c, sel, w=210, rh=48):
-    """Aufgeklappte Liste direkt unter dem Feld (wie das Menü «Woche ⋮»): Flagge, Name, Haken bei der Auswahl."""
-    h = rh * 3 + 10
-    out = [R(x + w - 210 + 0, y, w, h, 22, c["card"], extra=' filter="url(#nsh0)"'), R(x + .5, y + .5, w - 1, h - 1, 22, "none", c["hair"])]
-    for i, name in enumerate(LANGS):
-        ry = y + 5 + i * rh
+ALIASES = {0: "deutsch german", 1: "english englisch", 2: "українська ukrainisch ukrainian"}
+SEARCH = g.SEARCH
+
+def lang_menu(x, y, c, sel, query="", w=230, rh=48):
+    """Aufgeklappte Liste unter dem Feld: oben Suchfeld, darunter die Sprachen (gefiltert), Haken bei der Auswahl."""
+    hits = [i for i in range(3) if query.lower() in ALIASES[i]] if query else [0, 1, 2]
+    body = rh * max(len(hits), 1)
+    h = 58 + body + 10
+    out = [R(x, y, w, h, 22, c["card"], extra=' filter="url(#nsh0)"'), R(x + .5, y + .5, w - 1, h - 1, 22, "none", c["hair"])]
+    out.append(R(x + 10, y + 10, w - 20, 38, 19, c["sand"]) + ICON(x + 22, y + 20, 0.7, c["faint"], SEARCH, 2.2))
+    if query:
+        out.append(T(x + 46, y + 34, query, 13.5, 500, c["ink"]) + R(x + 46 + len(query) * 8.2, y + 21, 1.6, 16, 1, c["accink"]))
+    else:
+        out.append(T(x + 46, y + 34, "Sprache suchen", 13.5, 400, c["faint"]))
+    if not hits:
+        out.append(T(x + w / 2, y + 58 + 30, "Nichts gefunden", 13.5, 500, c["faint"], "middle"))
+    for k, i in enumerate(hits):
+        ry = y + 58 + k * rh
         if i == sel: out.append(R(x + 6, ry + 2, w - 12, rh - 4, 16, c["sand"]))
-        out.append(flag(x + 30, ry + rh / 2, 11, i) + T(x + 52, ry + rh / 2 + 5, name, 14.5, 700 if i == sel else 500, c["ink"]))
+        out.append(flag(x + 30, ry + rh / 2, 11, i) + T(x + 52, ry + rh / 2 + 5, LANGS[i], 14.5, 700 if i == sel else 500, c["ink"]))
         if i == sel: out.append(ICON(x + w - 36, ry + rh / 2 - 9, 0.75, c["accink"], CHECK, 2.4))
     return "".join(out)
 
-def phone(sel, opened=False):
+def phone(sel, opened=False, q=""):
     def f(c, theme, sub):
         inner, w, h = g.base("24 Darstellung", theme)
         b = [inner, label(18, 620, TITLE[sel][0], c)]
         card, ch, (mx, my) = lang_row(18, 632, 354, c, sel, TITLE[sel]); b.append(card)
         b.append(label(18, 632 + ch + 26, "Plan", c))
         card2, ch2 = m22.stand_card(18, 632 + ch + 38, 354, c, 1); b.append(card2)
-        if opened: b.append(lang_menu(mx + 164 - 210, my, c, sel))
+        if opened: b.append(lang_menu(mx + 164 - 230, my, c, sel, q))
         return page(w, max(h, 632 + ch + 38 + ch2 + 24), c, "".join(b))
     return f
 
-def pc(sel, opened=False):
+def pc(sel, opened=False, q=""):
     def f(c, theme, sub):
         inner = m22.pc_base("24 Einstellungen · Darstellung", theme)
         b = [inner, R(250, 0, 306, 900, 0, c["paper"]), m22.pc_sidebar(inner, c, True)]
@@ -71,11 +83,11 @@ def pc(sel, opened=False):
         card, ch, (mx, my) = lang_row(576, 704, 644, c, sel, TITLE[sel]); b.append(card)
         b.append(label(576, 704 + ch + 26, "Plan", c))
         card2, _ = m22.stand_card(576, 704 + ch + 38, 644, c, 1, True); b.append(card2)
-        if opened: b.append(lang_menu(mx + 164 - 210, my, c, sel))
+        if opened: b.append(lang_menu(mx + 164 - 230, my, c, sel, q))
         return page(1440, 1050, c, "".join(b))
     return f
 
-SCREENS = {"handy-01-sprache-zu": phone(0), "handy-02-sprache-offen": phone(0, True), "handy-03-sprache-uk": phone(2), "pc-01-sprache-offen": pc(1, True)}
+SCREENS = {"handy-01-sprache-zu": phone(0), "handy-02-sprache-offen": phone(0, True), "handy-03-sprache-suche": phone(0, True, "uk"), "handy-04-sprache-nichts": phone(0, True, "fr"), "pc-01-sprache-offen": pc(1, True)}
 if __name__ == "__main__":
     for theme, c in (("hell", g.LIGHT), ("dunkel", g.DARK)):
         for name, fn in SCREENS.items():
