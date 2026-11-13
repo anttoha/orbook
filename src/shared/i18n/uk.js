@@ -174,4 +174,7 @@ export const uk = {
   "Keine echten Namen — lieber »Eltern«, »Vertretung« oder »Schüler 07«.": "Без справжніх імен — краще «Батьки», «Заміна» чи «Учень 07».",
   "Nur die Codes deiner Klasse. Schulen und andere Klassen sieht nur der Admin.": "Лише коди твого класу. Школи та інші класи бачить тільки адмін.",
   "Dafür brauchst du das Recht „Klasse verwalten“. Es kommt mit einem Lehrer- oder Editor-Code.": "Для цього потрібне право «Керувати класом». Воно дається з кодом учителя чи редактора.",
+  "Deine anderen Klassen bleiben auf dem Gerät.": "Інші твої класи лишаються на пристрої.",
+  "Öffnen": "Відкрити",
+  "Zurück zur App": "Назад до застосунку",
 };

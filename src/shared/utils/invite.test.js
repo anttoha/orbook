@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { classTitle, inviteMessage, inviteUrl, joinProblem, shortUrl } from "./invite";
+import { classTitle, inviteForDevice, inviteMessage, inviteUrl, joinProblem, shortUrl } from "./invite";
 
 describe("invite", () => {
   it("адреса з домену сайту, коротка — без https", () => {
@@ -26,5 +26,18 @@ describe("invite", () => {
   it("назва класу може бути порожньою", () => {
     expect(classTitle("9b")).toBe("Klasse 9b");
     expect(classTitle(null)).toBe("Deine Klasse");
+  });
+});
+
+describe("inviteForDevice", () => {
+  const list = [{ id: 1, name: "8a" }, { id: 3, name: "5a", gone: true }];
+  it("класс ссылки уже есть — открыть, другой — добавить", () => {
+    expect(inviteForDevice({ id: 1, name: "8a" }, list)).toBe("known");
+    expect(inviteForDevice({ id: 2, name: "07B" }, list)).toBe("add");
+  });
+  it("класс с «Zugang beendet» и старый сервер без class — добавить", () => {
+    expect(inviteForDevice({ id: 3, name: "5a" }, list)).toBe("add");
+    expect(inviteForDevice(undefined, list)).toBe("add");
+    expect(inviteForDevice({ id: 1 }, null)).toBe("add");
   });
 });

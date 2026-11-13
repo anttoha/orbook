@@ -174,4 +174,7 @@ export const en = {
   "Keine echten Namen — lieber »Eltern«, »Vertretung« oder »Schüler 07«.": "No real names — better “Parents”, “Substitute” or “Student 07”.",
   "Nur die Codes deiner Klasse. Schulen und andere Klassen sieht nur der Admin.": "Only your class's codes. Schools and other classes are visible to the admin only.",
   "Dafür brauchst du das Recht „Klasse verwalten“. Es kommt mit einem Lehrer- oder Editor-Code.": "You need the “Manage class” right for this. It comes with a teacher or editor code.",
+  "Deine anderen Klassen bleiben auf dem Gerät.": "Your other classes stay on this device.",
+  "Öffnen": "Open",
+  "Zurück zur App": "Back to the app",
 };

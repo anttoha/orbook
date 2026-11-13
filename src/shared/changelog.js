@@ -5,6 +5,11 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.14.4",
+    date: "2026-11-13",
+    behoben: ["Einladungslink, wenn du schon eine Klasse hast: Jetzt kommt die Klasse einfach dazu („Klasse hinzufügen“), statt dass nichts passiert. Hast du sie schon, öffnet der Link sie."],
+  },
+  {
     version: "0.14.0",
     date: "2026-11-13",
     neu: [

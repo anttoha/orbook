@@ -28,3 +28,12 @@ export function joinProblem(error) {
 
 // «Klasse 9b»; назви класу немає — «deine Klasse»
 export const classTitle = (className) => (className ? `Klasse ${className}` : "Deine Klasse");
+
+// Часть 29: ссылку открыли на устройстве, где уже есть вход. Чем ссылка будет для этого устройства:
+//   "known" — её класс уже есть (и работает) → просто открыть его
+//   "add"   — другой класс → «Klasse hinzufügen» (сервер добавит класс, прежние останутся)
+// inviteClass — class из GET /public/invite/{token} (у старого сервера нет → "add")
+export function inviteForDevice(inviteClass, list) {
+  const found = inviteClass?.id != null && (list ?? []).find((item) => item.id === inviteClass.id);
+  return found && !found.gone ? "known" : "add";
+}
