@@ -447,3 +447,10 @@ Spec и план бэкенда: `docs/specs/29-klassen/spec.md`. Главное
 - Отличия от макета — в `docs/specs/29-klassen/spec.md` («Отличия от дизайна»).
 **Дальше:** часть 29c (Nebeneinander + админка «Schulen & Klassen») — новый чат, Opus · effort medium: `/orb 29c`. Прод для бэкенда 29a по-прежнему ждёт владельца.
 **29b, доработки по просьбе владельца (13.11):** Mitteilungen по классам (из 29d), «Klasse 8b» над заголовком Meine Kurse / Mitteilungen / Editor-Code, значения в «Klasse einstellen» у любого класса, поле «Klasse» в новом Zugangscode (админка → Zugangscodes → «Neuer Code» → Klasse 8b), смена класса без пустого экрана, спокойные анимации (правило в `index.css`), значок класса на ПК без стрелки. В 29d остаются Telegram по классам и Sync `klassen`.
+
+## Часть 29c «Nebeneinander» + админка — готова на демо (2026-11-13)
+- Админка: чип класса «Admin · 9b ⌄» (`AdminClassChip`, `adminStore.classId`, `X-ORBook-Class` у `/admin/*`), страница «Schulen & Klassen» (`/admin/schulen`: школы карточками/таблицей, «Code für neue Klasse», окно школы с «Verbindung testen», ⋮ → «Klasse löschen»), поля «Schule/Klasse» у всех кодов (`SchoolClassField`), право «Klasse verwalten» у Editor- и Lehrer-Code, Einstellungen → «Klassen pro Gerät».
+- Приложение: Mehr → «Klasse verwalten» (`/mehr/klasse-verwalten`, коды своего класса через `AccessScope` и `/class/access-codes`), вкладка «Nebeneinander» на «Meine Klassen» (телефон, `?ansicht=nebeneinander`).
+- Чистые функции: `shared/utils/adminClasses.js` (+ тест), `sideBySideRows`, `nextExamAcross` в `classes.js`. Удалён старый `ClassField` (его заменил `SchoolClassField`).
+- Скриншоты: `/root/work/orbook-compare/29c-klassen/shots/` (`_tools/p29c.mjs`). Отличия от макета — в spec.
+**Дальше:** часть 29d (Telegram по классам, Sync `klassen`, Datenschutz, changelog) — новый чат, Opus · effort medium: `/orb 29d`. Прод для бэкенда 29a и фронта 29b–29c ждёт владельца.
