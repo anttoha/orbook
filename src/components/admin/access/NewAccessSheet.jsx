@@ -13,6 +13,7 @@ import Segmented from "../../ui/Segmented";
 import Sheet from "../../ui/Sheet";
 import TextField from "../../ui/TextField";
 import CodeReveal from "../CodeReveal";
+import ClassField from "./ClassField";
 import DevicesField from "./DevicesField";
 
 // Поле-перемикач з підписом і сірою підказкою під ним (Für wen, Geräte, Gültig bis)
@@ -35,6 +36,7 @@ const NewAccessForm = ({ yearEnd, onDone }) => {
   const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState(false);
   const [created, setCreated] = useState(null); // { code, item } — повний код лише тут
+  const [target, setTarget] = useState(null); // для якого класу код (частина 29): пункт ClassField або null
 
   // Змінили «Für wen» — пропонуємо типовий ліміт (людина — 2, група — 30)
   const chooseAudience = (next) => {
@@ -49,7 +51,7 @@ const NewAccessForm = ({ yearEnd, onDone }) => {
     if (found.label || found.devices || busy) return;
     setBusy(true);
     try {
-      const body = { label: label.trim(), audience, maxDevices: devicesFromChoice(devices.choice, devices.custom), valid: accessValidValue(valid, today, yearEnd) };
+      const body = { label: label.trim(), audience, maxDevices: devicesFromChoice(devices.choice, devices.custom), valid: accessValidValue(valid, today, yearEnd), schoolId: target?.schoolId, className: target?.className };
       setCreated(await admin.createAccessCode(body));
     } catch (error) {
       setErrors({ form: error.message });
@@ -63,6 +65,7 @@ const NewAccessForm = ({ yearEnd, onDone }) => {
   return (
     <form onSubmit={create} noValidate className="flex flex-col gap-4">
       <TextField id="access-label" label="Bezeichnung" placeholder="z. B. Schüler 08" hint="Nur für dich sichtbar · keine echten Namen" error={errors.label} value={label} maxLength={40} readOnly={locked} onChange={(event) => setLabel(event.target.value)} autoComplete="off" />
+      <ClassField value={target?.value ?? null} onChange={setTarget} disabled={locked} />
       <Choice label="Für wen?" hint={audienceHint(audience)} options={AUDIENCES} value={audience} onChange={chooseAudience} disabled={locked} />
       <DevicesField value={devices} onChange={setDevices} hint="Handy + Laptop = 2. Voll? Dann kommt kein neues Gerät rein." error={errors.devices} disabled={locked} />
       <Choice label="Gültig bis" hint={until ? `${longDate(until)} ${until.slice(0, 4)} · danach automatisch gesperrt` : ""} options={accessValidChoices(yearEnd)} value={valid} onChange={setValid} disabled={locked} />

@@ -8,6 +8,7 @@ import PageHeader from "../components/ui/PageHeader";
 import { useEditorUnlock } from "../shared/hooks/useEditorUnlock";
 import { usePlanStore } from "../shared/store/planStore";
 import { fullDate } from "../shared/utils/examRules";
+import { useClassEyebrow } from "../shared/hooks/useClassEyebrow";
 
 // Куди після коду (?weiter=…): лише наші адреси, не з параметра
 const NEXT = { neu: "/testen/neu", hausaufgabe: "/testen/hausaufgaben/neu", material: "/materialien/neu", termin: "/testen/termine/neu" };
@@ -67,6 +68,7 @@ const ActiveCode = ({ editor }) => {
 // POST /api/editor/unlock і /editor/lock, стан — me.editor.
 // ─────────────────────────────────────────────────────────────
 const EditorCode = () => {
+  const eyebrow = useClassEyebrow("Bearbeiten"); // Editor-Code действует в одном классе (часть 29)
   const editor = usePlanStore((s) => s.me?.editor);
   const location = useLocation();
   // /mehr/editor-code — розділ «Einstellungen», /editor-code — з «Klausuren»: туди й повертаємось
@@ -74,7 +76,7 @@ const EditorCode = () => {
 
   return (
     <section className="flex flex-1 flex-col lg:max-w-186">
-      <PageHeader backTo={backTo} eyebrow="Bearbeiten" title="Editor-Code" />
+      <PageHeader backTo={backTo} eyebrow={eyebrow} title="Editor-Code" />
       {editor ? <ActiveCode editor={editor} /> : <UnlockForm backTo={backTo} />}
     </section>
   );

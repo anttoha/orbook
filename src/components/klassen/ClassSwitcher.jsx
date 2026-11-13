@@ -22,6 +22,7 @@ const ClassSwitcher = ({ variant = "phone", all = false }) => {
   const list = useClasses((s) => s.list);
   const active = useActiveClass();
   const openClass = usePlanStore((s) => s.openClass);
+  const demo = usePlanStore((s) => s.meta?.demo);
   if (list.length === 0 || !active) return null;
 
   const pick = (id) => {
@@ -29,19 +30,21 @@ const ClassSwitcher = ({ variant = "phone", all = false }) => {
     openClass(id);
   };
 
+  // На ПК — такой же значок, как был у класса раньше («9B» у логотипа, макет pc-02): без стрелки, иначе он не помещается
   const chip =
     variant === "side"
-      ? cn("flex items-center gap-0.5 rounded-full px-2 py-0.75 text-micro leading-none font-extrabold uppercase", all ? "bg-accent text-on-accent" : "bg-sand text-ink")
+      ? cn("rounded-full px-2 py-0.75 text-micro leading-none font-extrabold uppercase transition-colors hover:bg-hair", all ? "bg-accent text-on-accent hover:bg-accent" : "bg-sand text-ink")
       : cn("flex h-6.5 items-center gap-0.5 rounded-full pr-1.5 pl-2.5 text-label font-extrabold", all ? "bg-accent text-on-accent" : classColor(active.color).tint);
 
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger className={cn(chip, "shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-accent/50")} aria-label={t("Klasse wechseln")}>
         {all ? t("Alle") : active.name}
-        <ChevronDown className={variant === "side" ? "size-2.5" : "size-3.5"} />
+        {variant !== "side" && <ChevronDown className="size-3.5" />}
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content align="start" sideOffset={6} className={cn(menuContentClass, "w-72")}>
+          {demo && variant === "side" && <p className="px-3 pt-1.5 pb-1 text-micro font-extrabold text-accent-ink uppercase">Demo · {t("ausgedachte Daten")}</p>}
           {list.map((item) => (
             <DropdownMenu.Item key={item.id} onSelect={() => pick(item.id)} className={cn(menuItemClass, "gap-3 py-2", item.id === active.id && !all && "bg-sand")}>
               <ClassBadge name={item.name} color={item.color} size="md" />

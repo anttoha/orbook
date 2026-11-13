@@ -156,4 +156,6 @@ export const uk = {
   "Lila": "Бузковий",
   "Karte antippen öffnet den Plan · Regler = Einstellungen der Klasse": "Натисни картку — відкриється розклад · Повзунки = налаштування класу",
   "Karte anklicken öffnet den Plan der Klasse · Regler = Einstellungen der Klasse": "Клацни картку — відкриється розклад класу · Повзунки = налаштування класу",
+  "aktiv": "активний",
+  "ausgedachte Daten": "вигадані дані",
 };

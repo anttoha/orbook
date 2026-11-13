@@ -27,7 +27,7 @@ export function mergeClasses(local, server) {
   const merged = local.map((item) => {
     const fresh = fromServer.get(item.id);
     if (!fresh) return { ...item, gone: true };
-    return { ...item, name: fresh.name ?? item.name, school: fresh.school ?? item.school ?? null, role: fresh.role ?? item.role, gone: false };
+    return { ...item, name: fresh.name ?? item.name, school: fresh.school ?? item.school ?? null, role: fresh.role ?? item.role, canEdit: Boolean(fresh.canEdit), gone: false };
   });
   for (const fresh of server ?? []) {
     if (merged.some((item) => item.id === fresh.id)) continue;
@@ -42,6 +42,7 @@ export const newClassEntry = (fresh, list, label = "") => ({
   name: fresh.name ?? "",
   school: fresh.school ?? null,
   role: fresh.role ?? "class",
+  canEdit: Boolean(fresh.canEdit), // на устройстве открыт Editor-/Lehrer-Code этого класса
   label: label.trim(),
   color: nextClassColor(list),
   startOpen: false,
@@ -58,14 +59,15 @@ export const classSubtitle = (item) => [item?.name, item?.school?.name].filter(B
 export const CLASS_FIELDS = ["notes", "picked", "hiddenRequired", "coursesChosen", "checkedPlan", "allCourses"];
 export const EMPTY_CLASS_DATA = { notes: [], picked: [], hiddenRequired: [], coursesChosen: false, checkedPlan: [], allCourses: false };
 
-export const pickClassData = (state) => Object.fromEntries(CLASS_FIELDS.map((key) => [key, state[key]]));
-
 // Переключение класса в userStore: текущие поля → в byClass[from], поля класса to → наверх
-export function swapClassData(state, from, to) {
+export const swapClassData = (state, from, to) => swapFields(state, from, to, CLASS_FIELDS, EMPTY_CLASS_DATA);
+
+// То же для любого стора: fields — что своё у каждого класса, empty — как выглядит новый класс
+export function swapFields(state, from, to, fields, empty) {
   if (from === to) return {};
   const byClass = { ...(state.byClass ?? {}) };
-  if (from != null) byClass[from] = pickClassData(state);
-  const next = { ...EMPTY_CLASS_DATA, ...(byClass[to] ?? {}) };
+  if (from != null) byClass[from] = Object.fromEntries(fields.map((key) => [key, state[key]]));
+  const next = { ...empty, ...(byClass[to] ?? {}) };
   delete byClass[to];
   return { ...next, byClass };
 }
@@ -188,3 +190,19 @@ export function addClassErrorText(error, t = (s) => s) {
 
 // Lehrer-Code (ORB-L-…) входит через /auth/teacher, всё остальное — через /auth/login
 export const isTeacherCode = (code) => /^ORB-?L-?/i.test(code.trim());
+
+// Админка, поле «Klasse» у нового кода (часть 29, макет handy-14): классы всех школ одним списком.
+// schools — GET /admin/schools; planClasses — { [schoolId]: GET /admin/schools/{id}/classes } (может не быть).
+// Пункт: { value: "1:8b", code: "8b", title: "Klasse 8b", subtitle: "Goethe · neu", schoolId, className, isNew }
+export function adminClassItems(schools, planClasses = {}, t = (s) => s) {
+  return (schools ?? []).flatMap((school) => {
+    const known = new Map((school.classes ?? []).map((c) => [c.name, c.id]));
+    const names = [...new Set([...(planClasses[school.id]?.classes ?? []).map((c) => c.name), ...known.keys()])];
+    names.sort((a, b) => a.localeCompare(b, "de", { numeric: true }));
+    return names.map((name) => {
+      const isNew = !known.has(name);
+      const where = (schools.length > 1 ? [school.name] : []).concat(isNew ? [t("neu")] : []);
+      return { value: `${school.id}:${name}`, code: name, title: `${t("Klasse")} ${name}`, subtitle: where.join(" · ") || null, schoolId: school.id, className: name, isNew };
+    });
+  });
+}

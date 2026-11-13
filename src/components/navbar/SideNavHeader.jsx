@@ -26,7 +26,8 @@ const SideNavHeader = ({ isHidden, onChangeIsHidden }) => {
       >
         <Logo className="items-center gap-2" titleClassName="text-logo" withIcon />
         {hasClasses ? <ClassSwitcher variant="side" all={onKlassen} /> : className && <span className="rounded-full bg-sand px-2 py-0.75 text-micro leading-none font-extrabold text-ink uppercase">{className}</span>}
-        {demo && <span className="rounded-full bg-tint px-2 py-0.75 text-micro leading-none font-extrabold text-accent-ink uppercase">Demo</span>}
+        {/* «Demo» поруч не вміщається разом із перемикачем класу (частина 29) — тоді воно в меню класів */}
+        {demo && !hasClasses && <span className="rounded-full bg-tint px-2 py-0.75 text-micro leading-none font-extrabold text-accent-ink uppercase">Demo</span>}
       </div>
 
       {/* згорнути / розгорнути */}

@@ -1,14 +1,23 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { deleteSubscription, getPushKey, getSubscription, putSubscription, sendTestPush } from "../api/push";
+import { swapFields } from "../utils/classes";
 import { DEFAULT_PUSH, keyToBytes, needsRefresh, pushSupport, readEnvironment, subscriptionBody } from "../utils/push";
 import { useUserStore } from "./userStore";
+
+// Часть 29: у каждого класса свои Mitteilungen. Сверху — открытый класс, остальные — в byClass[id]
+// (как в userStore). Подписка браузера одна на устройство, сервер хранит её отдельно для каждого класса
+export const PUSH_CLASS_FIELDS = ["enabled", "prefs", "mine", "quiet", "lastSyncAt", "lastSentAt"];
+const NEW_CLASS_PUSH = { enabled: false, ...DEFAULT_PUSH, lastSyncAt: null, lastSentAt: null };
 
 // ─────────────────────────────────────────────────────────────
 // pushStore — «Mitteilungen» этого устройства (часть 17, docs/API.md «Mitteilungen»).
 // В localStorage ("orbook.push"): включено ли, пункты, «Meine Kurse / Ganze Klasse», Ruhezeit,
 // закрыта ли карточка «ORBook als App». Саму подписку браузер хранит сам (pushManager).
 // ─────────────────────────────────────────────────────────────
+
+// «Meine Kurse» другого класса — для его подписки
+const pickedOf = (classId) => useUserStore.getState().byClass?.[classId]?.picked ?? [];
 
 // Подписка браузера на этом устройстве (или null). Без service worker (режим разработки) — null.
 async function browserSubscription() {
@@ -38,6 +47,18 @@ export const usePushStore = create(
       installDismissed: false, // карточку «ORBook als App» в Mehr закрыли
       support: "ok", // pushSupport(): ok | ios-install | unsupported | denied (не сохраняется)
       busy: false,
+      byClass: {}, // Mitteilungen остальных классов: { [classId]: { enabled, prefs, mine, quiet, … } }
+
+      // ── классы (часть 29) ──
+      swapClass: (from, to) => set(swapFields(get(), from, to, PUSH_CLASS_FIELDS, NEW_CLASS_PUSH)),
+      // Класс убрали с устройства: сервер уже удалил его подписку (POST /auth/leave)
+      dropClass: (id) => {
+        const byClass = { ...get().byClass };
+        delete byClass[id];
+        set({ byClass });
+      },
+      // Mitteilungen любого класса — для подписи «nur Ausfall» в «Klasse einstellen»
+      classSettings: (id, activeId) => (id === activeId ? get() : (get().byClass[id] ?? NEW_CLASS_PUSH)),
 
       // Перечитать, что умеет устройство, и сверить с сервером (открыли «Mitteilungen»)
       check: async () => {
@@ -97,14 +118,16 @@ export const usePushStore = create(
         }
       },
 
-      // «Auf diesem Gerät ausschalten»
+      // «Auf diesem Gerät ausschalten» — для открытого класса. Подписку браузера отменяем,
+      // только если ни у одного другого класса Mitteilungen не включены
       disable: async () => {
         set({ busy: true });
         try {
           const sub = await browserSubscription();
           if (sub) {
             await deleteSubscription(sub.endpoint).catch(() => {}); // офлайн — сервер сам удалит через 60 дней
-            await sub.unsubscribe();
+            const othersOn = Object.values(get().byClass).some((other) => other.enabled);
+            if (!othersOn) await sub.unsubscribe();
           }
           set({ enabled: false, lastSentAt: null });
         } finally {
@@ -126,11 +149,29 @@ export const usePushStore = create(
         await get().send(sub).catch(() => {}); // офлайн — попробуем при следующем запуске
       },
 
+      // Остальные классы: раз в сутки напомнить серверу и о их подписках (иначе через 60 дней тишины он их забудет)
+      refreshOthers: async () => {
+        const due = Object.entries(get().byClass).filter(([, other]) => other.enabled && needsRefresh(other.lastSyncAt));
+        if (due.length === 0) return;
+        const sub = await browserSubscription().catch(() => null);
+        if (!sub) return;
+        for (const [id, other] of due) {
+          const classId = Number(id);
+          try {
+            await putSubscription(subscriptionBody(sub.toJSON(), settingsOf(other), pickedOf(classId)), classId);
+            set({ byClass: { ...get().byClass, [id]: { ...get().byClass[id], lastSyncAt: Date.now() } } });
+          } catch {
+            // офлайн или класса уже нет — попробуем в следующий раз
+          }
+        }
+      },
+
       dismissInstall: () => set({ installDismissed: true }),
     }),
     {
       name: "orbook.push",
-      partialize: ({ enabled, prefs, mine, quiet, lastSyncAt, lastSentAt, reminderTime, installDismissed }) => ({
+      partialize: ({ enabled, prefs, mine, quiet, lastSyncAt, lastSentAt, reminderTime, installDismissed, byClass }) => ({
+        byClass,
         enabled,
         prefs,
         mine,

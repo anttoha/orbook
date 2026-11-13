@@ -156,4 +156,6 @@ export const en = {
   "Lila": "Purple",
   "Karte antippen öffnet den Plan · Regler = Einstellungen der Klasse": "Tap a card to open the plan · Sliders = class settings",
   "Karte anklicken öffnet den Plan der Klasse · Regler = Einstellungen der Klasse": "Click a card to open the class plan · Sliders = class settings",
+  "aktiv": "active",
+  "ausgedachte Daten": "made-up data",
 };

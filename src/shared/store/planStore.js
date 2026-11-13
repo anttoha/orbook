@@ -13,6 +13,7 @@ import { isTeacherCode, startTarget } from "../utils/classes";
 import { useAppointmentStore } from "./appointmentsStore";
 import { useClasses } from "./classesStore";
 import { useMaterials } from "./materialsStore";
+import { usePushStore } from "./pushStore";
 import { quietly } from "./syncStore";
 import { useUserStore } from "./userStore";
 
@@ -90,7 +91,10 @@ function activate(id) {
   const { activeId } = useClasses.getState();
   if (activeId === id) return;
   // перший запуск після оновлення: те, що вже лежить на пристрої, належить цьому класу
-  if (activeId != null) quietly(() => useUserStore.getState().swapClass(activeId, id));
+  if (activeId != null) {
+    quietly(() => useUserStore.getState().swapClass(activeId, id));
+    usePushStore.getState().swapClass(activeId, id); // Mitteilungen — тоже свои у класса
+  }
   useClasses.getState().setActive(id);
 }
 
@@ -154,7 +158,8 @@ export const usePlanStore = create((set, get) => ({
     examsRequest = pastExamsRequest = homeworkRequest = statusRequest = null; // запити старого класу нам уже не потрібні
     useMaterials.getState().reset();
     useAppointmentStore.getState().reset();
-    set({ ...NO_CLASS_DATA, me: undefined });
+    // me не стираем: меню и раскладка остаются на месте, пока грузится новый класс (без «белой вспышки»)
+    set({ ...NO_CLASS_DATA });
     await get().start();
   },
 
@@ -187,6 +192,7 @@ export const usePlanStore = create((set, get) => ({
     if (res?.authenticated === false || rest.length === 0) return get().logout();
     if (useClasses.getState().activeId === id) await get().switchClass((rest.find((item) => !item.gone) ?? rest[0]).id);
     useClasses.getState().remove(id);
+    usePushStore.getState().dropClass(id); // его подписку сервер уже удалил
     cache.clearClass(id); // копию планів стираємо; нотатки класу лишаються (userStore.byClass) — як у «Klasse verlassen»
   },
 

@@ -119,7 +119,12 @@ export const loadAdminCourses = () => api("/admin/courses");
 //     classPassword: { enabled, devices, changedAt | null, lastUsedAt | null } }
 export const loadAccessCodes = () => api("/admin/access-codes");
 // → { code, item }: повний код ORB-A-… є ТІЛЬКИ в цій відповіді. maxDevices: null — без ліміту
-export const createAccessCode = ({ label, audience, maxDevices, valid }) => api("/admin/access-codes", { method: "POST", body: { label, audience, maxDevices, valid } });
+// schoolId + className (частина 29) — код для іншого класу; клас, якого ще немає, з'являється з цим кодом
+export const createAccessCode = ({ label, audience, maxDevices, valid, schoolId, className }) => api("/admin/access-codes", { method: "POST", body: { label, audience, maxDevices, valid, schoolId, className } });
+// Школи та їхні класи (частина 29): { schools: [{ id, name, classes: [{ id, name }] }] }
+export const loadSchools = () => api("/admin/schools");
+// Класи з плану школи: { classes: [{ name, id | null }], needsTest }
+export const loadSchoolClasses = (schoolId) => api(`/admin/schools/${schoolId}/classes`);
 // changes: будь-що з { label, maxDevices, validUntil, active } → { item, signedOut }. active: false — пристрої коду виходять
 export const updateAccessCode = (id, changes) => api(`/admin/access-codes/${id}`, { method: "PATCH", body: changes });
 export const regenerateAccessCode = (id) => api(`/admin/access-codes/${id}/regenerate`, { method: "POST" }); // → { code, item, signedOut }

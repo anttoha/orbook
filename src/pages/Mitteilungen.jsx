@@ -20,6 +20,7 @@ import { usePlanStore } from "../shared/store/planStore";
 import { pushErrorText, usePushStore } from "../shared/store/pushStore";
 import { useUserStore } from "../shared/store/userStore";
 import { courseCount } from "../shared/utils/courses";
+import { useClassEyebrow } from "../shared/hooks/useClassEyebrow";
 
 // ─────────────────────────────────────────────────────────────
 // «Mitteilungen» (Soft 26 + макеты части 17). Что приходит и когда — docs/API.md «Mitteilungen».
@@ -27,6 +28,7 @@ import { courseCount } from "../shared/utils/courses";
 // Под ней — личный бот Telegram (часть 27b), ниже — пункты, курсы и Ruhezeit (пока не включено — серым).
 // ─────────────────────────────────────────────────────────────
 const Mitteilungen = () => {
+  const eyebrow = useClassEyebrow("Mehr"); // несколько классов — «Klasse 8b»: Mitteilungen у каждого класса свои (часть 29)
   const me = usePlanStore((s) => s.me);
   const courses = usePlanStore((s) => s.courses);
   const picked = useUserStore((s) => s.picked);
@@ -56,7 +58,7 @@ const Mitteilungen = () => {
   if (me?.features?.push === false) {
     return (
       <section className="flex flex-col gap-4.5">
-        <PageHeader backTo="/mehr" eyebrow="Mehr" title="Mitteilungen" />
+        <PageHeader backTo="/mehr" eyebrow={eyebrow} title="Mitteilungen" />
         <StateScreen icon={BellOff} title="Ausgeschaltet" text="Deine Schule hat Mitteilungen gerade ausgeschaltet." />
         <TelegramCard />
       </section>
@@ -65,7 +67,7 @@ const Mitteilungen = () => {
 
   return (
     <section className="flex flex-col gap-6 lg:max-w-186">
-      <PageHeader backTo="/mehr" eyebrow="Mehr" title="Mitteilungen" />
+      <PageHeader backTo="/mehr" eyebrow={eyebrow} title="Mitteilungen" />
       <Top support={support} on={on} busy={busy} onEnable={turnOn} />
       <TelegramCard />
       {!on && support !== "ios-install" && <InstallCard />}

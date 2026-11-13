@@ -446,3 +446,4 @@ Spec и план бэкенда: `docs/specs/29-klassen/spec.md`. Главное
 - Datenschutz: членства на сервере и классы на устройстве. Скриншоты: `/root/work/orbook-compare/29b-klassen/shots/` (`_tools/p29b.mjs`).
 - Отличия от макета — в `docs/specs/29-klassen/spec.md` («Отличия от дизайна»).
 **Дальше:** часть 29c (Nebeneinander + админка «Schulen & Klassen») — новый чат, Opus · effort medium: `/orb 29c`. Прод для бэкенда 29a по-прежнему ждёт владельца.
+**29b, доработки по просьбе владельца (13.11):** Mitteilungen по классам (из 29d), «Klasse 8b» над заголовком Meine Kurse / Mitteilungen / Editor-Code, значения в «Klasse einstellen» у любого класса, поле «Klasse» в новом Zugangscode (админка → Zugangscodes → «Neuer Code» → Klasse 8b), смена класса без пустого экрана, спокойные анимации (правило в `index.css`), значок класса на ПК без стрелки. В 29d остаются Telegram по классам и Sync `klassen`.

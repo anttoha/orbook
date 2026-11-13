@@ -26,7 +26,7 @@ const ColorPalette = ({ subject, current, onPick }) => {
             aria-label={PALETTES[key].label}
             aria-pressed={key === current}
             onClick={() => onPick(key)}
-            className={cn("grid size-8.5 place-items-center rounded-full text-white ring-offset-2 ring-offset-card transition-[box-shadow,scale] duration-300 ease-out", PALETTES[key].solid, key === current ? "ring-3 ring-ink" : "ring-0 ring-transparent hover:scale-110")}
+            className={cn("grid size-8.5 place-items-center rounded-full text-white ring-offset-2 ring-offset-card transition-shadow duration-150", PALETTES[key].solid, key === current ? "ring-3 ring-ink" : "ring-0 ring-transparent hover:ring-2 hover:ring-hair")}
           >
             {key === current && <CheckIcon className="size-4 motion-safe:animate-pop-in" />}
           </button>

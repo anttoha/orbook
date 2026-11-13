@@ -1,13 +1,15 @@
 import { useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { useNavigate } from "react-router-dom";
 import { Bell, Pencil, Table2 } from "lucide-react";
+import { cache } from "../../shared/api/offlineCache";
 import { CLASS_COLORS } from "../../shared/constants/classColors";
 import { useT } from "../../shared/hooks/useT";
 import { useClasses } from "../../shared/store/classesStore";
 import { usePlanStore } from "../../shared/store/planStore";
 import { usePushStore } from "../../shared/store/pushStore";
 import { useUserStore } from "../../shared/store/userStore";
-import { classSubtitle } from "../../shared/utils/classes";
+import { classPrefs, classSubtitle } from "../../shared/utils/classes";
 import { cn } from "../../shared/utils/cn";
 import { courseCount } from "../../shared/utils/courses";
 import { prefsSummary } from "../../shared/utils/push";
@@ -40,9 +42,8 @@ const ClassSettings = ({ item, onClose }) => {
   const navigate = useNavigate();
   const update = useClasses((s) => s.update);
   const setStartOpen = useClasses((s) => s.setStartOpen);
-  const isActive = useClasses((s) => s.activeId === item.id);
   const openClass = usePlanStore((s) => s.openClass);
-  const values = useActiveValues(isActive);
+  const values = useClassValues(item);
 
   // Страница класса: сначала класс, потом страница (её данные грузятся уже для него)
   const go = (path) => {
@@ -70,7 +71,7 @@ const ClassSettings = ({ item, onClose }) => {
       <ul className="rounded-card bg-card px-3.5 py-0.5">
         <MenuRow onClick={() => go("/mehr/kurse")} icon={Table2} label="Meine Kurse" value={values.courses} />
         <MenuRow onClick={() => go("/mehr/mitteilungen")} icon={Bell} label="Mitteilungen" value={values.push} />
-        <MenuRow onClick={() => go("/mehr/editor-code")} icon={KeyIcon} label="Tests eintragen" value="Editor-Code" />
+        <MenuRow onClick={() => go("/mehr/editor-code")} icon={KeyIcon} label="Tests eintragen" value={item.canEdit ? "aktiv" : "Editor-Code"} />
       </ul>
 
       <ul className="rounded-card bg-card px-3.5">
@@ -85,17 +86,21 @@ const ClassSettings = ({ item, onClose }) => {
   );
 };
 
-// «5 von 6» и «nur Ausfall» знаем только у открытого класса (его курсы уже загружены)
-function useActiveValues(isActive) {
+// «5 von 6» и «nur Ausfall» — у любого класса: курсы открытого класса уже в planStore,
+// у остальных — из сохранённой копии (карточка «Meine Klassen» её только что загрузила)
+function useClassValues(item) {
   const t = useT();
-  const courses = usePlanStore((s) => s.courses);
-  const picked = useUserStore((s) => s.picked);
-  const hiddenRequired = useUserStore((s) => s.hiddenRequired);
-  const pushOn = usePushStore((s) => s.enabled);
-  const pushPrefs = usePushStore((s) => s.prefs);
-  if (!isActive) return { courses: null, push: null };
-  const count = courseCount(courses, picked, hiddenRequired);
-  return { courses: count.all > 0 ? `${count.on} ${t("von")} ${count.all}` : null, push: prefsSummary(pushOn, pushPrefs) };
+  const activeId = useClasses((s) => s.activeId);
+  const isActive = item.id === activeId;
+  const loaded = usePlanStore((s) => s.courses);
+  const prefs = useUserStore(useShallow((s) => classPrefs(s, item.id, activeId)));
+  const push = usePushStore(useShallow((s) => {
+    const own = s.classSettings(item.id, activeId);
+    return { enabled: own.enabled, prefs: own.prefs };
+  }));
+  const courses = isActive ? loaded : (cache.load("courses", item.id)?.data?.courses ?? []);
+  const count = courseCount(courses, prefs.picked, prefs.hiddenRequired);
+  return { courses: count.all > 0 ? `${count.on} ${t("von")} ${count.all}` : null, push: prefsSummary(push.enabled, push.prefs) };
 }
 
 // Кружочки цвета класса (те же токены, что у Fachfarben)

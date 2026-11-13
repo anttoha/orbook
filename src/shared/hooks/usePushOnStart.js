@@ -13,6 +13,7 @@ export function usePushOnStart(active) {
   useEffect(() => {
     if (!active) return undefined; // не вошли — серверу нечего сообщать
     usePushStore.getState().refresh();
+    usePushStore.getState().refreshOthers(); // часть 29: подписки остальных классов
     // подписка на смену picked: zustand вызывает функцию при каждом изменении стора
     const stop = useUserStore.subscribe((state, before) => {
       if (state.picked !== before.picked && usePushStore.getState().mine) usePushStore.getState().refresh(true);
