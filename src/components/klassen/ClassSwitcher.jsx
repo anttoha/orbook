@@ -30,15 +30,16 @@ const ClassSwitcher = ({ variant = "phone", all = false }) => {
     openClass(id);
   };
 
-  // На ПК — такой же значок, как был у класса раньше («9B» у логотипа, макет pc-02): без стрелки, иначе он не помещается
+  // На ПК — такой же значок, как был у класса раньше («9B» у логотипа, макет pc-02): без стрелки и без обводки фокуса
+  // (рядом с логотипом всего ~45px, обводку обрезало бы) — фокус видно по фону
   const chip =
     variant === "side"
-      ? cn("rounded-full px-2 py-0.75 text-micro leading-none font-extrabold uppercase transition-colors hover:bg-hair", all ? "bg-accent text-on-accent hover:bg-accent" : "bg-sand text-ink")
+      ? cn("rounded-full px-1.75 py-0.75 text-micro leading-none font-extrabold uppercase transition-colors outline-none hover:bg-hair focus-visible:bg-hair", all ? "bg-accent text-on-accent hover:bg-accent-ink focus-visible:bg-accent-ink" : "bg-sand text-ink")
       : cn("flex h-6.5 items-center gap-0.5 rounded-full pr-1.5 pl-2.5 text-label font-extrabold", all ? "bg-accent text-on-accent" : classColor(active.color).tint);
 
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger className={cn(chip, "shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-accent/50")} aria-label={t("Klasse wechseln")}>
+      <DropdownMenu.Trigger className={cn(chip, "shrink-0 outline-none", variant !== "side" && "focus-visible:ring-2 focus-visible:ring-accent/50")} aria-label={t("Klasse wechseln")}>
         {all ? t("Alle") : active.name}
         {variant !== "side" && <ChevronDown className="size-3.5" />}
       </DropdownMenu.Trigger>
