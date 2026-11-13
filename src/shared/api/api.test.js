@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { api, ApiError, ifMatch, isUnavailable, retryText, setAdminUnauthorizedHandler, setUnauthorizedHandler } from "./api";
+import { api, ApiError, ifMatch, isUnavailable, retryText, setAdminClassHandler, setAdminUnauthorizedHandler, setClassHandlers, setUnauthorizedHandler } from "./api";
 
 // Подменяем fetch: сервер отвечает тем, что задал тест
 const reply = (status, body, headers = {}) => vi.stubGlobal("fetch", vi.fn(async () => new Response(body === undefined ? null : JSON.stringify(body), { status, headers })));
@@ -138,5 +138,31 @@ describe("помощники", () => {
     expect(retryText(new ApiError(429, "locked", "Gesperrt", {}, 600))).toBe("Bitte in 10 Minuten erneut versuchen.");
     expect(retryText(new ApiError(429, "locked", "Gesperrt", {}, 45))).toBe("Bitte in 1 Minute erneut versuchen.");
     expect(retryText(new ApiError(429, "locked", "Gesperrt"))).toBe("Gesperrt");
+  });
+});
+
+describe("api: класс в заголовке (часть 29)", () => {
+  afterEach(() => {
+    setClassHandlers({ current: () => null, gone: () => {} });
+    setAdminClassHandler(() => null);
+  });
+  const header = (call) => fetch.mock.calls[call][1].headers["X-ORBook-Class"];
+
+  it("приложение — открытый класс, админка — класс из чипа админки", async () => {
+    setClassHandlers({ current: () => 2, gone: () => {} });
+    setAdminClassHandler(() => 5);
+    reply(200, {});
+    await api("/day?date=2026-10-05");
+    await api("/admin/codes");
+    await api("/admin/auth/me");
+    await api("/admin/schools");
+    expect([header(0), header(1), header(2), header(3)]).toEqual(["2", "5", undefined, undefined]);
+  });
+
+  it("явный classId важнее", async () => {
+    setAdminClassHandler(() => 5);
+    reply(200, {});
+    await api("/admin/teachers", { classId: 7 });
+    expect(header(0)).toBe("7");
   });
 });

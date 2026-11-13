@@ -45,8 +45,9 @@ export function setAdminClassHandler(fn) {
   adminClass = fn;
 }
 
-// Запросы без класса: вход, вход админа, Sync (код устройства, не класса)
-const NO_CLASS = ["/admin/auth", "/auth/login", "/auth/teacher", "/auth/join", "/auth/logout", "/auth/leave", "/public", "/sync", "/health"];
+// Запросы без класса: вход, вход админа, школы и классы сервера (класс из чипа мог быть только что удалён),
+// Sync (код устройства, не класса)
+const NO_CLASS = ["/admin/auth", "/admin/schools", "/admin/classes", "/auth/login", "/auth/teacher", "/auth/join", "/auth/logout", "/auth/leave", "/public", "/sync", "/health"];
 const classHeader = (path, classId) => (classId != null && !NO_CLASS.some((prefix) => path.startsWith(prefix)) ? { "X-ORBook-Class": String(classId) } : {});
 // Класс по умолчанию: в админке — выбранный админом, в приложении — открытый
 const defaultClass = (path) => (path.startsWith("/admin") ? adminClass() : currentClassId());
