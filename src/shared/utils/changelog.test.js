@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { changelog } from "../changelog";
-import { changeCount, compareVersions, entryHint, groupsOf, hasNews, newsDate, newsDateLong, shouldAutoShow } from "./changelog";
+import { changeCount, compareVersions, unseenEntries, entryHint, groupsOf, hasNews, newsDate, newsDateLong, shouldAutoShow } from "./changelog";
 
 const entries = [{ version: "0.9.0", date: "2026-12-01", neu: ["a", "b"] }, { version: "0.8.0", date: "2026-11-01", behoben: ["c"] }];
 
@@ -60,5 +60,14 @@ describe("versions", () => {
   });
   it("a removed newer entry does not bring the window back", () => {
     expect(hasNews("0.14.1", [{ version: "0.14.0" }])).toBe(false);
+  });
+});
+
+describe("unseenEntries", () => {
+  const list = [{ version: "0.14.4" }, { version: "0.14.0" }, { version: "0.13.0" }];
+  it("shows every version the person missed", () => {
+    expect(unseenEntries("0.13.0", list).map((e) => e.version)).toEqual(["0.14.4", "0.14.0"]);
+    expect(unseenEntries(null, list).map((e) => e.version)).toEqual(["0.14.4"]);
+    expect(unseenEntries("0.14.4", list).map((e) => e.version)).toEqual(["0.14.4"]);
   });
 });

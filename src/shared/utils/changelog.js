@@ -38,4 +38,10 @@ export const hasNews = (seen, entries) => Boolean(entries[0]) && (!seen || compa
 
 // Показывать ли окно «Was ist neu» само.
 // Новичок (ещё не выбрал курсы) окна не получает: для него всё и так новое — его версию просто помечаем как увиденную.
+// Все версии, которых человек ещё не видел (новее seen), сверху вниз. seen нет — только последняя
+export const unseenEntries = (seen, entries) => {
+  const fresh = seen ? entries.filter((entry) => compareVersions(entry.version, seen) > 0) : [];
+  return fresh.length ? fresh : entries.slice(0, 1);
+};
+
 export const shouldAutoShow = ({ seen, entries, isNewUser }) => hasNews(seen, entries) && !isNewUser;

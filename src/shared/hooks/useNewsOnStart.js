@@ -13,6 +13,6 @@ export const useNewsOnStart = (ready) => {
     const { seenNews, coursesChosen, markNewsShown } = useUserStore.getState();
     if (!shouldAutoShow({ seen: seenNews, entries: changelog, isNewUser: !coursesChosen })) return;
     markNewsShown();
-    openSheet("news", {}, { replace: true });
+    openSheet("news", { id: seenNews }, { replace: true }); // id — какую версию видел: окно покажет все новее
   }, [ready]); // eslint-disable-line react-hooks/exhaustive-deps -- нужно ровно один раз, когда приложение готово
 };
