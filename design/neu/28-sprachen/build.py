@@ -30,10 +30,10 @@ def orig(path, caption, kind="phone"):
     return f'<figure class="shot {kind} old"><figcaption>{caption}</figcaption>{"".join(out)}</figure>'
 
 SECTIONS = [
-    ("sprache", "Mehr → Darstellung: новая карточка «Sprache»",
-     "Одна карточка между «Ansicht» и «Plan»: переключатель Deutsch / English / Українська. Названия языков всегда на своём языке, чтобы найти нужный, даже если сейчас всё непонятно. "
-     "Нажал — всё приложение переключается сразу, без перезагрузки. На макетах переведена только сама карточка, остальной экран оставлен немецким; в приложении переведётся всё.",
-     [("handy-01-sprache-de", "Deutsch"), ("handy-02-sprache-en", "English"), ("handy-03-sprache-uk", "Українська")], [("pc-01-sprache", "ПК · Darstellung")]),
+    ("sprache", "Mehr → Darstellung: «Sprache» — выпадающий список с флагами",
+     "В карточке «Sprache» справа — поле с флагом и названием текущего языка. Нажал — список раскрывается прямо под полем (как меню «Woche ⋮»): 🇩🇪 Deutsch, 🇬🇧 English, 🇺🇦 Українська, у выбранного галочка. "
+     "Выбрал — всё приложение переключается сразу. Названия языков всегда на своём языке. На макетах переведена только карточка, остальной экран оставлен немецким; в приложении переведётся всё.",
+     [("handy-01-sprache-zu", "Закрыто · Deutsch"), ("handy-02-sprache-offen", "Список открыт"), ("handy-03-sprache-uk", "Выбран Українська")], [("pc-01-sprache-offen", "ПК · список открыт (English)")]),
 ]
 OLD = [(("1 Handy Hell", "2 Handy Dunkel", "24 Darstellung"), "Soft 24 · Darstellung (как было)", "phone")]
 CSS = """
