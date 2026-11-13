@@ -5,6 +5,17 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.15.0",
+    date: "2026-11-13",
+    neu: [
+      "„Meine Klassen“ ist jetzt nach Schulen sortiert: erst die Schule, darunter ihre Klassen. Tipp auf die Schule zeigt nur ihre Klassen – dort kannst du auch eine Klasse hinzufügen.",
+      "Den Zugangscode kannst du eingeben, wo du willst: Die Klasse landet automatisch bei ihrer Schule.",
+      "Sync nimmt jetzt alle deine Klassen mit: Notizen und Kurse je Klasse, dazu Name, Farbe und Reihenfolge. Zugangscodes nicht – die gibst du auf dem neuen Gerät selbst ein.",
+      "Telegram-Bot für mehrere Klassen: Schick ihm einfach noch einen Code. Jede Nachricht sagt dann, zu welcher Klasse sie gehört, und /heute kommt für jede Klasse.",
+    ],
+    behoben: ["„Meine Klassen“ konnte bei manchen Geräten mit mehreren Klassen abstürzen („Etwas ist schiefgelaufen“)."],
+  },
+  {
     version: "0.14.6",
     date: "2026-11-13",
     behoben: ["Mehrere Klassen: Nach dem Wechseln zeigten Materialien und Termine manchmal noch die der anderen Klasse. Jetzt siehst du immer nur die der Klasse, die offen ist."],
