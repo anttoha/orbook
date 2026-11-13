@@ -486,3 +486,5 @@ Spec и план бэкенда: `docs/specs/29-klassen/spec.md`. Главное
   4. /heute /morgen /woche — по всем классам чата блоками «9b», «5a»; /einstellungen — сначала выбор класса кнопками (при одном классе — как сейчас); /stop — «alle Klassen» или одна.
   5. Тесты `tests/test_telegram*.py`, `make lint test`, API.md/FRONTEND.md, выкладка на демо; фронт: в «Mitteilungen» строка Telegram показывает класс (без новых макетов). Changelog — при релизе.
 **Дальше:** «ок» плана → новый чат, Opus · effort medium: `/orb 29d` (бэкенд Telegram по плану выше).
+
+**29d, продолжение (13.11):** владелец — «ок» плана Telegram + новое: везде сначала школа, потом классы. Бэкенд Telegram сделан и на демо (`/opt/orbook-be`, 1022 теста ok). Макеты «Schule → Klassen» — `design/neu/29d-schulen/` (handy-20…23), артефакт https://claude.ai/artifact/HHapMjWe9DCQ9YHkQbMFnw — ждут «ок дизайн». После «ок»: группировка по школе в `Klassen.jsx` (`schoolGroups` в `shared/utils/classes.js` + тест), страница школы `/klassen/schule/:id`, шторка «Klasse hinzufügen» с `schoolId` (код другой школы → плашка «kommt zur …»), переключатель по школам, ПК так же; потом changelog и «на прод».
