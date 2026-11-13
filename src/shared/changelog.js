@@ -3,6 +3,15 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.13.0",
+    date: "2026-11-13",
+    neu: [
+      "Telegram-Bot: Planänderungen, Ausfälle und „Für morgen“ kommen als Nachricht. Verbinden unter Mehr → Mitteilungen oder einfach deinen Zugangscode an den Bot schicken.",
+      "Im Bot: /heute, /morgen, /woche und /einstellungen – was kommt, welche Kurse, wann Ruhe ist. Keine Lust mehr? /stop.",
+      "„Teilen“ kann jetzt auch die Aufgaben für morgen mitschicken.",
+    ],
+  },
+  {
     version: "0.12.0",
     date: "2026-11-12",
     neu: [

@@ -397,3 +397,7 @@ Spec, диалоги бота текстом и план бэкенда: `docs/s
 - Скриншоты: `/root/work/orbook-compare/27b-telegram-bot/shots/` (`_tools/p27b.mjs`).
 - **Проверить владельцу:** Mehr → Mitteilungen → «Mit Telegram verbinden» → «Starten» в Telegram; в боте /einstellungen, /heute, /stop. Бот на демо работает, если токен введён (`orbook-demo telegram-token`, часть 27).
 **Дальше:** часть 28 (языки), Sonnet · effort low.
+
+## Релиз v0.13.0 (2026-11-13)
+Владелец: «на прод» (части 27 и 27b). Бэкенд: `scripts/update.sh` 10:20 (тег отката `pre-update-20261113-102057`, бэкап `orbook-before-update-20261113-102058.db`, схема 0013 без изменений), health ok, `/api/telegram` и `/api/admin/channels` без входа → 401. Фронт: changelog 0.13.0, `docs/releases/v0.13.0.md`, тег `v0.13.0` → Release через Actions → прод.
+**Ждёт владельца:** на проде бот заработает после токена **отдельного** бота (не демо-бота): создать у @BotFather и ввести на сервере `orbook telegram-token` (скрытый ввод).
