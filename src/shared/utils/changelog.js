@@ -22,8 +22,19 @@ export const entryHint = (entry) => {
   return `${newsDateLong(entry.date)} · ${n} ${n === 1 ? "Änderung" : "Änderungen"}`;
 };
 
-// Есть ли то, что человек ещё не видел (метка NEU в «Mehr»)
-export const hasNews = (seen, entries) => Boolean(entries[0]) && seen !== entries[0].version;
+// «0.14.1» → [0, 14, 1]: сравнивать версии числами, а не строками («0.10» новее «0.9»)
+const versionParts = (version) => String(version ?? "").split(".").map((part) => Number(part) || 0);
+export function compareVersions(a, b) {
+  const [x, y] = [versionParts(a), versionParts(b)];
+  for (let i = 0; i < Math.max(x.length, y.length); i++) {
+    if ((x[i] ?? 0) !== (y[i] ?? 0)) return (x[i] ?? 0) - (y[i] ?? 0);
+  }
+  return 0;
+}
+
+// Есть ли то, что человек ещё не видел (метка NEU в «Mehr»): верхняя запись НОВЕЕ увиденной.
+// Именно «новее», а не «другая»: если запись убрали (только для админа), окно не откроется второй раз
+export const hasNews = (seen, entries) => Boolean(entries[0]) && (!seen || compareVersions(entries[0].version, seen) > 0);
 
 // Показывать ли окно «Was ist neu» само.
 // Новичок (ещё не выбрал курсы) окна не получает: для него всё и так новое — его версию просто помечаем как увиденную.

@@ -1,12 +1,9 @@
 // Что нового в приложении. Дописывай запись СВЕРХУ при каждом релизе — вместе с docs/releases/vX.Y.Z.md.
 // Тексты — по-немецки, коротко и по-человечески: так, как сказал бы одноклассник, а не пресс-служба.
+// Только то, что видят ВСЕ (ученики, родители). Изменения админки сюда не пишем — они в docs/releases/
+// (решение владельца 2026-11-13). Релиз только для админки — без записи здесь.
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
-  {
-    version: "0.14.1",
-    date: "2026-11-13",
-    behoben: ["Admin: Ein Code für eine andere Klasse war gespeichert, aber nicht zu sehen. Jetzt springt die Liste nach „Fertig“ zu dieser Klasse, und beim neuen Code steht, für welche Klasse er ist."],
-  },
   {
     version: "0.14.0",
     date: "2026-11-13",
@@ -92,11 +89,6 @@ export const changelog = [
     version: "0.8.3",
     date: "2026-11-08",
     behoben: ["Der Plan zeigt jetzt die nächsten fünf Schultage, auch am Wochenende.", "Im Browser-Tab ist jetzt das ORBook-Logo."],
-  },
-  {
-    version: "0.8.2",
-    date: "2026-11-07",
-    neu: ["Zugangscodes kannst du dir noch einmal anzeigen lassen."],
   },
   {
     version: "0.8.1",

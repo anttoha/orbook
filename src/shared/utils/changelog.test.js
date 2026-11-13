@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { changelog } from "../changelog";
-import { changeCount, entryHint, groupsOf, hasNews, newsDate, newsDateLong, shouldAutoShow } from "./changelog";
+import { changeCount, compareVersions, entryHint, groupsOf, hasNews, newsDate, newsDateLong, shouldAutoShow } from "./changelog";
 
 const entries = [{ version: "0.9.0", date: "2026-12-01", neu: ["a", "b"] }, { version: "0.8.0", date: "2026-11-01", behoben: ["c"] }];
 
@@ -49,5 +49,16 @@ describe("changelog file", () => {
 
   it("has unique versions", () => {
     expect(new Set(changelog.map((e) => e.version)).size).toBe(changelog.length);
+  });
+});
+
+describe("versions", () => {
+  it("compares numbers, not strings", () => {
+    expect(compareVersions("0.10.0", "0.9.0")).toBeGreaterThan(0);
+    expect(compareVersions("0.14.0", "0.14.1")).toBeLessThan(0);
+    expect(compareVersions("0.14.0", "0.14.0")).toBe(0);
+  });
+  it("a removed newer entry does not bring the window back", () => {
+    expect(hasNews("0.14.1", [{ version: "0.14.0" }])).toBe(false);
   });
 });

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { changelog } from "../shared/changelog";
+import { hasNews } from "../shared/utils/changelog";
 import EntryCard from "../components/changelog/EntryCard";
 import PageHeader from "../components/ui/PageHeader";
 import { useUserStore } from "../shared/store/userStore";
@@ -9,7 +10,7 @@ const Neuigkeiten = () => {
   const markNewsRead = useUserStore((s) => s.markNewsRead);
   const [openVersion, setOpenVersion] = useState(changelog[0]?.version);
   // «NEU» на самой версии остаётся, пока страница открыта: считаем один раз при входе
-  const [wasNew] = useState(() => useUserStore.getState().readNews !== changelog[0]?.version);
+  const [wasNew] = useState(() => hasNews(useUserStore.getState().readNews, changelog));
 
   useEffect(() => {
     markNewsRead();
