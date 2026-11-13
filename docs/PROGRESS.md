@@ -454,3 +454,7 @@ Spec и план бэкенда: `docs/specs/29-klassen/spec.md`. Главное
 - Чистые функции: `shared/utils/adminClasses.js` (+ тест), `sideBySideRows`, `nextExamAcross` в `classes.js`. Удалён старый `ClassField` (его заменил `SchoolClassField`).
 - Скриншоты: `/root/work/orbook-compare/29c-klassen/shots/` (`_tools/p29c.mjs`). Отличия от макета — в spec.
 **Дальше:** часть 29d (Telegram по классам, Sync `klassen`, Datenschutz, changelog) — новый чат, Opus · effort medium: `/orb 29d`. Прод для бэкенда 29a и фронта 29b–29c ждёт владельца.
+
+## Релиз v0.14.0 (2026-11-13)
+Владелец: «на прод — то, чего там ещё нет». Бэкенд 29a уже был на проде с 16:51 (схема 0014), новее кода нет — бэкенд не трогали. Фронт: части 28 (языки), 29b, 29c — changelog 0.14.0, `docs/releases/v0.14.0.md`, тег `v0.14.0` → Release → прод выложен 17:57 (`917032d2`), в сборке прода есть «Nebeneinander» и «Schulen & Klassen».
+**Находка на проде:** `/api/health` → `degraded · plan_stale`. На проде владелец добавил вторую школу (Georgischule, класс 07B); её планы пришли в 17:03, но `internal.planState` школы 2 так и остался пустым (`lastFetchAt`/`lastOkAt` = null) — обычный цикл опроса до неё, похоже, не доходит или не записывает итог. Нужен разбор в `/opt/orbook-be` (`plan/poller.py`, `_run_school`/`_finish`) — по правилам бэкенда: план → «ок» владельца.
