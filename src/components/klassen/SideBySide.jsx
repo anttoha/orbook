@@ -39,14 +39,16 @@ const LessonTile = ({ lesson, overrides, onOpen }) => {
   const changed = !cancelled && lesson.status !== "normal";
   const where = [lesson.teacher, lesson.room].filter(Boolean).join(" · ");
   return (
-    <button type="button" onClick={onOpen} className={cn("relative flex min-h-13 w-full flex-col justify-center rounded-field px-2.5 py-1.5 text-left", cancelled ? "border border-dashed border-danger bg-danger-tint text-danger" : fachClasses(lesson.subject?.code, overrides))}>
-      <span className={cn("truncate text-row font-extrabold", cancelled && "line-through")}>{subjectName(lesson.subject)}</span>
-      <span className={cn("truncate text-label", cancelled ? "font-extrabold" : "opacity-80")}>{cancelled ? t("fällt aus") : where || " "}</span>
-      {changed && (
-        <Badge variant="exam" className="absolute top-1.5 right-1.5 max-w-1/2">
-          {t("Vertretung")}
-        </Badge>
-      )}
+    <button type="button" onClick={onOpen} className={cn("flex min-h-13 w-full flex-col justify-center rounded-field px-2.5 py-1.5 text-left", cancelled ? "border border-dashed border-danger bg-danger-tint text-danger" : fachClasses(lesson.subject?.code, overrides))}>
+      <span className="flex min-w-0 items-center gap-1.5">
+        <span className={cn("min-w-0 flex-1 truncate text-row font-extrabold", cancelled && "line-through")}>{subjectName(lesson.subject)}</span>
+        {changed && (
+          <Badge variant="exam" className="px-1.5 tracking-normal">
+            {t("Vertretung")}
+          </Badge>
+        )}
+      </span>
+      <span className={cn("truncate text-label", cancelled ? "font-extrabold" : "opacity-80")}>{cancelled ? t("fällt aus") : where || "\u00a0"}</span>
     </button>
   );
 };
@@ -121,13 +123,13 @@ const SideBySide = ({ date, monday, today, onPickDate }) => {
     openClass(id);
   };
   // Колонка ~ треть ширины: до трёх классов помещаются, остальные — свайпом вбок
-  const grid = { gridTemplateColumns: `2.5rem repeat(${columns.length}, minmax(9rem, 1fr))` };
+  const grid = { gridTemplateColumns: `1.75rem repeat(${columns.length}, minmax(9rem, 1fr))` };
 
   return (
     <div className="flex flex-col gap-3.5">
       <DayPicker monday={monday} date={date} onPick={onPickDate} />
       <div className="-mx-gutter overflow-x-auto px-gutter">
-        <div className="grid gap-x-2 gap-y-2" style={grid}>
+        <div className="grid gap-x-1.5 gap-y-2" style={grid}>
           <span />
           {columns.map(({ item }) => (
             <span key={item.id} className="flex min-w-0 items-center gap-2 py-1">
@@ -138,7 +140,7 @@ const SideBySide = ({ date, monday, today, onPickDate }) => {
           {rows.map((row) => [
             <span key={`p${row.period}`} className="flex flex-col items-center justify-center">
               <span className="text-subhead text-ink">{row.period}</span>
-              <span className="text-caption text-faint">{row.start}</span>
+              <span className="text-micro text-faint">{row.start}</span>
             </span>,
             ...columns.map((column, index) => (
               <Cell key={`${row.period}-${column.item.id}`} lessons={row.cells[index]} status={column.data.status} overrides={overrides} onOpen={() => open(column.item.id, `/tag/${date}`)} />
