@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addClassErrorText, classPrefs, classTitle, daySummary, inDaysText, isTeacherCode, mergeClasses, myLessons, nextClassColor, nextClassExam, nextExamAcross, sideBySideRows, startTarget, swapClassData, todayCells } from "./classes";
+import { addClassErrorText, classesOfSchool, classPrefs, classTitle, daySummary, inDaysText, isTeacherCode, mergeClasses, myLessons, nextClassColor, nextClassExam, nextExamAcross, otherSchool, schoolGroups, sideBySideRows, startTarget, swapClassData, todayCells } from "./classes";
 
 const lesson = (period, code, status = "normal", extra = {}) => ({ period, start: `0${period + 6}:00`, end: `0${period + 6}:45`, status, subject: { code, name: { De: "Deutsch", Ma: "Mathe", En: "Englisch", Ku: "Kunst" }[code] ?? code }, course: null, ...extra });
 
@@ -164,4 +164,33 @@ describe("Nebeneinander", () => {
     expect(inDaysText("2026-09-16", "2026-09-16")).toBe("heute");
     expect(inDaysText("2026-09-16", "2026-09-17")).toBe("morgen");
   });
+});
+
+describe("школы (часть 29d)", () => {
+  const goethe = { id: 1, name: "Goethe" };
+  const schiller = { id: 2, name: "Schiller" };
+  const list = [
+    { id: 1, name: "9b", school: goethe },
+    { id: 3, name: "7c", school: schiller },
+    { id: 2, name: "5a", school: goethe },
+    { id: 4, name: "x", school: null },
+  ];
+  it("schoolGroups: школа там, где её первый класс; классы внутри по порядку", () => {
+    const groups = schoolGroups(list);
+    expect(groups.map((g) => g.key)).toEqual([1, 2, "none"]);
+    expect(groups[0].items.map((c) => c.name)).toEqual(["9b", "5a"]);
+    expect(groups[2].school).toBeNull();
+  });
+  it("classesOfSchool и otherSchool", () => {
+    expect(classesOfSchool(list, "1").map((c) => c.id)).toEqual([1, 2]);
+    expect(otherSchool({ school: schiller }, 1)).toBe(true);
+    expect(otherSchool({ school: goethe }, "1")).toBe(false);
+    expect(otherSchool({ school: schiller }, null)).toBe(false);
+    expect(otherSchool({ school: null }, 1)).toBe(false);
+  });
+});
+
+it("classPrefs: неполные данные класса → те же пустые массивы (стабильно для селектора)", () => {
+  const state = { byClass: { 2: { coursesChosen: true } } };
+  expect(classPrefs(state, 2, 1).picked).toBe(classPrefs(state, 2, 1).picked);
 });

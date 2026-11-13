@@ -179,4 +179,14 @@ export const uk = {
   "Zurück zur App": "Назад до застосунку",
   // Часть 29d: Sync
   "Name, Farbe, Reihenfolge – ohne Zugangscodes": "Назва, колір, порядок – без кодів доступу",
+  // Часть 29d: Schule → Klassen
+  "Schule": "Школа",
+  "Klassen": "Класи",
+  "Klasse auf diesem Gerät": "клас на цьому пристрої",
+  "Klassen auf diesem Gerät": "класи на цьому пристрої",
+  "Zugangscode einer Klasse dieser Schule": "Код доступу класу цієї школи",
+  "Code einer anderen Schule? Geht auch – die Klasse landet dann bei ihrer Schule.": "Код іншої школи? Теж можна – клас потрапить до своєї школи.",
+  "Gefunden – gehört zu einer anderen Schule.": "Знайдено – належить до іншої школи.",
+  "Die Klasse kommt zu ihrer Schule.": "Клас потрапить до своєї школи.",
+  "Schule antippen: ihre Klassen und „Klasse hinzufügen“": "Торкнись школи: її класи і «Додати клас»",
 };

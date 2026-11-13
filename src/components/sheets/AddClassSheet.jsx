@@ -4,7 +4,7 @@ import { Check, ChevronRight, ScanLine } from "lucide-react";
 import { useT } from "../../shared/hooks/useT";
 import { useClasses } from "../../shared/store/classesStore";
 import { usePlanStore } from "../../shared/store/planStore";
-import { addClassErrorText, classSubtitle } from "../../shared/utils/classes";
+import { addClassErrorText, otherSchool } from "../../shared/utils/classes";
 import Button from "../ui/Button";
 import ClassBadge from "../ui/ClassBadge";
 import Sheet from "../ui/Sheet";
@@ -14,20 +14,24 @@ import TextField from "../ui/TextField";
 // «Klasse hinzufügen» (макеты 29 handy-03, -04, -05). Адрес: ?sheet=klasseneu
 // 1) Zugangscode (или Lehrer-Code) → «Weiter»: сервер добавляет класс к этому устройству (вход остаётся)
 // 2) «Gefunden»: имя на устройстве → «Hinzufügen und Kurse wählen» открывает класс, дальше обычный выбор курсов
+// Часть 29d: со страницы школы (?schule=id) сверху имя школы; код другой школы тоже подходит —
+// класс встаёт к своей школе, плашка «Gefunden» это говорит (макет handy-22)
 // ─────────────────────────────────────────────────────────────
-const AddClassSheet = ({ open, onClose }) => {
+const AddClassSheet = ({ open, onClose, sheet }) => {
   const t = useT();
   // Каждое открытие — с пустой формы: шторка после закрытия остаётся в DOM (анимация), поэтому новый key
   const [round, setRound] = useState({ open, n: 0 });
   if (open !== round.open) setRound({ open, n: open ? round.n + 1 : round.n });
+  const schoolId = sheet?.schule ?? null;
+  const school = useClasses((s) => s.list.find((c) => String(c.school?.id) === String(schoolId))?.school);
   return (
-    <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow={t("Meine Klassen")} title={t("Klasse hinzufügen")}>
-      <AddClassForm key={round.n} onClose={onClose} />
+    <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow={school?.name ?? t("Meine Klassen")} title={t("Klasse hinzufügen")}>
+      <AddClassForm key={round.n} onClose={onClose} schoolId={school ? schoolId : null} />
     </Sheet>
   );
 };
 
-const AddClassForm = ({ onClose }) => {
+const AddClassForm = ({ onClose, schoolId }) => {
   const t = useT();
   const navigate = useNavigate();
   const addClass = usePlanStore((s) => s.addClass);
@@ -80,11 +84,18 @@ const AddClassForm = ({ onClose }) => {
 
         {found ? (
           <>
-            <div className="flex items-center gap-3 rounded-field bg-ok-tint px-3.5 py-3">
+            <div className="flex items-center gap-3 rounded-field bg-ok-tint px-3.5 py-3 motion-safe:animate-rise-in">
               <ClassBadge name={item.name} color={item.color} size="md" />
               <div className="min-w-0">
-                <p className="truncate text-row font-extrabold text-ink">{classSubtitle(item)}</p>
-                <p className="text-label text-muted">{t("Gefunden")}</p>
+                {/* сначала школа, потом класс */}
+                <p className="truncate text-row font-extrabold text-ink">{[item.school?.name, item.name].filter(Boolean).join(" · ")}</p>
+                {otherSchool(item, schoolId) ? (
+                  <p className="text-label text-muted">
+                    {t("Gefunden – gehört zu einer anderen Schule.")} {t("Die Klasse kommt zu ihrer Schule.")}
+                  </p>
+                ) : (
+                  <p className="text-label text-muted">{t("Gefunden")}</p>
+                )}
               </div>
             </div>
             <TextField id="add-class-label" label={t("Name auf diesem Gerät")} value={label} onChange={(e) => setLabel(e.target.value)} maxLength={30} placeholder={`${t("Klasse")} ${item.name}`} hint={t("Nur du siehst den Namen. Kann leer bleiben.")} />

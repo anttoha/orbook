@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 
 // Усі параметри адреси, що стосуються шторок
-const SHEET_KEYS = ["sheet", "datum", "stunde", "fach", "bereich", "kw", "id"];
+const SHEET_KEYS = ["sheet", "datum", "stunde", "fach", "bereich", "kw", "id", "schule"];
 
 // ─────────────────────────────────────────────────────────────
 // Відкриття/закриття шторок через адресу сторінки:
@@ -52,6 +52,7 @@ export const useSheet = () => {
     bereich: searchParams.get("bereich"),
     kw: searchParams.get("kw"), // понеділок тижня для «kalender» і «teilen» (не плутати з ?woche= у сторінки тижня)
     id: searchParams.get("id"), // номер Klausur для «klausur»
+    schule: searchParams.get("schule"), // «klasseneu» со страницы школы (часть 29d)
   };
 
   return { sheet, openSheet, closeSheet };

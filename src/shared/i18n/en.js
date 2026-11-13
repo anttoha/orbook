@@ -179,4 +179,14 @@ export const en = {
   "Zurück zur App": "Back to the app",
   // Часть 29d: Sync
   "Name, Farbe, Reihenfolge – ohne Zugangscodes": "Name, colour, order – no access codes",
+  // Часть 29d: Schule → Klassen
+  "Schule": "School",
+  "Klassen": "Classes",
+  "Klasse auf diesem Gerät": "class on this device",
+  "Klassen auf diesem Gerät": "classes on this device",
+  "Zugangscode einer Klasse dieser Schule": "Access code of a class at this school",
+  "Code einer anderen Schule? Geht auch – die Klasse landet dann bei ihrer Schule.": "Code from another school? That works too – the class goes to its own school.",
+  "Gefunden – gehört zu einer anderen Schule.": "Found – belongs to another school.",
+  "Die Klasse kommt zu ihrer Schule.": "The class goes to its own school.",
+  "Schule antippen: ihre Klassen und „Klasse hinzufügen“": "Tap a school: its classes and “Add class”",
 };

@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { Fragment } from "react";
 import { Check, ChevronDown, LayoutGrid, Plus } from "lucide-react";
 import { classColor } from "../../shared/constants/classColors";
 import { useT } from "../../shared/hooks/useT";
 import { useActiveClass, useClasses } from "../../shared/store/classesStore";
 import { usePlanStore } from "../../shared/store/planStore";
-import { classSubtitle, classTitle } from "../../shared/utils/classes";
+import { classTitle, schoolGroups } from "../../shared/utils/classes";
 import { cn } from "../../shared/utils/cn";
 import ClassBadge from "../ui/ClassBadge";
 import { menuContentClass, menuIconClass, menuItemClass, menuSeparatorClass } from "../ui/menuStyles";
@@ -13,6 +14,7 @@ import { menuContentClass, menuIconClass, menuItemClass, menuSeparatorClass } fr
 // ─────────────────────────────────────────────────────────────
 // Чип класса «9b ⌄» и меню переключения (макеты 29 handy-09, pc-02):
 // мои классы (одно нажатие — другой класс), «Alle Klassen», «Klasse hinzufügen».
+// Часть 29d (макет handy-23): классы по школам, имя школы — маленькой строкой над её классами.
 // variant: "phone" — чип над заголовком недели; "side" — маленький значок у логотипа на ПК.
 // all — на «Meine Klassen» чип пишет «Alle». Старый сервер без классов — чипа нет.
 // ─────────────────────────────────────────────────────────────
@@ -46,15 +48,22 @@ const ClassSwitcher = ({ variant = "phone", all = false }) => {
       <DropdownMenu.Portal>
         <DropdownMenu.Content align="start" sideOffset={6} className={cn(menuContentClass, "w-72")}>
           {demo && variant === "side" && <p className="px-3 pt-1.5 pb-1 text-micro font-extrabold text-accent-ink uppercase">Demo · {t("ausgedachte Daten")}</p>}
-          {list.map((item) => (
-            <DropdownMenu.Item key={item.id} onSelect={() => pick(item.id)} className={cn(menuItemClass, "gap-3 py-2", item.id === active.id && !all && "bg-sand")}>
-              <ClassBadge name={item.name} color={item.color} size="md" />
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-row font-extrabold text-ink">{classTitle(item, t)}</span>
-                <span className="block truncate text-caption font-normal text-faint">{item.gone ? t("Zugang beendet") : classSubtitle(item)}</span>
-              </span>
-              {item.id === active.id && !all && <Check className="size-4.5 shrink-0 text-accent-ink" />}
-            </DropdownMenu.Item>
+          {schoolGroups(list).map((group) => (
+            <Fragment key={group.key}>
+              {group.school && (
+                <DropdownMenu.Label className="truncate px-3 pt-2 pb-1 text-micro font-extrabold tracking-wide text-faint uppercase">{group.school.name}</DropdownMenu.Label>
+              )}
+              {group.items.map((item) => (
+                <DropdownMenu.Item key={item.id} onSelect={() => pick(item.id)} className={cn(menuItemClass, "gap-3 py-2", item.id === active.id && !all && "bg-sand")}>
+                  <ClassBadge name={item.name} color={item.color} size="md" />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-row font-extrabold text-ink">{classTitle(item, t)}</span>
+                    <span className="block truncate text-caption font-normal text-faint">{item.gone ? t("Zugang beendet") : `${t("Klasse")} ${item.name}`}</span>
+                  </span>
+                  {item.id === active.id && !all && <Check className="size-4.5 shrink-0 text-accent-ink" />}
+                </DropdownMenu.Item>
+              ))}
+            </Fragment>
           ))}
           <DropdownMenu.Separator className={menuSeparatorClass} />
           <DropdownMenu.Item onSelect={() => navigate("/klassen")} className={menuItemClass}>

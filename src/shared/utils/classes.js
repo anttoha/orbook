@@ -75,7 +75,8 @@ export function swapFields(state, from, to, fields, empty) {
 // Настройки «Meine Kurse» любого класса (активного — сверху, остальных — из byClass)
 export function classPrefs(state, id, activeId) {
   const data = id === activeId ? state : (state.byClass?.[id] ?? EMPTY_CLASS_DATA);
-  return { picked: data.picked ?? [], hiddenRequired: data.hiddenRequired ?? [] };
+  // Пустое — всегда тот же массив: селектор с useShallow иначе видит «новые» данные на каждом рендере (бесконечный цикл)
+  return { picked: data.picked ?? EMPTY_CLASS_DATA.picked, hiddenRequired: data.hiddenRequired ?? EMPTY_CLASS_DATA.hiddenRequired };
 }
 
 // ── «Сегодня одной строкой» на карточке ──
@@ -226,3 +227,23 @@ export function nextExamAcross(entries, today, t = (s) => s) {
     .sort((a, b) => a.date.localeCompare(b.date))[0];
   return found ? { item: found.item, text: found.text, when: inDaysText(today, found.date, t) } : null;
 }
+
+// ── Часть 29d: сначала школа, потом её классы ──
+
+// Классы устройства по школам. Порядок — как в списке: школа стоит там, где её первый класс
+export function schoolGroups(list) {
+  const groups = [];
+  for (const item of list) {
+    const key = item.school?.id ?? "none";
+    let group = groups.find((g) => g.key === key);
+    if (!group) groups.push((group = { key, school: item.school ?? null, items: [] }));
+    group.items.push(item);
+  }
+  return groups;
+}
+
+// Классы одной школы (страница школы)
+export const classesOfSchool = (list, schoolId) => list.filter((item) => String(item.school?.id) === String(schoolId));
+
+// Код ввели на странице одной школы, а класс из другой → «Die Klasse kommt zur …»
+export const otherSchool = (found, schoolId) => schoolId != null && found?.school?.id != null && String(found.school.id) !== String(schoolId);

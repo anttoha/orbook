@@ -21,7 +21,8 @@ import TodayStrip from "./TodayStrip";
 // Нажатие на карточку открывает план класса, ползунки — «Klasse einstellen».
 // Кнопка на всю карточку лежит под содержимым, а ползунки — над ней: вложенных кнопок нет
 // ─────────────────────────────────────────────────────────────
-const ClassCard = ({ item, today, wide }) => {
+// inSchool — карточка стоит под строкой школы (часть 29d): в подписи только «Klasse 9b»
+const ClassCard = ({ item, today, wide, inSchool = false }) => {
   const t = useT();
   const navigate = useNavigate();
   const { openSheet } = useSheet();
@@ -35,14 +36,14 @@ const ClassCard = ({ item, today, wide }) => {
   };
 
   return (
-    <article className="relative rounded-card bg-card p-3.5">
+    <article className="relative h-full rounded-card bg-card p-3.5">
       {!item.gone && <button type="button" onClick={open} aria-label={`${classTitle(item, t)} ${t("öffnen")}`} className="absolute inset-0 rounded-card outline-none focus-visible:ring-2 focus-visible:ring-accent/50" />}
 
       <header className="pointer-events-none relative flex items-center gap-3">
         <ClassBadge name={item.name} color={item.color} />
         <div className="min-w-0 flex-1">
           <h2 className="truncate text-subhead text-ink">{classTitle(item, t)}</h2>
-          <p className="truncate text-label text-faint">{classSubtitle(item)}</p>
+          <p className="truncate text-label text-faint">{inSchool ? `${t("Klasse")} ${item.name}` : classSubtitle(item)}</p>
         </div>
         <button type="button" onClick={() => openSheet("klasse", { id: item.id })} aria-label={t("Klasse einstellen")} className="pointer-events-auto grid size-8.5 shrink-0 place-items-center rounded-full bg-sand text-ink">
           <SlidersHorizontal className="size-4" />

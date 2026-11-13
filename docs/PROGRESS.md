@@ -488,3 +488,8 @@ Spec и план бэкенда: `docs/specs/29-klassen/spec.md`. Главное
 **Дальше:** «ок» плана → новый чат, Opus · effort medium: `/orb 29d` (бэкенд Telegram по плану выше).
 
 **29d, продолжение (13.11):** владелец — «ок» плана Telegram + новое: везде сначала школа, потом классы. Бэкенд Telegram сделан и на демо (`/opt/orbook-be`, 1022 теста ok). Макеты «Schule → Klassen» — `design/neu/29d-schulen/` (handy-20…23), артефакт https://claude.ai/artifact/HHapMjWe9DCQ9YHkQbMFnw — ждут «ок дизайн». После «ок»: группировка по школе в `Klassen.jsx` (`schoolGroups` в `shared/utils/classes.js` + тест), страница школы `/klassen/schule/:id`, шторка «Klasse hinzufügen» с `schoolId` (код другой школы → плашка «kommt zur …»), переключатель по школам, ПК так же; потом changelog и «на прод».
+
+## Часть 29d — готова на демо (2026-11-13)
+Фронт: Sync `klassen` (раньше), «Schule → Klassen» (старт по школам, страница школы, код другой школы, переключатель по школам), фикс бесконечного рендера (`classPrefs`). Бэкенд: Telegram по классам (`/opt/orbook-be`, на демо). Снимки: `/root/work/orbook-compare/29d-klassen/shots/` (`_tools/p29d-ui.mjs`, `p29d.mjs`).
+**Ждёт владельца:** «на прод» — фронт (тег + changelog: Sync по классам, школы → классы) и бэкенд (`scripts/update.sh`, схема та же).
+**Дальше:** часть 30 (персонализация + анимации): новый чат, Fable · effort high (дизайн и план) → `/orb 30`.

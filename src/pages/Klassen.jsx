@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Plus } from "lucide-react";
 import AddClassTile from "../components/klassen/AddClassTile";
-import ClassCard from "../components/klassen/ClassCard";
+import SchoolGroup from "../components/klassen/SchoolGroup";
 import SideBySide from "../components/klassen/SideBySide";
 import Segmented from "../components/ui/Segmented";
 import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
@@ -10,6 +10,7 @@ import { useSheet } from "../shared/hooks/useSheet";
 import { useT } from "../shared/hooks/useT";
 import { useClasses } from "../shared/store/classesStore";
 import { usePlanStore } from "../shared/store/planStore";
+import { schoolGroups } from "../shared/utils/classes";
 import { berlinParts } from "../shared/utils/lessonClock";
 import { isWeekend, longDate, mondayOf, weekdayLong } from "../shared/utils/format";
 import { currentMonday } from "../shared/utils/lessons";
@@ -24,6 +25,7 @@ const VIEWS = [
 // Телефон — карточки столбиком и пунктирная «Klasse hinzufügen»; ПК — классы рядом, в карточке весь день.
 // Телефон, вкладка «Nebeneinander» (часть 29c, ?ansicht=nebeneinander): один день, классы колонками.
 // На ПК вкладки нет: там карточки и так стоят рядом и показывают весь день.
+// Часть 29d: сначала школа (строка → страница школы), под ней её классы (макет handy-20).
 // ─────────────────────────────────────────────────────────────
 const Klassen = () => {
   const t = useT();
@@ -64,17 +66,15 @@ const Klassen = () => {
         <SideBySide date={date} monday={mondayOf(date)} today={today} onPickDate={setPicked} />
       ) : (
         <>
-          <div className="grid gap-3.5 lg:grid-cols-2 xl:grid-cols-3">
-            {list.map((item) => (
-              <ClassCard key={item.id} item={item} today={today} wide={isDesktop} />
-            ))}
-          </div>
+          {schoolGroups(list).map((group, i, groups) => (
+            <SchoolGroup key={group.key} group={group} today={today} wide={isDesktop} start={groups.slice(0, i).reduce((n, g) => n + g.items.length, 0)} />
+          ))}
           {!isDesktop && <AddClassTile />}
         </>
       )}
 
       <p className="mt-auto pt-6 text-center text-caption text-faint lg:mt-0 lg:pt-1 lg:text-left">
-        {t(side ? "Mehr als 3 Klassen: seitlich wischen · Stunde antippen für Details" : isDesktop ? "Karte anklicken öffnet den Plan der Klasse · Regler = Einstellungen der Klasse" : "Karte antippen öffnet den Plan · Regler = Einstellungen der Klasse")}
+        {t(side ? "Mehr als 3 Klassen: seitlich wischen · Stunde antippen für Details" : isDesktop ? "Karte anklicken öffnet den Plan der Klasse · Regler = Einstellungen der Klasse" : "Schule antippen: ihre Klassen und „Klasse hinzufügen“")}
       </p>
     </section>
   );

@@ -18,6 +18,7 @@ import Mitteilungen from "../../pages/Mitteilungen";
 import StartPage from "../../pages/StartPage";
 import Week from "../../pages/Week";
 import Klassen from "../../pages/Klassen";
+import Schule from "../../pages/Schule";
 import Day from "../../pages/Day";
 import Admin from "../../pages/Admin";
 import AdminOverview from "../../pages/AdminOverview";
@@ -90,6 +91,7 @@ export const router = createBrowserRouter([
           page({ index: true, Component: StartPage }), // Woche або Heute: налаштування «Startansicht»
           page({ path: "woche", Component: Week }),
           page({ path: "klassen", Component: Klassen }), // «Meine Klassen» (частина 29)
+          page({ path: "klassen/schule/:id", Component: Schule }), // страница школы (часть 29d)
           page({ path: "heute", Component: Day }), // сьогоднішній день
           page({ path: "tag/:datum", Component: Day }), // будь-який день: /tag/2026-10-07
           page({ path: "testen", Component: Tests }),
