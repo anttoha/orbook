@@ -177,4 +177,6 @@ export const uk = {
   "Deine anderen Klassen bleiben auf dem Gerät.": "Інші твої класи лишаються на пристрої.",
   "Öffnen": "Відкрити",
   "Zurück zur App": "Назад до застосунку",
+  // Часть 29d: Sync
+  "Name, Farbe, Reihenfolge – ohne Zugangscodes": "Назва, колір, порядок – без кодів доступу",
 };

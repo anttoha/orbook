@@ -177,4 +177,6 @@ export const en = {
   "Deine anderen Klassen bleiben auf dem Gerät.": "Your other classes stay on this device.",
   "Öffnen": "Open",
   "Zurück zur App": "Back to the app",
+  // Часть 29d: Sync
+  "Name, Farbe, Reihenfolge – ohne Zugangscodes": "Name, colour, order – no access codes",
 };

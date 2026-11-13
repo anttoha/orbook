@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { FileText, ListChecks, Sun, Table2 } from "lucide-react";
+import { FileText, LayoutGrid, ListChecks, Sun, Table2 } from "lucide-react";
 import { toast } from "sonner";
 import { connectError } from "../components/sync/connectError";
 import Button from "../components/ui/Button";
 import { CheckIcon, SyncIcon, WarningIcon } from "../components/ui/icons";
+import { useClasses } from "../shared/store/classesStore";
 import { useLinkCode } from "../shared/store/linkCodeStore";
 import { useSyncStore } from "../shared/store/syncStore";
 
@@ -13,6 +14,7 @@ const PARTS = [
   { key: "aufgaben", icon: ListChecks, title: "Aufgaben", hint: "Häkchen und eigene — zusammengeführt" },
   { key: "kurse", icon: Table2, title: "Meine Kurse", hint: "vom anderen Gerät übernommen" },
   { key: "darstellung", icon: Sun, title: "Darstellung & Fachfarben", hint: "vom anderen Gerät übernommen" },
+  { key: "klassen", icon: LayoutGrid, title: "Meine Klassen", hint: "Notizen und Kurse je Klasse – Zugangscodes nicht" },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -22,6 +24,7 @@ const PARTS = [
 const SyncConnect = ({ code }) => {
   const clear = useLinkCode((s) => s.clear);
   const parts = useSyncStore((s) => s.parts);
+  const hasClasses = useClasses((s) => s.list.length > 0);
   const connect = useSyncStore((s) => s.connect);
   const switchCode = useSyncStore((s) => s.switchCode);
   const [busy, setBusy] = useState(false);
@@ -61,7 +64,7 @@ const SyncConnect = ({ code }) => {
       <section className="flex flex-col gap-3">
         <h2 className="text-hint font-extrabold text-faint">Das kommt auf dieses Gerät</h2>
         <ul className="rounded-card bg-card">
-          {PARTS.filter((part) => parts[part.key] !== false).map((part) => (
+          {PARTS.filter((part) => parts[part.key] !== false && (part.key !== "klassen" || hasClasses)).map((part) => (
             <li key={part.key} className="flex items-center gap-3 border-b border-hair px-3.5 py-3 last:border-0">
               <part.icon className="size-5 shrink-0 text-muted" />
               <span className="min-w-0 flex-1">

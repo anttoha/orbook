@@ -2,8 +2,9 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { deleteSyncBlock, makeSyncRequest } from "../api/sync";
 import { useTheme } from "../hooks/useTheme";
+import { EMPTY_CLASS_DATA } from "../utils/classes";
 import { mergeNotes, sameNotes, syncErrorText } from "../utils/notes";
-import { ALL_PARTS, darstellungOf, kurseOf, syncBlock } from "../utils/syncPayload";
+import { ALL_PARTS, applyInfo, classPatch, darstellungOf, infoOf, kurseOf, localKlassen, syncBlock } from "../utils/syncPayload";
 import { decryptNotes, deriveSync, encryptNotes, generateSyncCode, normalizeSyncCode } from "../utils/syncCrypto";
 import { useClasses } from "./classesStore";
 import { useTasksStore } from "./tasksStore";
@@ -37,13 +38,9 @@ export function quietly(change) {
   }
 }
 
-// До части 29d в Sync-блоке лежат заметки и курсы одного класса — того, что был на устройстве первым.
-// Открыт другой класс — эти части не трогаем (иначе заметки классов смешались бы)
-const onHomeClass = () => {
-  const { activeId, homeId } = useClasses.getState();
-  return activeId == null || homeId == null || activeId === homeId;
-};
-const partsNow = (parts) => (onHomeClass() ? parts : { ...parts, notes: false, kurse: false });
+// Часть 29d: заметки и курсы каждого класса лежат в блоке отдельно (klassen), вместе с именем и цветом класса.
+// Классы устройства — из classesStore; пусто — сервер ещё без классов, блок как раньше
+const classList = () => useClasses.getState().list;
 
 export const useSyncStore = create(
   persist(
@@ -55,7 +52,7 @@ export const useSyncStore = create(
       error: null, // немецкий текст ошибки
       disabled: false, // школа выключила синхронизацию (403 feature_disabled)
       parts: ALL_PARTS, // «Was wird synchronisiert» — у каждого устройства своё
-      stamps: { kurse: null, darstellung: null }, // когда здесь меняли Meine Kurse и Darstellung (null — ни разу)
+      stamps: { kurse: null, darstellung: null, klassen: {} }, // когда здесь меняли Meine Kurse, Darstellung, курсы и имя/цвет каждого класса (null — ни разу)
 
       // Синхронизировать сейчас. Вторая синхронизация, пока идёт первая, не нужна: изменения подхватит следующая
       runSync: async () => {
@@ -63,13 +60,10 @@ export const useSyncStore = create(
         if (!code || disabled || status === "syncing") return;
         clearTimeout(retryTimer);
         set({ status: "syncing" });
-        const classAtStart = useClasses.getState().activeId;
         try {
           const res = await syncWith(code, get());
           if (get().code !== code) return; // пока ждали, код сменили — результат уже не наш
-          // пока ждали, открыли другой класс — его заметки и курсы этим блоком не трогаем
-          const parts = useClasses.getState().activeId === classAtStart ? partsNow(get().parts) : { ...partsNow(get().parts), notes: false, kurse: false };
-          applyBlock(res.block, parts, set);
+          applyBlock(res.block, get().parts, set); // класс могли переключить: applyBlock кладёт данные по id класса
           set({ version: res.version, lastSyncAt: new Date().toISOString(), status: "idle", error: null });
         } catch (error) {
           handleError(error, set, get);
@@ -103,7 +97,7 @@ export const useSyncStore = create(
       // Перейти на код (после «Trotzdem verwenden?» тоже) и сразу синхронизировать.
       // Kurse и Darstellung на новом устройстве берутся с кода: свои отметки времени забываем
       switchCode: async (code) => {
-        set({ code, version: 0, lastSyncAt: null, error: null, status: "idle", stamps: { kurse: null, darstellung: null } });
+        set({ code, version: 0, lastSyncAt: null, error: null, status: "idle", stamps: { kurse: null, darstellung: null, klassen: {} } });
         await get().runSync();
       },
 
@@ -114,7 +108,14 @@ export const useSyncStore = create(
       },
 
       // Настройку изменили на этом устройстве (ставит watchChanges)
-      touch: (name) => set({ stamps: { ...get().stamps, [name]: new Date().toISOString() } }),
+      // Курсы — у открытого класса; info (имя, цвет, порядок) — у класса id
+      touch: (name, id = useClasses.getState().activeId) => {
+        const now = new Date().toISOString();
+        const stamps = { ...get().stamps, klassen: { ...(get().stamps.klassen ?? {}) } };
+        if (name === "darstellung" || name === "kurse") stamps[name] = now;
+        if ((name === "kurse" || name === "info") && id != null) stamps.klassen[id] = { ...(stamps.klassen[id] ?? {}), [name]: now };
+        set({ stamps });
+      },
 
       // «Neuen Code erzeugen»: записать всё под новым кодом, потом удалить старый блок.
       // Не получилось — оставляем старый код (бросаем ошибку дальше)
@@ -123,7 +124,7 @@ export const useSyncStore = create(
         const code = generateSyncCode();
         const res = await syncWith(code, get());
         if (old) await deleteSyncBlock((await keysFor(old)).syncId);
-        applyBlock(res.block, partsNow(get().parts), set);
+        applyBlock(res.block, get().parts, set);
         set({ code, version: res.version, lastSyncAt: new Date().toISOString(), status: "idle", error: null });
       },
 
@@ -144,7 +145,15 @@ export const useSyncStore = create(
 // Один проход синхронизации под кодом code
 async function syncWith(code, { stamps, parts }) {
   const keys = await keysFor(code);
-  return syncBlock({ keys, local: localBlock(stamps), parts: partsNow(parts), request: makeSyncRequest(keys.syncId), crypto: BOX });
+  return syncBlock({ keys, local: localBlock(stamps), parts, home: useClasses.getState().homeId, request: makeSyncRequest(keys.syncId), crypto: BOX });
+}
+
+// Отметки времени классов. Старая общая отметка «kurse» (до 29d) — это курсы «домашнего» класса
+function classStamps(stamps) {
+  const { homeId } = useClasses.getState();
+  const own = { ...(stamps.klassen ?? {}) };
+  if (homeId != null && !own[homeId]?.kurse && stamps.kurse) own[homeId] = { ...(own[homeId] ?? {}), kurse: stamps.kurse };
+  return own;
 }
 
 // Своё на этом устройстве — в виде блока
@@ -157,6 +166,7 @@ function localBlock(stamps) {
     marks,
     kurse: { value: kurseOf(user), updatedAt: stamps.kurse },
     darstellung: { value: darstellungOf(user, useTheme.getState().theme), updatedAt: stamps.darstellung },
+    klassen: classList().length > 0 ? localKlassen(user, useClasses.getState().activeId, classList(), classStamps(stamps)) : null,
   };
 }
 
@@ -169,10 +179,12 @@ const defined = (value) => Object.fromEntries(Object.entries(value ?? {}).filter
 function applyBlock(block, parts, set) {
   applying = true;
   try {
-    if (parts.notes) applyNotes(block.notes);
-    if (parts.aufgaben) applyTasks(block);
     const stamps = { ...useSyncStore.getState().stamps };
-    if (parts.kurse && block.kurse) {
+    const withClasses = block.klassen && classList().length > 0;
+    if (withClasses) applyClasses(block.klassen, parts, stamps);
+    if (parts.notes && !withClasses) applyNotes(block.notes);
+    if (parts.aufgaben) applyTasks(block);
+    if (parts.kurse && block.kurse && !withClasses) {
       const value = defined(block.kurse.value);
       if (differs(kurseOf(useUserStore.getState()), kurseOf({ ...useUserStore.getState(), ...value }))) useUserStore.setState(value);
       stamps.kurse = block.kurse.updatedAt;
@@ -184,6 +196,35 @@ function applyBlock(block, parts, set) {
     set({ stamps });
   } finally {
     applying = false;
+  }
+}
+
+// Каждый класс устройства: заметки и курсы — туда, где они живут (наверх или в byClass), имя/цвет/порядок — в classesStore
+function applyClasses(klassen, parts, stamps) {
+  const { activeId } = useClasses.getState();
+  stamps.klassen = { ...(stamps.klassen ?? {}) };
+  for (const item of classList()) {
+    const entry = klassen[String(item.id)];
+    if (!entry) continue;
+    const user = useUserStore.getState();
+    const current = item.id === activeId ? user : { ...EMPTY_CLASS_DATA, ...(user.byClass?.[item.id] ?? {}) };
+    const patch = {};
+    if (parts.notes && entry.notes) {
+      const next = mergeNotes(current.notes ?? [], entry.notes);
+      if (!sameNotes(next, current.notes ?? [])) patch.notes = next;
+    }
+    if (parts.kurse && entry.kurse) {
+      const value = defined(entry.kurse.value);
+      if (differs(kurseOf(current), kurseOf({ ...current, ...value }))) Object.assign(patch, value);
+      stamps.klassen[item.id] = { ...(stamps.klassen[item.id] ?? {}), kurse: entry.kurse.updatedAt };
+    }
+    if (Object.keys(patch).length > 0) useUserStore.setState(classPatch(user, item.id, activeId, patch));
+    if (parts.klassen !== false && entry.info) stamps.klassen[item.id] = { ...(stamps.klassen[item.id] ?? {}), info: entry.info.updatedAt };
+  }
+  if (parts.klassen !== false) {
+    const list = classList();
+    const next = applyInfo(list, klassen);
+    if (differs(next, list)) useClasses.setState({ list: next });
   }
 }
 
@@ -228,12 +269,24 @@ export function watchChanges(onChange) {
     checkSettings();
   });
   const stopTheme = useTheme.subscribe(checkSettings);
+  // Имя, цвет, порядок классов (часть 29d)
+  const infoSnapshot = () => Object.fromEntries(classList().map((item, order) => [item.id, JSON.stringify(infoOf(item, order))]));
+  let lastInfo = infoSnapshot();
+  const stopClasses = useClasses.subscribe(() => {
+    const now = infoSnapshot();
+    const changed = Object.keys(now).filter((id) => lastInfo[id] !== undefined && now[id] !== lastInfo[id]);
+    lastInfo = now;
+    if (applying || changed.length === 0) return;
+    changed.forEach((id) => useSyncStore.getState().touch("info", Number(id)));
+    onChange();
+  });
   const stopTasks = useTasksStore.subscribe((state, prev) => {
     if (!applying && (state.tasks !== prev.tasks || state.marks !== prev.marks)) onChange();
   });
   return () => {
     stopUser();
     stopTheme();
+    stopClasses();
     stopTasks();
   };
 }

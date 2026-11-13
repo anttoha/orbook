@@ -1,5 +1,7 @@
-import { FileText, ListChecks, Sun, Table2 } from "lucide-react";
+import { FileText, LayoutGrid, ListChecks, Sun, Table2 } from "lucide-react";
+import { useT } from "../../shared/hooks/useT";
 import { useTheme } from "../../shared/hooks/useTheme";
+import { useClasses } from "../../shared/store/classesStore";
 import { useSyncStore } from "../../shared/store/syncStore";
 import { useTasksStore } from "../../shared/store/tasksStore";
 import { useUserStore } from "../../shared/store/userStore";
@@ -10,7 +12,7 @@ import Switch from "../ui/Switch";
 const THEME = { light: "Hell", dark: "Dunkel", system: "System" };
 
 // ─────────────────────────────────────────────────────────────
-// «Was wird synchronisiert» (макет 25 handy-07): четыре переключателя, у каждого устройства свои.
+// «Was wird synchronisiert» (макет 25 handy-07): четыре-пять переключателей, у каждого устройства свои.
 // Выключенное это устройство не отправляет и не принимает — но и не стирает у других
 // ─────────────────────────────────────────────────────────────
 const SyncParts = () => {
@@ -20,11 +22,15 @@ const SyncParts = () => {
   const tasks = useTasksStore((s) => s.tasks.filter((t) => !t.deleted).length);
   const fontScale = useUserStore((s) => s.fontScale);
   const theme = useTheme((s) => s.theme);
+  const classCount = useClasses((s) => s.list.length);
+  const t = useT();
   const rows = [
     { key: "notes", icon: FileText, title: "Notizen", hint: `${notes} ${notes === 1 ? "Notiz" : "Notizen"}` },
     { key: "aufgaben", icon: ListChecks, title: "Aufgaben", hint: tasks > 0 ? `erledigt + ${tasks} eigene` : "erledigt + eigene" },
     { key: "kurse", icon: Table2, title: "Meine Kurse", hint: "welche Kurse du siehst" },
     { key: "darstellung", icon: Sun, title: "Darstellung & Fachfarben", hint: `${THEME[theme] ?? "System"} · A${"+".repeat(Math.max(0, fontScale - 1))}` },
+    // Часть 29d: имя, цвет и порядок классов (без Zugangscodes — класс на новом устройстве добавляется своим кодом)
+    ...(classCount > 0 ? [{ key: "klassen", icon: LayoutGrid, title: t("Meine Klassen"), hint: t("Name, Farbe, Reihenfolge – ohne Zugangscodes") }] : []),
   ];
 
   return (

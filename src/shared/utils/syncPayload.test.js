@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { darstellungOf, fitsInBlock, kurseOf, mergeBlock, newerSetting, readBlock, syncBlock } from "./syncPayload";
+import { applyInfo, classPatch, darstellungOf, fitsInBlock, kurseOf, localKlassen, mergeBlock, mergeKlassen, newerSetting, readBlock, syncBlock } from "./syncPayload";
 
 const at = (iso) => new Date(iso);
 const now = at("2026-11-06T12:00:00Z");
@@ -10,7 +10,7 @@ const box = { encryptNotes: async (_k, v) => JSON.stringify(v), decryptNotes: as
 
 describe("readBlock", () => {
   it("старый блок только с заметками → остальное пустое", () => {
-    expect(readBlock({ notes: [note("a", "x")] })).toEqual({ notes: [note("a", "x")], tasks: [], marks: [], kurse: null, darstellung: null });
+    expect(readBlock({ notes: [note("a", "x")] })).toEqual({ notes: [note("a", "x")], tasks: [], marks: [], kurse: null, darstellung: null, klassen: null });
   });
 });
 
@@ -115,5 +115,80 @@ describe("syncBlock", () => {
     const big = { ...empty, notes: [note("a", "2026-11-06T00:00:00Z", { text: "x".repeat(50 * 1024) })] };
     expect(fitsInBlock(big)).toBe(false);
     await expect(syncBlock({ keys: {}, local: big, request: async () => ({ status: 404 }), crypto: box, now })).rejects.toThrow("too_big");
+  });
+});
+
+describe("классы в блоке (часть 29d)", () => {
+  const kurse = (picked, updatedAt) => ({ value: { picked, hiddenRequired: [], coursesChosen: true }, updatedAt });
+  const list = [
+    { id: 1, name: "8a", label: "Meine", color: "mathe" },
+    { id: 2, name: "8b", label: "", color: "deutsch" },
+  ];
+  const user = {
+    notes: [note("a1", "2026-11-06T08:00:00Z")],
+    picked: [11],
+    hiddenRequired: [],
+    coursesChosen: true,
+    byClass: { 2: { notes: [note("b1", "2026-11-06T08:00:00Z")], picked: [22], hiddenRequired: [], coursesChosen: true } },
+  };
+
+  it("localKlassen: открытый класс — сверху, остальные — из byClass; без byClass — пусто", () => {
+    const k = localKlassen(user, 1, [...list, { id: 3, name: "5a" }], { 2: { kurse: "2026-11-06T09:00:00Z" } });
+    expect(k["1"].notes.map((n) => n.id)).toEqual(["a1"]);
+    expect(k["2"].kurse).toEqual(kurse([22], "2026-11-06T09:00:00Z"));
+    expect(k["2"].info.value).toEqual({ label: "", color: "deutsch", order: 1 });
+    expect(k["3"].notes).toEqual([]);
+    expect(k["3"].kurse.updatedAt).toBeNull();
+  });
+
+  it("mergeKlassen: заметки каждого класса отдельно, чужой класс остаётся как есть", () => {
+    const local = localKlassen(user, 1, list);
+    const remote = { 1: { notes: [note("a2", "2026-11-06T08:00:00Z")] }, 9: { notes: [note("z", "x")], kurse: null, info: null } };
+    const merged = mergeKlassen(local, remote, undefined, now);
+    expect(merged["1"].notes.map((n) => n.id).sort()).toEqual(["a1", "a2"]);
+    expect(merged["2"].notes.map((n) => n.id)).toEqual(["b1"]);
+    expect(merged["9"].notes.map((n) => n.id)).toEqual(["z"]);
+  });
+
+  it("выключенная часть klassen: имя и цвет берём из блока", () => {
+    const local = { 1: { notes: [], kurse: null, info: { value: { label: "Neu" }, updatedAt: "2026-11-06T10:00:00Z" } } };
+    const remote = { 1: { notes: [], kurse: null, info: { value: { label: "Alt" }, updatedAt: "2026-11-06T09:00:00Z" } } };
+    expect(mergeKlassen(local, remote, { klassen: false }, now)["1"].info.value.label).toBe("Alt");
+    expect(mergeKlassen(local, remote, {}, now)["1"].info.value.label).toBe("Neu");
+  });
+
+  it("старый блок без klassen: его заметки и курсы — домашнего класса; сверху снова домашний", () => {
+    const local = { ...empty, klassen: localKlassen(user, 2, list) };
+    const remote = { ...empty, notes: [note("old", "2026-11-06T08:00:00Z")], kurse: kurse([5], "2026-11-06T07:00:00Z") };
+    const merged = mergeBlock(local, remote, undefined, now, 1);
+    expect(merged.klassen["1"].notes.map((n) => n.id)).toContain("old");
+    expect(merged.klassen["2"].notes.map((n) => n.id)).not.toContain("old");
+    expect(merged.notes).toBe(merged.klassen["1"].notes);
+    expect(merged.kurse).toEqual(kurse([5], "2026-11-06T07:00:00Z"));
+  });
+
+  it("блок с klassen: верхние заметки уже не читаются как домашние", () => {
+    const local = { ...empty, klassen: localKlassen(user, 1, list) };
+    const remote = { ...empty, notes: [note("legacy", "x")], klassen: { 1: { notes: [] } } };
+    expect(mergeBlock(local, remote, undefined, now, 1).klassen["1"].notes.map((n) => n.id)).toEqual(["a1"]);
+  });
+
+  it("устройство без классов: klassen из блока не трогаем", () => {
+    const remote = { ...empty, klassen: { 7: { notes: [] } } };
+    expect(mergeBlock({ ...empty }, remote, undefined, now).klassen).toEqual({ 7: { notes: [] } });
+  });
+
+  it("applyInfo: имя, цвет и порядок с другого устройства", () => {
+    const klassen = { 1: { info: { value: { label: "", color: "kunst", order: 1 } } }, 2: { info: { value: { label: "Bruder", color: "deutsch", order: 0 } } } };
+    const next = applyInfo(list, klassen);
+    expect(next.map((c) => c.id)).toEqual([2, 1]);
+    expect(next[0].label).toBe("Bruder");
+    expect(next[1].color).toBe("kunst");
+  });
+
+  it("classPatch: открытый класс — наверх, другой — в byClass", () => {
+    expect(classPatch(user, 1, 1, { picked: [1] })).toEqual({ picked: [1] });
+    expect(classPatch(user, 2, 1, { picked: [1] }).byClass[2].picked).toEqual([1]);
+    expect(classPatch(user, 3, 1, { picked: [3] }).byClass[3].notes).toEqual([]);
   });
 });

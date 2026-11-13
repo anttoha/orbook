@@ -41,7 +41,7 @@ export const SECTIONS = [
     title: "Notizen, Aufgaben und Sync",
     intro: [
       "Notizen, eigene Aufgaben und welche Hausaufgaben du abgehakt hast, speichert die App nur auf deinem Gerät. Die Klasse und die Lehrkräfte sehen davon nichts.",
-      "Mit Sync werden sie auf deinem Gerät verschlüsselt, bevor sie losgeschickt werden — dazu, wenn du es eingeschaltet lässt, deine Kurse, Darstellung und Fachfarben. Der Schlüssel steckt im Sync-Code, und den hast nur du. Der Server sieht eine zufällige Kennung und unlesbaren Datensalat (höchstens 64 KB).",
+      "Mit Sync werden sie auf deinem Gerät verschlüsselt, bevor sie losgeschickt werden — dazu, wenn du es eingeschaltet lässt, deine Kurse, Darstellung und Fachfarben und deine Klassen (Name und Farbe, die du ihnen gibst, Reihenfolge; Notizen und Kurse für jede Klasse getrennt). Zugangscodes kommen nie in den Sync: Auf einem neuen Gerät fügst du eine Klasse mit ihrem eigenen Code hinzu. Der Schlüssel steckt im Sync-Code, und den hast nur du. Der Server sieht eine zufällige Kennung und unlesbaren Datensalat (höchstens 64 KB).",
       "Der QR mit dem Sync-Code enthält den Code hinter „#“. Diesen Teil der Adresse schickt der Browser nicht an den Server.",
       "Sync-Code weg heißt: Die Daten auf dem Server kann niemand mehr lesen, auch wir nicht.",
       "Löschen kannst du sie unten mit „Meine Sync-Daten löschen“. Nach 365 Tagen ohne Zugriff löscht der Server sie von selbst.",
