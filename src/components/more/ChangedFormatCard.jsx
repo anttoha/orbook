@@ -1,6 +1,7 @@
 import ChangedLine from "../week/ChangedLine";
 import Segmented from "../ui/Segmented";
 import { useUserStore } from "../../shared/store/userStore";
+import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
 
 // Підписи сегмента — самі вже приклад формату
@@ -34,28 +35,29 @@ const PreviewDay = ({ day }) => (
 // Вибір діє одразу; прев'ю тижня під сегментом показує, як це виглядатиме.
 // ─────────────────────────────────────────────────────────────
 const ChangedFormatCard = () => {
+  const t = useT();
   const format = useUserStore((s) => s.changedFormat);
   const setFormat = useUserStore((s) => s.setChangedFormat);
 
   return (
     <section>
-      <h2 className="mb-2.5 text-hint font-extrabold text-faint">Plan</h2>
+      <h2 className="mb-2.5 text-hint font-extrabold text-faint">{t("Plan")}</h2>
       <div className="flex flex-col gap-3 rounded-card bg-card p-3.5">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
-            <p className="text-row text-ink">Änderung unter dem Tag</p>
-            <p className="mt-0.5 text-caption text-faint">So steht es unter jedem Tag in der Woche.</p>
+            <p className="text-row text-ink">{t("Änderung unter dem Tag")}</p>
+            <p className="mt-0.5 text-caption text-faint">{t("So steht es unter jedem Tag in der Woche.")}</p>
           </div>
-          <Segmented label="Änderung unter dem Tag" size="form" options={FORMATS} value={format} onChange={setFormat} className="lg:w-fit" />
+          <Segmented label={t("Änderung unter dem Tag")} size="form" options={FORMATS} value={format} onChange={setFormat} className="lg:w-fit" />
         </div>
 
-        <p className="text-caption font-extrabold text-faint">Vorschau</p>
+        <p className="text-caption font-extrabold text-faint">{t("Vorschau")}</p>
         <div aria-hidden="true" className="flex gap-1 lg:gap-2">
           {SAMPLE.map((day) => (
             <PreviewDay key={day.date} day={day} />
           ))}
         </div>
-        <p className="text-caption text-faint">Am selben Tag steht nur die Uhrzeit, z. B. 07:08.</p>
+        <p className="text-caption text-faint">{t("Am selben Tag steht nur die Uhrzeit, z. B. 07:08.")}</p>
       </div>
     </section>
   );

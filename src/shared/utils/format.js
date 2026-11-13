@@ -7,6 +7,7 @@
 // Так не буває зсувів часового поясу, і рядки можна порівнювати: "2026-10-05" < "2026-10-07".
 // ─────────────────────────────────────────────────────────────
 
+import { translate } from "../i18n/translate";
 import { groupName } from "./courses";
 
 const MONTHS = ["Jan", "Feb", "März", "Apr", "Mai", "Juni", "Juli", "Aug", "Sept", "Okt", "Nov", "Dez"];
@@ -42,17 +43,17 @@ export function isoWeek(iso) {
 
 // ── Назви ──
 
-export const weekdayShort = (iso) => WEEKDAYS_LONG[weekdayIndex(iso)].slice(0, 2); // "Mi"
-export const weekdayLong = (iso) => WEEKDAYS_LONG[weekdayIndex(iso)]; // "Mittwoch"
+export const weekdayShort = (iso) => translate(WEEKDAYS_LONG[weekdayIndex(iso)].slice(0, 2)); // "Mi" (en «We», uk «Ср»)
+export const weekdayLong = (iso) => translate(WEEKDAYS_LONG[weekdayIndex(iso)]); // "Mittwoch"
 export const dayNumber = (iso) => String(parseDay(iso).getUTCDate()); // "7"
-export const monthLong = (iso) => MONTHS_LONG[parseDay(iso).getUTCMonth()]; // "Oktober"
+export const monthLong = (iso) => translate(MONTHS_LONG[parseDay(iso).getUTCMonth()]); // "Oktober"
 export const longDate = (iso) => `${dayNumber(iso)}. ${monthLong(iso)}`; // "7. Oktober"
 export const numericDate = (iso) => `${dayNumber(iso)}.${parseDay(iso).getUTCMonth() + 1}.`; // "7.10."
 
 // «10. Sept» — коротка дата для підписів
 export function shortDate(iso) {
   const d = parseDay(iso);
-  return `${d.getUTCDate()}. ${MONTHS[d.getUTCMonth()]}`;
+  return `${d.getUTCDate()}. ${translate(MONTHS[d.getUTCMonth()])}`;
 }
 
 // «in 2 Tagen», «morgen», «heute», «vor 3 Tagen» — за кількістю днів (поле daysLeft з API)
@@ -66,7 +67,8 @@ export function daysLeftText(n) {
 // «heute» / «morgen» / «gestern» або null (для «Mittwoch · heute»)
 export function relativeDayWord(iso, todayIso) {
   const diff = daysBetween(todayIso, iso);
-  return { 0: "heute", 1: "morgen", [-1]: "gestern" }[diff] ?? null;
+  const word = { 0: "heute", 1: "morgen", [-1]: "gestern" }[diff];
+  return word ? translate(word) : null;
 }
 
 // Підпис тижня: «KW 41 · 5.–9. Okt» (або «28. Sept–2. Okt», якщо місяці різні).

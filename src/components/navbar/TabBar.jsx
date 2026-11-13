@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
 import { isTabActive } from "../../shared/utils/isTabActive";
 
@@ -9,6 +10,7 @@ import { isTabActive } from "../../shared/utils/isTabActive";
 // ─────────────────────────────────────────────────────────────
 const TabBar = ({ tabs }) => {
   const { pathname } = useLocation();
+  const t = useT();
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-10 bg-linear-to-t from-paper to-transparent pt-10 pb-5.5 lg:hidden print:hidden">
@@ -16,7 +18,7 @@ const TabBar = ({ tabs }) => {
         <nav className="pointer-events-auto flex h-14.5 rounded-full border border-hair bg-card p-1.75">
           {tabs.map((tab) => {
             const active = isTabActive(tab, pathname);
-            const label = tab.short ?? tab.label;
+            const label = t(tab.short ?? tab.label);
 
             return (
               <Link

@@ -77,7 +77,7 @@ export const SECTIONS = [
     id: "geraet",
     title: "Auf deinem Gerät",
     intro: [
-      "Im Browser (localStorage) liegen: deine Kurse, Darstellung und Fachfarben, deine Notizen, Aufgaben und Häkchen, dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne, damit die App auch ohne Netz geht.",
+      "Im Browser (localStorage) liegen: deine Kurse, Darstellung (auch die Sprache) und Fachfarben, deine Notizen, Aufgaben und Häkchen, dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne, damit die App auch ohne Netz geht.",
       "„Klasse verlassen“ löscht die Kopie der Pläne. Notizen und Einstellungen bleiben, bis du die Website-Daten im Browser löschst.",
       "Die App lädt nichts von fremden Servern: keine Schriften von Google, kein CDN, keine Analyse.",
     ],

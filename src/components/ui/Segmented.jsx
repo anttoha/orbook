@@ -1,3 +1,4 @@
+import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
 
 // ─────────────────────────────────────────────────────────────
@@ -14,11 +15,12 @@ import { cn } from "../../shared/utils/cn";
 const SIZES = { md: "h-8 px-3 text-hint", form: "h-7.25 px-3 text-hint", sm: "h-7 px-3 text-label" };
 
 const Segmented = ({ options, value, onChange, label, className, variant = "card", size = "md", iconOnly = false }) => {
+  const t = useT();
   const index = options.findIndex((option) => option.value === value); // котрий вибраний (-1 — жоден)
 
   return (
     // role="group" + aria-label — скрінрідер прочитає, що це за перемикач
-    <div role="group" aria-label={label} className={cn("relative grid grid-flow-col auto-cols-fr rounded-full bg-sand p-0.75", className)}>
+    <div role="group" aria-label={label && t(label)} className={cn("relative grid grid-flow-col auto-cols-fr rounded-full bg-sand p-0.75", className)}>
       {index >= 0 && (
         <span
           aria-hidden="true"
@@ -38,8 +40,8 @@ const Segmented = ({ options, value, onChange, label, className, variant = "card
             type="button"
             data-no-press // «просідання» тут зайве: відгуком є сама пігулка, що їде
             aria-pressed={active} // чи «натиснута» кнопка — для скрінрідера
-            aria-label={iconOnly ? option.label : undefined} // підпис для варіанта «тільки іконки»
-            title={iconOnly ? option.label : undefined}
+            aria-label={iconOnly ? t(option.label) : undefined} // підпис для варіанта «тільки іконки»
+            title={iconOnly ? t(option.label) : undefined}
             onClick={() => onChange(option.value)}
             className={cn(
               "relative flex items-center justify-center gap-1.5 rounded-full font-extrabold whitespace-nowrap transition-colors duration-250",
@@ -48,7 +50,7 @@ const Segmented = ({ options, value, onChange, label, className, variant = "card
             )}
           >
             {option.icon && <option.icon className="size-3.75 shrink-0" />}
-            {!iconOnly && option.label}
+            {!iconOnly && t(option.label)}
           </button>
         );
       })}

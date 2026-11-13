@@ -1,18 +1,20 @@
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useT } from "../../shared/hooks/useT";
 
 // Рядок меню «Mehr»: іконка, назва, значення праворуч і стрілка.
 // state — куди повертатись зі сторінки, яка відкривається і звідки ще (Datenschutz, Editor-Code)
 // onClick замість to — рядок відкриває шторку, а не сторінку («Klasse einladen»)
 const MenuRow = ({ to, state, onClick, icon: Icon, label, value, badge }) => {
+  const t = useT();
   const inner = (
     <>
       <Icon className="size-4.5 shrink-0 text-muted" />
       <span className="flex min-w-0 flex-1 items-center gap-2 text-row font-medium text-ink">
-        <span className="truncate">{label}</span>
+        <span className="truncate">{t(label)}</span>
         {badge}
       </span>
-      {value && <span className="max-w-30 truncate text-label text-faint">{value}</span>}
+      {value && <span className="max-w-30 truncate text-label text-faint">{t(value)}</span>}
       <ChevronRight className="size-4 shrink-0 text-faint2" />
     </>
   );

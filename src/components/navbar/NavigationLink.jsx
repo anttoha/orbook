@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
 
 // ─────────────────────────────────────────────────────────────
@@ -8,11 +9,12 @@ import { cn } from "../../shared/utils/cn";
 // index — номер пункту: підписи від'їжджають і повертаються по черзі (сходинкою), а не всі разом
 // ─────────────────────────────────────────────────────────────
 const NavigationLink = ({ active, tab, isHidden = false, badge = null, index = 0, className = "", iconClassName = "", textClassName = "" }) => {
+  const t = useT();
   return (
     <Link
       to={tab.to}
       aria-current={active ? "page" : undefined}
-      title={isHidden ? tab.label : undefined} // підказка в згорнутому вигляді
+      title={isHidden ? t(tab.label) : undefined} // підказка в згорнутому вигляді
       className={cn(
         "flex h-10.5 items-center gap-3 overflow-hidden rounded-full px-3 text-body font-semibold transition-colors",
         active ? "bg-accent font-bold text-on-accent" : "text-ink/80 hover:bg-sand",
@@ -28,7 +30,7 @@ const NavigationLink = ({ active, tab, isHidden = false, badge = null, index = 0
         )}
         style={{ transitionDelay: `${isHidden ? index * 25 : 150 + index * 45}ms` }}
       >
-        {tab.label}
+        {t(tab.label)}
       </span>
       {/* лічильник */}
       {badge > 0 && !isHidden && (

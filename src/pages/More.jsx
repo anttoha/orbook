@@ -16,6 +16,7 @@ import ListCard from "../components/ui/ListCard";
 import { useSyncAllowed } from "../shared/hooks/useNotesSync";
 import { useInSettingsPanel } from "../shared/hooks/useSettingsPanel";
 import { useSheet } from "../shared/hooks/useSheet";
+import { useT } from "../shared/hooks/useT";
 import { useTheme } from "../shared/hooks/useTheme";
 import { useMaterials } from "../shared/store/materialsStore";
 import { useSyncStore } from "../shared/store/syncStore";
@@ -56,6 +57,7 @@ const More = () => {
 
 // Телефон: список «Mehr» (макет 22 Handy)
 const PhoneMenu = () => {
+  const t = useT();
   const me = usePlanStore((s) => s.me);
   const courses = usePlanStore((s) => s.courses);
   const picked = useUserStore((s) => s.picked);
@@ -83,7 +85,7 @@ const PhoneMenu = () => {
     <section className="flex flex-col gap-4.5">
       <header className="space-y-1">
         <p className="min-h-4 text-hint font-extrabold text-faint">{school}</p>
-        <h1 className="text-title text-ink">Mehr</h1>
+        <h1 className="text-title text-ink">{t("Mehr")}</h1>
       </header>
 
       <InstallCard />
@@ -92,7 +94,7 @@ const PhoneMenu = () => {
       <ListCard title={seiten.title} hint={seiten.hint}>
         {statsEnabled && <MenuRow to="/statistik" icon={StatsIcon} label="Statistik" value="Woche · Monat" />}
         <MenuRow to="/mehr/neuigkeiten" icon={Sparkles} label="Neuigkeiten" badge={<NewBadge />} value={changelog[0]?.version} />
-        <MenuRow to="/materialien" icon={Folder} label="Materialien" value={links ? `${links} ${links === 1 ? "Link" : "Links"}` : null} />
+        <MenuRow to="/materialien" icon={Folder} label="Materialien" value={links ? `${links} ${t(links === 1 ? "Link" : "Links")}` : null} />
         {/* частина 16: посилання і QR для однокласників; вимкнене — шторка так і скаже */}
         <MenuRow onClick={() => openSheet("einladen")} icon={UserPlus} label="Klasse einladen" value="Link + QR" />
         {/* часть 25: три подсказки с первого входа — открыть ещё раз */}
@@ -102,7 +104,7 @@ const PhoneMenu = () => {
 
       {/* «Einstellungen» — те, що налаштовується */}
       <ListCard title={einstellungen.title} hint={einstellungen.hint}>
-        <MenuRow to="/mehr/kurse" icon={Table2} label="Meine Kurse" value={count.all > 0 ? `${count.on} von ${count.all}` : null} />
+        <MenuRow to="/mehr/kurse" icon={Table2} label="Meine Kurse" value={count.all > 0 ? `${count.on} ${t("von")} ${count.all}` : null} />
         <MenuRow to="/mehr/darstellung" icon={Sun} label="Darstellung" value={THEME_LABELS[theme]} />
         <MenuRow to="/mehr/fachfarben" icon={Palette} label="Fachfarben" />
         {pushAllowed && <MenuRow to="/mehr/mitteilungen" icon={Bell} label="Mitteilungen" value={prefsSummary(pushOn, pushPrefs)} />}

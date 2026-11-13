@@ -1,3 +1,4 @@
+import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
 
 // Дві смужки-«текст» у мініатюрі теми
@@ -24,17 +25,20 @@ const THEMES = [
 ];
 
 // Вибір теми: три мініатюри (макет 24). Кольори мініатюр не змінюються разом із темою
-const ThemePicker = ({ value, onChange }) => (
-  <div role="group" aria-label="Thema" className="grid grid-cols-3 gap-3">
+const ThemePicker = ({ value, onChange }) => {
+  const t = useT();
+  return (
+  <div role="group" aria-label={t("Thema")} className="grid grid-cols-3 gap-3">
     {THEMES.map((theme) => (
       <button key={theme.value} type="button" aria-pressed={theme.value === value} onClick={() => onChange(theme.value)}>
         <span className={cn("block h-14 overflow-hidden rounded-thumb border border-rule", theme.value === value && "ring-2 ring-accent ring-offset-3 ring-offset-paper")}>
           {theme.preview}
         </span>
-        <span className="mt-2 block text-label font-bold text-ink">{theme.label}</span>
+        <span className="mt-2 block text-label font-bold text-ink">{t(theme.label)}</span>
       </button>
     ))}
   </div>
-);
+  );
+};
 
 export default ThemePicker;

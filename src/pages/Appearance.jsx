@@ -1,3 +1,4 @@
+import LanguageSelect from "../components/more/LanguageSelect";
 import ChangedFormatCard from "../components/more/ChangedFormatCard";
 import SettingRow from "../components/more/SettingRow";
 import ThemePicker from "../components/more/ThemePicker";
@@ -5,6 +6,7 @@ import ListCard from "../components/ui/ListCard";
 import PageHeader from "../components/ui/PageHeader";
 import Segmented from "../components/ui/Segmented";
 import Switch from "../components/ui/Switch";
+import { useT } from "../shared/hooks/useT";
 import { useTheme } from "../shared/hooks/useTheme";
 import { useUserStore } from "../shared/store/userStore";
 
@@ -24,6 +26,7 @@ const FONT_SIZES = [
 
 // «Darstellung» (макет 24). Запитів немає: усе живе на пристрої і діє одразу.
 const Appearance = () => {
+  const t = useT();
   const { theme, setTheme } = useTheme();
   const user = useUserStore();
 
@@ -32,7 +35,7 @@ const Appearance = () => {
       <PageHeader backTo="/mehr" eyebrow="Mehr" title="Darstellung" />
 
       <div>
-        <h2 className="mb-2.5 text-hint font-extrabold text-faint">Thema</h2>
+        <h2 className="mb-2.5 text-hint font-extrabold text-faint">{t("Thema")}</h2>
         <ThemePicker value={theme} onChange={setTheme} />
       </div>
 
@@ -51,6 +54,12 @@ const Appearance = () => {
         </SettingRow>
         <SettingRow label="Schriftgröße">
           <Segmented label="Schriftgröße" size="form" className="w-fit" options={FONT_SIZES} value={user.fontScale} onChange={user.setFontScale} />
+        </SettingRow>
+      </ListCard>
+
+      <ListCard title="Sprache">
+        <SettingRow label="Sprache" hint="Gilt für die ganze App.">
+          <LanguageSelect />
         </SettingRow>
       </ListCard>
 

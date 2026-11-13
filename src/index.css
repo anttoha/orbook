@@ -306,6 +306,13 @@
     --color-preview-light-line: #14151a;
     --color-preview-dark: #141518;
     --color-preview-dark-line: #f2f1ed;
+    --color-flag-black: #222222;
+    --color-flag-red: #d8281f;
+    --color-flag-gold: #f5c518;
+    --color-flag-navy: #1f3a8a;
+    --color-flag-white: #ffffff;
+    --color-flag-blue: #2f6fd0;
+    --color-flag-yellow: #f5d000;
 
     /* QR-код запрошення (частина 16): завжди темний на білому — інакше камера в темній темі його не прочитає */
     --color-qr-bg: #ffffff;
@@ -393,6 +400,13 @@
     --color-preview-light-line: #14151a;
     --color-preview-dark: #141518;
     --color-preview-dark-line: #f2f1ed;
+    --color-flag-black: #222222;
+    --color-flag-red: #d8281f;
+    --color-flag-gold: #f5c518;
+    --color-flag-navy: #1f3a8a;
+    --color-flag-white: #ffffff;
+    --color-flag-blue: #2f6fd0;
+    --color-flag-yellow: #f5d000;
 
     --color-qr-bg: #ffffff;
     --color-qr-ink: #2a2433;
