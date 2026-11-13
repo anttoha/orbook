@@ -10,6 +10,8 @@ _spec = importlib.util.spec_from_file_location("g27", os.path.join(HERE, "..", "
 m27 = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(m27)
 m17, g, m15, m22, m26 = m27.m17, m27.g, m27.m15, m27.m22, m27.m26
 m19 = m22.m19
+_s14c = importlib.util.spec_from_file_location("g14c", os.path.join(HERE, "..", "14c-zugangscodes", "gen.py"))
+p14c = importlib.util.module_from_spec(_s14c); _s14c.loader.exec_module(p14c)
 T, S, R, ICON, P, label, eyebrow, title, button, round_btn, badge, switch, segmented, overlay, note_box = (
     g.T, g.S, g.R, g.ICON, g.P, g.label, g.eyebrow, g.title, g.button, g.round_btn, g.badge, g.switch, g.segmented, g.overlay, g.note_box)
 CHECK, CHEV_R, CHEV_D, BACK, CLOSE, PLUS, LOCK, PEN, TRASH, SEARCH, DOTS_V = (
@@ -170,7 +172,7 @@ def p_neben(c, theme, sub):
             b.append(nb_cell(x0 + k * (cw + gap), y, cw, CLASSES[k]["day"][r], c, sub))
     y = gy + 7 * 56 + 6
     card, _ = m19.card_rows(18, y, 354, [(FLAG, "Fr · Mathe-Test", "9b · Meine Klasse", "in 2 Tagen", False)], c); b.append(card)
-    b.append(T(195, 806, "Bis zu 3 Klassen nebeneinander · Stunde antippen für Details", 11.5, 400, c["faint"], "middle"))
+    b.append(T(195, 806, "Mehr als 3 Klassen: seitlich wischen · Stunde antippen für Details", 11.5, 400, c["faint"], "middle"))
     return page(390, 844, c, "".join(b))
 
 # ════════════════ Шторка «Klasse hinzufügen» ════════════════
@@ -292,7 +294,7 @@ def school_card(x, y, w, sc, c, sub):
         out.append(HLINE(x + 14, x + w - 14, ry, c) + cbadge(x + 14, ry + 11, name, k, c, sub, 36) + T(x + 62, ry + 26, f"Klasse {name}", 14.5, 700, c["ink"])
                    + T(x + 62, ry + 44, info, 12, 400, c["faint"]) + ICON(x + w - 30, ry + 21, 0.67, c["faint2"], CHEV_R))
     ry = y + 66 + rh * len(sc["classes"])
-    out.append(HLINE(x + 14, x + w - 14, ry, c) + ICON(x + 22, ry + 14, 0.8, c["accink"], PLUS, 2.2) + T(x + 62, ry + 29.5, "Klasse hinzufügen", 14, 700, c["accink"]))
+    out.append(HLINE(x + 14, x + w - 14, ry, c) + ICON(x + 22, ry + 14, 0.8, c["accink"], PLUS, 2.2) + T(x + 62, ry + 29.5, "Code für neue Klasse", 14, 700, c["accink"]))
     return "".join(out), h
 
 def admin_body(c, sub):
@@ -301,47 +303,121 @@ def admin_body(c, sub):
     for sc in SCHOOLS:
         card, h = school_card(18, y, 354, sc, c, sub); b.append(card); y += h + 14
     card, h = add_card(18, y, 354, c, "Schule hinzufügen", "Mit den Zugangsdaten von stundenplan24.de", SCHOOL); b.append(card); y += h + 16
-    b.append(note_box(18, y, 354, ["Jede Klasse hat eigene Codes, Tests und", "Einstellungen. Der Plan lädt pro Schule einmal."], c, m15.INFO))
+    b.append(note_box(18, y, 354, ["Eine Klasse entsteht mit ihrem ersten Code.", "Der Plan lädt pro Schule nur einmal."], c, m15.INFO))
     return "".join(b)
 
 def p_admin(c, theme, sub):
     return page(390, 844, c, admin_body(c, sub))
 
 def school_form(x, y, w, c, pc=False):
-    """Поля новой школы: имя, Schulnummer, Benutzername + Passwort, проверка доступа. Возвращает (svg, нижний край)."""
+    """Поля новой школы — те же, что в карточке «Schule & Plan»: Schulnummer, Passwort der Schule, Server. Возвращает (svg, нижний край)."""
     half = (w - 12) / 2
     b = [label(x, y + 12, "Name der Schule", c), field(x, y + 22, w, "Schiller-Schule", c),
-         label(x, y + 96, "Schulnummer", c), field(x, y + 106, w, "10311204", c, ls=1),
-         label(x, y + 180, "Benutzername", c), field(x, y + 190, half, "schueler", c),
-         label(x + half + 12, y + 180, "Passwort", c), field(x + half + 12, y + 190, half, "••••••••", c, ls=2),
-         T(x, y + 260, "Dieselben Daten wie für den Plan der Schule auf stundenplan24.de.", 12, 400, c["faint"])]
+         label(x, y + 96, "Schulnummer", c), field(x, y + 106, half, "10311204", c, ls=1),
+         label(x + half + 12, y + 96, "Passwort der Schule", c), field(x + half + 12, y + 106, half, "••••••", c, ls=2),
+         label(x, y + 180, "Server", c), field(x, y + 190, w, "https://www.stundenplan24.de", c, size=14.5),
+         T(x, y + 260, "Schulnummer und Passwort gibt die Schule aus.", 12, 400, c["faint"])]
     by = y + 276
-    b.append(R(x, by, w, 48, 16, c["oktint"]) + ICON(x + 14, by + 14, 0.83, c["ok"], CHECK, 2.4) + T(x + 44, by + 29.5, "Zugang passt · 24 Klassen gefunden", 13.5, 700, c["ink"]))
+    b.append(R(x, by, w, 48, 16, c["oktint"]) + ICON(x + 14, by + 14, 0.83, c["ok"], CHECK, 2.4) + T(x + 44, by + 29.5, "Verbindung steht · 24 Klassen im Plan", 13.5, 700, c["ink"]))
     by += 64
-    b.append(button(x, by, 150, "Erneut testen", c, "sand", None) + button(x + 162, by, w - 162, "Schule speichern", c))
+    b.append(button(x, by, 170, "Verbindung testen", c, "sand", None) + button(x + 182, by, w - 182, "Speichern", c))
     return "".join(b), by + 48
 
 def p_school_new(c, theme, sub):
-    top = 336
+    top = 332
     form, end = school_form(18, top + 92, 354, c)
     return page(390, 844, c, admin_body(c, sub) + sheet_head(c, top, "Schulen & Klassen", "Schule hinzufügen") + form)
 
-def p_class_new(c, theme, sub):
+def pick_field(x, y, w, c, lead, text, lead_w=30, tag=None):
+    """Поле-список (как ListPicker из части 19c): слева значок, текст, справа стрелка вниз."""
+    out = R(x, y, w, 50, 16, c["field"]) + R(x + .5, y + .5, w - 1, 49, 15.5, "none", c["rule"]) + lead + T(x + 16 + lead_w + 10, y + 30.5, text, 15, 700, c["ink"])
+    if tag:
+        bd, _ = badge(x + 16 + lead_w + 10 + est(text, 15) * 1.2 + 10, y + 15.5, tag, c, "tint"); out += bd
+    return out + ICON(x + w - 34, y + 17, 0.67, c["faint"], CHEV_D, 2.2)
+
+def p_code_new(c, theme, sub):
+    """Новый Zugangscode: у каждого кода выбирается школа и класс. Класса ещё нет — он появится вместе с кодом."""
+    top = 300
+    b = [admin_body(c, sub), sheet_head(c, top, "Zugangscodes", "Neuer Code"),
+         label(18, top + 108, "Bezeichnung", c), field(18, top + 118, 354, "Eltern 8a", c),
+         label(18, top + 192, "Schule", c), pick_field(18, top + 202, 354, c, ICON(34, top + 215, 0.92, c["muted"], SCHOOL, 1.9), "Schiller-Schule", 22),
+         label(18, top + 276, "Klasse", c), pick_field(18, top + 286, 354, c, cbadge(30, top + 296, "8a", 3, c, sub, 30), "Klasse 8a", 30, "NEU")]
+    y = top + 350
+    b.append(R(18, y, 354, 44, 14, c["tint"]) + ICON(30, y + 13, 0.75, c["accink"], m15.INFO, 2) + T(58, y + 27, "8a ist neu – die Klasse entsteht mit diesem Code.", 12.5, 600, c["accink"]))
+    b.append(T(18, y + 66, "Für wen, Geräte und Gültig bis: wie bisher im nächsten Schritt.", 12, 400, c["faint"]))
+    b.append(button(18, y + 84, 354, "Weiter", c, icon=CHEV_R))
+    return page(390, 844, c, "".join(b))
+
+def p_class_pick(c, theme, sub):
+    """Список «Klasse»: все классы из плана выбранной школы, с поиском. Справа серым — класс уже есть на сервере."""
     top = 262
-    b = [admin_body(c, sub), sheet_head(c, top, "Schiller-Schule", "Klasse anlegen")]
+    b = [admin_body(c, sub), sheet_head(c, top, "Neuer Code · Schiller-Schule", "Klasse wählen")]
     y = top + 96
     b.append(R(18, y, 354, 44, 22, c["sand"]) + ICON(32, y + 12, 0.83, c["faint"], SEARCH, 2) + T(62, y + 27.5, "Klasse suchen", 14, 400, c["faint"]))
     y += 58
-    names = ["5a", "5b", "6a", "7a", "7b", "7c", "8a"]
+    names = ["5a", "5b", "6a", "7a", "7b", "7c", "8a", "8b"]
     b.append(R(18, y, 354, 44 * len(names), 22, c["card"]))
     for i, nme in enumerate(names):
         ry = y + i * 44
         if i: b.append(HLINE(32, 358, ry, c))
-        if nme == "7c": b.append(R(24, ry + 3, 342, 38, 14, c["tint"]) + ICON(334, ry + 12, 0.83, c["accink"], CHECK, 2.4))
-        b.append(T(36, ry + 27.5, nme, 14.5, 800 if nme == "7c" else 600, c["accink"] if nme == "7c" else c["ink"]))
-    y += 44 * len(names) + 22
-    b.append(T(18, y, "Aus dem Plan der Schule. Danach: ersten Zugangscode erstellen.", 11.5, 400, c["faint"]))
-    b.append(button(18, y + 18, 354, "7c anlegen", c, icon=PLUS))
+        on = nme == "8a"
+        if on: b.append(R(24, ry + 3, 342, 38, 14, c["tint"]) + ICON(334, ry + 12, 0.83, c["accink"], CHECK, 2.4))
+        b.append(T(36, ry + 27.5, nme, 14.5, 800 if on else 600, c["accink"] if on else c["ink"]))
+        if nme == "7c": b.append(T(354, ry + 27.5, "gibt es schon · 12 Geräte", 12, 400, c["faint"], "end"))
+    b.append(T(18, y + 44 * len(names) + 24, "Alle Klassen aus dem Plan der Schule.", 12, 400, c["faint"]))
+    return page(390, 844, c, "".join(b))
+
+def p_recht(c, theme, sub):
+    """Новое право у Lehrer- и Editor-Code: «Klasse verwalten» — свои Zugangscodes и приглашения. Выключено, пока админ не включит."""
+    top = 196
+    half = (354 - 12) / 2
+    b = [admin_body(c, sub), sheet_head(c, top, "Lehrer-Codes", "Neuer Code"),
+         label(18, top + 108, "Kürzel", c), field(18, top + 118, half, "Mü", c),
+         label(18 + half + 12, top + 108, "Klasse", c), pick_field(18 + half + 12, top + 118, half, c, cbadge(18 + half + 24, top + 128, "9b", 0, c, sub, 30), "9b", 30)]
+    y = top + 192
+    b.append(label(18, y, "Darf", c))
+    rows = ["Tests eintragen", "Hausaufgaben eintragen", "Materialien teilen", "Termine eintragen"]
+    h = 44 * len(rows) + 68
+    b.append(R(18, y + 12, 354, h, 22, c["card"]))
+    for i, t_ in enumerate(rows):
+        ry = y + 12 + i * 44
+        if i: b.append(HLINE(32, 358, ry, c))
+        b.append(g.checkbox(32, ry + 12.5, True, c) + T(64, ry + 27.5, t_, 14.5, 500, c["ink"]))
+    ry = y + 12 + 44 * len(rows)
+    bd, _ = badge(64 + est("Klasse verwalten", 14.5) * 1.25 + 10, ry + 12, "NEU", c, "tint")
+    b.append(HLINE(32, 358, ry, c) + g.checkbox(32, ry + 24.5, True, c) + T(64, ry + 26, "Klasse verwalten", 14.5, 700, c["ink"]) + bd
+             + T(64, ry + 46, "Zugangscodes und Einladungen dieser Klasse", 12, 400, c["faint"]))
+    y += 12 + h + 22
+    b.append(T(18, y, "Geht auch bei Editor-Codes, z. B. für Klassensprecher.", 12, 400, c["faint"]))
+    b.append(T(18, y + 17, "Schulen, Muster, Kanäle und Einstellungen bleiben bei dir.", 12, 400, c["faint"]))
+    b.append(button(18, y + 34, 354, "Code erstellen", c, icon=PLUS))
+    return page(390, 844, c, "".join(b))
+
+def p_verwalten(c, theme, sub):
+    """Что видит учитель или староста с правом «Klasse verwalten»: Mehr → «Klasse verwalten» — коды только своего класса."""
+    inner = strip(p14c.p_list(c, theme, sub))
+    head = (R(0, 0, 390, 84, 0, c["paper"]) + round_btn(18, 33.31, c, BACK) + eyebrow(66, 33, "Mehr · Klasse 9b verwalten", c, True)
+            + title(66, 65, "Zugangscodes", c) + round_btn(334, 33.31, c, PLUS, primary=True))
+    # старый Klassenpasswort (последняя карточка) учителю не показываем — им управляет только админ
+    foot = R(0, 686, 390, 158, 0, c["paper"]) + T(18, 712, "Nur die Codes deiner Klasse. Schulen und andere Klassen sieht nur der Admin.", 11.5, 400, c["faint"])
+    return page(390, 844, c, inner + head + foot)
+
+def p_limit(c, theme, sub):
+    """Admin → Einstellungen: сколько классов можно на одном устройстве (по умолчанию без лимита)."""
+    b = [round_btn(18, 33.31, c, BACK) + eyebrow(66, 33, "Admin", c, True) + title(66, 65, "Einstellungen", c), label(18, 110, "Klassen", c)]
+    b.append(R(18, 122, 354, 67 + 52.5, 22, c["card"]) + T(32, 152, "Klassen pro Gerät", 15, 400, c["ink"]) + T(32, 171, "So viele Klassen darf ein Gerät haben", 12, 400, c["faint"]))
+    pill, pw = m27.wpill(358 - 118, 139.5, "Unbegrenzt", c, 118); b.append(pill)
+    b.append(HLINE(32, 358, 189, c) + ICON(32, 205, 0.79, c["muted"], SCHOOL, 1.9) + T(63, 219.5, "Schulen & Klassen", 14.5, 500, c["ink"])
+             + T(334, 219, "2 Schulen · 3 Klassen", 13, 400, c["faint"], "end") + ICON(342, 206.5, 0.67, c["faint2"], CHEV_R))
+    opts = ["Unbegrenzt", "1 Klasse", "2 Klassen", "3 Klassen", "5 Klassen", "10 Klassen"]
+    x, y, w, rh = 190, 178, 168, 42
+    h = rh * len(opts) + 12
+    b.append(R(x, y, w, h, 20, c["card"], extra=' filter="url(#nsh0)"') + R(x, y, w, h, 20, c["card"]) + R(x + .5, y + .5, w - 1, h - 1, 19.5, "none", c["hair"]))
+    for i, o in enumerate(opts):
+        ry = y + 6 + i * rh
+        if i == 0: b.append(R(x + 6, ry + 2, w - 12, rh - 4, 14, c["sand"]) + ICON(x + w - 34, ry + 12, 0.75, c["accink"], CHECK, 2.4))
+        b.append(T(x + 18, ry + 26.5, o, 14, 700 if i == 0 else 500, c["ink"]))
+    b.append(T(18, 470, "Gilt für alle Schulen. Wer schon mehr Klassen hat, behält sie.", 12, 400, c["faint"]))
     return page(390, 844, c, "".join(b))
 
 def p_admin_switch(c, theme, sub):
@@ -419,7 +495,7 @@ def pc_school_block(x, y, w, sc, c, sub):
     out = [R(x, y, w, h, 22, c["card"]), f'<circle cx="{x + 40}" cy="{y + 35}" r="20" fill="{c["sand"]}"/>', ICON(x + 30, y + 25, 0.83, c["muted"], SCHOOL, 1.9),
            T(x + 72, y + 32, sc["name"], 16, 800, c["ink"]), T(x + 72, y + 51, f'Schulnummer {sc["nr"]} · stundenplan24.de · {sc["n"]} Klassen im Plan', 12.5, 400, c["faint"])]
     bd, bw = badge(x + 72 + est(sc["name"], 16) * 1.25 + 12, y + 18, "PLAN OK", c, "ok"); out.append(bd)
-    out.append(button(x + w - 20 - 170, y + 16, 170, "Klasse hinzufügen", c, "sand", PLUS, h=38) + T(x + w - 210, y + 40, "Zugang ändern", 13, 700, c["accink"], "end"))
+    out.append(button(x + w - 20 - 200, y + 16, 200, "Code für neue Klasse", c, "sand", PLUS, h=38) + T(x + w - 240, y + 40, "Zugang ändern", 13, 700, c["accink"], "end"))
     cols = [("Klasse", 20), ("Geräte", 260), ("Zugangscodes", 400), ("Tests", 570), ("Telegram", 700), ("Seit", 860)]
     hy = y + 70
     out.append(HLINE(x + 20, x + w - 20, hy, c))
@@ -437,7 +513,7 @@ def pc_school_block(x, y, w, sc, c, sub):
 def pc_admin_body(c, sub):
     b = [g.admin_sidebar(c, 900, "Schulen &amp; Klassen"), eyebrow(284, 39, "Admin · Server", c, True), title(284, 80, "Schulen & Klassen", c, 38)]
     b.append(button(1200, 40, 204, "Schule hinzufügen", c, icon=PLUS, h=46))
-    b.append(note_box(284, 110, 1120, [S("Jede Klasse hat eigene Codes, Tests, Kanäle und Einstellungen. Den Plan lädt ORBook pro Schule einmal — auch für mehrere Klassen.", 400, c["muted"])], c, m15.INFO))
+    b.append(note_box(284, 110, 1120, [S("Eine Klasse entsteht mit ihrem ersten Code (Zugangs-, Lehrer- oder Editor-Code) und hat eigene Tests, Kanäle und Einstellungen. Den Plan lädt ORBook pro Schule einmal.", 400, c["muted"])], c, m15.INFO))
     y = 168
     for sc in SCHOOLS:
         blk, h = pc_school_block(284, y, 1120, sc, c, sub); b.append(blk); y += h + 20
@@ -471,8 +547,12 @@ SCREENS = {
     "handy-11-laden": p_laden,
     "handy-12-admin-klassen": p_admin,
     "handy-13-admin-schule-neu": p_school_new,
-    "handy-14-admin-klasse-neu": p_class_new,
-    "handy-15-admin-wechsler": p_admin_switch,
+    "handy-14-admin-code-klasse": p_code_new,
+    "handy-15-admin-klasse-waehlen": p_class_pick,
+    "handy-16-admin-wechsler": p_admin_switch,
+    "handy-17-admin-limit": p_limit,
+    "handy-18-recht-klasse-verwalten": p_recht,
+    "handy-19-klasse-verwalten": p_verwalten,
     "pc-01-klassen": pc_hub,
     "pc-02-wechsler": pc_switch,
     "pc-03-admin-klassen": pc_admin,

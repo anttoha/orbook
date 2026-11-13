@@ -50,11 +50,17 @@ SECTIONS = [
      "Если код класса выключили, не работает только его карточка.",
      [("handy-07-klasse-einstellen", "Настройки класса"), ("handy-08-woche", "Чип класса в неделе"), ("handy-09-wechsler", "Переключатель"), ("handy-10-zugang-beendet", "Код выключен")],
      [("pc-02-wechsler", "ПК · переключатель рядом с логотипом")]),
-    ("admin", "5 · Админка: школы и классы",
-     "Новый раздел «Schulen & Klassen». Школа добавляется данными её плана (Schulnummer, Benutzername, Passwort) — приложение сразу проверяет доступ. "
-     "Класс выбирается из списка, который есть в плане школы. Вся остальная админка (коды, тесты, Muster, Kanäle, Einstellungen) относится к классу, выбранному чипом сверху.",
-     [("handy-12-admin-klassen", "Schulen & Klassen"), ("handy-13-admin-schule-neu", "Школа: данные и проверка"), ("handy-14-admin-klasse-neu", "Класс из плана школы"), ("handy-15-admin-wechsler", "Чип класса в админке")],
+    ("admin", "5 · Админка: школы, класс у каждого кода, лимит",
+     "Новый раздел «Schulen & Klassen». Школу добавляешь только ты — теми же полями, что сейчас в «Schule & Plan»: Schulnummer, Passwort der Schule, Server, и сразу «Verbindung testen». "
+     "Отдельного шага «создать класс» нет: в форме любого нового кода выбираешь школу и класс из её плана, и класс появляется вместе с первым кодом. "
+     "Чип класса сверху решает, к какому классу относится остальная админка (коды, тесты, Muster, Kanäle). В Einstellungen — сколько классов можно на одном устройстве, по умолчанию без лимита.",
+     [("handy-12-admin-klassen", "Schulen & Klassen"), ("handy-13-admin-schule-neu", "Школа: данные и проверка"), ("handy-14-admin-code-klasse", "Новый код: школа и класс"),
+      ("handy-15-admin-klasse-waehlen", "Список классов из плана"), ("handy-16-admin-wechsler", "Чип класса в админке"), ("handy-17-admin-limit", "Лимит классов на устройстве")],
      [("pc-03-admin-klassen", "ПК · Schulen & Klassen"), ("pc-04-admin-schule-neu", "ПК · Schule hinzufügen")]),
+    ("verwalten", "6 · Учитель и староста: «Klasse verwalten»",
+     "У Lehrer-Code и Editor-Code появилась галочка «Klasse verwalten» (выключена, пока ты не включишь). С ней учитель или староста видят в Mehr пункт «Klasse verwalten» "
+     "и сами создают и выключают Zugangscodes и приглашения — только своего класса. Школы, Muster, Kanäle и настройки остаются у тебя.",
+     [("handy-18-recht-klasse-verwalten", "Галочка у кода"), ("handy-19-klasse-verwalten", "Что видит учитель или староста")], []),
 ]
 OLD = [(("1 Handy Hell", "2 Handy Dunkel", "04 Woche"), "Soft 04 · Woche", "phone"), (("1 Handy Hell", "2 Handy Dunkel", "22 Mehr"), "Soft 22 · Mehr", "phone"),
        (("1 Handy Hell", "2 Handy Dunkel", "40 Admin · Übersicht"), "Soft 40 · Admin · Übersicht", "phone")]
@@ -117,13 +123,13 @@ def page():
     out.append('<section id="vergleich"><h2>Для сравнения: старые экраны Soft</h2><p>Откуда взяты шапка, карточки и меню.</p><div class="row">')
     out += [orig(pth, cap, kind) for pth, cap, kind in OLD]
     out.append('</div></section></div>')
-    out.append("""<div class="box"><h2>Вопросы к тебе</h2><ol>
-<li><b>Кто управляет классами других школ?</b> <span>Только ты (один админ сервера) — или у класса может быть свой «Klassen-Admin» с отдельным паролем, который видит только свой класс. Предлагаю: сейчас один админ, «Klassen-Admin» — позже отдельной частью.</span></li>
-<li><b>Доступ к плану другой школы</b> <span>(Schulnummer, Benutzername, Passwort) вводишь ты — их тебе даёт кто-то из той школы. Ок? В Datenschutz будет написано, что сервер обслуживает несколько школ.</span></li>
-<li><b>Старый Klassenpasswort</b> <span>остаётся только у нынешнего класса; новые классы — только по Zugangscode (по паролю нельзя понять, какой это класс). Ок?</span></li>
-<li><b>Sync-Code</b> <span>переносит имена, цвета и курсы классов, но не сами Zugangscodes: на новом устройстве код вводится заново, лимит устройств считается честно. Ок или переносить и коды?</span></li>
-<li><b>Лимиты</b> <span>до 6 классов на устройстве, рядом — до 3. Ок?</span></li>
-</ol></div>""")
+    out.append("""<div class="box"><h2>Решено (твои ответы 13.11.)</h2><ul>
+<li><b>Админ</b> <span>только ты. У класса — свои учитель и староста; с галочкой «Klasse verwalten» они сами ведут коды входа своего класса.</span></li>
+<li><b>Школы</b> <span>добавляешь только ты: Schulnummer, Passwort der Schule, Server. Класс выбирается у каждого кода и появляется с первым кодом.</span></li>
+<li><b>Klassenpasswort</b> <span>остаётся только у Petrischule 8a, все остальные входы — по кодам.</span></li>
+<li><b>Sync-Code</b> <span>переносит имена, цвета и курсы классов, но не коды входа.</span></li>
+<li><b>Лимитов нет</b> <span>сколько классов можно на устройстве, задаёшь в Admin → Einstellungen.</span></li>
+</ul></div>""")
     out.append("""<div class="box"><h2>План бэкенда (коротко)</h2><ul>
 <li><b>Школы и классы в базе</b> <span>новые таблицы; нынешняя школа и класс становятся № 1, для тех, кто уже пользуется, ничего не меняется.</span></li>
 <li><b>Всё по классам</b> <span>коды, тесты, домашки, материалы, термины, уведомления, Muster, каналы и настройки получают метку класса.</span></li>

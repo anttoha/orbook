@@ -1,6 +1,6 @@
 # 29 · Mehrere Klassen und Schulen
 
-**Статус:** дизайн и план ждут «ок» (2026-11-13). Код не начат.
+**Статус:** дизайн v2 (после ответов владельца 13.11) ждёт «ок дизайн»; план бэкенда ждёт «ок». Код не начат.
 **Источники:** `design/neu/29-klassen/` (генератор `gen.py`, обзор `index.html`), идея владельца 10.11 (`docs/ideas/2026-11-11/ideas.md`: «при заходе удобный экран, где можно добавить несколько классов… кнопка возле класса, там все нужные настройки»), пожелание 13.11: «школы тоже можно добавлять», `/opt/orbook-be/docs/SPEC.md` §949 («ещё один класс — отдельный инстанс» — это решение заменяется).
 
 ## Зачем
@@ -16,10 +16,12 @@
 | Переключатель | `handy-08-woche`, `handy-09-wechsler`, `pc-02-wechsler` | чип «9b ⌄» в шапке (ПК — рядом с логотипом): мои классы, «Alle Klassen», «Klasse hinzufügen» |
 | Zugang beendet | `handy-10-zugang-beendet` | код класса выключили: карточка с «Neuen Code eingeben» / «Entfernen», остальные классы работают |
 | Загрузка | `handy-11-laden` | скелет карточек |
-| Admin · Schulen & Klassen | `handy-12-admin-klassen`, `pc-03-admin-klassen` | школы карточками, в каждой — её классы (устройства, коды, тесты), «Klasse hinzufügen», «Schule hinzufügen» |
-| Admin · Schule hinzufügen | `handy-13-admin-schule-neu`, `pc-04-admin-schule-neu` | имя, Schulnummer, Benutzername, Passwort, проверка доступа («24 Klassen gefunden») |
-| Admin · Klasse anlegen | `handy-14-admin-klasse-neu` | список классов из плана школы с поиском |
-| Admin · переключатель | `handy-15-admin-wechsler` | чип класса вместо «Admin · 9b»: вся остальная админка (коды, тесты, Muster, Kanäle, Einstellungen) относится к выбранному классу |
+| Admin · Schulen & Klassen | `handy-12-admin-klassen`, `pc-03-admin-klassen` | школы карточками, в каждой — её классы (устройства, коды, тесты), «Code für neue Klasse», «Schule hinzufügen» |
+| Admin · Schule hinzufügen | `handy-13-admin-schule-neu`, `pc-04-admin-schule-neu` | имя, Schulnummer, Passwort der Schule, Server (как карточка «Schule & Plan»), «Verbindung testen» → «24 Klassen im Plan» |
+| Admin · новый код | `handy-14-admin-code-klasse`, `handy-15-admin-klasse-waehlen` | в форме любого кода — поля «Schule» и «Klasse» (список из плана школы, с поиском); нового класса ещё нет → «8a ist neu – die Klasse entsteht mit diesem Code» |
+| Admin · лимит | `handy-17-admin-limit` | Einstellungen → «Klassen pro Gerät»: Unbegrenzt (по умолчанию) / 1 / 2 / 3 / 5 / 10 |
+| Право «Klasse verwalten» | `handy-18-recht-klasse-verwalten`, `handy-19-klasse-verwalten` | галочка у Lehrer- и Editor-Code (по умолчанию выкл.); с ней в Mehr появляется «Klasse verwalten» — Zugangscodes и приглашения только своего класса |
+| Admin · переключатель | `handy-16-admin-wechsler` | чип класса вместо «Admin · 9b»: вся остальная админка (коды, тесты, Muster, Kanäle, Einstellungen) относится к выбранному классу |
 
 ## Что куда нажимать
 - Первый вход — как сейчас: Zugang (Soft 01) → код → Kurse wählen → Woche. Один класс на устройстве — приложение выглядит как раньше, плюс чип класса в шапке.
@@ -46,7 +48,7 @@
 - Офлайн: карточки из кеша с плашкой Offline (как Soft 32), добавлять класс нельзя («Dafür brauchst du Internet»).
 - Ошибка одного класса: на карточке «Plan kommt gerade nicht an» + «Nochmal»; остальные работают.
 - Код класса выключен/истёк: карточка «Zugang beendet» (`handy-10`).
-- Особые случаи: тот же класс второй раз → «Diese Klasse hast du schon»; лимит классов на устройстве (6) → «Mehr als 6 Klassen gehen nicht»; учитель (Lehrer-Code) — тоже членство в классе, может иметь и ученический доступ к другому.
+- Особые случаи: тот же класс второй раз → «Diese Klasse hast du schon»; лимит классов на устройстве (если админ его задал) → «Mehr als N Klassen gehen auf einem Gerät nicht»; учитель (Lehrer-Code) — тоже членство в классе, может иметь и ученический доступ к другому.
 
 ## Бэкенд (план — нужен «ок» владельца, делается в `/opt/orbook-be`)
 Сейчас по классу разделён только план (`plan_days`, `plan_versions`, `courses`, `lesson_times` имеют `class_name`). Всё остальное общее. Что меняем:
@@ -56,11 +58,13 @@
 3. **Сессия и членства.** Cookie остаётся одна. Новая таблица `session_classes` (session_id, class_id, access_code_id, editor_code_id, kind, class_epoch): одно устройство — несколько членств. `POST /api/auth/login` с кодом при уже существующей сессии **добавляет** членство. `POST /api/auth/leave {class}` убирает одно. Выключенный код убирает только своё членство.
 4. **Какой класс в запросе.** Все эндпоинты класса принимают заголовок `X-ORBook-Class: <id>` (для потока `GET /api/plan/stream` — параметр `?class=`; поток один на устройство, события помечены классом). Без заголовка — первый класс сессии: старый фронт на проде продолжает работать без изменений.
 5. **Опрос школы.** Цикл по школам: файл дня скачивается один раз на школу и разбирается для каждого её класса (файл stundenplan24 уже содержит все классы). Частота и лимиты — прежние на школу.
-6. **Админка.** `GET/POST/PATCH/DELETE /api/admin/schools`, `POST /api/admin/schools/{id}/test`, `GET /api/admin/schools/{id}/classes`, `POST/DELETE /api/admin/classes`. Все остальные `/api/admin/*` получают тот же выбор класса. Удаление класса — как Gefahrenzone: слово LÖSCHEN + пароль, бэкап перед удалением.
+6. **Админка.** `GET/POST/PATCH/DELETE /api/admin/schools`, `POST /api/admin/schools/{id}/test`, `GET /api/admin/schools/{id}/classes`, `DELETE /api/admin/classes/{id}`. Отдельного создания класса нет: `POST` кодов (Zugangs-, Lehrer-, Editor-Code) принимает `schoolId` + `className` и создаёт класс, если его ещё нет (имя должно быть в плане школы). Все остальные `/api/admin/*` получают тот же выбор класса. Удаление класса — как Gefahrenzone: слово LÖSCHEN + пароль, бэкап перед удалением.
 7. **Старый пароль класса** остаётся только у класса № 1 (по паролю нельзя понять, какой класс). Новые классы — только по Zugangscode.
 8. **Telegram и Push.** Чат и подписка привязаны к коду → к классу; один чат может вести несколько классов, в сообщении первой строкой «9b · …». Бот остаётся один.
 9. **Демо:** второй класс из тех же файлов-фикстур, чтобы всё можно было проверить без школы.
-10. Документация: `docs/API.md`, `docs/FRONTEND.md`, `docs/openapi.json`, `docs/BETRIEB.md` («ещё один класс / школа» — теперь в админке), `docs/SPEC.md` §949.
+10. **Право «Klasse verwalten»** (`can_manage_class` у `editor_codes`, по умолчанию выкл.): `GET/POST/PATCH/DELETE /api/class/access-codes` и приглашения — те же правила, что у админских, но только свой класс и без Klassenpasswort; `me.canManageClass`.
+11. **Лимит** `classes.maxPerDevice` (уровень сервера, `null` = без лимита): проверяется при добавлении членства → `too_many_classes`; уже добавленные классы не отбираются.
+12. Документация: `docs/API.md`, `docs/FRONTEND.md`, `docs/openapi.json`, `docs/BETRIEB.md` («ещё один класс / школа» — теперь в админке), `docs/SPEC.md` §949.
 
 ## Фронт (после бэкенда)
 - `classesStore`: список классов устройства (id, имя, цвет, порядок, стартовый), активный класс. `api.js` сам добавляет `X-ORBook-Class`.
@@ -77,7 +81,7 @@
 |---|---|---|
 | 29a | Бэкенд: схема 0014, членства, выбор класса в запросе, настройки по уровням, опрос по школам, совместимость со старым фронтом; демо | Opus · effort high |
 | 29b | Фронт: `classesStore`, переезд настроек по классам, «Meine Klassen» (карточки), добавить/убрать класс, настройки класса, переключатель, ПК | Opus · effort high |
-| 29c | «Nebeneinander» + админка «Schulen & Klassen» и чип класса в админке | Opus · effort medium |
+| 29c | «Nebeneinander» + админка «Schulen & Klassen», чип класса в админке, поля «Schule/Klasse» у кодов, лимит, «Klasse verwalten» | Opus · effort medium |
 | 29d | Mitteilungen и Telegram по классам, Sync `klassen`, Datenschutz, changelog, проверка на демо | Opus · effort medium |
 
 ## Чего здесь НЕТ
@@ -101,6 +105,6 @@
 5. Лимитов по умолчанию нет; сколько классов можно на устройстве — настройка владельца в админке (Einstellungen).
 
 ## Открытые вопросы (решает владелец)
-- [ ] A. Что могут учитель и староста класса сверх записей (тесты, домашки, материалы, термины): ничего (как сейчас) или ещё «Klasse verwalten» — создавать и выключать Zugangscodes и приглашения своего класса?
-- [ ] B. Подтвердить: отдельного шага «Klasse anlegen» нет — класс появляется в списке вместе с первым кодом для него.
-- [ ] «ок дизайн» — после правки трёх экранов (школа без Benutzername, «Klasse» в форме нового кода, лимит в Einstellungen).
+- [x] A. Учитель и староста: записи **и** право «Klasse verwalten» галочкой (ответ 13.11: «да» на оба).
+- [x] B. Отдельного шага «Klasse anlegen» нет — класс появляется с первым кодом (ответ 13.11: «да»).
+- [ ] «ок дизайн» для v2 и «ок» плана бэкенда.
