@@ -5,6 +5,7 @@ import { useTheme } from "../hooks/useTheme";
 import { mergeNotes, sameNotes, syncErrorText } from "../utils/notes";
 import { ALL_PARTS, darstellungOf, kurseOf, syncBlock } from "../utils/syncPayload";
 import { decryptNotes, deriveSync, encryptNotes, generateSyncCode, normalizeSyncCode } from "../utils/syncCrypto";
+import { useClasses } from "./classesStore";
 import { useTasksStore } from "./tasksStore";
 import { useUserStore } from "./userStore";
 
@@ -26,6 +27,24 @@ const keysFor = (code) => {
 let retryTimer = null; // повтор после 429
 let applying = false; // сейчас записываем пришедшее — это не «изменение пользователя»
 
+// Часть 29: переключение класса меняет заметки и курсы в userStore, но это не правка пользователя
+export function quietly(change) {
+  applying = true;
+  try {
+    change();
+  } finally {
+    applying = false;
+  }
+}
+
+// До части 29d в Sync-блоке лежат заметки и курсы одного класса — того, что был на устройстве первым.
+// Открыт другой класс — эти части не трогаем (иначе заметки классов смешались бы)
+const onHomeClass = () => {
+  const { activeId, homeId } = useClasses.getState();
+  return activeId == null || homeId == null || activeId === homeId;
+};
+const partsNow = (parts) => (onHomeClass() ? parts : { ...parts, notes: false, kurse: false });
+
 export const useSyncStore = create(
   persist(
     (set, get) => ({
@@ -44,10 +63,13 @@ export const useSyncStore = create(
         if (!code || disabled || status === "syncing") return;
         clearTimeout(retryTimer);
         set({ status: "syncing" });
+        const classAtStart = useClasses.getState().activeId;
         try {
           const res = await syncWith(code, get());
           if (get().code !== code) return; // пока ждали, код сменили — результат уже не наш
-          applyBlock(res.block, get().parts, set);
+          // пока ждали, открыли другой класс — его заметки и курсы этим блоком не трогаем
+          const parts = useClasses.getState().activeId === classAtStart ? partsNow(get().parts) : { ...partsNow(get().parts), notes: false, kurse: false };
+          applyBlock(res.block, parts, set);
           set({ version: res.version, lastSyncAt: new Date().toISOString(), status: "idle", error: null });
         } catch (error) {
           handleError(error, set, get);
@@ -101,7 +123,7 @@ export const useSyncStore = create(
         const code = generateSyncCode();
         const res = await syncWith(code, get());
         if (old) await deleteSyncBlock((await keysFor(old)).syncId);
-        applyBlock(res.block, get().parts, set);
+        applyBlock(res.block, partsNow(get().parts), set);
         set({ code, version: res.version, lastSyncAt: new Date().toISOString(), status: "idle", error: null });
       },
 
@@ -122,7 +144,7 @@ export const useSyncStore = create(
 // Один проход синхронизации под кодом code
 async function syncWith(code, { stamps, parts }) {
   const keys = await keysFor(code);
-  return syncBlock({ keys, local: localBlock(stamps), parts, request: makeSyncRequest(keys.syncId), crypto: BOX });
+  return syncBlock({ keys, local: localBlock(stamps), parts: partsNow(parts), request: makeSyncRequest(keys.syncId), crypto: BOX });
 }
 
 // Своё на этом устройстве — в виде блока

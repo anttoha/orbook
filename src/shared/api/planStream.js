@@ -5,12 +5,13 @@
 // onStatus(status), onPlan({ days, lastChangeAt }) — события сервера
 // onDown(closed) — связь пропала: closed = true — браузер сам больше не переподключится
 //                  (503 «Live aus», 401, нет EventSource); false — переподключается сам
-export function openPlanStream({ onStatus, onPlan, onDown }) {
+// classId — часть 29: поток этого класса (EventSource не умеет заголовки, поэтому ?class=)
+export function openPlanStream({ classId, onStatus, onPlan, onDown }) {
   if (typeof EventSource === "undefined") {
     onDown(true);
     return { close() {} };
   }
-  const source = new EventSource("/api/plan/stream");
+  const source = new EventSource(classId != null ? `/api/plan/stream?class=${classId}` : "/api/plan/stream");
   // Битое сообщение пропускаем: следующее «status» придёт через минуту
   const parse = (handler) => (event) => {
     try {

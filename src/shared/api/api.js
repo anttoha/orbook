@@ -32,6 +32,17 @@ export function setAdminUnauthorizedHandler(fn) {
   onAdminUnauthorized = fn;
 }
 
+// Часть 29: какой класс открыт. classesStore регистрирует себя здесь (api.js не знает про сторы)
+let classHandlers = { current: () => null, gone: () => {} };
+export function setClassHandlers(handlers) {
+  classHandlers = handlers;
+}
+export const currentClassId = () => classHandlers.current();
+
+// Запросы без класса: вход, админка (свой выбор класса — часть 29c), Sync (код устройства, не класса)
+const NO_CLASS = ["/admin", "/auth/login", "/auth/teacher", "/auth/join", "/auth/logout", "/auth/leave", "/public", "/sync", "/health"];
+const classHeader = (path, classId) => (classId != null && !NO_CLASS.some((prefix) => path.startsWith(prefix)) ? { "X-ORBook-Class": String(classId) } : {});
+
 // Заголовок для PATCH/DELETE Klausur: версія з останньої відповіді (поле version)
 export const ifMatch = (version) => ({ "If-Match": `"v${version}"` });
 
@@ -39,14 +50,16 @@ export const ifMatch = (version) => ({ "If-Match": `"v${version}"` });
 export const examIcsUrl = (id) => `/api/exams/${id}.ics`;
 
 // Головна функція: await api("/week?date=2026-10-05")
+//                  classId — запит від імені іншого класу (карточки «Meine Klassen»); null — без класу
 //                  await api("/auth/login", { method: "POST", body: { password } })
 // conditional: true — частий опит. Самі шлемо If-None-Match і вимикаємо кеш браузера:
 // інакше браузер сам отримує 304 і віддає коду стару відповідь як 200, і екран перемальовується.
 // Сервер відповів 304 → api повертає null.
-const savedEtags = new Map(); // шлях → останній ETag
+const savedEtags = new Map(); // «клас:шлях» → останній ETag
 
-export async function api(path, { method = "GET", body, signal, headers = {}, timeout = TIMEOUT_MS, conditional = false } = {}) {
-  const etagHeader = conditional && savedEtags.has(path) ? { "If-None-Match": savedEtags.get(path) } : {};
+export async function api(path, { method = "GET", body, signal, headers = {}, timeout = TIMEOUT_MS, conditional = false, classId = currentClassId() } = {}) {
+  const etagKey = `${classId ?? ""}:${path}`; // у кожного класу свій ETag
+  const etagHeader = conditional && savedEtags.has(etagKey) ? { "If-None-Match": savedEtags.get(etagKey) } : {};
   const timer = new AbortController(); // щоб обірвати запит по таймауту
   const timeoutId = setTimeout(() => timer.abort(), timeout);
   const onAbort = () => timer.abort(); // скасування ззовні (наприклад, екран закрили)
@@ -59,7 +72,7 @@ export async function api(path, { method = "GET", body, signal, headers = {}, ti
       signal: timer.signal,
       credentials: "same-origin", // надсилати cookies
       ...(conditional ? { cache: "no-store" } : {}),
-      headers: { ...(body !== undefined ? { "Content-Type": "application/json" } : {}), ...etagHeader, ...headers },
+      headers: { ...(body !== undefined ? { "Content-Type": "application/json" } : {}), ...classHeader(path, classId), ...etagHeader, ...headers },
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });
   } catch (e) {
@@ -75,7 +88,7 @@ export async function api(path, { method = "GET", body, signal, headers = {}, ti
 
   const data = await res.json().catch(() => null); // тіло (або null, якщо не JSON)
   if (res.ok) {
-    if (conditional && res.headers.get("ETag")) savedEtags.set(path, res.headers.get("ETag"));
+    if (conditional && res.headers.get("ETag")) savedEtags.set(etagKey, res.headers.get("ETag"));
     return data; // успіх
   }
 
@@ -83,6 +96,7 @@ export async function api(path, { method = "GET", body, signal, headers = {}, ti
   const err = data?.error ?? {};
   const retryAfter = Number(res.headers.get("Retry-After")) || null;
   const apiError = new ApiError(res.status, err.code ?? "http_error", err.message ?? "Anfrage fehlgeschlagen.", err.details ?? {}, retryAfter);
+  if (res.status === 403 && err.code === "class_gone") classHandlers.gone(classId); // код цього класу вимкнули — інші класи працюють
   if (res.status === 401 && err.code === "not_authenticated") {
     (path.startsWith("/admin") ? onAdminUnauthorized : onUnauthorized)(apiError); // сесія закінчилась; текст сервера — для плашки
   }

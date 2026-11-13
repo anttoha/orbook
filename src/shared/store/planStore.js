@@ -9,8 +9,12 @@ import { daysBetween } from "../utils/format";
 import { berlinParts, createSchoolClock } from "../utils/lessonClock";
 import { currentMonday } from "../utils/lessons";
 import { planChanges } from "../utils/planDiff";
+import { isTeacherCode, startTarget } from "../utils/classes";
 import { useAppointmentStore } from "./appointmentsStore";
+import { useClasses } from "./classesStore";
 import { useMaterials } from "./materialsStore";
+import { quietly } from "./syncStore";
+import { useUserStore } from "./userStore";
 
 // ─────────────────────────────────────────────────────────────
 // planStore — УСІ дані з сервера живуть тут (одне місце, щоб не шукати).
@@ -48,19 +52,23 @@ const daysSince = (savedAt) => daysBetween(berlinParts(new Date(savedAt)).date, 
 const NO_PAST_EXAMS = { status: "idle", exams: [], savedAt: null, error: null };
 
 // Який lastChangeAt учень уже бачив (між запусками). Сховище може бути заборонене: тоді просто без пам'яті
-const SEEN_KEY = "orbook.seenChange";
+// Частина 29: у кожного класу свій план — і своя пам'ять
+const seenKey = () => {
+  const id = useClasses.getState().activeId;
+  return id != null ? `orbook.seenChange.${id}` : "orbook.seenChange";
+};
 const seenChange = {
   read() {
     try {
-      return localStorage.getItem(SEEN_KEY);
+      return localStorage.getItem(seenKey());
     } catch {
       return null;
     }
   },
   save(value) {
     try {
-      if (value) localStorage.setItem(SEEN_KEY, value);
-      else localStorage.removeItem(SEEN_KEY);
+      if (value) localStorage.setItem(seenKey(), value);
+      else localStorage.removeItem(seenKey());
     } catch {
       // немає сховища — плашка може показатись ще раз, це не страшно
     }
@@ -70,6 +78,27 @@ const seenChange = {
 // Тижні, які учень бачив останніми: з ними порівнюємо новий план, щоб написати, що змінилось.
 // Лежить поза стором: це не показується на екрані
 let seenWeeks = {};
+
+// Дані одного класу: при переході в інший клас вони стираються (me теж — HomePage покаже порожній екран, поки вантажимо)
+const NO_CLASS_DATA = { live: "off", meta: null, courses: [], coursesStatus: "loading", exams: [], examsState: { status: "loading", savedAt: null, error: null }, pastExams: NO_PAST_EXAMS, homework: [], homeworkState: { status: "loading", savedAt: null, error: null }, status: null, weeks: {}, newPlan: null, lastStandShown: false };
+
+// «Beim Start öffnen» (частина 29): дивимось лише раз — при запуску застосунку
+let booted = false;
+
+// Відкрити клас id: його нотатки й курси — нагору userStore, заголовок X-ORBook-Class — його
+function activate(id) {
+  const { activeId } = useClasses.getState();
+  if (activeId === id) return;
+  // перший запуск після оновлення: те, що вже лежить на пристрої, належить цьому класу
+  if (activeId != null) quietly(() => useUserStore.getState().swapClass(activeId, id));
+  useClasses.getState().setActive(id);
+}
+
+// Клас, якого вже немає (код вимкнули / клас прибрали): позначити й питати сервер без заголовка
+// Відповідь прийшла, а клас уже інший (переключили, поки чекали) — її не показуємо
+const stale = (classId) => useClasses.getState().activeId !== classId;
+
+const lostClass = (error) => error?.status === 403 && (error.code === "class_gone" || error.code === "not_member");
 
 export const usePlanStore = create((set, get) => ({
   me: undefined,
@@ -96,9 +125,18 @@ export const usePlanStore = create((set, get) => ({
   // ── Старт застосунку: хто я? ──
   start: async () => {
     set({ startError: null });
+    if (!booted) {
+      booted = true;
+      const { classId } = startTarget(useClasses.getState().list);
+      if (classId != null) activate(classId); // «Beim Start öffnen»
+    }
     try {
       // /auth/me відповідає 200 і без входу ({ authenticated: false })
-      const { data: me } = await loadWithCache("me", () => api("/auth/me"));
+      const me = await loadMe();
+      if (me.authenticated && me.class?.id != null) {
+        activate(me.class.id); // сервер відповів за інший клас (наш пропав) — відкриваємо його
+        useClasses.getState().syncFromServer(me.classes, me.class);
+      }
       set({ me: me.authenticated ? me : null });
       if (me.authenticated) get().loadBasics(); // увійшли — вантажимо решту
     } catch (error) {
@@ -106,23 +144,71 @@ export const usePlanStore = create((set, get) => ({
     }
   },
 
+  // ── Частина 29: інший клас. Дані старого класу стираємо з екрана і вантажимо новий ──
+  switchClass: async (id) => {
+    if (useClasses.getState().activeId === id) return;
+    activate(id);
+    seenWeeks = {};
+    examsRequest = pastExamsRequest = homeworkRequest = statusRequest = null; // запити старого класу нам уже не потрібні
+    useMaterials.getState().reset();
+    useAppointmentStore.getState().reset();
+    set({ ...NO_CLASS_DATA, me: undefined });
+    await get().start();
+  },
+
+  // ── «Klasse hinzufügen»: код другого класу ДОДАЄ клас (add: true), вхід лишається.
+  // Повертає class { id, name, school }. Помилки (already_member, too_many_classes …) — формі ──
+  addClass: async (code, label = "") => {
+    const res = isTeacherCode(code)
+      ? await api("/auth/teacher", { method: "POST", body: { code: code.trim(), add: true } })
+      : await api("/auth/login", { method: "POST", body: { password: code.trim(), add: true } });
+    if (!res?.class) throw new Error("Der Server kennt noch keine Klassen.");
+    useClasses.getState().addClass(res.class, label);
+    return res.class;
+  },
+
+  // ── «Klasse entfernen» — тільки на цьому пристрої (POST /auth/leave). Останній клас → екран входу ──
+  leaveClass: async (id) => {
+    let res = null;
+    try {
+      res = await api("/auth/leave", { method: "POST", body: { class: id } });
+    } catch (error) {
+      if (error.status !== 404 && !lostClass(error)) throw error; // класу на сервері вже немає — прибираємо лише тут
+    }
+    const rest = useClasses.getState().list.filter((item) => item.id !== id);
+    if (res?.authenticated === false || rest.length === 0) return get().logout();
+    if (useClasses.getState().activeId === id) await get().switchClass((rest.find((item) => !item.gone) ?? rest[0]).id);
+    useClasses.getState().remove(id);
+    useUserStore.getState().dropClass(id);
+    cache.clearClass(id);
+  },
+
   // ── Вхід паролем класу. Помилку (ApiError) кидаємо далі — її показує екран входу ──
   login: async (password) => {
-    await api("/auth/login", { method: "POST", body: { password } });
+    get().openJoined(await api("/auth/login", { method: "POST", body: { password } }));
     set({ loginNotice: null, weeks: {} });
     await get().start();
   },
 
+  // Відповідь входу: class — до якого класу ми щойно увійшли (частина 29). Відкриваємо саме його
+  openJoined: (res) => {
+    if (res?.class?.id == null) return; // старий сервер
+    useClasses.getState().addClass(res.class);
+    activate(res.class.id);
+  },
+
   // ── Вхід за посиланням-запрошенням /i/<token> (частина 16): як вхід кодом. Помилку показує JoinPage ──
   join: async (token) => {
-    await joinWithInvite(token);
+    const res = await joinWithInvite(token);
+    if (res?.class?.id != null && res.class.id !== useClasses.getState().activeId) set({ ...NO_CLASS_DATA }); // посилання на ще один клас
+    get().openJoined(res);
     set({ loginNotice: null, weeks: {} });
     await get().start();
   },
 
   // ── Вхід учителя Lehrer-Code (без пароля класу). Помилку показує форма ──
   loginTeacher: async (code) => {
-    await api("/auth/teacher", { method: "POST", body: { code } });
+    get().openJoined(await api("/auth/teacher", { method: "POST", body: { code } }));
     set({ loginNotice: null, weeks: {} });
     await get().start();
   },
@@ -135,16 +221,18 @@ export const usePlanStore = create((set, get) => ({
     useAppointmentStore.getState().reset();
     seenChange.save(null);
     seenWeeks = {};
-    set({ live: "off", me: null, meta: null, courses: [], coursesStatus: "loading", exams: [], examsState: { status: "loading", savedAt: null, error: null }, pastExams: NO_PAST_EXAMS, homework: [], homeworkState: { status: "loading", savedAt: null, error: null }, status: null, weeks: {}, newPlan: null, lastStandShown: false });
+    useClasses.getState().reset(); // вийшли з усіх класів
+    set({ ...NO_CLASS_DATA, me: null });
   },
 
   // ── Після входу: паралельно meta, курси, Klausuren, стан плану ──
   loadBasics: async () => {
     // Кожен запит окремо: якщо один упав, інші все одно покажуться
+    const classId = useClasses.getState().activeId;
     const load = async (key, path, apply) => {
       try {
         const result = await loadWithCache(key, () => api(path));
-        apply(result);
+        if (!stale(classId)) apply(result);
       } catch {
         // помилку окремого запиту не показуємо: екрани мають свої стани
       }
@@ -167,9 +255,10 @@ export const usePlanStore = create((set, get) => ({
   // ── Курси класу. Окремо від loadBasics, щоб кнопка «Erneut versuchen» могла вантажити лише їх ──
   loadCourses: async () => {
     set({ coursesStatus: "loading" });
+    const classId = useClasses.getState().activeId;
     try {
       const { data } = await loadWithCache("courses", () => api("/courses"));
-      set({ courses: data?.courses ?? [], coursesStatus: "ready" });
+      if (!stale(classId)) set({ courses: data?.courses ?? [], coursesStatus: "ready" });
     } catch {
       set({ coursesStatus: "error" });
     }
@@ -180,9 +269,10 @@ export const usePlanStore = create((set, get) => ({
     if (examsRequest) return;
     if (get().examsState.status === "error") set({ examsState: { status: "loading", savedAt: null, error: null } });
     try {
+      const classId = useClasses.getState().activeId;
       examsRequest = loadWithCache("exams", () => api("/exams"));
       const { data, fromCache, status, savedAt, error } = await examsRequest;
-      set({ exams: fromCache ? freshenExams(data.exams, daysSince(savedAt)) : data.exams, examsState: { status, savedAt, error: error ?? null } });
+      if (!stale(classId)) set({ exams: fromCache ? freshenExams(data.exams, daysSince(savedAt)) : data.exams, examsState: { status, savedAt, error: error ?? null } });
     } catch (error) {
       set({ examsState: { status: "error", savedAt: null, error } });
     } finally {
@@ -195,10 +285,11 @@ export const usePlanStore = create((set, get) => ({
     if (homeworkRequest) return;
     if (get().homeworkState.status === "error") set({ homeworkState: { status: "loading", savedAt: null, error: null } });
     try {
+      const classId = useClasses.getState().activeId;
       homeworkRequest = loadWithCache("homework", () => api("/homework"));
       const { data, fromCache, status, savedAt, error } = await homeworkRequest;
       const items = data?.homework ?? [];
-      set({ homework: fromCache ? freshenExams(items, daysSince(savedAt)) : items, homeworkState: { status, savedAt, error: error ?? null } });
+      if (!stale(classId)) set({ homework: fromCache ? freshenExams(items, daysSince(savedAt)) : items, homeworkState: { status, savedAt, error: error ?? null } });
     } catch (error) {
       set({ homeworkState: { status: "error", savedAt: null, error } });
     } finally {
@@ -259,13 +350,15 @@ export const usePlanStore = create((set, get) => ({
     // запам'ятати до запиту: відповідь перезапише і екран, і збережене
     if (!seen) seenWeeks[monday] ??= prev?.data ?? cache.load(`week:${monday}`)?.data ?? null;
     if (!silent || !prev?.data) setWeek({ status: "loading", data: prev?.data ?? null });
+    const classId = useClasses.getState().activeId;
     try {
       const result = await loadWithCache(`week:${monday}`, () => api(`/week?date=${monday}`));
+      if (stale(classId)) return;
       setWeek({ status: result.status, data: result.data, savedAt: result.savedAt, error: result.error ?? null });
       if (seen && result.status === "ready") seenWeeks[monday] = result.data;
       if (result.status === "ready") set({ lastStandShown: false }); // школа знову відповідає
     } catch (error) {
-      setWeek({ status: "error", data: null, error });
+      if (!stale(classId)) setWeek({ status: "error", data: null, error });
     }
   },
 
@@ -361,6 +454,18 @@ export const usePlanStore = create((set, get) => ({
     }
   },
 }));
+
+// GET /auth/me від імені відкритого класу. Його вже немає (403) — позначаємо і питаємо без заголовка:
+// сервер відповість за перший клас пристрою
+async function loadMe() {
+  try {
+    return (await loadWithCache("me", () => api("/auth/me"))).data;
+  } catch (error) {
+    if (!lostClass(error)) throw error;
+    useClasses.getState().markGone(useClasses.getState().activeId);
+    return api("/auth/me", { classId: null });
+  }
+}
 
 // Сесія закінчилась (401 на будь-якому запиті) → екран входу з поясненням
 // (Zugangscode вимкнули чи видалили, пароль класу змінили, вхід застарів — частина 14c)

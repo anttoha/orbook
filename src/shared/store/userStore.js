@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { changelog } from "../changelog";
+import { swapClassData } from "../utils/classes";
 import { deleteNote, editNote, findNote, newNote, upgradeNote } from "../utils/notes";
 
 // ─────────────────────────────────────────────────────────────
@@ -40,6 +41,20 @@ export const useUserStore = create(
       readNews: null, // версия, список которой открыт в «Neuigkeiten» (пока не совпадает — в «Mehr» горит метка NEU)
       tipsPending: false, // «Kurz erklärt» ещё не показано новичку (часть 25)
       checkedPlan: [], // «So lassen» у «Einträge prüfen» (частина 19): ключі з shared/utils/muster.js checkKey
+      // Частина 29: нотатки, курси, «Alle Kurse» і checkedPlan — свої в кожного класу. Зверху лежать поля
+      // відкритого класу (тому екрани нічого не знають про класи), решта — тут: { [classId]: { notes, picked, … } }
+      byClass: {},
+
+      // ── класи (частина 29) ──
+
+      // Відкрили інший клас: поля старого класу — у byClass, поля нового — нагору
+      swapClass: (from, to) => set(swapClassData(get(), from, to)),
+      // «Klasse entfernen»: його нотатки й курси більше не потрібні
+      dropClass: (id) => {
+        const byClass = { ...get().byClass };
+        delete byClass[id];
+        set({ byClass });
+      },
 
       // ── нотатки ──
 

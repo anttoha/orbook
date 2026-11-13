@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { openPlanStream } from "../api/planStream";
+import { useClasses } from "../store/classesStore";
 import { usePlanStore } from "../store/planStore";
 
 const POLL_MS = 60_000; // без Live спрашиваем /plan/status раз в минуту (сервер школы чаще всё равно не опрашивается)
@@ -16,6 +17,7 @@ export const usePlanLive = (enabled) => {
   const applyStatus = usePlanStore((s) => s.applyStatus);
   const applyPlanEvent = usePlanStore((s) => s.applyPlanEvent);
   const setLive = usePlanStore((s) => s.setLive);
+  const classId = useClasses((s) => s.activeId); // другой класс — новый поток (часть 29)
 
   useEffect(() => {
     if (!enabled) return undefined;
@@ -40,6 +42,7 @@ export const usePlanLive = (enabled) => {
       if (stream || document.visibilityState !== "visible") return;
       setLive("connecting");
       stream = openPlanStream({
+        classId,
         onStatus: (status) => {
           clearTimeout(grace);
           grace = null;
@@ -85,5 +88,5 @@ export const usePlanLive = (enabled) => {
       document.removeEventListener("visibilitychange", onVisibility);
       close();
     };
-  }, [enabled, checkStatus, applyStatus, applyPlanEvent, setLive]);
+  }, [enabled, classId, checkStatus, applyStatus, applyPlanEvent, setLive]);
 };
