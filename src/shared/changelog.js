@@ -5,6 +5,15 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.16.0",
+    date: "2026-11-14",
+    neu: ["Geht’s unten noch weiter? Dann zeigt ein kleiner Pfeil-Knopf unten nach unten – antippen, und es scrollt weiter."],
+    behoben: [
+      "Die Scrollleiste ist jetzt schmal und rund und ragt nicht mehr aus den Fenstern raus.",
+      "Filter bei Tests: Die Arten (Klassenarbeit, Leistungskontrolle …) überlappen sich am Handy nicht mehr.",
+    ],
+  },
+  {
     version: "0.15.2",
     date: "2026-11-14",
     entfernt: ["Weniger Text: Die ganzen kleinen Hinweise wie „ohne Namen“, „nur für dich“ oder „… antippen“ sind weg. Was zählt, steht noch da."],
