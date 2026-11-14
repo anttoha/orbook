@@ -23,7 +23,8 @@ const QuickSearch = ({ collapsed }) => {
   if (glass) {
     return (
       <>
-        <GlassButton icon={<Search className="size-4" />} aria-label="Suchen" aria-haspopup="dialog" onClick={() => setOpen(true)} className="w-full shrink-0">
+        {/* свёрнутая панель — круглая кнопка с лупой, иначе во всю ширину */}
+        <GlassButton icon={<Search className="size-4" />} aria-label="Suchen" aria-haspopup="dialog" onClick={() => setOpen(true)} className={collapsed ? "shrink-0" : "w-full shrink-0"}>
           {collapsed ? undefined : "Suchen"}
         </GlassButton>
         <SearchPalette open={open} onOpenChange={setOpen} />

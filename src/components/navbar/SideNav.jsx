@@ -26,7 +26,9 @@ const SideNav = () => {
 
   useHotkeys({ "mod+b": () => setIsHidden((prev) => !prev) }); // ⌘B / Ctrl+B — згорнути або розгорнути
   const panel = useRef(null);
-  const glass = useLiquid(panel, { refract: true, press: false }); // «Glas»: панель — справжнє скло бібліотеки
+  // «Glas»: панель — матове скло бібліотеки. Без заломлення: при згортанні ширина змінюється,
+  // а бібліотека перераховує заломлення із затримкою — воно б розтягувалося
+  const glass = useLiquid(panel, { refract: false, press: false });
 
   return (
     <aside
