@@ -189,4 +189,5 @@ export const en = {
   "Gefunden – gehört zu einer anderen Schule.": "Found – belongs to another school.",
   "Die Klasse kommt zu ihrer Schule.": "The class goes to its own school.",
   "Schule antippen: ihre Klassen und „Klasse hinzufügen“": "Tap a school: its classes and “Add class”",
+  "Weiter nach unten": "Further down",
 };

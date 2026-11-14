@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import Button from "../components/ui/Button";
 import OrbitMark from "../components/ui/OrbitMark";
+import PageScrollHint from "../components/ui/PageScrollHint";
 import CourseLists from "../components/courses/CourseLists";
 import StepBar from "../components/courses/StepBar";
 import { usePlanStore } from "../shared/store/planStore";
@@ -10,6 +11,7 @@ import { startChoice, withNumbers } from "../shared/utils/courses";
 
 // Екран першого запуску «Welche Kurse hast du?» (макет 03).
 // Вибір зберігається лише після «Weiter»: до цього він живе у стані екрана.
+// Первый вход: курсов много, «Weiter» далеко внизу — кнопка «вниз», пока до него не долистали
 const CourseStart = () => {
   const status = usePlanStore((s) => s.coursesStatus);
   const logout = usePlanStore((s) => s.logout);
@@ -61,6 +63,7 @@ const CourseStart = () => {
           </div>
         </main>
       </div>
+      <PageScrollHint className="bottom-[calc(1.25rem+env(safe-area-inset-bottom))]" />
     </div>
   );
 };

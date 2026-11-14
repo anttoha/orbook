@@ -189,4 +189,5 @@ export const uk = {
   "Gefunden – gehört zu einer anderen Schule.": "Знайдено – належить до іншої школи.",
   "Die Klasse kommt zu ihrer Schule.": "Клас потрапить до своєї школи.",
   "Schule antippen: ihre Klassen und „Klasse hinzufügen“": "Торкнись школи: її класи і «Додати клас»",
+  "Weiter nach unten": "Далі вниз",
 };

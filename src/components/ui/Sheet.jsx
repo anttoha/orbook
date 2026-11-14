@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { Drawer } from "vaul";
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { cn } from "../../shared/utils/cn";
 import { DESKTOP_QUERY, useMediaQuery } from "../../shared/hooks/useMediaQuery";
+import { useMoreBelow } from "../../shared/hooks/useMoreBelow";
 import Kbd from "./Kbd";
+import ScrollDownButton from "./ScrollDownButton";
 
 // ─────────────────────────────────────────────────────────────
 // Спільна шторка.
@@ -31,6 +34,15 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // який варіант показувати
   const isPanel = isDesktop && desktop === "panel"; // панель праворуч?
   const dialogWidth = { wide: "w-dialog-wide", qr: "w-dialog-qr" }[desktop] ?? "w-dialog"; // ширина вікна по центру
+  // Часть 29d: ниже есть ещё — кнопка «вниз» внизу шторки. scroller — блок, который прокручивается
+  const [scroller, setScroller] = useState(null);
+  const { more, scrollDown } = useMoreBelow(scroller, { enabled: open });
+  // Лежит поверх прокручиваемой части у нижнего края окна (сам блок окна не прокручивается)
+  const downButton = (
+    <div className="pointer-events-none absolute inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-10 flex justify-center">
+      <ScrollDownButton show={more} onClick={scrollDown} />
+    </div>
+  );
 
   // Бібліотеки повідомляють про відкриття/закриття через onOpenChange(true/false)
   const handleOpenChange = (next) => {
@@ -94,16 +106,21 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
           <Dialog.Overlay className="fixed inset-0 z-40 bg-overlay data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in" />
           <Dialog.Content
             className={cn(
-              "fixed z-50 overflow-y-auto scroll-stable bg-paper p-6.5 shadow-sheet outline-none",
+              // окно не прокручивается само и обрезает углы — прокрутка внутри (полоса не лезет в скругление)
+              "fixed z-50 flex flex-col overflow-hidden bg-paper shadow-sheet outline-none",
               isPanel
                 ? // панель: праворуч, відступ 16px від країв екрана, ширина 440px (як на макеті)
                   "top-4 right-4 bottom-4 w-sheet max-w-[calc(100%-2rem)] rounded-panel data-[state=closed]:animate-slide-out-right data-[state=open]:animate-slide-in-right"
                 : // вікно: по центру, ширина 520px
-                  cn("top-1/2 left-1/2 max-h-[85dvh] max-w-[calc(100%-2rem)] -translate-1/2 rounded-panel data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in", dialogWidth),
+                  cn("top-1/2 left-1/2 max-w-[calc(100%-2rem)] -translate-1/2 rounded-panel data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in", dialogWidth),
             )}
           >
-            {renderHeader(Dialog.Title, Dialog.Description, Dialog.Close)}
-            {body}
+            {/* высоту ограничивает сама прокручиваемая часть (окно по центру — до 85 % экрана) */}
+            <div ref={setScroller} className={cn("min-h-0 flex-1 overflow-y-auto scroll-stable p-6.5", !isPanel && "max-h-[85dvh]")}>
+              {renderHeader(Dialog.Title, Dialog.Description, Dialog.Close)}
+              {body}
+            </div>
+            {downButton}
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
@@ -121,10 +138,11 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
           {/* «ручка» зверху — за неї зручно тягнути */}
           <div aria-hidden className="mx-auto mt-2.5 h-1 w-9.5 shrink-0 rounded-full bg-faint2" />
           {/* прокручувана частина; знизу враховуємо смужку жестів iPhone */}
-          <div className="overflow-y-auto scroll-stable px-gutter pt-3 pb-[calc(1.875rem+env(safe-area-inset-bottom))]">
+          <div ref={setScroller} className="min-h-0 overflow-y-auto scroll-stable px-gutter pt-3 pb-[calc(1.875rem+env(safe-area-inset-bottom))]">
             {renderHeader(Drawer.Title, Drawer.Description, Drawer.Close)}
             {body}
           </div>
+          {downButton}
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>

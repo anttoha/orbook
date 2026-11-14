@@ -56,6 +56,6 @@ export const settingsSections = [
 
 // Дві групи «Mehr» з підписом праворуч від заголовка (макет 22, частина 22)
 export const settingsGroups = [
-  { key: "seiten", title: "Seiten", hint: "weitere Bereiche der App" },
-  { key: "einstellungen", title: "Einstellungen", hint: "so soll ORBook bei dir sein" },
+  { key: "seiten", title: "Seiten" },
+  { key: "einstellungen", title: "Einstellungen" },
 ];

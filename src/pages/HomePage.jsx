@@ -12,6 +12,7 @@ import Container from "../components/ui/Container";
 import SideNav from "../components/navbar/SideNav";
 import BottomNav from "../components/navbar/BottomNav";
 import SheetHost from "../components/sheets/SheetHost";
+import PageScrollHint from "../components/ui/PageScrollHint";
 import { usePageAnimation } from "../shared/hooks/usePageAnimation";
 import { useNotesSync } from "../shared/hooks/useNotesSync";
 import { useAppHotkeys } from "../shared/hooks/useAppHotkeys";
@@ -108,6 +109,9 @@ const HomePage = () => {
 
         <BottomNav />
       </Container>
+
+      {/* телефон: «ниже есть ещё» — над нижним меню, пока страницу не начали листать; новая страница — заново */}
+      {!fullScreen && <PageScrollHint key={pathname} onlyAtTop className="bottom-[calc(6.5rem+env(safe-area-inset-bottom))] lg:hidden" />}
 
       {/* шторки з адреси (?sheet=…) — працюють на будь-якій сторінці.
           Лежать поза Container: інакше flex додав би їм зайвий відступ праворуч */}
