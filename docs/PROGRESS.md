@@ -523,3 +523,9 @@ Spec и план бэкенда: `docs/specs/29-klassen/spec.md`. Главное
 Spec и план: `docs/specs/30-personalisierung/spec.md` — под-части 30a (оформления, анимации) → 30b (Stundenplan) → 30c (Start, нужна зависимость `@dnd-kit`) → 30d (Sync, Datenschutz, changelog). Бэкенд не нужен. Glas — свой CSS на `backdrop-filter`, без пакета.
 Вопросы владельцу: (1) что открывается при запуске — у новых «Start», у нынешних как было, или всем «Start»; (2) три оформления и названия; (3) набор из 11 блоков.
 **Дальше:** «ок дизайн» → новый чат, Opus · effort medium: `/orb 30a`.
+Владелец 14.11: дизайн ок; «Start» не включать сам, а заметно предлагать (Was ist neu с кнопкой, карточка на Start, точка в Darstellung — `handy-14`, `handy-15`); пока три оформления и 11 блоков, позже — ещё.
+
+## Часть 30a «Оформления и анимации» — готово на демо (2026-11-14)
+Настройки `design`, `accent`, `glassBg`, `glassMode`, `motion` в `userStore`; подписка в конце `userStore.js` ставит атрибуты на `<html>` (`data-design`, `data-accent`, `data-glass-bg`, `data-glass`, `data-motion`) через `shared/utils/appearance.js` (тест), до первого кадра — `public/theme-init.js`. Цвета и радиусы — наборы токенов в `src/index.css` (раздел «Часть 30a»): Soft-сброс для превью, Klar, Glas (фон — радиальные градиенты на `body::before`, корень `.app-shell` прозрачный, стекло — `backdrop-filter` на `.bg-card`/`.bg-paper`, запасной вид «Einfach» / без `backdrop-filter` / `prefers-reduced-transparency`), шесть акцентов, «Animationen» (weniger — переопределяет `--animate-*` на появление, aus — всё выключено). Экран «Darstellung»: `DesignPicker`, `AccentPicker`, `GlassCard`, «Animationen», «Darstellung zurücksetzen» с «Rückgängig». Sync: поля едут в части `darstellung` (`darstellungOf`).
+Снимки: `/root/work/orbook-compare/30a-design/shots/` (скрипт `_tools/p30a.mjs`).
+**Дальше:** 30b «Stundenplan» — новый чат, Opus · effort medium: `/orb 30b`.

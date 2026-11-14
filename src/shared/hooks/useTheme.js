@@ -17,14 +17,20 @@ const media = browser ? window.matchMedia("(prefers-color-scheme: dark)") : null
 // Тема зараз темна? «system» дивиться на налаштування пристрою
 export const isDarkTheme = (theme) => theme === "dark" || (theme === "system" && Boolean(media?.matches));
 
+// Панель браузера на телефоні — кольору сторінки, навіть якщо тема не збігається із системною.
+// Окремо: її ж перефарбовує зміна оформлення (частина 30a). У Glas сторінка напівпрозора — беремо основу фону
+export const paintThemeColor = () => {
+    if (!browser) return;
+    const style = getComputedStyle(document.documentElement);
+    const paper = (style.getPropertyValue("--color-page").trim() || style.getPropertyValue("--color-paper").trim());
+    if (!paper) return;
+    document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => meta.setAttribute("content", paper));
+};
+
 const applyTheme = (theme) => {
     if (!browser) return;
     document.documentElement.classList.toggle("dark", isDarkTheme(theme));
-
-    // Панель браузера на телефоні — кольору сторінки, навіть якщо тема не збігається із системною
-    const paper = getComputedStyle(document.documentElement).getPropertyValue("--color-paper").trim();
-    if (!paper) return;
-    document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => meta.setAttribute("content", paper));
+    paintThemeColor();
 };
 
 // Store, а не useState: сайдбар і Darstellung мають бачити одну й ту саму тему

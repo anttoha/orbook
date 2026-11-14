@@ -8,6 +8,7 @@
 // «домашнего» класса, чтобы старые версии приложения на других устройствах продолжали работать.
 // ─────────────────────────────────────────────────────────────
 import { EMPTY_CLASS_DATA } from "./classes";
+import { appearanceOf } from "./appearance";
 import { mergeNotes } from "./notes";
 
 // Части, которые можно включать и выключать (по умолчанию все включены)
@@ -30,6 +31,8 @@ export const darstellungOf = (user, theme) => ({
   changedFormat: user.changedFormat,
   showWeekend: user.showWeekend,
   colorOverrides: user.colorOverrides ?? {},
+  // часть 30a: Design, Akzentfarbe, фон Glas, «Animationen». Старая версия приложения эти поля просто сохранит и не тронет
+  ...appearanceOf(user),
 });
 
 // Расшифрованный блок → полный вид (у старого блока есть только notes)

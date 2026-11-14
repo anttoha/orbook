@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { changelog } from "../changelog";
+import { paintThemeColor } from "../hooks/useTheme";
+import { APPEARANCE_DEFAULTS, appearanceOf, applyAppearance } from "../utils/appearance";
 import { swapClassData } from "../utils/classes";
 import { deleteNote, editNote, findNote, newNote, upgradeNote } from "../utils/notes";
 
@@ -37,6 +39,12 @@ export const useUserStore = create(
       fontScale: 2, // шрифт: 1 — A, 2 — A+ (як на макетах), 3 — A++
       changedFormat: "weekday", // підпис зміни під днем: "weekday" «Mi 15:15» | "date" «15.09.» | "datetime" «15.09. 15:15»
       allCourses: false, // режим «Alle Kurse»: видно й чужі курси (пунктиром)
+      // Оформлення (частина 30a): значення — в shared/utils/appearance.js, кольори — набори токенів у index.css
+      design: APPEARANCE_DEFAULTS.design, // "soft" | "glas" | "klar"
+      accent: APPEARANCE_DEFAULTS.accent, // "violett" | "blau" | "gruen" | "orange" | "pink" | "grafit"
+      glassBg: APPEARANCE_DEFAULTS.glassBg, // фон для Glas: "aurora" | "abendrot" | "meer" | "wald"
+      glassMode: APPEARANCE_DEFAULTS.glassMode, // "voll" — з розмиттям, "einfach" — без (слабкі пристрої)
+      motion: APPEARANCE_DEFAULTS.motion, // null — як у системі | "voll" | "weniger" | "aus"
       seenNews: null, // версия из changelog, для которой окно «Was ist neu» уже показано
       readNews: null, // версия, список которой открыт в «Neuigkeiten» (пока не совпадает — в «Mehr» горит метка NEU)
       tipsPending: false, // «Kurz erklärt» ещё не показано новичку (часть 25)
@@ -128,6 +136,19 @@ export const useUserStore = create(
       setCompactWeek: (compactWeek) => set({ compactWeek }),
       setChangedFormat: (changedFormat) => set({ changedFormat }),
 
+      // Оформлення: атрибути на <html> ставить підписка нижче (так само й після Sync)
+      setDesign: (design) => set({ design }),
+      setAccent: (accent) => set({ accent }),
+      setGlassBg: (glassBg) => set({ glassBg }),
+      setGlassMode: (glassMode) => set({ glassMode }),
+      setMotion: (motion) => set({ motion }),
+      // «Darstellung zurücksetzen»: повертає лише оформлення; повертає старі значення для «Rückgängig»
+      resetAppearance: () => {
+        const before = appearanceOf(get());
+        set(APPEARANCE_DEFAULTS);
+        return before;
+      },
+
       // Розмір шрифту: атрибут на <html> вмикає масштаб в index.css
       setFontScale: (fontScale) => {
         document.documentElement.dataset.fontScale = fontScale;
@@ -141,3 +162,16 @@ export const useUserStore = create(
     },
   ),
 );
+
+// Оформлення змінилось (у Darstellung, з Sync, при завантаженні) — оновити атрибути на <html> і колір панелі браузера.
+// Застосунок живе, поки відкрита вкладка, тому підписку не прибираємо
+let lastAppearance = "";
+const watchAppearance = (state) => {
+  const now = JSON.stringify(appearanceOf(state));
+  if (now === lastAppearance) return;
+  lastAppearance = now;
+  applyAppearance(state);
+  paintThemeColor();
+};
+watchAppearance(useUserStore.getState());
+useUserStore.subscribe(watchAppearance);

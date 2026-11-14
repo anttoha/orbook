@@ -192,3 +192,12 @@ describe("классы в блоке (часть 29d)", () => {
     expect(classPatch(user, 3, 1, { picked: [3] }).byClass[3].notes).toEqual([]);
   });
 });
+
+describe("darstellungOf · часть 30a", () => {
+  it("везёт оформление; у старого устройства без полей — значения по умолчанию", () => {
+    expect(darstellungOf({ design: "glas", accent: "blau", glassBg: "meer", glassMode: "einfach", motion: "aus" }, "dark")).toMatchObject({
+      theme: "dark", design: "glas", accent: "blau", glassBg: "meer", glassMode: "einfach", motion: "aus",
+    });
+    expect(darstellungOf({}, "light")).toMatchObject({ design: "soft", accent: "violett", glassBg: "aurora", glassMode: "voll", motion: null });
+  });
+});

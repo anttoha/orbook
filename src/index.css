@@ -446,6 +446,153 @@
     --color-biologie-solid: #56ba84;
 }
 
+/* ═══════════════ Часть 30a: оформления ═══════════════
+   На <html> стоят атрибуты из shared/utils/appearance.js: data-design, data-accent, data-glass-bg, data-glass, data-motion.
+   Каждый набор ниже только переопределяет токены — компоненты пишут те же классы (bg-card, bg-accent …).
+   Селектор «[data-…]» без html: тот же набор работает и на маленьком превью в «Darstellung» (атрибут на плитке).
+   Тёмные значения — «.dark[data-…], .dark [data-…]»: класс dark на <html>, атрибут на нём же или на плитке. */
+
+/* ── Akzentfarbe: violett — значения из @theme, остальные пять ── */
+[data-accent="violett"] { --color-accent: #6c4df6; --color-accent-ink: #4a31c9; --color-tint: #eee9ff; --color-today-sub: #e3dbff; --color-on-accent: #ffffff; }
+.dark[data-accent="violett"], .dark [data-accent="violett"] { --color-accent: #a58bff; --color-accent-ink: #cfc2ff; --color-tint: #2c2548; --color-today-sub: #2c2548; --color-on-accent: #1a1333; }
+[data-accent="blau"] { --color-accent: #3d6fe0; --color-accent-ink: #2a52b0; --color-tint: #e3ecfd; --color-today-sub: #d5e2fb; --color-on-accent: #ffffff; }
+.dark[data-accent="blau"], .dark [data-accent="blau"] { --color-accent: #7aa2f5; --color-accent-ink: #c4d6fb; --color-tint: #1f2b47; --color-today-sub: #1f2b47; --color-on-accent: #0f1a33; }
+[data-accent="gruen"] { --color-accent: #1f8f5e; --color-accent-ink: #17704a; --color-tint: #dff3e9; --color-today-sub: #cfeedd; --color-on-accent: #ffffff; }
+.dark[data-accent="gruen"], .dark [data-accent="gruen"] { --color-accent: #5fcf9c; --color-accent-ink: #b5ead0; --color-tint: #163027; --color-today-sub: #163027; --color-on-accent: #0d2219; }
+[data-accent="orange"] { --color-accent: #c8650f; --color-accent-ink: #8f4a0e; --color-tint: #fbe8d6; --color-today-sub: #f7dcc2; --color-on-accent: #ffffff; }
+.dark[data-accent="orange"], .dark [data-accent="orange"] { --color-accent: #f5a35a; --color-accent-ink: #fbd3ae; --color-tint: #3d2a1c; --color-today-sub: #3d2a1c; --color-on-accent: #2b1806; }
+[data-accent="pink"] { --color-accent: #d6456d; --color-accent-ink: #a3304f; --color-tint: #fbe3ea; --color-today-sub: #f7d3de; --color-on-accent: #ffffff; }
+.dark[data-accent="pink"], .dark [data-accent="pink"] { --color-accent: #f0849f; --color-accent-ink: #f8c3d0; --color-tint: #3d1f2a; --color-today-sub: #3d1f2a; --color-on-accent: #2e0f19; }
+[data-accent="grafit"] { --color-accent: #4a4458; --color-accent-ink: #2f2a3a; --color-tint: #ebe8ef; --color-today-sub: #dcd8e2; --color-on-accent: #ffffff; }
+.dark[data-accent="grafit"], .dark [data-accent="grafit"] { --color-accent: #c9c2d6; --color-accent-ink: #ebe6f2; --color-tint: #2e2a37; --color-today-sub: #2e2a37; --color-on-accent: #1a1722; }
+
+/* ── Soft: значения из @theme и .dark. Нужно, чтобы превью «Soft» выглядело как Soft, даже когда выбрано Glas или Klar ── */
+[data-design="soft"] {
+    --color-paper: #fbf7f2; --color-card: #ffffff; --color-sand: #f3ede5; --color-hair: #f0eae2; --color-rule: #eae2d8; --color-skeleton: #eee7de;
+    --color-muted: #6a6275; --color-faint: #978fa1; --color-faint2: #c0b8c6; --color-switch-off: #c0b8c6;
+    --radius-thumb: 10px; --radius-tile: 12px; --radius-cell: 14px; --radius-field: 16px; --radius-block: 18px; --radius-box: 20px; --radius-card: 22px; --radius-panel: 28px;
+}
+.dark[data-design="soft"], .dark [data-design="soft"] {
+    --color-paper: #16131c; --color-card: #221e2a; --color-sand: #2a2533; --color-hair: #2b2634; --color-rule: #352f40; --color-skeleton: #27222f;
+    --color-muted: #b5acc1; --color-faint: #877e94; --color-faint2: #5f576c; --color-switch-off: #352f40;
+}
+
+/* ── Klar: белый (в тёмной — почти чёрный) фон, тонкие рамки, почти прямые углы ── */
+[data-design="klar"] {
+    --color-paper: #ffffff; --color-card: #ffffff; --color-sand: #f1eff4; --color-hair: #e4e0ea; --color-rule: #cfc9d8; --color-skeleton: #eceaf0; --color-switch-off: #cfc9d8;
+    --radius-thumb: 6px; --radius-tile: 6px; --radius-cell: 6px; --radius-field: 8px; --radius-block: 8px; --radius-box: 10px; --radius-card: 10px; --radius-panel: 14px;
+}
+.dark[data-design="klar"], .dark [data-design="klar"] {
+    --color-paper: #0f0e13; --color-card: #0f0e13; --color-sand: #211f29; --color-hair: #2a2734; --color-rule: #454052; --color-skeleton: #1f1d27; --color-switch-off: #454052;
+}
+/* карточка = рамка; тени Tailwind (--tw-shadow) сохраняются */
+[data-design="klar"] .bg-card {
+    box-shadow: inset 0 0 0 1.5px var(--color-rule), var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow, 0 0 #0000);
+}
+
+/* ── Glas («Liquid Glass», владелец 14.11): полупрозрачные поверхности поверх цветного фона ── */
+[data-design="glas"] {
+    --color-page: #f3eefb; /* основа фона под пятнами; ею же красится панель браузера */
+    --color-paper: #f6f2fcd9; --color-card: #ffffff7a; --color-sand: #ffffff6b; --color-hair: #2a243314; --color-rule: #2a243329; --color-skeleton: #ffffff8c;
+    --color-muted: #554d61; --color-faint: #70687f; --color-faint2: #a9a1b5;
+    --color-glass-edge: #ffffffd9; /* светлая кромка сверху */
+    --color-glass-rim: #ffffffa6; /* тонкий край по контуру */
+    --radius-card: 24px;
+}
+.dark[data-design="glas"], .dark [data-design="glas"] {
+    --color-page: #120f1c;
+    --color-paper: #1a1626e0; --color-card: #ffffff17; --color-sand: #ffffff17; --color-hair: #ffffff17; --color-rule: #ffffff2e; --color-skeleton: #ffffff1a;
+    --color-muted: #d2cadf; --color-faint: #a9a1ba; --color-faint2: #7c7490;
+    --color-glass-edge: #ffffff40;
+    --color-glass-rim: #ffffff26;
+}
+/* Фон для Glas: три цвета пятен */
+[data-glass-bg="aurora"] { --color-glass-1: #c9b8ff; --color-glass-2: #ffc2d4; --color-glass-3: #a9d4ff; }
+.dark[data-glass-bg="aurora"], .dark [data-glass-bg="aurora"] { --color-glass-1: #5b3fe0; --color-glass-2: #b03c82; --color-glass-3: #1e7fa8; }
+[data-glass-bg="abendrot"] { --color-glass-1: #ffc6a8; --color-glass-2: #ffb3c7; --color-glass-3: #d9c2ff; }
+.dark[data-glass-bg="abendrot"], .dark [data-glass-bg="abendrot"] { --color-glass-1: #c2542d; --color-glass-2: #a8356b; --color-glass-3: #4b34b8; }
+[data-glass-bg="meer"] { --color-glass-1: #a9e4ef; --color-glass-2: #a9c8ff; --color-glass-3: #c9f0dd; }
+.dark[data-glass-bg="meer"], .dark [data-glass-bg="meer"] { --color-glass-1: #167a93; --color-glass-2: #2b50b8; --color-glass-3: #1f8a66; }
+[data-glass-bg="wald"] { --color-glass-1: #bfe8c6; --color-glass-2: #e6ebb0; --color-glass-3: #a9e0d8; }
+.dark[data-glass-bg="wald"], .dark [data-glass-bg="wald"] { --color-glass-1: #1f7a4a; --color-glass-2: #6e7a1f; --color-glass-3: #167a72; }
+
+/* Пятна — мягкие радиальные градиенты: без картинок и без тяжёлого filter: blur */
+.glass-backdrop {
+    background:
+        radial-gradient(42% 34% at 10% 8%, var(--color-glass-1), transparent 72%),
+        radial-gradient(40% 38% at 96% 36%, var(--color-glass-2), transparent 72%),
+        radial-gradient(46% 40% at 6% 76%, var(--color-glass-3), transparent 72%),
+        radial-gradient(36% 30% at 92% 100%, var(--color-glass-1), transparent 72%),
+        var(--color-page);
+}
+html[data-design="glas"] body { background: var(--color-page); }
+html[data-design="glas"] body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(42% 34% at 10% 8%, var(--color-glass-1), transparent 72%),
+        radial-gradient(40% 38% at 96% 36%, var(--color-glass-2), transparent 72%),
+        radial-gradient(46% 40% at 6% 76%, var(--color-glass-3), transparent 72%),
+        radial-gradient(36% 30% at 92% 100%, var(--color-glass-1), transparent 72%);
+}
+html.dark[data-design="glas"] body::before { opacity: 0.7; }
+html[data-design="glas"] .app-shell { background: transparent; }
+
+/* Стекло: размытие того, что под карточкой, + светлая кромка. Тени Tailwind сохраняются */
+html[data-design="glas"] :is(.bg-card, .bg-paper):not(.app-shell) {
+    -webkit-backdrop-filter: blur(18px) saturate(1.6);
+    backdrop-filter: blur(18px) saturate(1.6);
+}
+[data-design="glas"] .bg-card {
+    box-shadow: inset 0 1px 0 var(--color-glass-edge), inset 0 0 0 1px var(--color-glass-rim),
+        var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow, 0 0 #0000);
+}
+/* «Glas-Effekt · Einfach», браузер без backdrop-filter или «меньше прозрачности» в системе:
+   те же цвета, но поверхности плотные и без размытия — читается и на слабом телефоне */
+html[data-design="glas"][data-glass="einfach"] { --color-card: #fffffff0; --color-sand: #ffffffb3; --color-paper: #f6f2fcfa; }
+html.dark[data-design="glas"][data-glass="einfach"] { --color-card: #2a2538f5; --color-sand: #ffffff1f; --color-paper: #1a1626fa; }
+html[data-design="glas"][data-glass="einfach"] :is(.bg-card, .bg-paper) { -webkit-backdrop-filter: none; backdrop-filter: none; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    html[data-design="glas"] { --color-card: #fffffff0; --color-sand: #ffffffb3; --color-paper: #f6f2fcfa; }
+    html.dark[data-design="glas"] { --color-card: #2a2538f5; --color-sand: #ffffff1f; --color-paper: #1a1626fa; }
+}
+@media (prefers-reduced-transparency: reduce) {
+    html[data-design="glas"] { --color-card: #fffffff0; --color-sand: #ffffffb3; --color-paper: #f6f2fcfa; }
+    html.dark[data-design="glas"] { --color-card: #2a2538f5; --color-sand: #ffffff1f; --color-paper: #1a1626fa; }
+    html[data-design="glas"] :is(.bg-card, .bg-paper) { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+
+/* ── «Animationen» ──
+   weniger — только плавное появление: те же анимации из @theme, но без сдвигов, кивков и ореолов;
+   aus — без движения совсем. По умолчанию (null) — как в системе («уменьшить движение» → weniger) */
+html[data-motion="weniger"] {
+    --animate-page-forward: fade-in 0.14s ease-out;
+    --animate-page-back: fade-in 0.14s ease-out;
+    --animate-slide-in-right: fade-in 0.15s ease-out;
+    --animate-slide-out-right: fade-out 0.12s ease-in;
+    --animate-pop-in: fade-in 0.14s ease-out;
+    --animate-pop-out: fade-out 0.1s ease-in;
+    --animate-panel-in: fade-in 0.2s ease-out;
+    --animate-rise-in: fade-in 0.2s ease-out backwards;
+    --animate-badge-pop: fade-in 0.2s ease-out 0.15s backwards;
+    --animate-drop-in: fade-in 0.2s ease-out;
+    --animate-nudge-down: none;
+    --animate-check-pop: none;
+    --animate-live-halo: none;
+    --animate-bell-ring: none;
+}
+html[data-motion="weniger"] :where(button, a[href], [role="switch"], [role="button"]):active { scale: none; }
+html[data-motion="aus"] *,
+html[data-motion="aus"] *::before,
+html[data-motion="aus"] *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+}
+
 @layer base {
     html {
         color-scheme: light;
