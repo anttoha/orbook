@@ -5,6 +5,8 @@ import { FlagIcon, KeyIcon, LockIcon, SchoolIcon, ShieldIcon, StatsIcon, SyncIco
 export const FONT_SCALES = { 1: 0.9375, 2: 1, 3: 1.125 };
 
 export const navTabs = [
+  // Start (частина 30c): перший пункт і на телефоні, і на ПК
+  { to: "/start", label: "Start", icon: House, mobile: true, desktop: true },
   { to: "/woche", label: "Woche", icon: Table2, end: true, mobile: true, activeOn: ["/", "/heute", "/tag"] },
   { to: "/woche", label: "Woche", icon: Table2, end: true, desktop: true, activeOn: ["/", "/tag"] },
   { to: "/heute", label: "Heute", icon: List, desktop: true },

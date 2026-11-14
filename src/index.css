@@ -272,6 +272,7 @@
     /* ── Ширини на ПК: w-sidebar, w-sheet … ── */
     --container-sidebar: 232px;
     --container-sidebar-mini: 71px;
+    --container-blocks: 300px; /* «Blöcke» праворуч у «Start · Anpassen» на ПК (макет 30 pc-02) */
     --container-popover: 360px; /* «Woche wählen» */
     --container-filter: 390px; /* фільтр Klausuren під кнопкою (макет 16) */
     --container-exams: 744px; /* список Klausuren на ПК (макет 14) */

@@ -17,6 +17,7 @@ import SubjectColors from "../../pages/SubjectColors";
 import NotesSync from "../../pages/NotesSync";
 import Mitteilungen from "../../pages/Mitteilungen";
 import StartPage from "../../pages/StartPage";
+import Start from "../../pages/Start";
 import Week from "../../pages/Week";
 import Klassen from "../../pages/Klassen";
 import Schule from "../../pages/Schule";
@@ -89,7 +90,9 @@ export const router = createBrowserRouter([
         Component: HomePage,
         errorElement: <RouteError />,
         children: [
-          page({ index: true, Component: StartPage }), // Woche або Heute: налаштування «Startansicht»
+          page({ index: true, Component: StartPage }), // Start, Woche або Heute: налаштування «Startansicht»
+          page({ path: "start", Component: Start }), // блоки (частина 30c)
+          page({ path: "start/anpassen", Component: Start }), // режим «Anpassen»: окремий адрес — «назад» виходить із нього
           page({ path: "woche", Component: Week }),
           page({ path: "klassen", Component: Klassen }), // «Meine Klassen» (частина 29)
           page({ path: "klassen/schule/:id", Component: Schule }), // страница школы (часть 29d)

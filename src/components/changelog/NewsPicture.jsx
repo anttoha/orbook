@@ -38,7 +38,22 @@ const AlleKurse = () => {
   );
 };
 
-const PICTURES = { alleKurse: AlleKurse };
+// «Start» (часть 30c, макет handy-14): большой блок «Jetzt» и два маленьких справа
+const Start = () => (
+  <div aria-hidden="true" className="grid grid-cols-3 gap-1.5 rounded-card bg-tint p-2.5 motion-safe:animate-pop-in">
+    <div className="col-span-2 row-span-2 flex flex-col gap-1.5 rounded-field bg-card p-3">
+      <span className="text-micro font-extrabold tracking-wide text-accent-ink uppercase">Jetzt · 2. Stunde</span>
+      <span className="text-body font-black text-ink">Mathe</span>
+      <span className="mt-auto h-1 overflow-hidden rounded-full bg-sand">
+        <span className="block h-full w-3/5 rounded-full bg-mathe-solid" />
+      </span>
+    </div>
+    <span className="rounded-field bg-card p-2.5 text-caption font-extrabold text-ink">Tests · Fr</span>
+    <span className="rounded-field bg-card p-2.5 text-caption font-extrabold text-ink">3 Aufgaben</span>
+  </div>
+);
+
+const PICTURES = { alleKurse: AlleKurse, start: Start };
 
 const NewsPicture = ({ name }) => {
   const Picture = PICTURES[name];

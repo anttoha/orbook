@@ -12,5 +12,5 @@ export const isTabActive = (tab, pathname) =>
 export const isTabEnabled = (tab, features) => !tab.feature || features?.[tab.feature] !== false;
 
 // Сторінки без нижнього меню (макети «Klausur eintragen», «Editor-Code», підсторінки «Mehr»)
-const FULL_SCREEN = ["/testen/neu", "/testen/:id/bearbeiten", "/testen/hausaufgaben/neu", "/testen/hausaufgaben/:id/bearbeiten", "/materialien/neu", "/materialien/:id/bearbeiten", "/editor-code", "/mehr/kurse", "/mehr/darstellung", "/mehr/fachfarben", "/mehr/editor-code", "/mehr/datenschutz", "/klassen"];
+const FULL_SCREEN = ["/testen/neu", "/testen/:id/bearbeiten", "/testen/hausaufgaben/neu", "/testen/hausaufgaben/:id/bearbeiten", "/materialien/neu", "/materialien/:id/bearbeiten", "/editor-code", "/mehr/kurse", "/mehr/darstellung", "/mehr/fachfarben", "/mehr/editor-code", "/mehr/datenschutz", "/klassen", "/start/anpassen"];
 export const isFullScreenPage = (pathname) => FULL_SCREEN.some((path) => matchPath(path, pathname));

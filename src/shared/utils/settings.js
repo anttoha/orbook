@@ -14,7 +14,7 @@ export const coursesHint = ({ on, all }) => (all > 0 ? `${on} von ${all} Kursen`
 
 // «Hell · Start mit Woche»
 export const appearanceHint = (theme, startView) =>
-  `${THEME_LABELS[theme] ?? THEME_LABELS.system} · Start mit ${startView === "heute" ? "Heute" : "Woche"}`;
+  `${THEME_LABELS[theme] ?? THEME_LABELS.system} · Start mit ${{ heute: "Heute", start: "Blöcken" }[startView] ?? "Woche"}`;
 
 // «8 Fächer» / «1 Fach»; без предметів → null
 export const subjectsHint = (count) => (count > 0 ? `${count} ${count === 1 ? "Fach" : "Fächer"}` : null);

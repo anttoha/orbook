@@ -11,6 +11,7 @@ describe("Einstellungen · Übersicht hints", () => {
     expect(appearanceHint("light", "woche")).toBe("Hell · Start mit Woche");
     expect(appearanceHint("dark", "heute")).toBe("Dunkel · Start mit Heute");
     expect(appearanceHint(undefined, undefined)).toBe("System · Start mit Woche");
+    expect(appearanceHint("light", "start")).toBe("Hell · Start mit Blöcken");
   });
 
   it("subjects", () => {

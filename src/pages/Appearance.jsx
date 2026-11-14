@@ -1,5 +1,6 @@
 import { toast } from "sonner";
-import { RotateCcw, Table } from "lucide-react";
+import { House, RotateCcw, Table } from "lucide-react";
+import Badge from "../components/ui/Badge";
 import AccentPicker from "../components/more/AccentPicker";
 import DesignPicker from "../components/more/DesignPicker";
 import GlassCard from "../components/more/GlassCard";
@@ -19,6 +20,7 @@ import { useMediaQuery } from "../shared/hooks/useMediaQuery";
 import PillButton from "../components/ui/PillButton";
 
 const START_VIEWS = [
+  { value: "start", label: "Start" },
   { value: "woche", label: "Woche" },
   { value: "heute", label: "Heute" },
 ];
@@ -86,8 +88,9 @@ const Appearance = () => {
         </SettingRow>
       </ListCard>
 
-      {/* «Anpassen» (частина 30): окремі сторінки; «Start» з'явиться в 30c. Woche, Tag і «Änderung unter dem Tag» тепер у «Stundenplan» */}
+      {/* «Anpassen» (частина 30): окремі сторінки. «NEU» у Start — поки його не відкривали (частина 30c) */}
       <ListCard title="Anpassen">
+        <MenuRow to="/start/anpassen" icon={House} label="Start" badge={!user.startSeen && <Badge variant="live">Neu</Badge>} />
         <MenuRow to="/mehr/darstellung/stundenplan" icon={Table} label="Stundenplan" value={planSummary(planOf(user.plan)).map(t).join(" · ")} />
       </ListCard>
 
