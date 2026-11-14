@@ -7,7 +7,7 @@ import { useTasksStore } from "../../shared/store/tasksStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { visibleNotes } from "../../shared/utils/notes";
 import { cn } from "../../shared/utils/cn";
-import Switch from "../ui/Switch";
+import RowSwitch from "../ui/RowSwitch";
 
 const THEME = { light: "Hell", dark: "Dunkel", system: "System" };
 
@@ -40,11 +40,10 @@ const SyncParts = () => {
         {rows.map((row) => (
           <li key={row.key} className="border-b border-hair last:border-0">
             {/* вся строка — переключатель: попасть пальцем легче, чем в маленький тумблер */}
-            <button
-              type="button"
-              role="switch"
-              aria-checked={parts[row.key] !== false}
-              onClick={() => setPart(row.key, parts[row.key] === false)}
+            <RowSwitch
+              checked={parts[row.key] !== false}
+              onToggle={() => setPart(row.key, parts[row.key] === false)}
+              label={row.title}
               className="flex w-full items-center gap-3 px-3.5 py-3 text-left outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-accent/50 active:bg-sand"
             >
               <row.icon className={cn("size-5 shrink-0 transition-colors duration-200", parts[row.key] === false ? "text-faint2" : "text-muted")} />
@@ -52,8 +51,7 @@ const SyncParts = () => {
                 <span className={cn("block text-row transition-colors duration-200", parts[row.key] === false ? "text-muted" : "text-ink")}>{row.title}</span>
                 <span className="block text-caption text-faint">{parts[row.key] === false ? "aus" : row.hint}</span>
               </span>
-              <Switch checked={parts[row.key] !== false} />
-            </button>
+            </RowSwitch>
           </li>
         ))}
       </ul>

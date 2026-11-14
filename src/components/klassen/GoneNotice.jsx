@@ -37,9 +37,9 @@ const GoneNotice = ({ item }) => {
         <PillButton glass="glass" size="md" onClick={() => openSheet("klasseneu", { id: item.id })} className="h-10.5 flex-3 rounded-full bg-sand text-label font-extrabold text-ink">
           {t("Neuen Code eingeben")}
         </PillButton>
-        <button type="button" onClick={remove} disabled={busy} className="h-10.5 flex-2 rounded-full bg-danger-tint text-label font-extrabold text-danger disabled:opacity-40">
+        <PillButton glass="destructive" size="md" onClick={remove} disabled={busy} className="h-10.5 flex-2 rounded-full bg-danger-tint text-label font-extrabold text-danger disabled:opacity-40">
           {t("Entfernen")}
-        </button>
+        </PillButton>
       </div>
     </div>
   );

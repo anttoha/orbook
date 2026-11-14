@@ -7,6 +7,8 @@ import { cn } from "../../shared/utils/cn";
 import { filterLanguages, LANGUAGES } from "../../shared/utils/languages";
 import Flag from "../ui/Flag";
 import { menuContentClass } from "../ui/menuStyles";
+import GlassSearch from "../ui/GlassSearch";
+import PillButton from "../ui/PillButton";
 
 // Выбор языка (макет 28): поле «флаг · язык ⌄», под ним список с поиском.
 // Popover, а не DropdownMenu: в меню Radix буквы уходят в «быстрый переход» и поле поиска не работает
@@ -32,29 +34,30 @@ const LanguageSelect = () => {
         if (next) setQuery(""); // список всегда открывается с пустым поиском
       }}
     >
-      <Popover.Trigger
-        aria-label={t("Sprache")}
-        className="group inline-flex h-9 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-hair bg-sand pr-2.5 pl-2.5 text-label font-extrabold text-ink outline-none focus-visible:ring-2 focus-visible:ring-accent/40 data-[state=open]:border-accent"
-      >
-        <Flag code={current.flag} className="size-5" />
-        <span className="min-w-24 truncate text-left">{current.name}</span>
-        <ChevronDown aria-hidden="true" className="size-3.5 shrink-0 text-muted transition-transform duration-200 group-data-[state=open]:rotate-180" />
+      <Popover.Trigger asChild>
+        <PillButton glass="glass" size="sm" aria-label={t("Sprache")} className="group inline-flex h-9 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-hair bg-sand pr-2.5 pl-2.5 text-label font-extrabold text-ink outline-none focus-visible:ring-2 focus-visible:ring-accent/40 data-[state=open]:border-accent">
+          <Flag code={current.flag} className="size-5" />
+          <span className="min-w-24 truncate text-left">{current.name}</span>
+          <ChevronDown aria-hidden="true" className="size-3.5 shrink-0 text-muted transition-transform duration-200 group-data-[state=open]:rotate-180" />
+        </PillButton>
       </Popover.Trigger>
 
       <Popover.Portal>
         <Popover.Content align="end" sideOffset={6} collisionPadding={12} className={cn(menuContentClass, "w-57.5 p-2")}>
-          <label className="flex h-9.5 items-center gap-2 rounded-full bg-sand px-3">
-            <Search aria-hidden="true" className="size-4 shrink-0 text-faint" />
-            <input
-              autoFocus
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              onKeyDown={(event) => event.key === "Enter" && hits.length === 1 && choose(hits[0].code)}
-              placeholder={t("Sprache suchen")}
-              aria-label={t("Sprache suchen")}
-              className="min-w-0 flex-1 bg-transparent text-body-sm text-ink outline-none placeholder:text-faint"
-            />
-          </label>
+          <GlassSearch value={query} onValue={setQuery} placeholder={t("Sprache suchen")} inputProps={{ autoFocus: true, onKeyDown: (event) => event.key === "Enter" && hits.length === 1 && choose(hits[0].code) }}>
+            <label className="flex h-9.5 items-center gap-2 rounded-full bg-sand px-3">
+              <Search aria-hidden="true" className="size-4 shrink-0 text-faint" />
+              <input
+                autoFocus
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                onKeyDown={(event) => event.key === "Enter" && hits.length === 1 && choose(hits[0].code)}
+                placeholder={t("Sprache suchen")}
+                aria-label={t("Sprache suchen")}
+                className="min-w-0 flex-1 bg-transparent text-body-sm text-ink outline-none placeholder:text-faint"
+              />
+            </label>
+          </GlassSearch>
           <ul className="mt-1.5">
             {hits.map((l) => (
               <li key={l.code}>

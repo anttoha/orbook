@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
+import { GlassButton } from "@zakisheriff/liquid-glass";
+import { useGlass } from "../../shared/hooks/useGlass";
 import { useHotkeys } from "../../shared/hooks/useHotkeys";
 import { cn } from "../../shared/utils/cn";
 import Kbd from "../ui/Kbd";
@@ -13,8 +15,21 @@ import SearchPalette from "./SearchPalette";
 // ─────────────────────────────────────────────────────────────
 const QuickSearch = ({ collapsed }) => {
   const [open, setOpen] = useState(false); // чи відкрите вікно пошуку
+  const glass = useGlass();
 
   useHotkeys({ "mod+k": () => setOpen(true) });
+
+  // «Glas» (часть 30a): кнопка библиотеки во всю ширину, с лупой
+  if (glass) {
+    return (
+      <>
+        <GlassButton icon={<Search className="size-4" />} aria-label="Suchen" aria-haspopup="dialog" onClick={() => setOpen(true)} className="w-full shrink-0">
+          {collapsed ? undefined : "Suchen"}
+        </GlassButton>
+        <SearchPalette open={open} onOpenChange={setOpen} />
+      </>
+    );
+  }
 
   return (
     <>

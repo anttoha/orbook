@@ -2,6 +2,7 @@ import { Send } from "lucide-react";
 import { errorLine, groupLine } from "../../../shared/utils/channels";
 import { cn } from "../../../shared/utils/cn";
 import { WarningIcon } from "../../ui/icons";
+import PillButton from "../../ui/PillButton";
 
 // Карточка вверху (макет 27 handy-01/08): зелёная «Telegram · verbunden» с «Test senden»
 // или розовая «Nicht angekommen» с «Neu verbinden»
@@ -17,8 +18,9 @@ const GroupStatus = ({ group, busy, onTest, onReconnect }) => {
         <p className={cn("text-row font-extrabold", ok ? "text-ok" : "text-danger")}>{ok ? "Telegram · verbunden" : "Nicht angekommen"}</p>
         <p className="truncate text-caption text-muted">{ok ? groupLine(group) : errorLine(group.error)}</p>
       </div>
-      <button
-        type="button"
+      <PillButton
+        glass={ok ? "tinted" : "destructive"}
+        size="sm"
         onClick={ok ? onTest : onReconnect}
         disabled={busy}
         className={cn(
@@ -27,7 +29,7 @@ const GroupStatus = ({ group, busy, onTest, onReconnect }) => {
         )}
       >
         {ok ? "Test senden" : "Neu verbinden"}
-      </button>
+      </PillButton>
     </div>
   );
 };

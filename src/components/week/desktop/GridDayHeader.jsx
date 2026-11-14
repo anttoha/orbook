@@ -4,6 +4,7 @@ import { cn } from "../../../shared/utils/cn";
 import DayAppointmentPills from "../../appointments/DayAppointmentPills";
 import ChangedLine from "../ChangedLine";
 import { dayNumber, longDate, weekdayLong } from "../../../shared/utils/format";
+import RoundButton from "../../ui/RoundButton";
 
 // ─────────────────────────────────────────────────────────────
 // Шапка дня в сітці тижня на ПК: «15 MO» (сьогодні — фіолетова «пігулка»).
@@ -32,18 +33,16 @@ const GridDayHeader = ({ as: Component = "button", day, isToday, className, styl
       {/* терміни дня (частина 18): під шапкою, як «весь день» у календарі */}
       <DayAppointmentPills date={day.date} desktop />
 
-      <button
-        type="button"
+      <RoundButton
+       
         onClick={() => openSheet("info", { datum: day.date })}
         aria-label={`Info zum Tag · ${weekdayLong(day.date)}`}
-        title="Info zum Tag"
-        className={cn(
+        title="Info zum Tag" look={cn(
           "absolute top-6.5 right-1.5 grid size-7 -translate-y-1/2 place-items-center rounded-full outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent/50",
           isToday ? "text-today-sub hover:bg-on-accent/15" : hasNews ? "text-accent hover:bg-tint" : "text-faint hover:bg-card hover:text-ink",
-        )}
-      >
+        )}>
         <Info className="size-4" />
-      </button>
+      </RoundButton>
     </div>
   );
 };

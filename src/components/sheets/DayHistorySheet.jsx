@@ -10,6 +10,7 @@ import DayHistory from "../history/DayHistory";
 import VersionView from "../history/VersionView";
 import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
+import RoundButton from "../ui/RoundButton";
 
 // ─────────────────────────────────────────────────────────────
 // Шторка «Verlauf des Tages» (часть 26). Адреса:
@@ -49,9 +50,9 @@ const DayHistorySheet = ({ open, onClose, sheet }) => {
       eyebrow={`Fassung ${versions.length - index} von ${versions.length} · ${weekdayShort(date)}, ${numericDate(date)}`}
       title={versionLabel(version.fetchedAt, today)}
       icon={
-        <button type="button" onClick={back} aria-label="Zurück zum Verlauf" className="mt-1 grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink hover:bg-sand">
+        <RoundButton onClick={back} aria-label="Zurück zum Verlauf" look="mt-1 grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink hover:bg-sand">
           <ChevronLeft className="size-4.25" />
-        </button>
+        </RoundButton>
       }
       footer={
         <>

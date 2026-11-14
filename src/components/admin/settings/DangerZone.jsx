@@ -4,6 +4,7 @@ import { useAdminStore } from "../../../shared/store/adminStore";
 import { TrashIcon } from "../../ui/icons";
 import { Undo2 } from "lucide-react";
 import DangerDialog from "../DangerDialog";
+import PillButton from "../../ui/PillButton";
 
 // Три дії «Gefahrenzone»: заголовок і текст вікна для кожної
 const dangers = (counts) => [
@@ -46,9 +47,9 @@ const DangerZone = ({ onDone }) => {
         <h2 className="hidden text-hint font-extrabold text-danger lg:block">Gefahrenzone</h2>
         <div className="flex flex-col gap-2.5 lg:flex-row lg:justify-around">
           {items.map((item) => (
-            <button key={item.action} type="button" onClick={() => setOpen(item.action)} className="flex h-12 items-center justify-center gap-2 rounded-full bg-danger-tint px-5 text-row font-extrabold text-danger lg:bg-transparent">
+            <PillButton glass="destructive" size="lg" key={item.action} onClick={() => setOpen(item.action)} className="flex h-12 items-center justify-center gap-2 rounded-full bg-danger-tint px-5 text-row font-extrabold text-danger lg:bg-transparent">
               <item.icon className="size-4" /> {item.label}
-            </button>
+            </PillButton>
           ))}
         </div>
       </div>

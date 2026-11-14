@@ -1,5 +1,7 @@
 import { Layers } from "lucide-react";
 import { useUserStore } from "../../shared/store/userStore";
+import { GlassButton } from "@zakisheriff/liquid-glass";
+import { useGlass } from "../../shared/hooks/useGlass";
 import { cn } from "../../shared/utils/cn";
 
 // ─────────────────────────────────────────────────────────────
@@ -11,6 +13,26 @@ export const AllCoursesButton = ({ variant = "round", className }) => {
   const on = useUserStore((s) => s.allCourses);
   const setAllCourses = useUserStore((s) => s.setAllCourses);
   const pill = variant === "pill";
+  const glass = useGlass();
+
+  // «Glas» (часть 30a): кнопка библиотеки; включено — залита акцентом
+  if (glass) {
+    return (
+      <GlassButton
+        size="sm"
+        variant={on ? "filled" : "glass"}
+        tint="var(--color-accent)"
+        aria-pressed={on}
+        aria-label={pill ? undefined : "Alle Kurse zeigen"}
+        title="Alle Kurse der Klasse zeigen"
+        icon={<Layers className="size-4.25" />}
+        onClick={() => setAllCourses(!on)}
+        className={cn("shrink-0", className)}
+      >
+        {pill ? "Alle Kurse" : undefined}
+      </GlassButton>
+    );
+  }
 
   return (
     <button

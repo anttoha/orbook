@@ -20,6 +20,7 @@ import { usePlanRefresh } from "../shared/hooks/usePlanRefresh";
 import { useAdminStore } from "../shared/store/adminStore";
 import { hostOf, storageText } from "../shared/utils/admin";
 import { cn } from "../shared/utils/cn";
+import RoundButton from "../components/ui/RoundButton";
 
 // Кнопки в шапці ПК: «Plan neu laden», «Neuer Editor-Code»
 const DesktopActions = () => {
@@ -97,9 +98,9 @@ const AdminOverview = () => {
   }, [ensureSettings]);
 
   const logoutButton = (
-    <button type="button" aria-label="Abmelden" onClick={logout} className="grid size-9.5 place-items-center rounded-full bg-card text-ink lg:hidden">
+    <RoundButton aria-label="Abmelden" onClick={logout} look="grid size-9.5 place-items-center rounded-full bg-card text-ink lg:hidden">
       <LogOut className="size-4.25" />
-    </button>
+    </RoundButton>
   );
 
   const renderBody = () => {

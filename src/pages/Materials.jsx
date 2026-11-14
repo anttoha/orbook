@@ -15,7 +15,7 @@ import { useMaterials } from "../shared/store/materialsStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { subjectName } from "../shared/utils/format";
 import { addMaterialTarget, materialChips } from "../shared/utils/materials";
-import PillButton from "../components/ui/PillButton";
+import RoundButton from "../components/ui/RoundButton";
 
 // Пошук на ПК: у назві, предметі й Kürzel
 const matches = (item, query) => {
@@ -28,9 +28,9 @@ const linksText = (n) => (n === 1 ? "1 Link" : `${n} Links`);
 
 // «+» на телефоні праворуч від заголовка
 const AddButton = ({ to }) => (
-  <PillButton glass="filled" size="sm" to={to} aria-label="Link teilen" className="grid size-9.5 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
+  <RoundButton to={to} aria-label="Link teilen" look="grid size-9.5 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
     <Plus className="size-4.25" />
-  </PillButton>
+  </RoundButton>
 );
 
 // Порожньо (макет handy-07): що тут буде і хто може додавати

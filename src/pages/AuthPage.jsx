@@ -6,15 +6,16 @@ import SignedOutBanner from "../components/auth/SignedOutBanner";
 import TeacherLoginForm from "../components/auth/TeacherLoginForm";
 import OrbitMark from "../components/ui/OrbitMark";
 import { usePublicInfo } from "../shared/hooks/usePublicInfo";
+import RoundButton from "../components/ui/RoundButton";
 
 // Вхід учителя (частина 14, handy-02, pc-01). Телефон: шапка з «назад»; ПК: права половина як у класу
 const TeacherAccess = ({ schoolClass }) => (
   <main className="flex min-h-dvh flex-col px-gutter pt-6 pb-6 lg:items-center lg:justify-center lg:px-gutter-auth lg:py-10">
     <div className="flex w-full flex-1 flex-col lg:w-95 lg:flex-none">
       <header className="flex items-end gap-2.5 lg:hidden">
-        <Link to={{ search: "" }} aria-label="Zurück" className="grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
+        <RoundButton to={{ search: "" }} aria-label="Zurück" look="grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
           <ChevronLeft className="size-4.5" />
-        </Link>
+        </RoundButton>
         <div className="space-y-1">
           <p className="text-hint font-extrabold text-faint">Zugang</p>
           <h1 className="text-title text-ink">Lehrkraft</h1>

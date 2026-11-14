@@ -22,20 +22,19 @@ import MusterNote from "../muster/MusterNote";
 import TextField from "../ui/TextField";
 import ListPicker from "../ui/ListPicker";
 import { mySubjectCodes, subjectItems } from "../../shared/utils/picker";
+import ChipButton from "../ui/ChipButton";
 
 // Поки meta не прийшла: значення за замовчуванням із docs/API.md
 const DEFAULT_LESSONS = [1, 2, 3, 4, 5, 6];
 
 // Кружечок з номером уроку
 const LessonButton = ({ lesson, selected, onClick }) => (
-  <button
-    type="button"
+  <ChipButton
+   
     aria-pressed={selected}
-    onClick={onClick}
-    className={cn("grid size-10.5 place-items-center rounded-full border text-body-sm font-bold outline-none focus-visible:ring-2 focus-visible:ring-accent/50", selected ? "border-accent bg-accent text-on-accent" : "border-rule text-muted")}
-  >
+    onClick={onClick} on={selected} look={cn("grid size-10.5 place-items-center rounded-full border text-body-sm font-bold outline-none focus-visible:ring-2 focus-visible:ring-accent/50", selected ? "border-accent bg-accent text-on-accent" : "border-rule text-muted")}>
     {lesson}
-  </button>
+  </ChipButton>
 );
 
 // Діалоги поверх форми: видалити, такий запис уже є, запис уже змінили

@@ -7,6 +7,7 @@ import { fachClasses } from "../../shared/utils/lessons";
 import { filterItems, groupItems } from "../../shared/utils/picker";
 import { CheckIcon } from "./icons";
 import Kbd from "./Kbd";
+import GlassSearch from "./GlassSearch";
 
 // Кружечок предмета з кодом (як SubjectBadge, але з кодом пункту списку)
 export const PickerBadge = ({ code, className }) => {
@@ -58,24 +59,26 @@ const PickerList = ({ items, selected, onChoose, autoFocus = false, keys = false
   const position = new Map(found.map((item, i) => [item.value, i]));
   return (
     <div className={cn("flex min-h-0 flex-col", className)}>
-      <label className="flex h-11.5 shrink-0 items-center gap-2.5 rounded-full bg-card px-3.5 focus-within:ring-2 focus-within:ring-accent/30 lg:bg-paper">
-        <Search className="size-4.5 shrink-0 text-faint" />
-        <input
-          type="text"
-          inputMode="search" // без системного «×» браузера; клавіатура телефона — з кнопкою пошуку
-          enterKeyHint="search"
-          value={query}
-          autoFocus={autoFocus}
-          placeholder={searchPlaceholder}
-          aria-label="Suchen"
-          onKeyDown={handleKey}
-          onChange={(event) => {
-            setQuery(event.target.value);
-            setActive(0);
-          }}
-          className="min-w-0 flex-1 bg-transparent text-input text-ink outline-none placeholder:text-faint2"
-        />
-      </label>
+      <GlassSearch value={query} onValue={(text) => { setQuery(text); setActive(0); }} placeholder={searchPlaceholder} label="Suchen" className="shrink-0" inputProps={{ autoFocus, onKeyDown: handleKey, enterKeyHint: "search" }}>
+        <label className="flex h-11.5 shrink-0 items-center gap-2.5 rounded-full bg-card px-3.5 focus-within:ring-2 focus-within:ring-accent/30 lg:bg-paper">
+          <Search className="size-4.5 shrink-0 text-faint" />
+          <input
+            type="text"
+            inputMode="search" // без системного «×» браузера; клавіатура телефона — з кнопкою пошуку
+            enterKeyHint="search"
+            value={query}
+            autoFocus={autoFocus}
+            placeholder={searchPlaceholder}
+            aria-label="Suchen"
+            onKeyDown={handleKey}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setActive(0);
+            }}
+            className="min-w-0 flex-1 bg-transparent text-input text-ink outline-none placeholder:text-faint2"
+          />
+        </label>
+      </GlassSearch>
 
       <div className="mt-2 min-h-0 overflow-y-auto scroll-stable">
         {found.length === 0 && <p className="px-2.5 py-4 text-body-sm text-muted">Nichts gefunden für „{query.trim()}“.</p>}

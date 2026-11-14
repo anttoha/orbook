@@ -5,15 +5,16 @@ import { TrashIcon } from "../../ui/icons";
 import { menuContentClass, menuIconClass, menuItemClass } from "../../ui/menuStyles";
 import SchoolHead from "./SchoolHead";
 import PillButton from "../../ui/PillButton";
+import RoundButton from "../../ui/RoundButton";
 
 const cell = "py-3.5 pr-4 text-body-sm";
 
 // «⋮» у класса: удалить (класс № 1 удалить нельзя — у него Klassenpasswort)
 const ClassMenu = ({ item, onDelete }) => (
   <DropdownMenu.Root>
-    <DropdownMenu.Trigger aria-label={`Klasse ${item.name}: Menü`} className="grid size-8 place-items-center rounded-full text-ink outline-none hover:bg-sand focus-visible:bg-sand">
+    <DropdownMenu.Trigger asChild><RoundButton aria-label={`Klasse ${item.name}: Menü`} look="grid size-8 place-items-center rounded-full text-ink outline-none hover:bg-sand focus-visible:bg-sand">
       <EllipsisVertical className="size-4.5" />
-    </DropdownMenu.Trigger>
+    </RoundButton></DropdownMenu.Trigger>
     <DropdownMenu.Portal>
       <DropdownMenu.Content align="end" sideOffset={4} className={menuContentClass}>
         <DropdownMenu.Item disabled={item.id === 1} onSelect={() => onDelete(item)} className={`${menuItemClass} text-danger`}>

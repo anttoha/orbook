@@ -1,8 +1,9 @@
 import { ChevronLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+
 import { useAdminClasses } from "../../shared/hooks/useAdminClasses";
 import { cn } from "../../shared/utils/cn";
 import AdminClassChip from "./schools/AdminClassChip";
+import RoundButton from "../ui/RoundButton";
 
 // ─────────────────────────────────────────────────────────────
 // Шапка сторінки адмінки: «Admin · 9b ⌄» над заголовком, праворуч кнопки (actions).
@@ -16,9 +17,9 @@ const AdminHeader = ({ title, backTo, accent = false, server = false, actions })
   return (
     <header className="flex items-end gap-2.5">
       {backTo && (
-        <Link to={backTo} aria-label="Zurück" className="grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink lg:hidden">
+        <RoundButton to={backTo} aria-label="Zurück" look="grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink lg:hidden">
           <ChevronLeft className="size-4.5" />
-        </Link>
+        </RoundButton>
       )}
       <div className="min-w-0 flex-1 space-y-1">
         <div className={cn("flex h-6.5 items-center gap-1.5 text-hint font-extrabold", accent || server ? "text-accent-ink" : "text-faint")}>

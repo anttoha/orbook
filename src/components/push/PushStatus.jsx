@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { pushErrorText, usePushStore } from "../../shared/store/pushStore";
 import { lastSentLabel } from "../../shared/utils/push";
+import PillButton from "../ui/PillButton";
 
 // Зелёная карточка «An auf diesem Gerät» + «Test senden» (макет 17 handy-01)
 const PushStatus = () => {
@@ -32,14 +33,12 @@ const PushStatus = () => {
         <p className="text-row font-extrabold text-ok">An auf diesem Gerät</p>
         <p className="truncate text-caption text-muted">{lastSentLabel(lastSentAt)}</p>
       </div>
-      <button
-        type="button"
+      <PillButton glass="glass" size="sm"
+       
         onClick={sendTest}
-        disabled={sending}
-        className="h-9 shrink-0 rounded-full bg-card px-3.5 text-label font-extrabold text-accent-ink transition-transform active:scale-95 disabled:opacity-50"
-      >
+        disabled={sending} className="h-9 shrink-0 rounded-full bg-card px-3.5 text-label font-extrabold text-accent-ink transition-transform active:scale-95 disabled:opacity-50">
         Test senden
-      </button>
+      </PillButton>
     </div>
   );
 };

@@ -15,7 +15,7 @@ import { useT } from "../shared/hooks/useT";
 import { useActiveClass } from "../shared/store/classesStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { summaryText } from "../shared/utils/accessCodes";
-import PillButton from "../components/ui/PillButton";
+import RoundButton from "../components/ui/RoundButton";
 
 // Список кодов своего класса: { status, data, error }, как ресурс в adminStore
 function useClassCodes() {
@@ -85,9 +85,9 @@ const ClassManage = () => {
       <Plus className="size-4.5" /> {t("Neuer Code")}
     </Button>
   ) : (
-    <PillButton glass="filled" size="sm" aria-label={t("Neuer Code")} onClick={() => setCreating(true)} className="grid size-9.5 place-items-center rounded-full bg-accent text-on-accent">
+    <RoundButton aria-label={t("Neuer Code")} onClick={() => setCreating(true)} look="grid size-9.5 place-items-center rounded-full bg-accent text-on-accent">
       <Plus className="size-5" />
-    </PillButton>
+    </RoundButton>
   );
 
   return (

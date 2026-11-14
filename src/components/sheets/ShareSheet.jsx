@@ -7,6 +7,7 @@ import { Skeleton } from "../ui/PlanState";
 import Button from "../ui/Button";
 import Segmented from "../ui/Segmented";
 import Sheet from "../ui/Sheet";
+import PillButton from "../ui/PillButton";
 
 // Варіанти перемикача: значення в адресі → range для сервера
 const RANGES = [
@@ -133,16 +134,14 @@ const ShareOptions = ({ sheet }) => {
       {!nothing && result.status === "error" && (
         <div className="flex flex-col items-start gap-2 rounded-field bg-danger-tint px-3.5 py-3 text-label font-bold text-ink">
           <p>Text konnte nicht geladen werden. {result.error.message}</p>
-          <button
-            type="button"
+          <PillButton glass="glass" size="sm"
+           
             onClick={() => {
               setResult((r) => ({ ...r, status: "loading" }));
               setAttempt((a) => a + 1);
-            }}
-            className="flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 font-extrabold"
-          >
+            }} className="flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 font-extrabold">
             <RefreshCw className="size-3.5" /> Erneut versuchen
-          </button>
+          </PillButton>
         </div>
       )}
       {/* key — новий текст із сервера → поле вводу отримує його заново */}

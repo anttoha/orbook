@@ -8,6 +8,7 @@ import Sheet from "../ui/Sheet";
 import InviteCard, { InviteCardSkeleton } from "../invite/InviteCard";
 import QrFullscreen from "../invite/QrFullscreen";
 import PrintChooser, { PrintRow } from "../print/PrintChooser";
+import PillButton from "../ui/PillButton";
 
 // «Einladen ist gerade aus» (макет handy-10): адмін не дав посилання для учнів
 const Off = ({ onClose }) => (
@@ -61,9 +62,9 @@ const ClassInviteSheet = ({ open, onClose }) => {
       {state.status === "error" && (
         <div className="flex flex-col items-start gap-3 rounded-card bg-danger-tint p-4 text-body-sm text-danger">
           <p>Link konnte nicht geladen werden. {state.error.message}</p>
-          <button type="button" onClick={retry} className="flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 font-extrabold">
+          <PillButton glass="glass" size="sm" onClick={retry} className="flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 font-extrabold">
             <RefreshCw className="size-3.5" /> Erneut versuchen
-          </button>
+          </PillButton>
         </div>
       )}
       {url && printing && <PrintChooser url={url} className={className} onBack={() => setPrinting(false)} />}

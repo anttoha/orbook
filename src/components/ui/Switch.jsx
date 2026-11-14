@@ -12,7 +12,17 @@ const Switch = ({ checked, onChange, label, className }) => {
   // кружечок їде вбік (translate), а не стрибає: 42px − 2×2px відступ − 20px кружечок = 18px
   const thumb = <span className={cn("size-5 rounded-full transition-[translate,background-color] duration-200 ease-out motion-reduce:transition-none", checked ? "translate-x-4.5 bg-switch-thumb" : "translate-x-0 bg-white")} />;
 
-  if (!onChange) return <span aria-hidden="true" className={look}>{thumb}</span>;
+  if (!onChange) {
+    // «Glas»: картинка тумблера тоже из библиотеки; нажатие ловит вся строка, поэтому сам тумблер «прозрачен» для пальца
+    if (glass) {
+      return (
+        <span aria-hidden="true" className={cn("pointer-events-none shrink-0", className)}>
+          <GlassSwitch checked={checked} onChange={() => {}} tint="var(--color-accent)" tabIndex={-1} />
+        </span>
+      );
+    }
+    return <span aria-hidden="true" className={look}>{thumb}</span>;
+  }
 
   // «Glas»: кружок поднимается линзой, переключатель можно тянуть
   if (glass) return <GlassSwitch checked={checked} onChange={onChange} aria-label={label && t(label)} tint="var(--color-accent)" className={className} />;

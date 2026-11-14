@@ -15,7 +15,7 @@ import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useNow } from "../shared/hooks/useNow";
 import { useAdminStore } from "../shared/store/adminStore";
 import { summaryText } from "../shared/utils/accessCodes";
-import PillButton from "../components/ui/PillButton";
+import RoundButton from "../components/ui/RoundButton";
 
 const matches = (code, query) => `${code.label} ${code.masked}`.toLowerCase().includes(query.trim().toLowerCase());
 
@@ -78,9 +78,9 @@ const AdminAccessCodes = () => {
       <Plus className="size-4.5" /> Neuer Code
     </Button>
   ) : (
-    <PillButton glass="filled" size="sm" aria-label="Neuer Code" onClick={openNew} className="grid size-9.5 place-items-center rounded-full bg-accent text-on-accent">
+    <RoundButton aria-label="Neuer Code" onClick={openNew} look="grid size-9.5 place-items-center rounded-full bg-accent text-on-accent">
       <Plus className="size-5" />
-    </PillButton>
+    </RoundButton>
   );
 
   const renderBody = () => {

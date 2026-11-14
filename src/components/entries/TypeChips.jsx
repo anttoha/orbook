@@ -1,4 +1,5 @@
 import { cn } from "../../shared/utils/cn";
+import ChipButton from "../ui/ChipButton";
 
 const chip = "h-11 rounded-full border px-4.5 text-body-sm font-bold outline-none focus-visible:ring-2 focus-visible:ring-accent/50";
 
@@ -7,9 +8,9 @@ const chip = "h-11 rounded-full border px-4.5 text-body-sm font-bold outline-non
 const TypeChips = ({ types, value, onChange }) => (
   <div role="radiogroup" aria-label="Art" className="flex flex-wrap gap-2">
     {types.map((type) => (
-      <button key={type.name} type="button" role="radio" aria-checked={value === type.name} onClick={() => onChange(type.name)} className={cn(chip, value === type.name ? "border-accent bg-accent text-on-accent" : "border-rule text-muted")}>
+      <ChipButton key={type.name} role="radio" aria-checked={value === type.name} onClick={() => onChange(type.name)} on={value === type.name} look={cn(chip, value === type.name ? "border-accent bg-accent text-on-accent" : "border-rule text-muted")}>
         {type.name}
-      </button>
+      </ChipButton>
     ))}
   </div>
 );

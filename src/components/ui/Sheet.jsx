@@ -8,6 +8,7 @@ import { cn } from "../../shared/utils/cn";
 import { DESKTOP_QUERY, useMediaQuery } from "../../shared/hooks/useMediaQuery";
 import { useMoreBelow } from "../../shared/hooks/useMoreBelow";
 import Kbd from "./Kbd";
+import RoundButton from "./RoundButton";
 import ScrollDownButton from "./ScrollDownButton";
 
 // ─────────────────────────────────────────────────────────────
@@ -53,7 +54,15 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
   };
 
   // Хрестик (+ підказка «Esc» на комп'ютері)
-  const renderClose = (Close) => (
+  // «Glas»: крестик — кнопка библиотеки; закрывает напрямую через onClose
+  const renderClose = (Close) => glass ? (
+    <div className="flex shrink-0 items-center gap-2">
+      {isDesktop && <Kbd>Esc</Kbd>}
+      <RoundButton aria-label="Schließen" onClick={onClose}>
+        <X className="size-4" />
+      </RoundButton>
+    </div>
+  ) : (
     <div className="flex shrink-0 items-center gap-2">
       {isDesktop && <Kbd>Esc</Kbd>}
       <Close

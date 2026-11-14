@@ -2,7 +2,7 @@ import { toast } from "sonner";
 import { pushErrorText, usePushStore } from "../../shared/store/pushStore";
 import { PUSH_PREFS } from "../../shared/utils/push";
 import { cn } from "../../shared/utils/cn";
-import Switch from "../ui/Switch";
+import RowSwitch from "../ui/RowSwitch";
 
 // «Benachrichtige mich»: четыре строки, вся строка — переключатель (пальцем легче попасть, чем в тумблер).
 // disabled — Mitteilungen на устройстве ещё не включены: видно, что будет, но серым
@@ -21,20 +21,18 @@ const PushPrefs = ({ reminderTime = "18:00", disabled = false }) => {
           const on = Boolean(prefs[pref.key]) && !disabled;
           return (
             <li key={pref.key} className="border-b border-hair last:border-0">
-              <button
-                type="button"
-                role="switch"
-                aria-checked={on}
+              <RowSwitch
+                checked={on}
                 disabled={disabled}
-                onClick={() => toggle(pref.key)}
+                onToggle={() => toggle(pref.key)}
+                label={pref.title}
                 className="flex min-h-18 w-full items-center gap-3 px-3.5 py-3 text-left outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-accent/50 enabled:active:bg-sand"
               >
                 <span className="min-w-0 flex-1">
                   <span className={cn("block text-row", disabled ? "text-faint" : "text-ink")}>{pref.title}</span>
                   <span className="block text-caption text-faint">{typeof pref.hint === "function" ? pref.hint(reminderTime) : pref.hint}</span>
                 </span>
-                <Switch checked={on} />
-              </button>
+              </RowSwitch>
             </li>
           );
         })}

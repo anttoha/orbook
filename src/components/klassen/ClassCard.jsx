@@ -16,6 +16,7 @@ import ClassDayList from "./ClassDayList";
 import GoneNotice from "./GoneNotice";
 import TodayStrip from "./TodayStrip";
 import PillButton from "../ui/PillButton";
+import RoundButton from "../ui/RoundButton";
 
 // ─────────────────────────────────────────────────────────────
 // Карточка класса на «Meine Klassen» (макет 29 handy-01, pc-01).
@@ -46,9 +47,9 @@ const ClassCard = ({ item, today, wide, inSchool = false }) => {
           <h2 className="truncate text-subhead text-ink">{classTitle(item, t)}</h2>
           <p className="truncate text-label text-faint">{inSchool ? `${t("Klasse")} ${item.name}` : classSubtitle(item)}</p>
         </div>
-        <PillButton glass="glass" size="sm" onClick={() => openSheet("klasse", { id: item.id })} aria-label={t("Klasse einstellen")} className="pointer-events-auto grid size-8.5 shrink-0 place-items-center rounded-full bg-sand text-ink">
+        <RoundButton onClick={() => openSheet("klasse", { id: item.id })} aria-label={t("Klasse einstellen")} look="pointer-events-auto grid size-8.5 shrink-0 place-items-center rounded-full bg-sand text-ink">
           <SlidersHorizontal className="size-4" />
-        </PillButton>
+        </RoundButton>
       </header>
 
       {item.gone ? <GoneNotice item={item} /> : <CardBody data={data} item={item} today={today} wide={wide} onRetry={() => setReload((n) => n + 1)} />}

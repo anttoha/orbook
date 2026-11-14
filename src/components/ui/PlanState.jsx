@@ -6,6 +6,7 @@ import { lastStandLabel, standText } from "../../shared/utils/format";
 import { berlinParts } from "../../shared/utils/lessonClock";
 import Button from "./Button";
 import StateScreen from "./StateScreen";
+import PillButton from "./PillButton";
 
 // ─────────────────────────────────────────────────────────────
 // Стани завантаження (гайд docs/frontend/08-zustaende.md):
@@ -76,8 +77,8 @@ export const PlanError = ({ resource, onRetry, title = "Plan konnte nicht gelade
     {/* текст помилки від сервера (німецькою) або від api.js («Keine Verbindung…») */}
     <p className="text-label font-semibold text-muted">{resource.error?.message}</p>
     {/* плашка стоїть на картці, тому кнопці потрібен інший фон, інакше її не видно */}
-    <button type="button" onClick={onRetry} className="flex shrink-0 items-center gap-1.5 rounded-full bg-sand px-3 py-1.5 text-label font-extrabold text-ink">
+    <PillButton glass="glass" size="sm" onClick={onRetry} className="flex shrink-0 items-center gap-1.5 rounded-full bg-sand px-3 py-1.5 text-label font-extrabold text-ink">
       <RotateCw className="size-3.5" /> Erneut versuchen
-    </button>
+    </PillButton>
   </div>
 );

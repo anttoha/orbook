@@ -15,6 +15,7 @@ import { currentMonday } from "../../shared/utils/lessons";
 import { searchActions, searchGroups } from "../../shared/utils/search";
 import Kbd from "../ui/Kbd";
 import SubjectBadge from "../ui/SubjectBadge";
+import GlassSearch from "../ui/GlassSearch";
 
 // Іконки рядків без предмета (ключ icon з shared/utils/search.js)
 const ICONS = { note: NotebookPen, settings: Settings, plus: Plus, calendar: CalendarDays, sun: Sun, moon: Moon };
@@ -105,18 +106,22 @@ const SearchPalette = ({ open, onOpenChange }) => {
         >
           <Dialog.Title className="sr-only">Suchen</Dialog.Title>
           <div className="flex h-17 shrink-0 items-center gap-3 border-b border-hair px-5">
-            <Search className="size-5 shrink-0 text-faint" />
-            <input
-              value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                setActive(0); // новий запит — вибір на першому
-              }}
-              onKeyDown={handleKeyDown}
-              placeholder="Stunde, Test, Notiz suchen"
-              aria-label="Suchen"
-              className="min-w-0 flex-1 bg-transparent text-cell-sm font-normal text-ink outline-none placeholder:text-faint2"
-            />
+            <GlassSearch value={query} onValue={(text) => { setQuery(text); setActive(0); }} placeholder="Stunde, Test, Notiz suchen" label="Suchen" className="flex-1" inputProps={{ onKeyDown: handleKeyDown, autoFocus: true }}>
+              <>
+                <Search className="size-5 shrink-0 text-faint" />
+                <input
+                  value={query}
+                  onChange={(event) => {
+                    setQuery(event.target.value);
+                    setActive(0); // новий запит — вибір на першому
+                  }}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Stunde, Test, Notiz suchen"
+                  aria-label="Suchen"
+                  className="min-w-0 flex-1 bg-transparent text-cell-sm font-normal text-ink outline-none placeholder:text-faint2"
+                />
+              </>
+            </GlassSearch>
             <Kbd>Esc</Kbd>
           </div>
 

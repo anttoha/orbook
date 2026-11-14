@@ -5,6 +5,7 @@ import { classTitle, shortUrl } from "../../shared/utils/invite";
 import { copyText } from "../../shared/utils/share";
 import Button from "../ui/Button";
 import QrCode from "../ui/QrCode";
+import RoundButton from "../ui/RoundButton";
 
 // Поки великий QR відкритий, екран не гасне (Wake Lock). Браузер може відмовити — тоді просто без цього
 function useScreenAwake(on) {
@@ -35,9 +36,9 @@ const QrFullscreen = ({ open, onClose, url, className }) => {
         <Dialog.Overlay className="fixed inset-0 z-50 bg-overlay" />
         <Dialog.Content className="fixed inset-0 z-50 flex flex-col overflow-y-auto scroll-stable bg-paper px-gutter pt-8 pb-6 outline-none lg:inset-x-auto lg:inset-y-10 lg:left-1/2 lg:w-150 lg:-translate-x-1/2 lg:rounded-panel lg:px-8 lg:pt-6 lg:shadow-sheet">
           <header className="flex items-end gap-3 lg:flex-col lg:items-center lg:text-center">
-            <Dialog.Close aria-label="Schließen" className="grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink lg:absolute lg:top-6 lg:right-6 lg:size-8.5">
+            <Dialog.Close asChild><RoundButton aria-label="Schließen" look="grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink lg:absolute lg:top-6 lg:right-6 lg:size-8.5">
               <X className="size-4" />
-            </Dialog.Close>
+            </RoundButton></Dialog.Close>
             <div className="space-y-1">
               <Dialog.Description className="text-hint font-extrabold text-faint">Einladung · {className ?? "ORBook"}</Dialog.Description>
               <Dialog.Title className="text-title text-ink lg:text-lobby">{classTitle(className)}</Dialog.Title>

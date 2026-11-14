@@ -16,6 +16,7 @@ import CodeReveal from "./CodeReveal";
 import RightsFields from "./RightsFields";
 import SchoolClassField from "./schools/SchoolClassField";
 import ValidFields from "./ValidFields";
+import ChipButton from "../ui/ChipButton";
 
 // Нові права частини 14 за замовчуванням вимкнені; у Lehrer-Code обидва права одразу ввімкнені (рішення власника)
 // Lehrer-Code — одразу з «Materialien teilen» (рішення власника: учителі діляться матеріалами своїх предметів)
@@ -60,18 +61,16 @@ const TeacherPicker = ({ classId, value, onChange, disabled, error }) => {
     <Field label="Lehrkraft" error={error}>
       <div className="flex flex-wrap gap-1.75">
         {list.map((teacher) => (
-          <button
+          <ChipButton
             key={teacher.short}
-            type="button"
+           
             aria-pressed={value === teacher.short}
             disabled={disabled || Boolean(teacher.codeId)}
-            onClick={() => onChange(teacher.short)}
-            className={cn(chip, value === teacher.short ? "border-accent bg-tint text-accent-ink" : "border-rule text-ink")}
-          >
+            onClick={() => onChange(teacher.short)} on={value === teacher.short} look={cn(chip, value === teacher.short ? "border-accent bg-tint text-accent-ink" : "border-rule text-ink")}>
             {teacher.short}
             {/* предмети з плану: «T03 · Ma, Ph» — щоб було видно, хто це (у демо Kürzel вигадані: T01, T02 …) */}
             {teacher.subjects?.length > 0 && <span className="font-normal text-muted"> · {teacher.subjects.join(", ")}</span>}
-          </button>
+          </ChipButton>
         ))}
       </div>
       <p className="mt-1.5 text-caption text-faint">Kürzel der Lehrkraft aus dem Plan der Klasse, dahinter ihre Fächer.{taken.length > 0 && ` ${taken.join(", ")} ${taken.length === 1 ? "hat" : "haben"} schon einen Code.`}</p>

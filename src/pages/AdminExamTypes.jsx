@@ -12,6 +12,7 @@ import Switch from "../components/ui/Switch";
 import { loadExamTypes, saveExamTypes, saveSettings } from "../shared/api/admin";
 import { useAdminLoad } from "../shared/hooks/useAdminLoad";
 import { countText, moveRow, toPayload, toRows } from "../shared/utils/examTypes";
+import RoundButton from "../components/ui/RoundButton";
 
 // Строка вида: «⋮⋮» тянуть (порядок), имя, Kürzel, сколько записей, ✎
 const TypeRow = ({ row, onEdit, onGrab, rowRef }) => (
@@ -27,9 +28,9 @@ const TypeRow = ({ row, onEdit, onGrab, rowRef }) => (
         {countText(row.count)}
       </p>
     </div>
-    <button type="button" aria-label={`${row.name} bearbeiten`} onClick={onEdit} className="grid size-9 shrink-0 place-items-center rounded-full text-muted outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
+    <RoundButton aria-label={`${row.name} bearbeiten`} onClick={onEdit} look="grid size-9 shrink-0 place-items-center rounded-full text-muted outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
       <PencilIcon className="size-4.5" />
-    </button>
+    </RoundButton>
   </li>
 );
 

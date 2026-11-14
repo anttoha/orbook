@@ -6,6 +6,7 @@ import { materialMeta } from "../../shared/utils/materials";
 import MaterialTile from "../materials/MaterialTile";
 import Field from "../ui/Field";
 import MaterialPickSheet from "./MaterialPickSheet";
+import RoundButton from "../ui/RoundButton";
 
 // ─────────────────────────────────────────────────────────────
 // «Materialien · optional» в форме Test / Hausaufgabe (часть 21 внутри 24, макеты handy-04, 06).
@@ -41,14 +42,12 @@ const AttachMaterials = ({ subject, value, known = [], error, onChange }) => {
               <span className="block truncate text-body-sm font-bold text-ink">{item.title}</span>
               <span className="mt-0.5 block truncate text-note text-faint">{materialMeta(item)}</span>
             </span>
-            <button
-              type="button"
+            <RoundButton
+             
               aria-label={`${item.title} entfernen`}
-              onClick={() => onChange(value.filter((id) => id !== item.id))}
-              className="grid size-9 place-items-center rounded-full text-faint outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
-            >
+              onClick={() => onChange(value.filter((id) => id !== item.id))} look="grid size-9 place-items-center rounded-full text-faint outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
               <X className="size-4.5" />
-            </button>
+            </RoundButton>
           </li>
         ))}
         <li>

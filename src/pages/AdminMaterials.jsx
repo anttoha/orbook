@@ -8,6 +8,7 @@ import { TrashIcon } from "../components/ui/icons";
 import { deleteAdminMaterial, loadAdminMaterials } from "../shared/api/materials";
 import { useAdminLoad } from "../shared/hooks/useAdminLoad";
 import { groupMaterials } from "../shared/utils/materials";
+import RoundButton from "../components/ui/RoundButton";
 
 // Рядок адмінки: той самий рядок посилання + кошик праворуч і мітка коду («Code B»), хто додав
 const AdminRow = ({ item, onDelete }) => (
@@ -15,9 +16,9 @@ const AdminRow = ({ item, onDelete }) => (
     <div className="min-w-0 flex-1">
       <MaterialRow item={item} />
     </div>
-    <button type="button" aria-label={`„${item.title}“ löschen`} onClick={() => onDelete(item)} className="grid size-10 shrink-0 place-items-center rounded-full bg-card text-danger outline-none hover:bg-danger-tint focus-visible:ring-2 focus-visible:ring-accent/50">
+    <RoundButton aria-label={`„${item.title}“ löschen`} onClick={() => onDelete(item)} look="grid size-10 shrink-0 place-items-center rounded-full bg-card text-danger outline-none hover:bg-danger-tint focus-visible:ring-2 focus-visible:ring-accent/50">
       <TrashIcon className="size-4.5" />
-    </button>
+    </RoundButton>
   </div>
 );
 

@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { GlassSegmented } from "@zakisheriff/liquid-glass";
+import { useGlass } from "../../../shared/hooks/useGlass";
 import { CircleDashed } from "lucide-react";
 import { cn } from "../../../shared/utils/cn";
 import { FlagIcon } from "../../ui/icons";
@@ -13,6 +15,22 @@ import { FlagIcon } from "../../ui/icons";
 // Кнопки однакової ширини (flex-1), тому зсув = номер × (ширина + проміжок 4px)
 const DayStrip = ({ days, date, today }) => {
   const index = days.findIndex((day) => day.date === date);
+  const glass = useGlass();
+  const navigate = useNavigate();
+
+  // «Glas» (часть 30a): дни — переключатель библиотеки; выбранный день — линза, её можно тянуть на другой день.
+  // Значок дня (тест / изменения) — иконкой рядом с подписью
+  if (glass) {
+    const options = days.map((day) => ({
+      label: `${day.weekday} ${Number(day.date.slice(8))}.${day.date === today ? " · heute" : ""}`,
+      icon: day.exams.length > 0 ? <FlagIcon className="size-3.5" /> : undefined,
+    }));
+    return (
+      <nav aria-label="Wochentage">
+        <GlassSegmented aria-label="Wochentage" className="w-full" options={options} value={Math.max(0, index)} onChange={(i) => navigate(`/tag/${days[i].date}`)} />
+      </nav>
+    );
+  }
 
   return (
     <nav aria-label="Wochentage" className="relative flex h-13 gap-1 rounded-full bg-sand p-1">

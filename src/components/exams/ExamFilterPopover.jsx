@@ -6,6 +6,7 @@ import Button from "../ui/Button";
 import { FilterIcon } from "../ui/icons";
 import Kbd from "../ui/Kbd";
 import ExamFilterFields from "./ExamFilterFields";
+import RoundButton from "../ui/RoundButton";
 
 // ─────────────────────────────────────────────────────────────
 // Кнопка фільтра + випадне вікно під нею (ПК, макет 16 «Klausuren · Filter»).
@@ -18,13 +19,11 @@ const ExamFilterPopover = ({ open, onOpenChange, active }) => {
   return (
     <Popover.Root open={open} onOpenChange={onOpenChange}>
       <Popover.Trigger asChild>
-        <button
-          type="button"
+        <RoundButton
           aria-label="Filter"
-          className={cn("grid size-9.5 shrink-0 place-items-center rounded-full transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent/50", active ? "bg-tint text-accent-ink" : "bg-card text-ink hover:bg-sand")}
-        >
+          look={cn("grid size-9.5 shrink-0 place-items-center rounded-full transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent/50", active ? "bg-tint text-accent-ink" : "bg-card text-ink hover:bg-sand")}>
           <FilterIcon className="size-4.25" />
-        </button>
+        </RoundButton>
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
