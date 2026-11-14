@@ -39,6 +39,15 @@
   scrollbar-width: none;
 }
 
+/* «Start» (частина 30c): висота одного ряду блоків — телефон 124px, ПК 150px (макети handy-01, pc-01).
+   Groß займає два ряди. rem — щоб ряд ріс разом із «Schriftgröße» */
+@utility auto-rows-block {
+  grid-auto-rows: 7.75rem;
+}
+@utility auto-rows-block-pc {
+  grid-auto-rows: 9.375rem;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {

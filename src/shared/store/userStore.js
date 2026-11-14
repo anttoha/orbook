@@ -34,7 +34,11 @@ export const useUserStore = create(
       // Чи пройдено екран «Welche Kurse hast du?». Окремий прапорець, бо picked: [] теж законний вибір
       coursesChosen: false,
       // «Darstellung». За замовчуванням — як на макеті 24
-      startView: "woche", // що відкривати на «/»: "woche" | "heute"
+      startView: "woche", // що відкривати на «/»: "start" | "woche" | "heute" (новичкам — "start", частина 30c)
+      // «Start» (частина 30c): null — раскладка по умолчанию, иначе [{ id, kind, size, opts }] (shared/utils/startBlocks.js)
+      startBlocks: null,
+      startOffer: null, // карточка «Mit Start öffnen?»: null — ещё не ответил, "ja" | "nein"
+      startSeen: false, // «Start» уже открывали — точка «neu» в Darstellung гаснет
       dayView: "liste", // вигляд дня: "liste" | "zeitleiste"
       compactWeek: true, // менші клітинки тижня
       fontScale: 2, // шрифт: 1 — A, 2 — A+ (як на макетах), 3 — A++
@@ -103,7 +107,8 @@ export const useUserStore = create(
 
       // «Weiter» на екрані першого запуску: зберегти вибір і більше не питати
       // Новичку окно «Was ist neu» не нужно: для него всё и так новое, поэтому текущую версию считаем увиденной
-      finishCourseChoice: (picked, hiddenRequired = []) => set({ picked, hiddenRequired, coursesChosen: true, tipsPending: !get().coursesChosen, seenNews: get().seenNews ?? changelog[0]?.version ?? null, readNews: get().readNews ?? changelog[0]?.version ?? null }),
+      // Новичок сразу начинает со «Start» (часть 30c); у остальных Startansicht не меняется
+      finishCourseChoice: (picked, hiddenRequired = []) => set({ picked, hiddenRequired, coursesChosen: true, tipsPending: !get().coursesChosen, ...(get().coursesChosen ? {} : { startView: "start", startOffer: "ja" }), seenNews: get().seenNews ?? changelog[0]?.version ?? null, readNews: get().readNews ?? changelog[0]?.version ?? null }),
 
       // «Kurz erklärt»: показать при следующем старте / уже показано
       setTipsPending: (tipsPending) => set({ tipsPending }),
@@ -134,6 +139,11 @@ export const useUserStore = create(
       setColorOverrides: (colorOverrides) => set({ colorOverrides }),
 
       setStartView: (startView) => set({ startView }),
+      // Раскладка «Start»: весь список целиком (функции правки — в shared/utils/startBlocks.js)
+      setStartBlocks: (startBlocks) => set({ startBlocks }),
+      // «Mit Start öffnen?»: «Ja» — открывать со Start, × — больше не спрашивать
+      answerStartOffer: (yes) => set(yes ? { startOffer: "ja", startView: "start" } : { startOffer: "nein" }),
+      markStartSeen: () => set({ startSeen: true }),
       setDayView: (dayView) => set({ dayView }),
       setCompactWeek: (compactWeek) => set({ compactWeek }),
       setChangedFormat: (changedFormat) => set({ changedFormat }),
