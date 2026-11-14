@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowLeftRight, ChartNoAxesColumn, ChevronRight, RefreshCw } from "lucide-react";
 import { countStatus } from "../../../shared/utils/lessons";
+import Liquid from "../../ui/Liquid";
 
 // ─────────────────────────────────────────────────────────────
 // Картка «2 Stunden fallen aus · Di, Mi / 2 Vertretungen · Mi, Do».
@@ -20,7 +21,7 @@ const WeekStatsCard = ({ days }) => {
   if (rooms.count) rows.push({ icon: ArrowLeftRight, text: `${rooms.count} Raumwechsel`, ...rooms });
 
   return (
-    <div className="flex flex-col divide-y divide-hair rounded-box bg-card px-3.5">
+    <Liquid as="div" refract press={false} className="flex flex-col divide-y divide-hair rounded-box bg-card px-3.5">
       {rows.map((row) => {
         // Вміст рядка однаковий — посиланням або просто блоком
         const inner = (
@@ -41,7 +42,7 @@ const WeekStatsCard = ({ days }) => {
           </div>
         );
       })}
-    </div>
+    </Liquid>
   );
 };
 

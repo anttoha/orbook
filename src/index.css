@@ -523,6 +523,16 @@
     --lg-accent: var(--color-accent);
     --lg-green: var(--color-accent);
 }
+/* Наши элементы со стеклом библиотеки (ui/Liquid, боковая панель — класс orb-liquid).
+   Её CSS вне слоёв и перебивает Tailwind: .lg-glass (и кнопки библиотеки) ставит position: relative — возвращаем sticky / absolute / fixed
+   (крестик «ORBook als App» в углу, боковая панель);
+   светлая кромка (::before) должна лежать под текстом, а не поверх (backdrop-filter уже создаёт свой слой) */
+.lg-glass.sticky { position: sticky; }
+.lg-glass.absolute { position: absolute; }
+.lg-glass.fixed { position: fixed; }
+.orb-liquid.lg-glass::before { z-index: -1; }
+/* переключатель только из иконок (вид дня, тема в боковом меню): подпись — для скрінрідера, на экране не видна */
+.orb-icons-only .lg-nav__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 /* подписи в «таблетках» и нижнем меню — жирные, как во всём приложении */
 .lg-track { font-weight: 800; }
 /* текст на залитой акцентом кнопке — наш цвет «на акценте» (в тёмной теме он тёмный, белый там не читается) */

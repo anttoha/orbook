@@ -1,4 +1,5 @@
 import { infoParagraphs } from "../../../shared/utils/format";
+import Liquid from "../../ui/Liquid";
 
 // ─────────────────────────────────────────────────────────────
 // Картка «Info zum Tag» у правій колонці дня (ПК):
@@ -9,7 +10,7 @@ const DayInfoCard = ({ day, onOpen }) => {
   const paragraphs = infoParagraphs(day.info); // абзаци тексту школи
 
   return (
-    <section className="rounded-card bg-card p-4">
+    <Liquid as="section" refract press={false} className="rounded-card bg-card p-4">
       <header className="flex items-center justify-between">
         <h2 className="text-label font-extrabold text-faint">Info zum Tag</h2>
         <button type="button" onClick={onOpen} className="text-label font-extrabold text-accent">
@@ -25,7 +26,7 @@ const DayInfoCard = ({ day, onOpen }) => {
       </div>
       {/* «Stand 11:26» — час публікації плану школою (HH:MM з ISO-рядка) */}
       {day.publishedAt && <p className="mt-2.5 text-caption font-semibold text-faint">Aus dem Vertretungsplan · Stand {day.publishedAt.slice(11, 16)}</p>}
-    </section>
+    </Liquid>
   );
 };
 

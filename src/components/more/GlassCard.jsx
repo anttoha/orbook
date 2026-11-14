@@ -1,6 +1,7 @@
 import Segmented from "../ui/Segmented";
 import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
+import Liquid from "../ui/Liquid";
 
 const BACKGROUNDS = [
   { value: "aurora", label: "Aurora" },
@@ -20,7 +21,7 @@ const GlassCard = ({ glassBg, glassMode, onBg, onMode }) => {
   return (
     <section>
       <h2 className="mb-2.5 text-hint font-extrabold text-faint">{t("Hintergrund")}</h2>
-      <div className="rounded-card bg-card px-3.5">
+      <Liquid as="div" refract press={false} className="rounded-card bg-card px-3.5">
         <div role="radiogroup" aria-label={t("Hintergrund")} className="grid grid-cols-4 gap-2 py-3.5">
           {BACKGROUNDS.map((bg) => {
             const on = bg.value === glassBg;
@@ -40,7 +41,7 @@ const GlassCard = ({ glassBg, glassMode, onBg, onMode }) => {
           <p className="text-row text-ink">{t("Glas-Effekt")}</p>
           <Segmented label="Glas-Effekt" size="form" className="w-fit" options={MODES} value={glassMode} onChange={onMode} />
         </div>
-      </div>
+      </Liquid>
     </section>
   );
 };

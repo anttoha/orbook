@@ -1,4 +1,5 @@
 import { Skeleton } from "../ui/PlanState";
+import Liquid from "../ui/Liquid";
 
 // Різна довжина рядків, щоб заглушка була схожа на справжні предмети
 const ROWS = [
@@ -16,7 +17,7 @@ const DaySkeleton = () => (
     <Skeleton className="h-16 rounded-tile" />
     <div className="flex flex-col gap-2">
       {ROWS.map(([first, second]) => (
-        <div key={first} className="flex h-13.5 items-center rounded-card bg-card px-3.5">
+        <Liquid as="div" refract press={false} key={first} className="flex h-13.5 items-center rounded-card bg-card px-3.5">
           <div className="flex w-13.5 shrink-0 flex-col gap-1.25">
             <Skeleton className="h-2.75 w-8.5 rounded-full" />
             <Skeleton className="h-2.25 w-6.5 rounded-full" />
@@ -25,7 +26,7 @@ const DaySkeleton = () => (
             <Skeleton className={`h-3.25 rounded-full ${first}`} />
             <Skeleton className={`h-2.5 rounded-full ${second}`} />
           </div>
-        </div>
+        </Liquid>
       ))}
     </div>
   </div>

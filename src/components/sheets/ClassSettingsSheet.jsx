@@ -20,6 +20,7 @@ import SettingRow from "../more/SettingRow";
 import Sheet from "../ui/Sheet";
 import Switch from "../ui/Switch";
 import { CheckIcon, KeyIcon, TrashIcon } from "../ui/icons";
+import Liquid from "../ui/Liquid";
 
 // ─────────────────────────────────────────────────────────────
 // «Klasse einstellen» (макет 29 handy-07). Адрес: ?sheet=klasse&id=2
@@ -54,7 +55,7 @@ const ClassSettings = ({ item, onClose }) => {
 
   return (
     <div className="space-y-3">
-      <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
+      <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
         <li className="flex h-14 items-center gap-3">
           <label htmlFor="class-label" className="text-row text-ink">
             {t("Name")}
@@ -66,19 +67,19 @@ const ClassSettings = ({ item, onClose }) => {
           <span className="text-row text-ink">{t("Farbe")}</span>
           <ColorChoice value={item.color} onPick={(color) => update(item.id, { color })} />
         </li>
-      </ul>
+      </Liquid>
 
-      <ul className="rounded-card bg-card px-3.5 py-0.5">
+      <Liquid as="ul" refract press={false} className="rounded-card bg-card px-3.5 py-0.5">
         <MenuRow onClick={() => go("/mehr/kurse")} icon={Table2} label="Meine Kurse" value={values.courses} />
         <MenuRow onClick={() => go("/mehr/mitteilungen")} icon={Bell} label="Mitteilungen" value={values.push} />
         <MenuRow onClick={() => go("/mehr/editor-code")} icon={KeyIcon} label="Tests eintragen" value={item.canEdit ? "aktiv" : "Editor-Code"} />
-      </ul>
+      </Liquid>
 
-      <ul className="rounded-card bg-card px-3.5">
+      <Liquid as="ul" refract press={false} className="rounded-card bg-card px-3.5">
         <SettingRow label="Beim Start öffnen" hint="Gleich diese Klasse statt „Meine Klassen“">
           <Switch checked={Boolean(item.startOpen)} onChange={(on) => setStartOpen(item.id, on)} label="Beim Start öffnen" />
         </SettingRow>
-      </ul>
+      </Liquid>
 
       <RemoveClass item={item} onDone={onClose} />
     </div>
@@ -142,10 +143,10 @@ const RemoveClass = ({ item, onDone }) => {
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className="flex h-14 w-full items-center gap-3.25 rounded-card bg-card px-3.5 text-danger">
+      <Liquid as="button" refract type="button" onClick={() => setOpen(true)} className="flex h-14 w-full items-center gap-3.25 rounded-card bg-card px-3.5 text-danger">
         <TrashIcon className="size-4.5 shrink-0" />
         <span className="text-row font-medium">{t("Klasse entfernen")}</span>
-      </button>
+      </Liquid>
       <ConfirmDialog open={open} onClose={() => setOpen(false)} icon={<TrashIcon className="size-6.5 text-danger" />} title={t("Klasse entfernen?")} text={error ?? t("Nur auf diesem Gerät. Der Zugangscode bleibt gültig.")}>
         <Button onClick={() => setOpen(false)}>{t("Bleiben")}</Button>
         <Button variant="danger" onClick={remove} disabled={busy}>

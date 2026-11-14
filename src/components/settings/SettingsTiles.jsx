@@ -15,6 +15,7 @@ import NewBadge from "../changelog/NewBadge";
 import { usePushStore } from "../../shared/store/pushStore";
 import { prefsSummary } from "../../shared/utils/push";
 import { appearanceHint, coursesHint, editorHint, sectionVisible, subjectsHint, syncHint } from "../../shared/utils/settings";
+import Liquid from "../ui/Liquid";
 
 // Вміст плитки: кругла іконка, назва, підпис, стрілка
 const TileBody = ({ icon: Icon, label, hint, badge }) => (
@@ -92,28 +93,28 @@ const SettingsTiles = () => {
               .filter((section) => section.group === group.key)
               .map((section) => (
                 <li key={section.to}>
-                  <Link to={section.to} className={tile}>
+                  <Liquid as={Link} refract to={section.to} className={tile}>
                     <TileBody icon={section.icon} label={section.label} hint={hints[section.hint]} badge={section.badge === "news" ? <NewBadge /> : null} />
-                  </Link>
+                  </Liquid>
                 </li>
               ))}
             {/* не сторінки, а вікна: QR для однокласників (частина 16) і клавіші */}
             {group.key === "seiten" && (
               <>
                 <li>
-                  <button type="button" onClick={() => openSheet("einladen")} className={`${tile} w-full`}>
+                  <Liquid as="button" refract type="button" onClick={() => openSheet("einladen")} className={`${tile} w-full`}>
                     <TileBody icon={UserPlus} label="Klasse einladen" hint="Link und QR für Mitschüler" />
-                  </button>
+                  </Liquid>
                 </li>
                 <li>
-                  <button type="button" onClick={() => openSheet("tipps")} className={`${tile} w-full`}>
+                  <Liquid as="button" refract type="button" onClick={() => openSheet("tipps")} className={`${tile} w-full`}>
                     <TileBody icon={Info} label="Kurz erklärt" hint="3 Tipps für den Anfang" />
-                  </button>
+                  </Liquid>
                 </li>
                 <li>
-                  <button type="button" onClick={() => openSheet("tasten")} className={`${tile} w-full`}>
+                  <Liquid as="button" refract type="button" onClick={() => openSheet("tasten")} className={`${tile} w-full`}>
                     <TileBody icon={Keyboard} label="Tastenkürzel" hint="⌘K, T, ←, →, N …" />
-                  </button>
+                  </Liquid>
                 </li>
               </>
             )}

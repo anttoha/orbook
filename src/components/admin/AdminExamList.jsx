@@ -7,6 +7,7 @@ import { cn } from "../../shared/utils/cn";
 import ExamBadge from "../exams/ExamBadge";
 import ExamDateTile from "../exams/ExamDateTile";
 import { PencilIcon, TrashIcon } from "../ui/icons";
+import Liquid from "../ui/Liquid";
 
 const lessonText = (exam) => (exam.lesson ? `${exam.lesson}. Std` : "—");
 const iconButton = "grid size-9 shrink-0 place-items-center rounded-full text-ink hover:bg-sand";
@@ -30,7 +31,7 @@ const ExamCards = ({ exams, now, onEdit, onDelete }) => {
     <ul className="flex flex-col gap-3">
       {exams.map((exam) => (
         <li key={exam.id}>
-          <div className="flex items-center gap-3 rounded-card bg-card py-2.5 pr-1.5 pl-3">
+          <Liquid as="div" refract press={false} className="flex items-center gap-3 rounded-card bg-card py-2.5 pr-1.5 pl-3">
             <ExamDateTile exam={exam} overrides={overrides} />
             <div className="min-w-0 flex-1">
               <p className="flex items-center gap-2 text-caption text-muted">
@@ -40,7 +41,7 @@ const ExamCards = ({ exams, now, onEdit, onDelete }) => {
               <p className="mt-1 truncate text-row font-extrabold text-ink">{exam.topic || exam.type}</p>
             </div>
             <RowActions exam={exam} onEdit={onEdit} onDelete={onDelete} />
-          </div>
+          </Liquid>
           <p className="mt-1.5 px-1 text-caption text-faint">
             über {authorText(exam)} · {ago(exam.createdAt, now)}
           </p>
@@ -101,9 +102,9 @@ const ExamTable = ({ exams, now, onEdit, onDelete }) => {
 // Список Klausuren адмінки: картки на телефоні, таблиця на ПК
 const AdminExamList = ({ isDesktop, ...props }) =>
   isDesktop ? (
-    <div className="rounded-card bg-card px-5 pt-4.5 pb-1">
+    <Liquid as="div" refract press={false} className="rounded-card bg-card px-5 pt-4.5 pb-1">
       <ExamTable {...props} />
-    </div>
+    </Liquid>
   ) : (
     <ExamCards {...props} />
   );

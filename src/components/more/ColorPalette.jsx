@@ -2,13 +2,14 @@ import SubjectBadge from "../ui/SubjectBadge";
 import { PALETTES, SWATCH_ORDER } from "../../shared/constants/fachColors";
 import { cn } from "../../shared/utils/cn";
 import { CheckIcon } from "../ui/icons";
+import Liquid from "../ui/Liquid";
 
 // Картка «Mathe · Farbe wählen». Прилипає до верху: у школи предметів більше, ніж вміщує екран,
 // і без цього колір довелося б вибирати, не бачачи його.
 // Зверху — значок і назва вибраного предмета: одразу видно, кому міняємо колір
 const ColorPalette = ({ subject, current, onPick }) => {
   return (
-    <div className="sticky top-2 z-10 rounded-card bg-card px-3.5 pt-3.5 pb-3.5 shadow-raise">
+    <Liquid as="div" refract press={false} className="sticky top-2 z-10 rounded-card bg-card px-3.5 pt-3.5 pb-3.5 shadow-raise">
       <div className="mb-3 flex items-center gap-3">
         <SubjectBadge subject={subject} size="lg" />
         <div className="min-w-0">
@@ -32,7 +33,7 @@ const ColorPalette = ({ subject, current, onPick }) => {
           </button>
         ))}
       </div>
-    </div>
+    </Liquid>
   );
 };
 

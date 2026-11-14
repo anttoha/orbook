@@ -16,6 +16,7 @@ import CodeQr from "./CodeQr";
 import CodeReveal from "./CodeReveal";
 import RightsFields from "./RightsFields";
 import ValidFields from "./ValidFields";
+import Liquid from "../ui/Liquid";
 
 // Значення праворуч у шторці телефона: «Eintragen, eigene», «31. Juli»
 const hintOf = (kind, code) => ({ rights: rightsText(code.rights, code.kind), validity: validText(code) })[kind];
@@ -28,7 +29,7 @@ const ActionsSheet = ({ code, onAction, onClose }) => {
       <p className="-mt-2 text-body-sm text-muted">
         {entriesCount(code)} Einträge · {lastUsedText(code.lastUsedAt, today)}
       </p>
-      <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
+      <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
         {codeActions(code).map((item) => (
           <li key={item.kind}>
             <button type="button" onClick={() => onAction(item.kind, code)} className={cn("flex h-12.5 w-full items-center gap-3.25 text-left", item.danger ? "text-danger" : "text-ink")}>
@@ -39,7 +40,7 @@ const ActionsSheet = ({ code, onAction, onClose }) => {
             </button>
           </li>
         ))}
-      </ul>
+      </Liquid>
       <p className="flex gap-2.5 rounded-card bg-sand px-3.5 py-3 text-label text-muted">
         <Info className="mt-0.5 size-4 shrink-0" /> Einträge dieses Codes bleiben beim Löschen erhalten.
       </p>

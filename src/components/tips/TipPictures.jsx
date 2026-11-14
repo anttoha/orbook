@@ -3,6 +3,7 @@ import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
 import { fachClasses } from "../../shared/utils/lessons";
 import { CheckIcon, FlagIcon, SyncIcon } from "../ui/icons";
+import Liquid from "../ui/Liquid";
 
 // Картинки к «Kurz erklärt» (макеты 25 handy-13…15): не скриншоты, а простые схемы из тех же токенов
 
@@ -57,13 +58,13 @@ export const MenuPicture = () => {
         <p className="text-caption font-bold opacity-80">2. Stunde</p>
         <p className="text-row font-extrabold">Mathe</p>
       </div>
-      <ul className="mt-2.5 ml-10 rounded-field bg-card p-1.5 shadow-menu">
+      <Liquid as="ul" refract press={false} className="mt-2.5 ml-10 rounded-field bg-card p-1.5 shadow-menu">
         {MENU.map((item) => (
           <li key={item.text} className={cn("flex items-center gap-2.5 px-2.5 py-1.75 text-label", item.accent ? "font-bold text-accent-ink" : "text-ink")}>
             <item.icon className={cn("size-4 shrink-0", item.accent ? "text-accent-ink" : "text-muted")} /> {item.text}
           </li>
         ))}
-      </ul>
+      </Liquid>
       <Tap className="top-6 right-8" />
     </div>
   );
@@ -81,13 +82,13 @@ export const TasksPicture = () => {
   return (
     <div className={cn(frame, "gap-2")}>
       {TASKS.map((task) => (
-        <div key={task.text} className="flex items-center gap-3 rounded-field bg-card px-2.5 py-2">
+        <Liquid as="div" refract press={false} key={task.text} className="flex items-center gap-3 rounded-field bg-card px-2.5 py-2">
           <span className={cn("grid size-8 shrink-0 place-items-center rounded-tile text-note font-black", task.code ? fachClasses(task.code, overrides) : "bg-sand text-muted")}>
             {task.code ?? <UserRound className="size-4" />}
           </span>
           <span className={cn("flex-1 text-row font-extrabold", task.done ? "text-faint line-through" : "text-ink")}>{task.text}</span>
           <span className={cn("grid size-6.5 place-items-center rounded-full", task.done ? "bg-accent text-on-accent" : "border-2 border-faint2")}>{task.done && <CheckIcon className="size-3.5" />}</span>
-        </div>
+        </Liquid>
       ))}
       <p className="mt-1 flex items-center justify-center gap-1.5 text-label font-bold text-accent-ink">
         <Smartphone className="size-4" /> <SyncIcon className="size-4" /> <Monitor className="size-4" /> per Sync-Code

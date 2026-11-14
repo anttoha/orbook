@@ -2,6 +2,7 @@ import { ExternalLink } from "lucide-react";
 import { useUserStore } from "../../shared/store/userStore";
 import { materialMeta } from "../../shared/utils/materials";
 import MaterialTile from "../materials/MaterialTile";
+import Liquid from "../ui/Liquid";
 
 // ─────────────────────────────────────────────────────────────
 // В окне записи (макет 24 handy-09): «Was lernen, was mitbringen» и «Materialien».
@@ -22,7 +23,7 @@ const EntryExtras = ({ entry, detailsTitle = "Was lernen, was mitbringen" }) => 
       {materials.length > 0 && (
         <section className="flex flex-col gap-2.5">
           <h3 className="text-hint font-extrabold text-faint">Materialien</h3>
-          <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
+          <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
             {materials.map((item) => (
               <li key={item.id}>
                 <a href={item.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 py-3 outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
@@ -36,7 +37,7 @@ const EntryExtras = ({ entry, detailsTitle = "Was lernen, was mitbringen" }) => 
                 </a>
               </li>
             ))}
-          </ul>
+          </Liquid>
         </section>
       )}
     </>

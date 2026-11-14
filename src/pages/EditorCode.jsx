@@ -9,6 +9,7 @@ import { useEditorUnlock } from "../shared/hooks/useEditorUnlock";
 import { usePlanStore } from "../shared/store/planStore";
 import { fullDate } from "../shared/utils/examRules";
 import { useClassEyebrow } from "../shared/hooks/useClassEyebrow";
+import Liquid from "../components/ui/Liquid";
 
 // Куди після коду (?weiter=…): лише наші адреси, не з параметра
 const NEXT = { neu: "/testen/neu", hausaufgabe: "/testen/hausaufgaben/neu", material: "/materialien/neu", termin: "/testen/termine/neu" };
@@ -51,10 +52,10 @@ const ActiveCode = ({ editor }) => {
 
   return (
     <div className="mt-5 flex flex-1 flex-col gap-4.5">
-      <div className="rounded-card bg-card px-4 py-3.5">
+      <Liquid as="div" refract press={false} className="rounded-card bg-card px-4 py-3.5">
         <p className="text-body font-bold text-ink">{editor.label}</p>
         {editor.validUntil && <p className="mt-0.5 text-hint text-muted">gültig bis {fullDate(editor.validUntil)}</p>}
-      </div>
+      </Liquid>
       <Button variant="danger" onClick={remove} disabled={busy} className="flex-none">
         <TrashIcon className="size-4" /> Code entfernen
       </Button>

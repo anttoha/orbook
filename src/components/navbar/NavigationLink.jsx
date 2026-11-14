@@ -1,6 +1,8 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
+import { useLiquid } from "../../shared/hooks/useLiquid";
 
 // ─────────────────────────────────────────────────────────────
 // Пункт меню сайдбара: іконка + підпис (+ лічильник праворуч).
@@ -10,8 +12,11 @@ import { cn } from "../../shared/utils/cn";
 // ─────────────────────────────────────────────────────────────
 const NavigationLink = ({ active, tab, isHidden = false, badge = null, index = 0, className = "", iconClassName = "", textClassName = "" }) => {
   const t = useT();
+  const self = useRef(null);
+  useLiquid(self, { lean: 4, stretch: 0.08 }); // «Glas»: пункт меню раздувается и тянется за пальцем
   return (
     <Link
+      ref={self}
       to={tab.to}
       aria-current={active ? "page" : undefined}
       title={isHidden ? t(tab.label) : undefined} // підказка в згорнутому вигляді

@@ -16,6 +16,7 @@ import MusterNote from "../../muster/MusterNote";
 import PlanCheckBanner from "../../muster/PlanCheckBanner";
 import WeekLetter from "../../muster/WeekLetter";
 import { abLetter } from "../../../shared/utils/muster";
+import Liquid from "../../ui/Liquid";
 
 // Перемикач «Liste / Zeitleiste» (тільки іконки, як на макеті)
 const VIEWS = [
@@ -39,7 +40,7 @@ const DayPanel = ({ date }) => {
   const openLesson = (lesson) => openSheet("stunde", { datum: date, stunde: lesson.period, fach: lesson.subject?.code });
 
   return (
-    <section className="flex flex-col gap-3.5 rounded-card bg-card p-4.5">
+    <Liquid as="section" refract press={false} className="flex flex-col gap-3.5 rounded-card bg-card p-4.5">
       <header className="flex items-end justify-between gap-3">
         <div className="min-w-0">
           <p className="flex items-center gap-2 text-label font-extrabold text-accent">
@@ -64,7 +65,7 @@ const DayPanel = ({ date }) => {
       {day && lessons.length === 0 && <p className="py-10 text-center text-body font-bold text-faint">{freeText(day) ?? "Kein Unterricht"}</p>}
       {day && lessons.length > 0 && view === "liste" && <LessonList day={day} lessons={lessons} onOpen={openLesson} />}
       {day && lessons.length > 0 && view === "zeitleiste" && <Timeline day={day} lessons={lessons} onOpen={openLesson} />}
-    </section>
+    </Liquid>
   );
 };
 

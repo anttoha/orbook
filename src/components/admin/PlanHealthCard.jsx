@@ -4,6 +4,7 @@ import { cn } from "../../shared/utils/cn";
 import Badge from "../ui/Badge";
 import { RenewIcon } from "../ui/icons";
 import PillButton from "../ui/PillButton";
+import Liquid from "../ui/Liquid";
 
 const BAR = { ok: "bg-ok", error: "bg-danger" }; // null (опиту не було) — сірий
 const CHIP = { ok: "ok", warn: "changed", error: "danger" };
@@ -32,7 +33,7 @@ const PlanHealthCard = ({ overview, baseUrl, classCount, withButton }) => {
   const server = serverLine(baseUrl, classCount, plan.hours);
 
   return (
-    <div className="rounded-card bg-card p-3.5 lg:p-3.5">
+    <Liquid as="div" refract press={false} className="rounded-card bg-card p-3.5 lg:p-3.5">
       <div className="flex items-center gap-2">
         <span className={cn("size-2.5 shrink-0 rounded-full", health.dot)} />
         <p className="min-w-0 flex-1 truncate text-subhead font-extrabold text-ink">{health.title}</p>
@@ -49,7 +50,7 @@ const PlanHealthCard = ({ overview, baseUrl, classCount, withButton }) => {
           <RenewIcon className={cn("size-4", refresh.busy && "animate-spin")} /> Plan jetzt neu laden
         </PillButton>
       )}
-    </div>
+    </Liquid>
   );
 };
 

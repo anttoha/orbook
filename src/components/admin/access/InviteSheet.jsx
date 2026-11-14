@@ -12,6 +12,7 @@ import Switch from "../../ui/Switch";
 import InviteCard, { InviteCardSkeleton } from "../../invite/InviteCard";
 import QrFullscreen from "../../invite/QrFullscreen";
 import PrintChooser, { PrintRow } from "../../print/PrintChooser";
+import Liquid from "../../ui/Liquid";
 
 // Рядок картки: значок, підпис, праворуч перемикач або «›»
 const Row = ({ icon: Icon, label, hint, checked, onToggle, onClick }) => {
@@ -60,12 +61,12 @@ const InviteSheet = ({ code: start, onClose, onRenew }) => {
     if (!url) {
       // ключ сервера змінили — старе посилання не прочитати, потрібне нове
       return (
-        <div className="flex flex-col gap-3 rounded-card bg-card p-4 text-body-sm text-muted">
+        <Liquid as="div" refract press={false} className="flex flex-col gap-3 rounded-card bg-card p-4 text-body-sm text-muted">
           Dieser Link kann nicht mehr angezeigt werden. Erzeuge einen neuen.
           <Button variant="primary" className="flex-none" onClick={onRenew}>
             <RenewIcon className="size-4" /> Neuen Link erzeugen
           </Button>
-        </div>
+        </Liquid>
       );
     }
     return <InviteCard url={url} className={className} off={off} onBig={isDesktop ? () => setBig(true) : null} />;
@@ -83,13 +84,13 @@ const InviteSheet = ({ code: start, onClose, onRenew }) => {
       <>
       {renderCard()}
       {invite && (
-        <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
+        <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
           {!isDesktop && url && <Row icon={Maximize} label="QR groß zeigen" hint="Beamer" onClick={() => setBig(true)} />}
           <Row icon={Link2} label="Link aktiv" checked={invite.active} onToggle={(on) => toggle("active", on, on ? "Link eingeschaltet" : "Link ausgeschaltet")} />
           {/* одноклассникам — лише посилання групи; особисте — для однієї людини */}
           {code.audience === "group" && <Row icon={Users} label="Mitschüler dürfen teilen" checked={invite.shared} onToggle={(on) => toggle("shared", on, on ? "Mitschüler sehen den Link unter »Klasse einladen«" : "Mitschüler sehen den Link nicht mehr")} />}
           <Row icon={RenewIcon} label="Neuen Link erzeugen" hint="alter geht aus" onClick={onRenew} />
-        </ul>
+        </Liquid>
       )}
       <p className="text-caption text-faint">
         {code.audience === "group"

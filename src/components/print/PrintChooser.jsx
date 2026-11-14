@@ -6,17 +6,18 @@ import { CheckIcon } from "../ui/icons";
 import Switch from "../ui/Switch";
 import ClassSheet from "./ClassSheet";
 import { usePrint } from "../../shared/hooks/usePrint";
+import Liquid from "../ui/Liquid";
 
 // Строка «Blatt für die Klasse drucken» в окне «Einladen» (макет 25 handy-10)
 export const PrintRow = ({ onClick }) => (
-  <button type="button" onClick={onClick} className="flex items-center gap-3 rounded-card border border-accent bg-card px-3.5 py-3 text-left outline-none transition-[background-color,scale] duration-150 hover:bg-tint focus-visible:ring-2 focus-visible:ring-accent/50 active:scale-98">
+  <Liquid as="button" refract type="button" onClick={onClick} className="flex items-center gap-3 rounded-card border border-accent bg-card px-3.5 py-3 text-left outline-none transition-[background-color,scale] duration-150 hover:bg-tint focus-visible:ring-2 focus-visible:ring-accent/50 active:scale-98">
     <Printer className="size-5 shrink-0 text-accent-ink" />
     <span className="min-w-0 flex-1">
       <span className="block text-row font-bold text-accent-ink">Blatt für die Klasse drucken</span>
       <span className="block text-caption text-faint">A4 · Aushang oder Kärtchen zum Verteilen</span>
     </span>
     <ChevronRight className="size-4 shrink-0 text-faint2" />
-  </button>
+  </Liquid>
 );
 
 const KINDS = [
@@ -86,13 +87,13 @@ const PrintChooser = ({ url, className, onBack }) => {
             ))}
           </div>
           {kind === "aushang" && (
-            <div className="flex items-center gap-3 rounded-card bg-card px-3.5 py-3.5">
+            <Liquid as="div" refract press={false} className="flex items-center gap-3 rounded-card bg-card px-3.5 py-3.5">
               <span className="min-w-0 flex-1">
                 <span className="block text-row text-ink">Kurze Anleitung aufs Blatt</span>
                 <span className="block text-caption text-faint">3 Schritte: scannen, Kurse wählen, fertig</span>
               </span>
               <Switch checked={steps} onChange={setSteps} label="Kurze Anleitung aufs Blatt" />
-            </div>
+            </Liquid>
           )}
           <p className="text-caption text-faint">Link aus = Blatt geht nicht mehr.</p>
         </div>

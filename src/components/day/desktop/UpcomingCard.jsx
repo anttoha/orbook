@@ -5,6 +5,7 @@ import { usePlanStore } from "../../../shared/store/planStore";
 import { examWhen, lessonBadge, lessonName, subjectName, weekdayShort } from "../../../shared/utils/format";
 import { upcomingChanges } from "../../../shared/utils/lessons";
 import { FlagIcon } from "../../ui/icons";
+import Liquid from "../../ui/Liquid";
 
 // Бейдж уроку → слово праворуч у рядку
 const CHANGE_WORDS = { VERTRETUNG: "Vertretung", "FÄLLT AUS": "fällt aus", RAUM: "Raumwechsel", TEST: "Test" };
@@ -29,7 +30,7 @@ const UpcomingCard = ({ days, today }) => {
   return (
     <section className="flex flex-col gap-2.5">
       <h2 className="px-1 text-label font-extrabold text-faint">Kommt noch</h2>
-      <div className="flex flex-col divide-y divide-hair rounded-card bg-card px-4">
+      <Liquid as="div" refract press={false} className="flex flex-col divide-y divide-hair rounded-card bg-card px-4">
         {changes.map(({ date, weekday, lesson }) => {
           const Icon = lesson.status === "cancelled" ? CircleSlash : RefreshCw; // значок
           return (
@@ -68,7 +69,7 @@ const UpcomingCard = ({ days, today }) => {
             <ChevronRight className="size-4 shrink-0 text-faint" />
           </Link>
         )}
-      </div>
+      </Liquid>
     </section>
   );
 };

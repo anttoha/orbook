@@ -1,5 +1,6 @@
 import { sentLabel } from "../../../shared/utils/channels";
 import { sentWhere } from "../../../shared/utils/telegram";
+import Liquid from "../../ui/Liquid";
 
 // «Zuletzt gesendet»: заголовок сообщения, когда и куда (группа или «18 Chats» личного бота)
 const RecentList = ({ items }) => {
@@ -7,7 +8,7 @@ const RecentList = ({ items }) => {
   return (
     <section className="flex flex-col gap-2.5">
       <h2 className="text-hint font-extrabold text-faint">Zuletzt gesendet</h2>
-      <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
+      <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
         {items.slice(0, 5).map((item) => (
           <li key={`${item.kind}-${item.sentAt}`} className="flex items-center justify-between gap-3 py-2.5">
             <span className="min-w-0">
@@ -19,7 +20,7 @@ const RecentList = ({ items }) => {
             </span>
           </li>
         ))}
-      </ul>
+      </Liquid>
     </section>
   );
 };

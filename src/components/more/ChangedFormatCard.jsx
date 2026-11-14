@@ -3,6 +3,7 @@ import Segmented from "../ui/Segmented";
 import { useUserStore } from "../../shared/store/userStore";
 import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
+import Liquid from "../ui/Liquid";
 
 // Підписи сегмента — самі вже приклад формату
 const FORMATS = [
@@ -42,7 +43,7 @@ const ChangedFormatCard = () => {
   return (
     <section>
       <h2 className="mb-2.5 text-hint font-extrabold text-faint">{t("Plan")}</h2>
-      <div className="flex flex-col gap-3 rounded-card bg-card p-3.5">
+      <Liquid as="div" refract press={false} className="flex flex-col gap-3 rounded-card bg-card p-3.5">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
             <p className="text-row text-ink">{t("Änderung unter dem Tag")}</p>
@@ -58,7 +59,7 @@ const ChangedFormatCard = () => {
           ))}
         </div>
         <p className="text-caption text-faint">{t("Am selben Tag steht nur die Uhrzeit, z. B. 07:08.")}</p>
-      </div>
+      </Liquid>
     </section>
   );
 };

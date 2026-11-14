@@ -21,13 +21,14 @@ const Segmented = ({ options, value, onChange, label, className, variant = "card
   const index = options.findIndex((option) => option.value === value); // котрий вибраний (-1 — жоден)
   const glass = useGlass();
 
-  // «Glas»: перемикач із бібліотеки — вибране стає лінзою, її можна тягти (тільки іконки — лишаємо наш)
-  if (glass && !iconOnly) {
+  // «Glas»: перемикач із бібліотеки — вибране стає лінзою, її можна тягти.
+  // Тільки іконки: підписи лишаються для скрінрідера, а на екрані сховані (клас orb-icons-only в index.css)
+  if (glass) {
     return (
       <GlassSegmented
         aria-label={label && t(label)}
-        className={className}
-        size={size === "sm" ? "sm" : "md"}
+        className={cn(className, iconOnly && "orb-icons-only")}
+        size={size === "sm" || iconOnly ? "sm" : "md"}
         value={Math.max(0, index)}
         onChange={(i) => onChange(options[i].value)}
         options={options.map((option) => (option.icon ? { label: t(option.label), icon: <option.icon className="size-3.75" /> } : t(option.label)))}

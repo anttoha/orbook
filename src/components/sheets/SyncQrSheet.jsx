@@ -4,6 +4,7 @@ import { OwnDevicesOnly } from "../sync/SyncQr";
 import Button from "../ui/Button";
 import QrCode from "../ui/QrCode";
 import Sheet from "../ui/Sheet";
+import Liquid from "../ui/Liquid";
 
 // ─────────────────────────────────────────────────────────────
 // «Sync-Code als QR» (макет 25 handy-08): второй телефон сканирует обычной камерой,
@@ -14,11 +15,11 @@ const SyncQrSheet = ({ open, onClose }) => {
   return (
     <Sheet open={open} onClose={onClose} desktop="qr" eyebrow="Nur für deine Geräte" title="Sync-Code als QR">
       {code ? (
-        <div className="flex flex-col items-center rounded-panel bg-card px-4 pt-5.5 pb-6 text-center">
+        <Liquid as="div" refract press={false} className="flex flex-col items-center rounded-panel bg-card px-4 pt-5.5 pb-6 text-center">
           <QrCode value={codeLink("sync", code, window.location.origin)} label="QR-Code mit deinem Sync-Code" className="size-52 motion-safe:animate-pop-in" />
           <p className="mt-6 text-row font-black tracking-code text-ink">{code}</p>
           <p className="mt-2 text-label text-faint">Mit der Kamera des anderen Handys scannen</p>
-        </div>
+        </Liquid>
       ) : (
         <p className="text-body-sm text-muted">Noch kein Sync-Code auf diesem Gerät.</p>
       )}

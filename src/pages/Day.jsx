@@ -34,6 +34,7 @@ import { freeText, isPlanDown } from "../shared/utils/lessons";
 import MusterNote from "../components/muster/MusterNote";
 import DayCheckRow from "../components/live/DayCheckRow";
 import PlanCheckBanner from "../components/muster/PlanCheckBanner";
+import Liquid from "../components/ui/Liquid";
 
 // Варіанти перемикача вигляду
 const VIEWS = [
@@ -145,10 +146,10 @@ const Day = () => {
 
   // План є, але всі уроки сховані
   const allHidden = day?.status === "ok" && lessons.length === 0 && (
-    <div className="rounded-card bg-card px-4 py-10 text-center">
+    <Liquid as="div" refract press={false} className="rounded-card bg-card px-4 py-10 text-center">
       <p className="text-subhead text-ink">Kein Unterricht</p>
       <p className="mt-1 text-label font-bold text-faint">{hiddenHere > 0 ? "Alle Kurse ausgeblendet" : "Keine Stunden"}</p>
-    </div>
+    </Liquid>
   );
 
   // Кнопка «показати сховані курси»

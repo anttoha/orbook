@@ -21,6 +21,7 @@ import { useAdminStore } from "../shared/store/adminStore";
 import { hostOf, storageText } from "../shared/utils/admin";
 import { cn } from "../shared/utils/cn";
 import RoundButton from "../components/ui/RoundButton";
+import Liquid from "../components/ui/Liquid";
 
 // Кнопки в шапці ПК: «Plan neu laden», «Neuer Editor-Code»
 const DesktopActions = () => {
@@ -68,13 +69,13 @@ const CodesPanel = ({ today }) => {
           Alle
         </Link>
       </div>
-      <div className="rounded-card bg-card px-5 pt-4.5 pb-1">
+      <Liquid as="div" refract press={false} className="rounded-card bg-card px-5 pt-4.5 pb-1">
         {codes.length ? (
           <CodeTable compact codes={codes} today={today} onToggle={toggle} onAction={(kind, code) => (kind === "lock" ? toggle(code) : setAction({ kind, code }))} />
         ) : (
           <p className="pb-4 text-body-sm text-muted">Noch keine Editor-Codes.</p>
         )}
-      </div>
+      </Liquid>
       <CodeDialogs action={action} onChange={setAction} />
     </section>
   );

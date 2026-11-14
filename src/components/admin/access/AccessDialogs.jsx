@@ -18,6 +18,7 @@ import { accessActions, passwordActions } from "./accessActions";
 import DevicesField from "./DevicesField";
 import InviteSheet from "./InviteSheet";
 import ShowCodeSheet from "./ShowCodeSheet";
+import Liquid from "../../ui/Liquid";
 
 // Значення праворуч у шторці: «30», «Schuljahresende», «9 angemeldet»
 const hintOf = (item, code) =>
@@ -31,7 +32,7 @@ const ActionsSheet = ({ code, onAction, onClose }) => {
       <p className="-mt-2 text-body-sm text-muted">
         {devicesText(code.devices, code.maxDevices)} · {lastUsedText(code.lastUsedAt, today)}
       </p>
-      <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
+      <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
         {accessActions(code).map((item) => (
           <li key={item.kind}>
             <button type="button" onClick={() => onAction(item.kind, code)} className={cn("flex h-12.5 w-full items-center gap-3.25 text-left", item.danger ? "text-danger" : item.accent ? "text-accent-ink" : "text-ink")}>
@@ -42,7 +43,7 @@ const ActionsSheet = ({ code, onAction, onClose }) => {
             </button>
           </li>
         ))}
-      </ul>
+      </Liquid>
       <p className="flex gap-2.5 rounded-card bg-sand px-3.5 py-3 text-label text-muted">
         <Info className="mt-0.5 size-4 shrink-0" /> Sperren, Löschen, Abmelden: die Geräte müssen sich sofort neu anmelden. Andere Codes bleiben.
       </p>
@@ -58,7 +59,7 @@ const PasswordSheet = ({ password, onAction, onClose }) => {
       <p className="-mt-2 text-body-sm text-muted">
         {password.devices} {password.devices === 1 ? "Gerät" : "Geräte"} · {lastUsedText(password.lastUsedAt, today)}
       </p>
-      <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
+      <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
         {passwordActions(password).map((item) => (
           <li key={item.kind}>
             <button type="button" onClick={() => onAction(item.kind)} className="flex h-12.5 w-full items-center gap-3.25 text-left text-ink">
@@ -68,7 +69,7 @@ const PasswordSheet = ({ password, onAction, onClose }) => {
             </button>
           </li>
         ))}
-      </ul>
+      </Liquid>
     </Sheet>
   );
 };

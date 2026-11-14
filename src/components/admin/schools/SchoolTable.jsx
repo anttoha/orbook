@@ -6,6 +6,7 @@ import { menuContentClass, menuIconClass, menuItemClass } from "../../ui/menuSty
 import SchoolHead from "./SchoolHead";
 import PillButton from "../../ui/PillButton";
 import RoundButton from "../../ui/RoundButton";
+import Liquid from "../../ui/Liquid";
 
 const cell = "py-3.5 pr-4 text-body-sm";
 
@@ -30,7 +31,7 @@ const ClassMenu = ({ item, onDelete }) => (
 // Школа на ПК (макет 29 pc-03): шапка с «Zugang ändern» и «Code für neue Klasse», ниже таблица классов
 // ─────────────────────────────────────────────────────────────
 const SchoolTable = ({ school, colorOf, onOpen, onEdit, onNewCode, onDelete }) => (
-  <article className="rounded-card bg-card px-5 pt-4.5 pb-1.5">
+  <Liquid as="article" refract press={false} className="rounded-card bg-card px-5 pt-4.5 pb-1.5">
     <div className="flex items-center gap-4 border-b border-hair pb-4">
       <SchoolHead school={school}>
         <button type="button" onClick={() => onEdit(school)} className="shrink-0 px-2 text-row font-extrabold text-accent-ink">
@@ -79,7 +80,7 @@ const SchoolTable = ({ school, colorOf, onOpen, onEdit, onNewCode, onDelete }) =
         </tbody>
       </table>
     )}
-  </article>
+  </Liquid>
 );
 
 export default SchoolTable;

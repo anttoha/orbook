@@ -1,9 +1,10 @@
 import { Megaphone, Send } from "lucide-react";
 import Button from "../../ui/Button";
+import Liquid from "../../ui/Liquid";
 
 // Ещё нет группы (макет 27 handy-02). Бот на сервере не настроен — подсказка для владельца
 const ConnectHero = ({ botConfigured, onConnect }) => (
-  <section className="flex flex-col items-center gap-1.5 rounded-card bg-card px-4.5 pt-5.5 pb-4.5 text-center">
+  <Liquid as="section" refract press={false} className="flex flex-col items-center gap-1.5 rounded-card bg-card px-4.5 pt-5.5 pb-4.5 text-center">
     <span className="mb-2 grid size-13 place-items-center rounded-full bg-tint text-accent-ink">
       <Megaphone className="size-6" aria-hidden="true" />
     </span>
@@ -16,7 +17,7 @@ const ConnectHero = ({ botConfigured, onConnect }) => (
         <Send className="size-4" /> Telegram verbinden
       </Button>
     )}
-  </section>
+  </Liquid>
 );
 
 export default ConnectHero;

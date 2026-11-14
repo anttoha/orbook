@@ -33,7 +33,6 @@ const SideNavHeader = ({ isHidden, onChangeIsHidden }) => {
 
       {/* згорнути / розгорнути */}
       <RoundButton
-       
         onClick={() => onChangeIsHidden((prev) => !prev)}
         aria-label={isHidden ? "Seitenleiste ausklappen" : "Seitenleiste einklappen"} look="ml-auto grid size-9.5 shrink-0 cursor-pointer place-items-center rounded-full text-faint transition-colors hover:bg-sand">
         <PanelLeft className="size-4.5" />

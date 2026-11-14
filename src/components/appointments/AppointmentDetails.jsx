@@ -1,6 +1,7 @@
 import { Info, MapPin, UserRound } from "lucide-react";
 import { usePlanStore } from "../../shared/store/planStore";
 import { audienceText, sourceText } from "../../shared/utils/appointments";
+import Liquid from "../ui/Liquid";
 
 const box = "flex gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-muted";
 
@@ -8,7 +9,7 @@ const box = "flex gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-mut
 export const PlaceAndNote = ({ item }) => {
   if (!item.place && !item.note) return null;
   return (
-    <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
+    <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
       {item.place && (
         <li className="flex gap-2.5 py-3 text-body text-ink">
           <MapPin className="mt-0.5 size-4 shrink-0 text-muted" /> {item.place}
@@ -19,7 +20,7 @@ export const PlaceAndNote = ({ item }) => {
           <Info className="mt-0.5 size-4 shrink-0 text-muted" /> {item.note}
         </li>
       )}
-    </ul>
+    </Liquid>
   );
 };
 

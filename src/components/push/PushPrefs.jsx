@@ -3,6 +3,7 @@ import { pushErrorText, usePushStore } from "../../shared/store/pushStore";
 import { PUSH_PREFS } from "../../shared/utils/push";
 import { cn } from "../../shared/utils/cn";
 import RowSwitch from "../ui/RowSwitch";
+import Liquid from "../ui/Liquid";
 
 // «Benachrichtige mich»: четыре строки, вся строка — переключатель (пальцем легче попасть, чем в тумблер).
 // disabled — Mitteilungen на устройстве ещё не включены: видно, что будет, но серым
@@ -16,7 +17,7 @@ const PushPrefs = ({ reminderTime = "18:00", disabled = false }) => {
   return (
     <section className={cn("flex flex-col gap-2.5", disabled && "opacity-55")}>
       <h2 className="text-hint font-extrabold text-faint">Benachrichtige mich</h2>
-      <ul className="overflow-hidden rounded-card bg-card">
+      <Liquid as="ul" refract press={false} className="overflow-hidden rounded-card bg-card">
         {PUSH_PREFS.map((pref) => {
           const on = Boolean(prefs[pref.key]) && !disabled;
           return (
@@ -36,7 +37,7 @@ const PushPrefs = ({ reminderTime = "18:00", disabled = false }) => {
             </li>
           );
         })}
-      </ul>
+      </Liquid>
     </section>
   );
 };

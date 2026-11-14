@@ -7,6 +7,7 @@ import { firstOfMonth } from "../../shared/utils/calendar";
 import { addDays, mondayOf } from "../../shared/utils/format";
 import MonthGrid from "../ui/MonthGrid";
 import MonthNav from "../ui/MonthNav";
+import Liquid from "../ui/Liquid";
 
 // Усі дні, які займають терміни (крапки в календарі)
 const coveredDays = (items) => {
@@ -48,10 +49,10 @@ const AppointmentsAside = ({ next, items }) => {
           </span>
         </button>
       )}
-      <section aria-label="Kalender" className="flex flex-col gap-3 rounded-card bg-card p-4">
+      <Liquid as="section" refract press={false} aria-label="Kalender" className="flex flex-col gap-3 rounded-card bg-card p-4">
         <MonthNav month={month} onChange={setMonth} titleClassName="text-number" />
         <MonthGrid month={month} today={today} highlight={mondayOf(today)} rowShape="tile" examDays={coveredDays(items)} onPick={pick} />
-      </section>
+      </Liquid>
     </aside>
   );
 };

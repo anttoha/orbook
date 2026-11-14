@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { eventTime } from "../../shared/utils/admin";
 import EventIcon from "./EventIcon";
+import Liquid from "../ui/Liquid";
 
 // «Letzte Aktivität» (до 5 записів з overview.events) і посилання на весь Protokoll
 const RecentEvents = ({ events, today, linkLabel }) => (
@@ -12,7 +13,7 @@ const RecentEvents = ({ events, today, linkLabel }) => (
       </Link>
     </div>
     {events.length ? (
-      <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
+      <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
         {events.map((event) => (
           <li key={event.id} className="flex items-center gap-3 py-3">
             <EventIcon event={event} className="size-4.5 shrink-0" />
@@ -20,7 +21,7 @@ const RecentEvents = ({ events, today, linkLabel }) => (
             <span className="shrink-0 text-label text-faint">{eventTime(event.ts, today, { withTime: false })}</span>
           </li>
         ))}
-      </ul>
+      </Liquid>
     ) : (
       <p className="rounded-card bg-card px-3.5 py-4 text-body-sm text-muted">Noch keine Einträge.</p>
     )}

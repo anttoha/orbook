@@ -5,6 +5,7 @@ import { DESKTOP_QUERY, useMediaQuery } from "../../../shared/hooks/useMediaQuer
 import { abLetter } from "../../../shared/utils/muster";
 import WeekLetter from "../../muster/WeekLetter";
 import Sheet from "../../ui/Sheet";
+import Liquid from "../../ui/Liquid";
 
 // Як зараз рахуються тижні (muster.abMode) — підпис під «Diese Woche · KW 45»
 const MODE_TEXT = { school: "Laut Plan der Schule", swap: "A und B getauscht", none: "Keine Wochen A und B" };
@@ -30,10 +31,10 @@ const AbSwitch = ({ kw, data, children }) => {
   if (!isDesktop) {
     return (
       <>
-        <button type="button" onClick={() => setOpen(true)} className="flex items-center gap-3 rounded-card bg-card px-3.5 py-3 text-left">
+        <Liquid as="button" refract type="button" onClick={() => setOpen(true)} className="flex items-center gap-3 rounded-card bg-card px-3.5 py-3 text-left">
           {summary}
           <ChevronRight className="size-4 shrink-0 text-faint2" />
-        </button>
+        </Liquid>
         <Sheet open={open} onClose={() => setOpen(false)} eyebrow="Muster · Woche A und B" title="Woche A oder B?">
           {children}
         </Sheet>
@@ -42,7 +43,7 @@ const AbSwitch = ({ kw, data, children }) => {
   }
 
   return (
-    <div className="rounded-card bg-card px-5 py-4.5">
+    <Liquid as="div" refract press={false} className="rounded-card bg-card px-5 py-4.5">
       <p className="mb-2 text-hint font-extrabold text-faint">Wochen A und B</p>
       <div className="flex items-center gap-3">
         {summary}
@@ -57,7 +58,7 @@ const AbSwitch = ({ kw, data, children }) => {
           </Popover.Portal>
         </Popover.Root>
       </div>
-    </div>
+    </Liquid>
   );
 };
 

@@ -3,6 +3,7 @@ import { cn } from "../../shared/utils/cn";
 import { addDays, numericDate, subjectName, weekdayLong } from "../../shared/utils/format";
 import { CalendarIcon } from "../ui/icons";
 import TextField from "../ui/TextField";
+import Liquid from "../ui/Liquid";
 
 const row = "flex w-full items-center gap-3 rounded-field px-3.5 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent/50";
 
@@ -29,7 +30,7 @@ const DueChoice = ({ subject, options, value, error, today, onChange }) => {
   return (
     <div>
       <p className="mb-2.25 text-hint font-extrabold text-faint">Bis wann?</p>
-      <div role="radiogroup" aria-label="Bis wann?" className="flex flex-col rounded-card bg-card p-1.5">
+      <Liquid as="div" refract press={false} role="radiogroup" aria-label="Bis wann?" className="flex flex-col rounded-card bg-card p-1.5">
         {options.map((slot, k) => (
           <Option
             key={`${slot.date}-${slot.period}`}
@@ -40,7 +41,7 @@ const DueChoice = ({ subject, options, value, error, today, onChange }) => {
           />
         ))}
         <Option title="Anderes Datum" note="im Kalender wählen" selected={custom} icon={<CalendarIcon className="size-4.5 text-faint" />} onClick={() => onChange({ due: custom ? value.due : addDays(today, 1), lesson: null })} />
-      </div>
+      </Liquid>
       {custom && <TextField id="homework-due" label="Abgabe bis" type="date" className="mt-3" value={value.due} error={error} onChange={(event) => onChange({ due: event.target.value, lesson: null })} />}
       {!custom && error && (
         <p role="alert" className="mt-1.5 text-hint text-danger">

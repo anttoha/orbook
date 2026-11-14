@@ -2,6 +2,7 @@ import { ChevronRight } from "lucide-react";
 import { useSheet } from "../../shared/hooks/useSheet";
 import { homeworkWhen, isMajorType } from "../../shared/utils/entries";
 import Badge from "../ui/Badge";
+import Liquid from "../ui/Liquid";
 
 // Серая строка рядом с бейджем Test: «Lernen: S. 40–58 · 2 Materialien»
 const examNote = (exam) => {
@@ -40,14 +41,14 @@ const LessonEntries = ({ exams, homework, lesson }) => {
       <h3 className="flex items-baseline justify-between text-hint font-extrabold text-faint">
         Für diese Stunde <span>{count === 1 ? "1 Eintrag" : `${count} Einträge`}</span>
       </h3>
-      <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
+      <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
         {exams.map((exam) => (
           <Row key={`e${exam.id}`} badge={<Badge variant={isMajorType(exam.type) ? "exam" : "soft"}>{exam.type}</Badge>} note={examNote(exam)} title={exam.topic || exam.type} onClick={() => openSheet("klausur", { id: exam.id }, { replace: true })} />
         ))}
         {homework.map((item) => (
           <Row key={`h${item.id}`} badge={<Badge variant="soft">Hausaufgabe</Badge>} note={homeworkWhen(item, lesson)} title={item.text?.split("\n")[0]} onClick={() => openSheet("hausaufgabe", { id: item.id }, { replace: true })} />
         ))}
-      </ul>
+      </Liquid>
     </section>
   );
 };

@@ -10,6 +10,7 @@ import DeleteMaterialDialog from "../materials/DeleteMaterialDialog";
 import MaterialTile from "../materials/MaterialTile";
 import { TrashIcon } from "../ui/icons";
 import Sheet from "../ui/Sheet";
+import Liquid from "../ui/Liquid";
 
 // Рядок дії, як у «Code-Aktionen» (макет 43): іконка, текст, підпис праворуч, стрілка
 const ActionRow = ({ icon: Icon, label, value, danger = false, onClick }) => (
@@ -33,13 +34,13 @@ const MaterialActions = ({ item, onClose }) => {
         <Link2 className="size-3.5 shrink-0 text-faint" />
         <span className="truncate">{shortUrl(item.url)}</span>
       </p>
-      <ul className="divide-y divide-hair rounded-card bg-card px-3.5 py-0.5">
+      <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5 py-0.5">
         <ActionRow icon={ExternalLink} label="Öffnen" value={`in ${provider}`} onClick={actions.open} />
         <ActionRow icon={Copy} label="Link kopieren" onClick={actions.copy} />
         <ActionRow icon={Share} label="Teilen" onClick={actions.share} />
         {item.canEdit && <ActionRow icon={Pencil} label="Bearbeiten" onClick={actions.edit} />}
         {item.canDelete && <ActionRow icon={TrashIcon} label="Löschen" danger onClick={actions.askDelete} />}
-      </ul>
+      </Liquid>
       <p className="text-caption text-faint">{addedText(item)}</p>
       <DeleteMaterialDialog item={item} actions={actions} />
     </>

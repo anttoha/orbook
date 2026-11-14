@@ -1,4 +1,5 @@
 import Switch from "../ui/Switch";
+import Liquid from "../ui/Liquid";
 
 // ─────────────────────────────────────────────────────────────
 // «Schüler dürfen ändern» у формах учителя (макети handy-06, handy-14, pc-03).
@@ -7,13 +8,13 @@ import Switch from "../ui/Switch";
 // ─────────────────────────────────────────────────────────────
 const StudentsMayEdit = ({ checked, onChange, note }) => (
   <div>
-    <div className="flex items-center gap-3 rounded-card bg-card px-3.75 py-3.5">
+    <Liquid as="div" refract press={false} className="flex items-center gap-3 rounded-card bg-card px-3.75 py-3.5">
       <div className="min-w-0 flex-1">
         <p className="text-body text-ink">Schüler dürfen ändern</p>
         <p className="mt-0.5 text-caption text-faint">nur Editor-Codes mit „Lehrer-Einträge ändern“</p>
       </div>
       <Switch checked={checked} onChange={onChange} label="Schüler dürfen ändern" />
-    </div>
+    </Liquid>
     {checked && note && <p className="mt-1.5 text-caption text-faint">{note}</p>}
   </div>
 );

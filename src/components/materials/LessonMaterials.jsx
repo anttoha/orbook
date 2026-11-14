@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useMaterials } from "../../shared/store/materialsStore";
 import { materialMeta } from "../../shared/utils/materials";
 import MaterialTile from "./MaterialTile";
+import Liquid from "../ui/Liquid";
 
 const SHOWN = 3; // більше — через «Alle»
 const NONE = []; // стала порожня відповідь: селектор Zustand не повинен щоразу давати новий масив
@@ -32,7 +33,7 @@ const LessonMaterials = ({ subject, overrides }) => {
           Alle
         </Link>
       </div>
-      <ul className="divide-y divide-hair rounded-card bg-card px-3">
+      <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3">
         {items.slice(0, SHOWN).map((item) => (
           <li key={item.id}>
             <a href={item.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 py-3 outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
@@ -45,7 +46,7 @@ const LessonMaterials = ({ subject, overrides }) => {
             </a>
           </li>
         ))}
-      </ul>
+      </Liquid>
     </section>
   );
 };

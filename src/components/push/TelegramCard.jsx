@@ -6,6 +6,7 @@ import { useTelegramStore } from "../../shared/store/telegramStore";
 import { botUrl, telegramState } from "../../shared/utils/telegram";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
+import Liquid from "../ui/Liquid";
 
 // Карточка «Telegram» в Mitteilungen (макет 27b handy-01/03):
 // не подключено — «Mit Telegram verbinden» (шторка ?sheet=telegram), подключено — «Bot öffnen» и «Trennen».
@@ -40,7 +41,7 @@ const TelegramCard = () => {
       <h2 className="flex items-center gap-2 text-hint font-extrabold text-faint">
         Telegram <Badge>Neu</Badge>
       </h2>
-      <div className="flex flex-col gap-3 rounded-card bg-card p-2">
+      <Liquid as="div" refract press={false} className="flex flex-col gap-3 rounded-card bg-card p-2">
         {state === "on" ? (
           <div className="flex items-center gap-3 rounded-field bg-ok-tint px-3 py-2.5">
             <span className="grid size-8 shrink-0 place-items-center rounded-full bg-card">
@@ -78,7 +79,7 @@ const TelegramCard = () => {
             </Button>
           )}
         </div>
-      </div>
+      </Liquid>
     </section>
   );
 };

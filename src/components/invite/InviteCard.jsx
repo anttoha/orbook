@@ -6,13 +6,14 @@ import { copyText, whatsappUrl } from "../../shared/utils/share";
 import Button from "../ui/Button";
 import { WhatsappIcon } from "../ui/icons";
 import QrCode from "../ui/QrCode";
+import Liquid from "../ui/Liquid";
 
 // Скелет, поки посилання вантажиться (макет handy-07)
 export const InviteCardSkeleton = () => (
-  <div className="flex flex-col items-center gap-3 rounded-card bg-card p-4">
+  <Liquid as="div" refract press={false} className="flex flex-col items-center gap-3 rounded-card bg-card p-4">
     <div className="size-42 animate-pulse rounded-field bg-skeleton" />
     <div className="h-3.25 w-50 animate-pulse rounded-full bg-skeleton" />
-  </div>
+  </Liquid>
 );
 
 // ─────────────────────────────────────────────────────────────
@@ -57,7 +58,7 @@ const InviteCard = ({ url, className, off = false, onBig, caption = "Mit der Han
   if (isDesktop) {
     return (
       <div className="flex gap-5">
-        <div className="rounded-card bg-card p-4.5">{qr}</div>
+        <Liquid as="div" refract press={false} className="rounded-card bg-card p-4.5">{qr}</Liquid>
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <p className="text-hint font-extrabold text-faint">Einladungslink</p>
           <p className={cn("-mt-1.5 truncate rounded-field bg-card px-4 py-3.5 text-body-sm font-extrabold", off ? "text-faint" : "text-accent-ink")}>{short}</p>
@@ -71,11 +72,11 @@ const InviteCard = ({ url, className, off = false, onBig, caption = "Mit der Han
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex flex-col items-center gap-2 rounded-card bg-card px-4 pt-4 pb-4.5 text-center">
+      <Liquid as="div" refract press={false} className="flex flex-col items-center gap-2 rounded-card bg-card px-4 pt-4 pb-4.5 text-center">
         {qr}
         <p className={cn("mt-2 break-all text-body-sm font-extrabold", off ? "text-faint" : "text-accent-ink")}>{short}</p>
         <p className="text-caption text-faint">{off ? "Niemand kommt mehr über diesen Link rein." : caption}</p>
-      </div>
+      </Liquid>
       {buttons}
       {big}
     </div>

@@ -7,6 +7,7 @@ import { cn } from "../../shared/utils/cn";
 import { syncedText } from "../../shared/utils/notes";
 import { CheckIcon, CopyIcon, SyncIcon, WarningIcon } from "../ui/icons";
 import RoundButton from "../ui/RoundButton";
+import Liquid from "../ui/Liquid";
 
 // ─────────────────────────────────────────────────────────────
 // Карточка «Dein Sync-Code» (макет 21, часть 25 handy-07): код, «QR» и «Kopieren», строка состояния под ним.
@@ -31,7 +32,7 @@ const SyncCodeCard = ({ code }) => {
   };
 
   return (
-    <div className="rounded-card bg-card px-4 py-4.5">
+    <Liquid as="div" refract press={false} className="rounded-card bg-card px-4 py-4.5">
       <p className="text-hint font-extrabold text-faint">Dein Sync-Code</p>
       <div className="mt-2.5 flex items-start gap-2">
         <p className="min-w-0 flex-1 text-number tracking-code text-ink">{code}</p>
@@ -43,7 +44,7 @@ const SyncCodeCard = ({ code }) => {
         </RoundButton>
       </div>
       <SyncStatus />
-    </div>
+    </Liquid>
   );
 };
 

@@ -22,6 +22,7 @@ import { useNow } from "../shared/hooks/useNow";
 import { useAdminStore } from "../shared/store/adminStore";
 import { isoWeek } from "../shared/utils/format";
 import { isOwnChange, saveLabel, slotLessons, WEEKDAYS_LONG } from "../shared/utils/musterEditor";
+import Liquid from "../components/ui/Liquid";
 
 const SOURCES = [
   { value: "auto", label: "Automatisch" },
@@ -158,7 +159,7 @@ const MusterEditor = ({ data, courses, onReload }) => {
         </div>
         {/* ПК: урок правиться в колонці праворуч (як «Tag» у PC 05) */}
         {isDesktop && editing && (
-          <aside className="sticky top-4 w-sheet shrink-0 rounded-card bg-card p-5">
+          <Liquid as="aside" refract press={false} className="sticky top-4 w-sheet shrink-0 rounded-card bg-card p-5">
             {picked ? (
               <>
                 <p className="text-caption font-extrabold text-accent-ink">{cellTitle}</p>
@@ -168,7 +169,7 @@ const MusterEditor = ({ data, courses, onReload }) => {
             ) : (
               <p className="text-body-sm text-muted">Stunde in der Tabelle wählen, um sie zu ändern.</p>
             )}
-          </aside>
+          </Liquid>
         )}
       </div>
 

@@ -4,11 +4,12 @@ import { entryHint, newsDateLong } from "../../shared/utils/changelog";
 import Badge from "../ui/Badge";
 import ChangeGroups from "./ChangeGroups";
 import NewsPicture from "./NewsPicture";
+import Liquid from "../ui/Liquid";
 
 // Одна версия в списке «Neuigkeiten»: свёрнута — дата и число изменений, открыта — все группы.
 // index — место в списке: карточки выплывают по очереди.
 const EntryCard = ({ entry, open, isNew, index, onToggle }) => (
-  <li className="rounded-card bg-card motion-safe:animate-rise-in" style={{ animationDelay: `${index * 70}ms` }}>
+  <Liquid as="li" refract press={false} className="rounded-card bg-card motion-safe:animate-rise-in" style={{ animationDelay: `${index * 70}ms` }}>
     <button type="button" onClick={onToggle} aria-expanded={open} className="flex w-full items-center gap-3 rounded-card px-4 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
       <span className="min-w-0 flex-1">
         <span className="flex items-center gap-2.5 text-body font-extrabold text-ink">
@@ -28,7 +29,7 @@ const EntryCard = ({ entry, open, isNew, index, onToggle }) => (
         </div>
       </div>
     </div>
-  </li>
+  </Liquid>
 );
 
 export default EntryCard;

@@ -11,6 +11,7 @@ import PageHeader from "../components/ui/PageHeader";
 import StateScreen from "../components/ui/StateScreen";
 import { useSyncAllowed } from "../shared/hooks/useNotesSync";
 import { useSyncStore } from "../shared/store/syncStore";
+import Liquid from "../components/ui/Liquid";
 
 // ─────────────────────────────────────────────────────────────
 // «Synchronisieren» (макет 21 / PC 27; часть 25 — handy-07, pc-02): один Sync-Code для всего —
@@ -58,13 +59,13 @@ const StartSync = () => {
   };
 
   return (
-    <div className="flex flex-col gap-3.5 rounded-card bg-card px-4 py-4.5">
+    <Liquid as="div" refract press={false} className="flex flex-col gap-3.5 rounded-card bg-card px-4 py-4.5">
       <p className="text-hint font-extrabold text-faint">Synchronisieren</p>
       <p className="text-body-sm text-ink">Noch kein Sync-Code auf diesem Gerät. Erzeuge einen, um alles auf ein anderes Gerät zu holen.</p>
       <Button variant="primary" onClick={start} disabled={busy} className="flex-none">
         <SyncIcon className="size-4" /> Code erzeugen
       </Button>
-    </div>
+    </Liquid>
   );
 };
 

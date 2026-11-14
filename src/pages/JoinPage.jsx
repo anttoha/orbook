@@ -11,6 +11,7 @@ import AuthAside from "../components/auth/AuthAside";
 import LoginForm from "../components/auth/LoginForm";
 import Button from "../components/ui/Button";
 import OrbitMark from "../components/ui/OrbitMark";
+import Liquid from "../components/ui/Liquid";
 import { previewInvite } from "../shared/api/invite";
 import { usePublicInfo } from "../shared/hooks/usePublicInfo";
 import { useT } from "../shared/hooks/useT";
@@ -24,7 +25,7 @@ import {
 
 // Картка «Klasse 9b · Einladung zu ORBook» (макет handy-11); поки перевіряємо посилання — скелет
 const InviteCard = ({ className, loading }) => (
-  <div className="flex items-center gap-3 rounded-card bg-card px-3.5 py-4">
+  <Liquid as="div" refract press={false} className="flex items-center gap-3 rounded-card bg-card px-3.5 py-4">
     {loading ? (
       <>
         <span className="size-10 shrink-0 animate-pulse rounded-full bg-skeleton" />
@@ -48,7 +49,7 @@ const InviteCard = ({ className, loading }) => (
         </span>
       </>
     )}
-  </div>
+  </Liquid>
 );
 
 // «Dieser Link gilt nicht mehr» (макет handy-13): далі звичайне поле коду

@@ -16,6 +16,7 @@ import { useNow } from "../shared/hooks/useNow";
 import { useAdminStore } from "../shared/store/adminStore";
 import { isTeacherCode } from "../shared/utils/admin";
 import RoundButton from "../components/ui/RoundButton";
+import Liquid from "../components/ui/Liquid";
 
 // Тексти двох списків: Editor-Codes (макети 41, 43) і Lehrer-Codes (частина 14, handy-10, pc-04)
 const TEXTS = {
@@ -114,9 +115,9 @@ const AdminCodes = ({ kind = "editor" }) => {
     }
     return (
       <>
-        <div className="rounded-card bg-card px-5 pt-4.5 pb-1">
+        <Liquid as="div" refract press={false} className="rounded-card bg-card px-5 pt-4.5 pb-1">
           <CodeTable codes={list} today={today} onToggle={toggle} onAction={(name, code) => (name === "lock" ? toggle(code) : setAction({ kind: name, code }))} subjectsOf={teacher ? subjectsOf : null} />
-        </div>
+        </Liquid>
       </>
     );
   };

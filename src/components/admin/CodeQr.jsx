@@ -7,6 +7,7 @@ import TeacherSheet from "../print/TeacherSheet";
 import Button from "../ui/Button";
 import { CopyIcon } from "../ui/icons";
 import QrCode from "../ui/QrCode";
+import Liquid from "../ui/Liquid";
 
 // Сегодня как «17.09.2026» — для строки «Ausgedruckt am …»
 const todayText = () => new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
@@ -26,10 +27,10 @@ const CodeQr = ({ code, kind, teacher, rights }) => {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex flex-col items-center rounded-panel bg-card px-4 pt-5 pb-5 text-center">
+      <Liquid as="div" refract press={false} className="flex flex-col items-center rounded-panel bg-card px-4 pt-5 pb-5 text-center">
         <QrCode value={url} label={kind === "teacher" ? "QR-Code mit dem Lehrer-Code" : "QR-Code mit dem Editor-Code"} className="size-44" />
         <p className="mt-3 text-caption text-faint">Scannen = Code schon eingetragen</p>
-      </div>
+      </Liquid>
       <div className="flex gap-2">
         <Button onClick={() => copyText(code)} className="flex-1">
           <CopyIcon className="size-4" /> Kopieren

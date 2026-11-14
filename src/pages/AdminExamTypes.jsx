@@ -13,6 +13,7 @@ import { loadExamTypes, saveExamTypes, saveSettings } from "../shared/api/admin"
 import { useAdminLoad } from "../shared/hooks/useAdminLoad";
 import { countText, moveRow, toPayload, toRows } from "../shared/utils/examTypes";
 import RoundButton from "../components/ui/RoundButton";
+import Liquid from "../components/ui/Liquid";
 
 // Строка вида: «⋮⋮» тянуть (порядок), имя, Kürzel, сколько записей, ✎
 const TypeRow = ({ row, onEdit, onGrab, rowRef }) => (
@@ -116,11 +117,11 @@ const AdminExamTypes = () => {
     if (!rows) return <AdminSkeleton rows={4} />;
     return (
       <>
-        <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
+        <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
           {rows.map((row, k) => (
             <TypeRow key={row.was ?? row.name} row={row} rowRef={(el) => (rowRefs.current[k] = el)} onGrab={grab(k)} onEdit={() => setEditing(k)} />
           ))}
-        </ul>
+        </Liquid>
         <Button variant="tint" className="flex-none" disabled={busy || rows.length >= 12} onClick={() => setEditing(null)}>
           <Plus className="size-4.5" /> Art hinzufügen
         </Button>
@@ -128,16 +129,16 @@ const AdminExamTypes = () => {
         <section>
           <h2 className="mb-2.5 text-hint font-extrabold text-faint">Wenn eine Stunde ausfällt</h2>
           <div className="flex flex-col gap-2.5">
-            <div className="rounded-card bg-card px-3.5">
+            <Liquid as="div" refract press={false} className="rounded-card bg-card px-3.5">
               <OptionRow label="Tests verschieben" hint="auf die nächste Stunde des Fachs">
                 <Switch checked={data.data?.examsAutoMove ?? true} label="Tests verschieben" onChange={(value) => toggle("exams", value)} />
               </OptionRow>
-            </div>
-            <div className="rounded-card bg-card px-3.5">
+            </Liquid>
+            <Liquid as="div" refract press={false} className="rounded-card bg-card px-3.5">
               <OptionRow label="Hausaufgaben verschieben" hint="Abgabe rutscht mit, wenn sie an der Stunde hängt">
                 <Switch checked={data.data?.homeworkAutoMove ?? true} label="Hausaufgaben verschieben" onChange={(value) => toggle("homework", value)} />
               </OptionRow>
-            </div>
+            </Liquid>
           </div>
           <p className="mt-2.5 text-caption text-faint">Verschobene Einträge zeigen „verschoben von …“.</p>
         </section>

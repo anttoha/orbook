@@ -33,7 +33,6 @@ const opsFor = (admin) => ({
 // Кнопка-вибір як у макеті («Ausflug», «Ganze Klasse»): вибрана — tint і рамка 2px
 const Choice = ({ selected, onClick, children }) => (
   <ChipButton
-   
     aria-pressed={selected}
     onClick={onClick} on={selected} look={cn(
       "h-9.5 rounded-full border px-3.5 text-label font-bold text-ink outline-none focus-visible:ring-2 focus-visible:ring-accent/50",

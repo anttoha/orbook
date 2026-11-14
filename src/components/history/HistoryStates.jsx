@@ -1,12 +1,13 @@
 import { RefreshCw, TriangleAlert } from "lucide-react";
 import { Skeleton } from "../ui/PlanState";
 import PillButton from "../ui/PillButton";
+import Liquid from "../ui/Liquid";
 
 // Лента ещё грузится (макет handy-05): три строки-заглушки
 export const HistorySkeleton = () => (
   <div aria-hidden="true" className="flex flex-col gap-3">
     <Skeleton className="h-3 w-60" />
-    <div className="flex flex-col divide-y divide-hair rounded-card bg-card px-3.5">
+    <Liquid as="div" refract press={false} className="flex flex-col divide-y divide-hair rounded-card bg-card px-3.5">
       {["w-24", "w-28", "w-32"].map((width, i) => (
         <div key={width} className="flex gap-3.5 py-4">
           <Skeleton className="mt-0.5 size-3 rounded-full" />
@@ -16,7 +17,7 @@ export const HistorySkeleton = () => (
           </div>
         </div>
       ))}
-    </div>
+    </Liquid>
   </div>
 );
 

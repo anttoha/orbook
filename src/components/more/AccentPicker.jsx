@@ -1,6 +1,7 @@
 import { Check } from "lucide-react";
 import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
+import Liquid from "../ui/Liquid";
 
 const ACCENTS = [
   { value: "violett", label: "Violett" },
@@ -16,7 +17,7 @@ const ACCENTS = [
 const AccentPicker = ({ value, onChange }) => {
   const t = useT();
   return (
-    <div role="radiogroup" aria-label={t("Akzentfarbe")} className="flex items-center justify-between rounded-card bg-card px-3.5 py-3">
+    <Liquid as="div" refract press={false} role="radiogroup" aria-label={t("Akzentfarbe")} className="flex items-center justify-between rounded-card bg-card px-3.5 py-3">
       {ACCENTS.map((accent) => {
         const on = accent.value === value;
         return (
@@ -35,7 +36,7 @@ const AccentPicker = ({ value, onChange }) => {
           </button>
         );
       })}
-    </div>
+    </Liquid>
   );
 };
 

@@ -2,6 +2,7 @@ import { Send } from "lucide-react";
 import { cn } from "../../../shared/utils/cn";
 import Badge from "../../ui/Badge";
 import Switch from "../../ui/Switch";
+import Liquid from "../../ui/Liquid";
 
 // Личный бот (макет 27b handy-04): работает ли бот, «Persönlicher Bot erlauben», сколько чатов — без имён
 const BotCard = ({ username, configured, enabled, chats, onToggle }) => (
@@ -21,7 +22,7 @@ const BotCard = ({ username, configured, enabled, chats, onToggle }) => (
       <h2 className="flex items-center gap-2 text-hint font-extrabold text-faint">
         Persönlicher Bot <Badge>Neu</Badge>
       </h2>
-      <div className="divide-y divide-hair rounded-card bg-card px-3.5">
+      <Liquid as="div" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
         <div className="flex items-center gap-3 py-3">
           <div className="min-w-0 flex-1">
             <p className="text-row text-ink">Persönlicher Bot erlauben</p>
@@ -35,7 +36,7 @@ const BotCard = ({ username, configured, enabled, chats, onToggle }) => (
           </div>
           <span className="text-subhead font-black text-ink">{chats ?? 0}</span>
         </div>
-      </div>
+      </Liquid>
       <p className="text-caption text-faint">Was und wann, wählt jeder im Bot selbst.</p>
     </section>
   </>

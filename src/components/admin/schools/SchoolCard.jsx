@@ -2,6 +2,7 @@ import { ChevronRight, Plus } from "lucide-react";
 import { classStats } from "../../../shared/utils/adminClasses";
 import ClassBadge from "../../ui/ClassBadge";
 import SchoolHead from "./SchoolHead";
+import Liquid from "../../ui/Liquid";
 
 // Строка класса: значок, «Klasse 9b», «27 Geräte · 4 Codes · 5 Tests», стрелка — открыть класс в админке
 const ClassRow = ({ item, color, onOpen }) => (
@@ -20,7 +21,7 @@ const ClassRow = ({ item, color, onOpen }) => (
 // colorOf(id) — цвет значка класса, как в чипе
 // ─────────────────────────────────────────────────────────────
 const SchoolCard = ({ school, colorOf, onOpen, onEdit, onNewCode }) => (
-  <article className="rounded-card bg-card px-4 pt-3.5 pb-1">
+  <Liquid as="article" refract press={false} className="rounded-card bg-card px-4 pt-3.5 pb-1">
     <button type="button" onClick={() => onEdit(school)} aria-label={`${school.name}: Zugang ändern`} className="flex w-full pb-3.5 text-left outline-none">
       <SchoolHead school={school} />
     </button>
@@ -33,7 +34,7 @@ const SchoolCard = ({ school, colorOf, onOpen, onEdit, onNewCode }) => (
       </span>
       Code für neue Klasse
     </button>
-  </article>
+  </Liquid>
 );
 
 export default SchoolCard;

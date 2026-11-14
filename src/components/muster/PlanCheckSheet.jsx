@@ -12,6 +12,7 @@ import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
 import SubjectBadge from "../ui/SubjectBadge";
+import Liquid from "../ui/Liquid";
 
 // Одна картка: що стояло в уроці → що каже справжній план → кнопки
 const CheckCard = ({ item, lessons, onDone }) => {
@@ -35,7 +36,7 @@ const CheckCard = ({ item, lessons, onDone }) => {
   };
 
   return (
-    <article className="rounded-card bg-card p-3.5">
+    <Liquid as="article" refract press={false} className="rounded-card bg-card p-3.5">
       <div className="flex items-start gap-3">
         <SubjectBadge subject={subject} size="lg" className="size-10" />
         <div className="min-w-0 flex-1">
@@ -71,7 +72,7 @@ const CheckCard = ({ item, lessons, onDone }) => {
         </Button>
       </div>
       {!isNote && !item.exam.canEdit && <p className="mt-2.5 text-caption text-faint">Ändern dürfen Lehrkräfte und Editor-Codes.</p>}
-    </article>
+    </Liquid>
   );
 };
 

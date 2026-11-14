@@ -10,6 +10,9 @@ import { cn } from "../../shared/utils/cn";
 import { standText } from "../../shared/utils/format";
 import { isTabActive } from "../../shared/utils/isTabActive";
 import NavigationLink from "./NavigationLink";
+import { useGlass } from "../../shared/hooks/useGlass";
+import RoundButton from "../ui/RoundButton";
+import Segmented from "../ui/Segmented";
 
 // Вкладка «Mehr» (частина 22: раніше «Einstellungen»): сторінки й налаштування; Statistik теж відкривається звідти
 const settingsTab = { to: "/mehr", label: "Mehr", icon: Ellipsis, activeOn: ["/statistik"] };
@@ -38,6 +41,7 @@ const SideNavFooter = ({ collapsed }) => {
   const live = usePlanStore((s) => s.live) === "live"; // часть 26: поток Live открыт
 
   const isDark = isDarkTheme(theme);
+  const glass = useGlass();
   const text = refreshing ? "Plan wird geladen…" : planText(status, today, live);
 
   return (
@@ -110,7 +114,26 @@ const SideNavFooter = ({ collapsed }) => {
         {/* Один і той самий рядок у обох виглядах (раніше в згорнутому він перебудовувався в стовпчик і стрибав).
             Згортаємо плавно: невибрана тема і «Admin» стискаються до нуля, лишається кнопка поточної теми */}
         <div className="mt-2.5 flex items-center justify-between">
-          {/* перемикач теми: ☀ / ☾ */}
+          {/* перемикач теми: ☀ / ☾. «Glas» — перемикач бібліотеки (у згорнутому сайдбарі — одна кругла кнопка) */}
+          {glass ? (
+            collapsed ? (
+              <RoundButton aria-label={isDark ? "Hell" : "Dunkel"} onClick={() => setTheme(isDark ? "light" : "dark")}>
+                {isDark ? <Moon className="size-3.5" /> : <Sun className="size-3.5" />}
+              </RoundButton>
+            ) : (
+              <Segmented
+                label="Darstellung"
+                iconOnly
+                size="sm"
+                options={[
+                  { value: "light", icon: Sun, label: "Hell" },
+                  { value: "dark", icon: Moon, label: "Dunkel" },
+                ]}
+                value={isDark ? "dark" : "light"}
+                onChange={setTheme}
+              />
+            )
+          ) : (
           <div
             role="group"
             aria-label="Darstellung"
@@ -156,6 +179,7 @@ const SideNavFooter = ({ collapsed }) => {
               );
             })}
           </div>
+          )}
 
           {/* «Admin»: у згорнутому стискається і тане */}
           <Link

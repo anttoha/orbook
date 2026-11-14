@@ -1,5 +1,6 @@
 import { subjectName, weekdayLong, longDate } from "../../shared/utils/format";
 import SubjectBadge from "../ui/SubjectBadge";
+import Liquid from "../ui/Liquid";
 
 // ─────────────────────────────────────────────────────────────
 // Карточка «Für die Stunde» / «Aufgegeben in» над формой (макеты 24 handy-04, 06):
@@ -7,7 +8,7 @@ import SubjectBadge from "../ui/SubjectBadge";
 // «Ändern» раскрывает обычные поля (onChange). time — начало урока или null
 // ─────────────────────────────────────────────────────────────
 const LessonCard = ({ title, subject, date, lesson, time, note, onChange }) => (
-  <div className="flex items-center gap-3.5 rounded-card bg-card px-3.5 py-3">
+  <Liquid as="div" refract press={false} className="flex items-center gap-3.5 rounded-card bg-card px-3.5 py-3">
     <SubjectBadge subject={subject} size="lg" />
     <div className="min-w-0 flex-1">
       <p className="text-small font-extrabold tracking-badge text-faint uppercase">{title}</p>
@@ -26,7 +27,7 @@ const LessonCard = ({ title, subject, date, lesson, time, note, onChange }) => (
         Ändern
       </button>
     )}
-  </div>
+  </Liquid>
 );
 
 export default LessonCard;

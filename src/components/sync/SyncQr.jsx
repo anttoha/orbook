@@ -2,6 +2,7 @@ import { useSyncStore } from "../../shared/store/syncStore";
 import { codeLink } from "../../shared/utils/linkCode";
 import { LockIcon } from "../ui/icons";
 import QrCode from "../ui/QrCode";
+import Liquid from "../ui/Liquid";
 
 // Подсказка под QR: код = доступ к твоим данным
 export const OwnDevicesOnly = ({ className }) => (
@@ -19,7 +20,7 @@ export const SyncQrCard = () => {
   const code = useSyncStore((s) => s.code);
   if (!code) return null;
   return (
-    <div className="hidden items-center gap-5 rounded-card bg-card p-4 motion-safe:animate-rise-in lg:flex">
+    <Liquid as="div" refract press={false} className="hidden items-center gap-5 rounded-card bg-card p-4 motion-safe:animate-rise-in lg:flex">
       <QrCode value={codeLink("sync", code, window.location.origin)} label="QR-Code mit deinem Sync-Code" className="size-40 shrink-0" />
       <div className="min-w-0">
         <p className="text-hint font-extrabold text-faint">Aufs Handy holen</p>
@@ -27,6 +28,6 @@ export const SyncQrCard = () => {
         <p className="mt-1 text-label text-faint">ORBook öffnet sich und fragt kurz nach.</p>
         <OwnDevicesOnly className="mt-3 flex gap-2 rounded-field bg-sand px-3 py-2.5 text-label text-muted" />
       </div>
-    </div>
+    </Liquid>
   );
 };

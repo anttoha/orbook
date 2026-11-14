@@ -1,11 +1,12 @@
 import { eventTime, levelOf } from "../../shared/utils/admin";
 import { cn } from "../../shared/utils/cn";
+import Liquid from "../ui/Liquid";
 
 const Dot = ({ level }) => <span className={cn("size-2 shrink-0 rounded-full", levelOf(level).dot)} />;
 
 // Телефон (макет 46): крапка, заголовок і деталь, час праворуч
 const EventCards = ({ events, today }) => (
-  <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
+  <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
     {events.map((event) => (
       <li key={event.id} className="flex gap-3 py-3">
         <span className="mt-1.75">
@@ -18,14 +19,14 @@ const EventCards = ({ events, today }) => (
         <span className="shrink-0 text-label text-faint">{eventTime(event.ts, today, { withTime: false })}</span>
       </li>
     ))}
-  </ul>
+  </Liquid>
 );
 
 const th = "pb-3 text-left text-hint font-extrabold text-faint";
 
 // ПК (макет 49): таблиця Status · Zeit · Ereignis · Details
 const EventTable = ({ events, today }) => (
-  <div className="rounded-card bg-card px-5 pt-4.5 pb-1">
+  <Liquid as="div" refract press={false} className="rounded-card bg-card px-5 pt-4.5 pb-1">
     <table className="w-full border-collapse">
       <thead className="border-b border-hair">
         <tr>
@@ -52,7 +53,7 @@ const EventTable = ({ events, today }) => (
         ))}
       </tbody>
     </table>
-  </div>
+  </Liquid>
 );
 
 // Записи Protokoll: картки на телефоні, таблиця на ПК

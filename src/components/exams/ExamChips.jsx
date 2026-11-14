@@ -34,7 +34,6 @@ const ExamChips = ({ codes, selected, filterActive, onAll, onToggle, onOpenFilte
       {/* вид і період у ряду не видно, тому кнопка сама показує, що фільтр увімкнено */}
       {onOpenFilter && (
         <RoundButton
-         
           aria-label="Filter"
           onClick={onOpenFilter} look={cn("grid size-8.5 shrink-0 place-items-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent/50", filterActive ? "bg-tint text-accent-ink" : "bg-card text-ink")}>
           <FilterIcon className="size-4.25" />

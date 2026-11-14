@@ -1,6 +1,7 @@
 import { cn } from "../../shared/utils/cn";
 import { fachClasses } from "../../shared/utils/lessons";
 import { FlagIcon } from "../ui/icons";
+import Liquid from "../ui/Liquid";
 
 // Картинка-приклад на екрані входу (ПК): тиждень із макета. Це не дані школи:
 // людина ще не ввійшла, тому малюємо статичний зразок і ховаємо його від скрінрідера.
@@ -52,7 +53,7 @@ const Cell = ({ cell, past }) => {
 };
 
 const WeekPreview = () => (
-  <div aria-hidden="true" className="w-97.5 rounded-card bg-card p-4 shadow-sheet">
+  <Liquid as="div" refract press={false} aria-hidden="true" className="w-97.5 rounded-card bg-card p-4 shadow-sheet">
     <div className="grid grid-cols-[1.5rem_repeat(5,minmax(0,1fr))] gap-x-1 gap-y-1">
       <span />
       {DAYS.map(([name, number], day) => (
@@ -81,7 +82,7 @@ const WeekPreview = () => (
         </div>
       ))}
     </div>
-  </div>
+  </Liquid>
 );
 
 export default WeekPreview;

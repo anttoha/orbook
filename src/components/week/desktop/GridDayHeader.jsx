@@ -34,7 +34,6 @@ const GridDayHeader = ({ as: Component = "button", day, isToday, className, styl
       <DayAppointmentPills date={day.date} desktop />
 
       <RoundButton
-       
         onClick={() => openSheet("info", { datum: day.date })}
         aria-label={`Info zum Tag · ${weekdayLong(day.date)}`}
         title="Info zum Tag" look={cn(

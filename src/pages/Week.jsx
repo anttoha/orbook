@@ -34,6 +34,7 @@ import MusterNote from "../components/muster/MusterNote";
 import NoMusterState from "../components/muster/NoMusterState";
 import WeekLetter from "../components/muster/WeekLetter";
 import RoundButton from "../components/ui/RoundButton";
+import Liquid from "../components/ui/Liquid";
 
 
 // Рядок підсумку тижня. Статистику школа може вимкнути: тоді це просто текст
@@ -129,10 +130,10 @@ const Week = () => {
       // одна обгортка: на ПК це ОДНА клітинка сітки сторінки (інакше підпис і сітка розʼїжджаються по колонках)
       return (
         <div className="flex min-w-0 flex-col gap-3">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-card bg-card px-4 py-3">
+          <Liquid as="div" refract press={false} className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-card bg-card px-4 py-3">
             <p className="text-body-sm text-muted">Noch kein Plan für diese Woche. Die Schule veröffentlicht ihn meist kurz vorher.</p>
             <RefreshButton className="ml-auto" monday={monday} />
-          </div>
+          </Liquid>
           {grid}
         </div>
       );
@@ -239,7 +240,7 @@ const Week = () => {
 
       {/* поки вантажиться, заглушка вже показує ці рядки; при збої їх немає зовсім (макет «Plan nicht erreichbar») */}
       {days && !down && !noMuster && (
-        <div className="flex flex-col divide-y divide-hair rounded-card bg-card px-3.5 text-faint">
+        <Liquid as="div" refract press={false} className="flex flex-col divide-y divide-hair rounded-card bg-card px-3.5 text-faint">
           {/* найближча Klausur → сторінка цього дня */}
           {nextExam && (
             <Link to={`/tag/${nextExam.date}`} className="flex items-center gap-3 py-2">
@@ -284,7 +285,7 @@ const Week = () => {
 
           {/* підсумок тижня: «1 fällt aus · 3 Vertretungen · 2 Raumwechsel» */}
           <WeekSummaryRow text={weekSummaryText(week.data.summary)} linked={statisticsEnabled} />
-        </div>
+        </Liquid>
       )}
     </section>
   );

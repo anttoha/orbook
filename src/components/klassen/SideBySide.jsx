@@ -13,6 +13,7 @@ import { fachClasses } from "../../shared/utils/lessons";
 import Badge from "../ui/Badge";
 import ClassBadge from "../ui/ClassBadge";
 import { FlagIcon } from "../ui/icons";
+import Liquid from "../ui/Liquid";
 
 // Дни недели сверху: Mo–Fr той недели, где выбранный день; выбранный — фиолетовый
 const DayPicker = ({ monday, date, onPick }) => {
@@ -70,7 +71,7 @@ const Cell = ({ lessons, status, overrides, onOpen }) => {
 const ExamCard = ({ exam, onOpen }) => {
   const t = useT();
   return (
-    <button type="button" onClick={onOpen} className="flex items-center gap-3.5 rounded-card bg-card px-4 py-3.5 text-left">
+    <Liquid as="button" refract type="button" onClick={onOpen} className="flex items-center gap-3.5 rounded-card bg-card px-4 py-3.5 text-left">
       <FlagIcon className="size-5 shrink-0 text-ink" />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-row text-ink">{exam.text}</span>
@@ -80,7 +81,7 @@ const ExamCard = ({ exam, onOpen }) => {
       </span>
       <span className="shrink-0 text-label text-faint">{exam.when}</span>
       <ChevronRight className="size-4 shrink-0 text-faint2" />
-    </button>
+    </Liquid>
   );
 };
 

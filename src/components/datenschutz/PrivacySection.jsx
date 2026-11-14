@@ -1,9 +1,10 @@
 import { ChevronDown } from "lucide-react";
 import { cn } from "../../shared/utils/cn";
+import Liquid from "../ui/Liquid";
 
 // Один раздел «Genauer» на странице Datenschutz. Свёрнут — только заголовок; раскрытие — как у версий в «Neuigkeiten».
 const PrivacySection = ({ section, open, onToggle }) => (
-  <li className="rounded-card bg-card">
+  <Liquid as="li" refract press={false} className="rounded-card bg-card">
     <button type="button" onClick={onToggle} aria-expanded={open} className="flex w-full items-center gap-3 rounded-card px-4 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
       <span className="min-w-0 flex-1 text-body font-extrabold text-ink">{section.title}</span>
       <ChevronDown className={cn("size-4 shrink-0 text-faint2 transition-transform duration-300 ease-soft motion-reduce:transition-none", open && "rotate-180")} />
@@ -28,7 +29,7 @@ const PrivacySection = ({ section, open, onToggle }) => (
         </div>
       </div>
     </div>
-  </li>
+  </Liquid>
 );
 
 export default PrivacySection;

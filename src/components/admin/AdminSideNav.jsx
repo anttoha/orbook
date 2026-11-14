@@ -6,6 +6,7 @@ import { clock, HEALTH, isTeacherCode, planHealth } from "../../shared/utils/adm
 import { isTabActive } from "../../shared/utils/isTabActive";
 import NavigationLink from "../navbar/NavigationLink";
 import Logo from "../ui/Logo";
+import Liquid from "../ui/Liquid";
 
 // Карточка «Plan läuft · 16:40 · nächster Abruf 16:45» під меню
 const PlanCard = ({ plan }) => {
@@ -46,7 +47,7 @@ const AdminSideNav = () => {
   };
 
   return (
-    <aside className="sticky top-4 my-4 hidden h-[calc(100dvh-2rem)] w-sidebar shrink-0 flex-col rounded-panel bg-card px-3.5 pt-4 pb-3.5 lg:flex print:hidden">
+    <Liquid as="aside" refract press={false} className="sticky top-4 my-4 hidden h-[calc(100dvh-2rem)] w-sidebar shrink-0 flex-col rounded-panel bg-card px-3.5 pt-4 pb-3.5 lg:flex print:hidden">
       <div className="flex h-10.75 items-center gap-1.5 px-1">
         <Logo className="items-center gap-2" titleClassName="text-logo" withIcon />
         <span className="rounded-full bg-accent px-2 py-0.75 text-micro leading-none font-extrabold text-on-accent uppercase">Admin</span>
@@ -70,7 +71,7 @@ const AdminSideNav = () => {
           <LogOut className="size-4.5" /> Abmelden
         </button>
       </div>
-    </aside>
+    </Liquid>
   );
 };
 

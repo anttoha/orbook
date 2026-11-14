@@ -11,6 +11,7 @@ import { aufgabenOfDay } from "../../shared/utils/tasks";
 import CheckCircle from "../tasks/CheckCircle";
 import DoneText from "../tasks/DoneText";
 import SubjectBadge from "../ui/SubjectBadge";
+import Liquid from "../ui/Liquid";
 
 // Вторая строка: «Mathe · von Mü» у домашки, «Eigene Aufgabe» у своей
 function subline(row, names) {
@@ -41,7 +42,7 @@ const HomeworkDue = ({ date, className }) => {
         <span>Aufgaben · {date === today ? "fällig heute" : "fällig an diesem Tag"}</span>
         {doneCount > 0 && <span>{doneCount} von {rows.length}</span>}
       </h2>
-      <ul className="rounded-card bg-card pr-1.5 pl-3.5">
+      <Liquid as="ul" refract press={false} className="rounded-card bg-card pr-1.5 pl-3.5">
         {rows.map((row) => (
           <li key={row.key} className="flex items-center border-b border-rule last:border-0">
             <button
@@ -69,7 +70,7 @@ const HomeworkDue = ({ date, className }) => {
             <CheckCircle done={row.done} label={row.text} onToggle={() => (row.kind === "own" ? toggleTask(row.id) : markHomework(row.id, !row.done))} />
           </li>
         ))}
-      </ul>
+      </Liquid>
     </section>
   );
 };

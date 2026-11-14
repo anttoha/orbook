@@ -7,6 +7,7 @@ import { usePlanStore } from "../../shared/store/planStore";
 import { mondayOf, planMomentText } from "../../shared/utils/format";
 import { agoText } from "../../shared/utils/liveText";
 import LiveDot from "../live/LiveDot";
+import Liquid from "../ui/Liquid";
 
 const rowClass = "flex w-full items-center gap-3 px-3.5 py-3 text-left transition-colors hover:bg-paper";
 
@@ -27,7 +28,7 @@ const DayHistoryCard = ({ day }) => {
   const sub = state === "loading" ? "…" : state === "error" ? changed : `${count} ${count === 1 ? "Fassung" : "Fassungen"} · ${changed}`;
 
   return (
-    <div className="divide-y divide-hair overflow-hidden rounded-card bg-card">
+    <Liquid as="div" refract press={false} className="divide-y divide-hair overflow-hidden rounded-card bg-card">
       {day.status === "ok" && (
         // replace — «Назад» из ленты закрывает её, а не возвращает «Info»
         <button type="button" onClick={() => openSheet("verlauf", { datum: day.date }, { replace: true })} className={rowClass}>
@@ -46,7 +47,7 @@ const DayHistoryCard = ({ day }) => {
         <span className="text-label text-faint">{checked}</span>
         <ChevronRight className="size-4 shrink-0 text-faint2" />
       </button>
-    </div>
+    </Liquid>
   );
 };
 

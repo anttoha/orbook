@@ -17,6 +17,7 @@ import GoneNotice from "./GoneNotice";
 import TodayStrip from "./TodayStrip";
 import PillButton from "../ui/PillButton";
 import RoundButton from "../ui/RoundButton";
+import Liquid from "../ui/Liquid";
 
 // ─────────────────────────────────────────────────────────────
 // Карточка класса на «Meine Klassen» (макет 29 handy-01, pc-01).
@@ -38,7 +39,7 @@ const ClassCard = ({ item, today, wide, inSchool = false }) => {
   };
 
   return (
-    <article className="relative h-full rounded-card bg-card p-3.5">
+    <Liquid as="article" refract press={false} className="relative h-full rounded-card bg-card p-3.5">
       {!item.gone && <button type="button" onClick={open} aria-label={`${classTitle(item, t)} ${t("öffnen")}`} className="absolute inset-0 rounded-card outline-none focus-visible:ring-2 focus-visible:ring-accent/50" />}
 
       <header className="pointer-events-none relative flex items-center gap-3">
@@ -53,7 +54,7 @@ const ClassCard = ({ item, today, wide, inSchool = false }) => {
       </header>
 
       {item.gone ? <GoneNotice item={item} /> : <CardBody data={data} item={item} today={today} wide={wide} onRetry={() => setReload((n) => n + 1)} />}
-    </article>
+    </Liquid>
   );
 };
 

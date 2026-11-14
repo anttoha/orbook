@@ -8,6 +8,7 @@ import { useUserStore } from "../../shared/store/userStore";
 import { visibleNotes } from "../../shared/utils/notes";
 import { cn } from "../../shared/utils/cn";
 import RowSwitch from "../ui/RowSwitch";
+import Liquid from "../ui/Liquid";
 
 const THEME = { light: "Hell", dark: "Dunkel", system: "System" };
 
@@ -36,7 +37,7 @@ const SyncParts = () => {
   return (
     <section className="flex flex-col gap-3">
       <h2 className="text-hint font-extrabold text-faint">Was wird synchronisiert</h2>
-      <ul className="overflow-hidden rounded-card bg-card">
+      <Liquid as="ul" refract press={false} className="overflow-hidden rounded-card bg-card">
         {rows.map((row) => (
           <li key={row.key} className="border-b border-hair last:border-0">
             {/* вся строка — переключатель: попасть пальцем легче, чем в маленький тумблер */}
@@ -54,7 +55,7 @@ const SyncParts = () => {
             </RowSwitch>
           </li>
         ))}
-      </ul>
+      </Liquid>
     </section>
   );
 };

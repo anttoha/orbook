@@ -14,12 +14,13 @@ import { PencilIcon } from "../ui/icons";
 import { Skeleton } from "../ui/PlanState";
 import Sheet from "../ui/Sheet";
 import SubjectBadge from "../ui/SubjectBadge";
+import Liquid from "../ui/Liquid";
 
 // «12 · Tage bis zum Ausflug / Montag, 29. September · 07:45–15:00» (як картка у вікні Klausur)
 const Countdown = ({ item, today }) => {
   const { number, label } = countdown(item, today);
   return (
-    <div className="flex h-19 items-center gap-3.5 rounded-card border border-accent bg-card px-3.75">
+    <Liquid as="div" refract press={false} className="flex h-19 items-center gap-3.5 rounded-card border border-accent bg-card px-3.75">
       {number !== null && <span className="text-countdown text-accent-ink">{number}</span>}
       <div className="min-w-0">
         <p className="text-body font-bold text-ink">{label}</p>
@@ -28,7 +29,7 @@ const Countdown = ({ item, today }) => {
           {timeText(item) && ` · ${timeText(item)}`}
         </p>
       </div>
-    </div>
+    </Liquid>
   );
 };
 

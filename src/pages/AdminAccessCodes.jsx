@@ -16,6 +16,7 @@ import { useNow } from "../shared/hooks/useNow";
 import { useAdminStore } from "../shared/store/adminStore";
 import { summaryText } from "../shared/utils/accessCodes";
 import RoundButton from "../components/ui/RoundButton";
+import Liquid from "../components/ui/Liquid";
 
 const matches = (code, query) => `${code.label} ${code.masked}`.toLowerCase().includes(query.trim().toLowerCase());
 
@@ -89,9 +90,9 @@ const AdminAccessCodes = () => {
     if (isDesktop) {
       return (
         <>
-          <div className="rounded-card bg-card px-5 pt-4.5 pb-1">
+          <Liquid as="div" refract press={false} className="rounded-card bg-card px-5 pt-4.5 pb-1">
             <AccessTable codes={list} password={query ? null : password} today={today} onToggle={toggle} onAction={onAction} onPasswordToggle={togglePassword} />
-          </div>
+          </Liquid>
           {!codes.length && <EmptyHint onNew={openNew} />}
         </>
       );

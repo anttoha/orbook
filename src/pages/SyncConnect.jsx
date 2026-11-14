@@ -7,6 +7,7 @@ import { CheckIcon, SyncIcon, WarningIcon } from "../components/ui/icons";
 import { useClasses } from "../shared/store/classesStore";
 import { useLinkCode } from "../shared/store/linkCodeStore";
 import { useSyncStore } from "../shared/store/syncStore";
+import Liquid from "../components/ui/Liquid";
 
 // Что и как придёт на это устройство (только включённые части)
 const PARTS = [
@@ -51,7 +52,7 @@ const SyncConnect = ({ code }) => {
         <h1 className="text-title text-ink">Gerät verbinden?</h1>
       </header>
 
-      <div className="flex items-center gap-3.5 rounded-card bg-card px-3.5 py-3.5">
+      <Liquid as="div" refract press={false} className="flex items-center gap-3.5 rounded-card bg-card px-3.5 py-3.5">
         <span className="grid size-10 shrink-0 place-items-center rounded-full bg-tint text-accent-ink">
           <SyncIcon className="size-5" />
         </span>
@@ -59,11 +60,11 @@ const SyncConnect = ({ code }) => {
           <span className="block text-row font-black tracking-code break-all text-ink">{code}</span>
           <span className="block text-caption text-faint">dein Sync-Code</span>
         </span>
-      </div>
+      </Liquid>
 
       <section className="flex flex-col gap-3">
         <h2 className="text-hint font-extrabold text-faint">Das kommt auf dieses Gerät</h2>
-        <ul className="rounded-card bg-card">
+        <Liquid as="ul" refract press={false} className="rounded-card bg-card">
           {PARTS.filter((part) => parts[part.key] !== false && (part.key !== "klassen" || hasClasses)).map((part) => (
             <li key={part.key} className="flex items-center gap-3 border-b border-hair px-3.5 py-3 last:border-0">
               <part.icon className="size-5 shrink-0 text-muted" />
@@ -74,7 +75,7 @@ const SyncConnect = ({ code }) => {
               <CheckIcon className="size-4 shrink-0 text-ok" />
             </li>
           ))}
-        </ul>
+        </Liquid>
         <p className="text-caption text-faint">Nichts geht verloren: Notizen von beiden Geräten bleiben. Was übertragen wird, kannst du später unter „Synchronisieren“ ändern.</p>
       </section>
 

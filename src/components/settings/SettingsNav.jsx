@@ -10,6 +10,7 @@ import { isTabActive } from "../../shared/utils/isTabActive";
 import { sectionVisible } from "../../shared/utils/settings";
 import NewBadge from "../changelog/NewBadge";
 import LeaveClass from "../more/LeaveClass";
+import Liquid from "../ui/Liquid";
 
 // Пункт меню: 40px заввишки, вибраний — фіолетова «пігулка» (макет 22)
 const item = "flex h-10 items-center gap-3 rounded-full px-3 text-nav font-bold";
@@ -20,11 +21,11 @@ const SectionLink = ({ section, pathname }) => {
   const active = isTabActive(section, pathname);
   return (
     <li>
-      <Link to={section.to} aria-current={active ? "page" : undefined} className={cn(item, active ? "bg-accent font-extrabold text-on-accent" : idle)}>
+      <Liquid as={Link} to={section.to} aria-current={active ? "page" : undefined} className={cn(item, active ? "bg-accent font-extrabold text-on-accent" : idle)}>
         <section.icon className="size-4 shrink-0" />
         {section.label}
         {section.badge === "news" && !active && <NewBadge />}
-      </Link>
+      </Liquid>
     </li>
   );
 };
@@ -32,10 +33,10 @@ const SectionLink = ({ section, pathname }) => {
 // Пункт-кнопка: відкриває вікно, а не сторінку («Klasse einladen», «Tastenkürzel»)
 const SheetItem = ({ icon: Icon, label, onClick }) => (
   <li>
-    <button type="button" onClick={onClick} className={cn(item, "w-full", idle)}>
+    <Liquid as="button" type="button" onClick={onClick} className={cn(item, "w-full", idle)}>
       <Icon className="size-4 shrink-0" />
       {label}
-    </button>
+    </Liquid>
   </li>
 );
 

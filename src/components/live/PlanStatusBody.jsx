@@ -10,6 +10,7 @@ import { askedText, dayCheck } from "../../shared/utils/liveText";
 import { Skeleton } from "../ui/PlanState";
 import LiveDot from "./LiveDot";
 import PillButton from "../ui/PillButton";
+import Liquid from "../ui/Liquid";
 
 // Значок справа в строке дня: ✓ план есть · пунктирный круг — плана ещё нет · «?» — не проверяли · «–» — свободно
 const Mark = ({ kind, index }) => {
@@ -63,7 +64,7 @@ const PlanStatusBody = ({ monday, compact = false }) => {
         <h3 className="text-label font-extrabold text-faint">
           {thisWeek ? "Diese Woche" : `${numericDate(monday)}–${numericDate(addDays(monday, 4))}`} · KW {isoWeek(monday)}
         </h3>
-        <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
+        <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
           {week.state === "loading" &&
             [0, 1, 2, 3, 4].map((i) => (
               <li key={i} className={cn("flex items-center gap-3", compact ? "h-9.5" : "h-11.5")}>
@@ -88,7 +89,7 @@ const PlanStatusBody = ({ monday, compact = false }) => {
                 </li>
               );
             })}
-        </ul>
+        </Liquid>
         <p className="text-caption text-faint">{askedText(status, now)}</p>
       </section>
 

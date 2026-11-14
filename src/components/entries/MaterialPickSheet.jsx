@@ -14,6 +14,7 @@ import { CheckIcon } from "../ui/icons";
 import { Skeleton } from "../ui/PlanState";
 import Sheet from "../ui/Sheet";
 import TextField from "../ui/TextField";
+import Liquid from "../ui/Liquid";
 
 // «Neuen Link teilen» прямо в шторке: форма записи остаётся открытой, новая ссылка сразу отмечена
 const NewLink = ({ subject, onSaved }) => {
@@ -54,13 +55,13 @@ const NewLink = ({ subject, onSaved }) => {
   };
 
   return (
-    <div className="flex flex-col gap-3 rounded-card bg-card p-3.5">
+    <Liquid as="div" refract press={false} className="flex flex-col gap-3 rounded-card bg-card p-3.5">
       <TextField id="new-link-title" label="Titel" value={form.title} error={errors.title} autoComplete="off" onChange={(event) => setForm({ ...form, title: event.target.value })} />
       <TextField id="new-link-url" label="Link" value={form.url} error={errors.url} placeholder="https://drive.google.com/…" autoComplete="off" onChange={(event) => setForm({ ...form, url: event.target.value })} />
       <Button variant="primary" disabled={busy} onClick={share}>
         Teilen
       </Button>
-    </div>
+    </Liquid>
   );
 };
 
@@ -109,7 +110,7 @@ const MaterialPickSheet = ({ open, onClose, subject, selected, onDone }) => {
           ))}
         </div>
       ) : list.length > 0 ? (
-        <ul className="divide-y divide-hair rounded-card bg-card px-3.5">
+        <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
           {list.map((item) => {
             const on = picked.includes(item.id);
             return (
@@ -123,7 +124,7 @@ const MaterialPickSheet = ({ open, onClose, subject, selected, onDone }) => {
               </li>
             );
           })}
-        </ul>
+        </Liquid>
       ) : (
         <p className="text-body-sm text-muted">Für {subjectName(subject)} gibt es noch keine Links.</p>
       )}
