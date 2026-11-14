@@ -516,3 +516,10 @@ Spec и план бэкенда: `docs/specs/29-klassen/spec.md`. Главное
 
 ## Релиз v0.16.1 (2026-11-14)
 «на прод» (только эта правка): новая страница открывается сверху, «назад» возвращает позицию, шторки её не меняют (`src/App.jsx`). Прод 09:56 (`c5b1db39`).
+
+## Часть 30 «Personalisierung + Animationen» — ждёт «ок дизайн» и «ок» плана (2026-11-14)
+Макеты: `design/neu/30-personalisierung/` (`gen.py` рисует экраны с нуля; оформление — объект `St`: Soft / Glas / Klar; `build.py` собирает `index.html` с живым демо стекла и анимаций), артефакт https://claude.ai/artifact/5oveTVwAgAxMkH77LwRvUz, PNG с Nunito — `/root/work/orbook-compare/30-personalisierung/png/` (`_tools/svgpng.mjs`).
+Экраны: «Start» из блоков (телефон 2 колонки, ПК 4), режим «Anpassen» (перетащить, размер Klein/Breit/Groß, убрать, «Block hinzufügen», шторка блока), пусто, загрузка; «Darstellung» с Design (Soft / Glas / Klar), Akzentfarbe, фоном и «Glas-Effekt» для Glas, «Animationen»; Start и Woche в Glas и Klar; новая страница «Stundenplan» (что показывать в клетке урока, цвета, неделя, день).
+Spec и план: `docs/specs/30-personalisierung/spec.md` — под-части 30a (оформления, анимации) → 30b (Stundenplan) → 30c (Start, нужна зависимость `@dnd-kit`) → 30d (Sync, Datenschutz, changelog). Бэкенд не нужен. Glas — свой CSS на `backdrop-filter`, без пакета.
+Вопросы владельцу: (1) что открывается при запуске — у новых «Start», у нынешних как было, или всем «Start»; (2) три оформления и названия; (3) набор из 11 блоков.
+**Дальше:** «ок дизайн» → новый чат, Opus · effort medium: `/orb 30a`.
