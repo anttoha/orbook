@@ -233,4 +233,5 @@ export const en = {
   "Anpassen": "Customise",
   "Uhrzeit": "Time",
   "Nur Fach": "Subject only",
+  "Zurück zu {name}": "Back to {name}",
 };

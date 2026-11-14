@@ -49,7 +49,7 @@ const PlanSettings = () => {
 
   return (
     <section className="flex flex-col gap-4.5 lg:max-w-186">
-      <PageHeader backTo="/mehr/darstellung" eyebrow="Darstellung" title="Stundenplan" />
+      <PageHeader backTo="/mehr/darstellung" eyebrow="Darstellung" title="Stundenplan" subpage />
 
       <PlanPreview plan={plan} />
 

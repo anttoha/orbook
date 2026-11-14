@@ -233,4 +233,5 @@ export const uk = {
   "Anpassen": "Налаштувати",
   "Uhrzeit": "Час",
   "Nur Fach": "Лише предмет",
+  "Zurück zu {name}": "Назад до {name}",
 };
