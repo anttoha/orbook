@@ -10,7 +10,8 @@ import { BLOCK_ICONS } from "./blockIcons";
 // ─────────────────────────────────────────────────────────────
 const BlockCard = ({ kind, title, accent = false, aside, to, editing = false, children }) => {
   const Icon = BLOCK_ICONS[kind];
-  const look = "flex h-full min-w-0 flex-col overflow-hidden rounded-card bg-card px-3.5 pt-3.5 pb-3 text-left lg:px-4.5 lg:pt-4";
+  // в «Anpassen» сверху лежит панель блока — шапка опускается под неё
+  const look = cn("flex h-full min-w-0 flex-col overflow-hidden rounded-card bg-card px-3.5 pb-3 text-left lg:px-4.5", editing ? "pt-6" : "pt-3.5 lg:pt-4");
   const link = to && !editing;
 
   return (

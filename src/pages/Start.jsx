@@ -19,7 +19,7 @@ import { useT } from "../shared/hooks/useT";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { longDate, weekdayLong } from "../shared/utils/format";
-import { addBlock, blockInfo, blocksOf, defaultBlocks, isBlockEnabled, moveBlock, nextSize, removeBlock, resizeBlock, setBlockOpt } from "../shared/utils/startBlocks";
+import { addBlock, blockInfo, blocksOf, defaultBlocks, isBlockEnabled, moveBlock, removeBlock, resizeBlock, setBlockOpt } from "../shared/utils/startBlocks";
 
 // Кнопка-«таблетка» в шапке ПК: «Anpassen», «Zurücksetzen» (песочная) и «Fertig» (акцент)
 const HeadButton = ({ primary = false, icon: Icon, onClick, children }) => (
@@ -126,8 +126,9 @@ const Start = () => {
       blocks={blocks}
       onMove={(id, overId) => setBlocks(moveBlock(all, id, overId))}
       onOpen={(block) => setSheetId(block.id)}
+      onRestore={(list) => setBlocks([...list, ...all.filter((b) => !list.some((x) => x.id === b.id))])}
       onRemove={remove}
-      onResize={(block) => setBlocks(resizeBlock(all, block.id, nextSize(block)))}
+      onResize={(block, size) => setBlocks(resizeBlock(all, block.id, size))}
     />
   ) : (
     <StartGrid blocks={blocks} />
@@ -141,13 +142,25 @@ const Start = () => {
       {blocks.length === 0 && !(editing && isDesktop) ? (
         <StartEmpty onAdd={() => setAdding(true)} />
       ) : (
-        <div className="lg:flex lg:items-start lg:gap-4">
-          <div className="min-w-0 lg:flex-1">{grid}</div>
-          {/* ПК, «Anpassen»: справа список всех блоков (макет pc-02) */}
+        <div className="lg:flex lg:items-start lg:gap-6">
+          {editing ? (
+            // «Anpassen»: то, что меняется, — внутри пунктирной рамки «Dein Start»
+            <section className="min-w-0 lg:flex-1">
+              <h2 className="mb-2.5 text-hint font-extrabold text-faint">
+                {t("Dein Start")} · {blocks.length} {t(blocks.length === 1 ? "Block" : "Blöcke")}
+              </h2>
+              <div className="rounded-panel border-2 border-dashed border-accent/30 px-2.5 pt-5.5 pb-3 lg:px-4 lg:pt-6 lg:pb-4">{grid}</div>
+            </section>
+          ) : (
+            <div className="min-w-0 lg:flex-1">{grid}</div>
+          )}
+          {/* ПК, «Anpassen»: справа отдельная панель — все блоки, что можно добавить (макет pc-02) */}
           {editing && isDesktop && (
-            <aside className="w-blocks shrink-0 rounded-card bg-card px-4.5 pt-4 pb-1">
-              <h2 className="pb-2 text-subhead text-ink">{t("Blöcke")}</h2>
-              <AddBlockList blocks={all} onAdd={add} />
+            <aside className="sticky top-6 w-blocks shrink-0">
+              <h2 className="mb-2.5 text-hint font-extrabold text-faint">{t("Alle Blöcke")}</h2>
+              <div className="rounded-card bg-card px-4.5 py-3">
+                <AddBlockList blocks={all} onAdd={add} />
+              </div>
             </aside>
           )}
         </div>

@@ -312,4 +312,9 @@ export const uk = {
   "Vom Start entfernen": "Прибрати зі «Старту»",
   "Was als Nächstes ansteht": "Що на черзі",
   "Zurücksetzen": "Скинути",
+  "Ziehen zum Verschieben": "Перетягни, щоб пересунути",
+  "Hinzufügen": "Додати",
+  "Schon auf Start": "Уже на «Старті»",
+  "Dein Start": "Твій «Старт»",
+  "Alle Blöcke": "Усі блоки",
 };

@@ -1,30 +1,63 @@
 import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { Minus, MoveDiagonal } from "lucide-react";
+import { GripVertical, X } from "lucide-react";
 import { useT } from "../../shared/hooks/useT";
-import { blockInfo, SIZE_LABELS, SPAN } from "../../shared/utils/startBlocks";
 import { cn } from "../../shared/utils/cn";
+import { blockInfo, SIZE_LABELS, SPAN } from "../../shared/utils/startBlocks";
+import { SizeIcon } from "./SizeTile";
 import StartBlock from "./StartBlock";
 
-// Кнопки на углах не должны начинать перетаскивание
+// Кнопки панели не должны начинать перетаскивание
 const stop = (event) => event.stopPropagation();
 
+// Панель над блоком: ручка (за неё видно, что блок можно тащить), размеры, «убрать»
+const BlockTools = ({ block, info, onResize, onRemove, t }) => (
+  <div className="absolute -top-3.5 right-2.5 z-10 flex items-center gap-0.5 rounded-full border border-hair bg-paper p-0.5 shadow-menu motion-safe:animate-pop-in">
+    <span className="grid size-7 place-items-center text-faint" title={t("Ziehen zum Verschieben")}>
+      <GripVertical className="size-4" />
+    </span>
+    {info.sizes.length > 1 &&
+      info.sizes.map((size) => (
+        <button
+          key={size}
+          type="button"
+          onPointerDown={stop}
+          onClick={() => onResize(block, size)}
+          aria-label={`${t("Größe")}: ${t(SIZE_LABELS[size])}`}
+          aria-pressed={block.size === size}
+          title={t(SIZE_LABELS[size])}
+          className={cn("grid size-7 place-items-center rounded-full transition-colors", block.size === size ? "bg-tint" : "hover:bg-sand")}
+        >
+          <SizeIcon size={size} small active={block.size === size} />
+        </button>
+      ))}
+    <button
+      type="button"
+      onPointerDown={stop}
+      onClick={() => onRemove(block)}
+      aria-label={t("{name} entfernen").replace("{name}", t(info.label))}
+      title={t("Vom Start entfernen")}
+      className="grid size-7 place-items-center rounded-full text-danger transition-colors hover:bg-danger-tint"
+    >
+      <X className="size-4" strokeWidth={2.6} />
+    </button>
+  </div>
+);
+
 // ─────────────────────────────────────────────────────────────
-// Блок в режиме «Anpassen» (макет handy-02): держим и тянем (@dnd-kit/sortable),
-// минус слева сверху убирает, стрелки справа снизу меняют размер по кругу, нажатие — шторка блока.
+// Блок в режиме «Anpassen»: весь блок можно взять и тащить (@dnd-kit), сверху — панель
+// с ручкой, размерами (Klein / Breit / Groß) и «убрать»; нажатие на блок — шторка блока.
+// Пока блок тащат, на его месте — пунктир: туда он встанет. Соседи разъезжаются плавно (useFlip в EditGrid).
 // С клавиатуры: Tab до блока, Пробел — взять, стрелки — нести, Пробел — положить; Enter — шторка
 // ─────────────────────────────────────────────────────────────
 const EditableBlock = ({ block, onOpen, onRemove, onResize }) => {
   const t = useT();
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
+  const { attributes, listeners, setNodeRef, isDragging } = useSortable({ id: block.id });
   const info = blockInfo(block.kind);
   const name = t(info.label);
-  const style = { transform: CSS.Translate.toString(transform), transition };
 
   return (
-    <div ref={setNodeRef} style={style} className={cn("relative", SPAN[block.size])}>
+    <div ref={setNodeRef} data-flip={block.id} className={cn("relative", SPAN[block.size])}>
       {isDragging ? (
-        // место, куда встанет блок: пунктир цветом акцента (сам блок едет под пальцем — DragOverlay)
         <div className="h-full rounded-card border-2 border-dashed border-accent bg-tint" />
       ) : (
         <>
@@ -38,30 +71,11 @@ const EditableBlock = ({ block, onOpen, onRemove, onResize }) => {
               if (event.key === "Enter") onOpen(block);
               else listeners?.onKeyDown?.(event);
             }}
-            className="h-full cursor-grab touch-manipulation rounded-card outline-none select-none focus-visible:ring-2 focus-visible:ring-accent/50 active:cursor-grabbing [&_*]:pointer-events-none"
+            className="h-full cursor-grab touch-manipulation rounded-card ring-1 ring-accent/25 outline-none select-none hover:ring-2 hover:ring-accent/60 focus-visible:ring-2 focus-visible:ring-accent active:cursor-grabbing [&_*]:pointer-events-none"
           >
             <StartBlock block={block} editing />
           </div>
-          <button
-            type="button"
-            onPointerDown={stop}
-            onClick={() => onRemove(block)}
-            aria-label={t("{name} entfernen").replace("{name}", name)}
-            className="absolute -top-2 -left-2 grid size-6 place-items-center rounded-full border-2 border-paper bg-danger text-white"
-          >
-            <Minus className="size-3.5" strokeWidth={3} />
-          </button>
-          {info.sizes.length > 1 && (
-            <button
-              type="button"
-              onPointerDown={stop}
-              onClick={() => onResize(block)}
-              aria-label={t("Größe ändern")}
-              className="absolute -right-2 -bottom-2 grid size-6 place-items-center rounded-full border border-rule bg-card text-ink"
-            >
-              <MoveDiagonal className="size-3.5" strokeWidth={2.4} />
-            </button>
-          )}
+          <BlockTools block={block} info={info} onResize={onResize} onRemove={onRemove} t={t} />
         </>
       )}
     </div>

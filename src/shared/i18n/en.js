@@ -312,4 +312,9 @@ export const en = {
   "Vom Start entfernen": "Remove from Start",
   "Was als Nächstes ansteht": "What's coming up next",
   "Zurücksetzen": "Reset",
+  "Ziehen zum Verschieben": "Drag to move",
+  "Hinzufügen": "Add",
+  "Schon auf Start": "Already on Start",
+  "Dein Start": "Your Start",
+  "Alle Blöcke": "All blocks",
 };
