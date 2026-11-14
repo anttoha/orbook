@@ -19,7 +19,8 @@ const todayText = () => new Date().toLocaleDateString("de-DE", { day: "2-digit",
 const CodeQr = ({ code, kind, teacher, rights }) => {
   const { print, area } = usePrint();
   const className = useAdminStore((s) => s.settings.data?.settings.school.className ?? null);
-  const subjects = useAdminStore((s) => s.teachers.data?.teachers?.find((t) => t.short === teacher)?.subjects ?? []);
+  // «?? []» — вне селектора: новый пустой массив в селекторе каждый раз «другой», и страница перерисовывается без конца
+  const subjects = useAdminStore((s) => s.teachers.data?.teachers?.find((t) => t.short === teacher)?.subjects) ?? [];
   const url = codeLink(kind === "teacher" ? "teacher" : "editor", code, window.location.origin);
   const printSheet = () => print(<TeacherSheet code={code} url={url} className={className} teacher={teacher} subjects={subjects} rights={rights} printedOn={todayText()} />);
 

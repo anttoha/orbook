@@ -116,7 +116,7 @@ const AdminCodes = ({ kind = "editor" }) => {
         <div className="rounded-card bg-card px-5 pt-4.5 pb-1">
           <CodeTable codes={list} today={today} onToggle={toggle} onAction={(name, code) => (name === "lock" ? toggle(code) : setAction({ kind: name, code }))} subjectsOf={teacher ? subjectsOf : null} />
         </div>
-        <p className="mt-4 text-label text-faint">Codes werden nur als Hash gespeichert. Den vollen Code siehst du nur einmal — beim Erstellen.</p>
+        <p className="mt-4 text-label text-faint">Den vollen Code siehst du jederzeit unter ⋮ → »Code anzeigen« (gespeichert verschlüsselt). Ältere Codes: einmal »Neu erzeugen«.</p>
       </>
     );
   };

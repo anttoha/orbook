@@ -129,7 +129,7 @@ const NewCodeForm = ({ yearEnd, onDone, kind }) => {
       {errors.form && <p role="alert" className="text-hint text-danger">{errors.form}</p>}
       {created ? (
         <>
-          <CodeReveal code={created.code} masked={created.item.masked} {...(created.class?.name ? { title: `Neuer Code · Klasse ${created.class.name} · nur jetzt sichtbar` } : {})} />
+          <CodeReveal code={created.code} masked={created.item.masked} title={created.class?.name ? `Neuer Code · Klasse ${created.class.name}` : "Neuer Code"} note="Du siehst ihn später wieder: ⋮ → »Code anzeigen«." />
           {/* часть 25: QR и (у Lehrer-Code) лист для печати */}
           <CodeQr code={created.code} kind={kind} teacher={teacherCode ? label.trim() : null} rights={rights} />
           <Button variant="primary" className="flex-none" onClick={onDone}>

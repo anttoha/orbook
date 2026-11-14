@@ -27,6 +27,8 @@ export const createCode = ({ label, rights, valid, schoolId, className }) => api
 // classId — класс этого кода (см. asClass)
 export const updateCode = (id, changes, classId) => api(`/admin/codes/${id}`, { method: "PATCH", body: changes, ...asClass(classId) });
 export const regenerateCode = (id, classId) => api(`/admin/codes/${id}/regenerate`, { method: "POST", ...asClass(classId) });
+// Полный Editor-/Lehrer-Code ещё раз (владелец 14.11) → { code }; код до 0015 — 409 code_hidden
+export const showCode = (id, classId) => api(`/admin/codes/${id}/code`, asClass(classId));
 export const deleteCode = (id, classId) => api(`/admin/codes/${id}`, { method: "DELETE", ...asClass(classId) });
 
 // ── Lehrer-Codes (частина 14) ──

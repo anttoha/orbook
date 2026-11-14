@@ -19,7 +19,7 @@ export const SECTIONS = [
     title: "Anmelden",
     intro: [
       "Du kommst mit dem Klassenpasswort, einem Zugangscode oder einem Einladungslink rein. Lehrkräfte haben einen eigenen Lehrer-Code.",
-      "Codes heißen nur „Code A“ oder ähnlich, nie nach einer Person. Passwörter speichert der Server nur als Prüfwert (Hash). Zugangscodes liegen zusätzlich verschlüsselt, damit der Admin sie noch einmal anzeigen kann.",
+      "Codes heißen nur „Code A“ oder ähnlich, nie nach einer Person. Passwörter speichert der Server nur als Prüfwert (Hash). Zugangs-, Editor- und Lehrer-Codes liegen zusätzlich verschlüsselt, damit der Admin sie noch einmal anzeigen kann. Wann er das tut, steht im Protokoll.",
       "Für jedes angemeldete Gerät merkt sich der Server eine Sitzung: eine zufällige Kennung (als Hash), wann sie angelegt und zuletzt benutzt wurde und wann sie abläuft. Daraus zählt er, wie viele Geräte mit einem Code angemeldet sind. IP-Adresse, Gerätetyp und Browser speichert er nicht.",
       "Hast du mehrere Klassen auf einem Gerät, merkt sich der Server zu deiner Sitzung nur, welche Klassen mit welchem Code dazugehören. Namen gibt es dabei keine. „Klasse entfernen“ löscht diese Zuordnung sofort.",
     ],

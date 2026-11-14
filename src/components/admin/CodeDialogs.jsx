@@ -10,6 +10,7 @@ import ConfirmDialog from "../ui/ConfirmDialog";
 import { CheckIcon, RenewIcon, TrashIcon } from "../ui/icons";
 import Sheet from "../ui/Sheet";
 import TextField from "../ui/TextField";
+import ShowCodeSheet from "./access/ShowCodeSheet";
 import { codeActions } from "./codeActions";
 import CodeQr from "./CodeQr";
 import CodeReveal from "./CodeReveal";
@@ -144,6 +145,11 @@ const CodeDialogs = ({ action, onChange }) => {
   };
 
   if (kind === "menu") return <ActionsSheet code={code} onAction={choose} onClose={close} />;
+  if (kind === "show") {
+    const qr = (full) => <CodeQr code={full} kind={code.kind} teacher={code.kind === "teacher" ? code.label : null} rights={code.rights} />;
+    const eyebrow = `${code.kind === "teacher" ? "Lehrer-Code" : "Editor-Code"} · ${code.label}`;
+    return <ShowCodeSheet code={code} source="editor" eyebrow={eyebrow} extra={qr} onClose={close} onRegenerate={() => onChange({ kind: "regenerate", code })} />;
+  }
   if (kind === "rename") return <RenameSheet code={code} actions={actions} onClose={close} />;
   if (kind === "rights") return <RightsSheet code={code} actions={actions} onClose={close} />;
   if (kind === "validity") return <ValiditySheet code={code} actions={actions} onClose={close} />;
@@ -166,7 +172,7 @@ const CodeDialogs = ({ action, onChange }) => {
   if (kind === "reveal") {
     return (
       <Sheet open onClose={close} desktop="dialog" eyebrow={`Admin · ${code.label}`} title="Neuer Code">
-        <CodeReveal code={action.result.code} masked={action.result.item.masked} />
+        <CodeReveal code={action.result.code} masked={action.result.item.masked} title="Neuer Code" note="Du siehst ihn später wieder: ⋮ → »Code anzeigen«." />
         <CodeQr code={action.result.code} kind={code.kind} teacher={code.kind === "teacher" ? code.label : null} rights={code.rights} />
         <Button variant="primary" className="flex-none" onClick={close}>
           <CheckIcon className="size-4" /> Fertig
