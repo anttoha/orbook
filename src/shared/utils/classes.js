@@ -56,8 +56,9 @@ export const classSubtitle = (item) => [item?.name, item?.school?.name].filter(B
 
 // Свои настройки класса на устройстве (часть 29): у активного класса они лежат в userStore сверху,
 // у остальных — в userStore.byClass[id]. Пустой класс — как новый: курсы ещё не выбраны
-export const CLASS_FIELDS = ["notes", "picked", "hiddenRequired", "coursesChosen", "checkedPlan", "allCourses"];
-export const EMPTY_CLASS_DATA = { notes: [], picked: [], hiddenRequired: [], coursesChosen: false, checkedPlan: [], allCourses: false };
+// startBlocks (часть 30c, решение владельца 14.11): у каждого класса своя раскладка «Start»; null — по умолчанию
+export const CLASS_FIELDS = ["notes", "picked", "hiddenRequired", "coursesChosen", "checkedPlan", "allCourses", "startBlocks"];
+export const EMPTY_CLASS_DATA = { notes: [], picked: [], hiddenRequired: [], coursesChosen: false, checkedPlan: [], allCourses: false, startBlocks: null };
 
 // Переключение класса в userStore: текущие поля → в byClass[from], поля класса to → наверх
 export const swapClassData = (state, from, to) => swapFields(state, from, to, CLASS_FIELDS, EMPTY_CLASS_DATA);

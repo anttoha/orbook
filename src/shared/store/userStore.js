@@ -35,7 +35,8 @@ export const useUserStore = create(
       coursesChosen: false,
       // «Darstellung». За замовчуванням — як на макеті 24
       startView: "woche", // що відкривати на «/»: "start" | "woche" | "heute" (новичкам — "start", частина 30c)
-      // «Start» (частина 30c): null — раскладка по умолчанию, иначе [{ id, kind, size, opts }] (shared/utils/startBlocks.js)
+      // «Start» (частина 30c): null — раскладка по умолчанию, иначе [{ id, kind, size, opts }] (shared/utils/startBlocks.js).
+      // Своя у каждого класса: при смене класса уезжает в byClass (CLASS_FIELDS у shared/utils/classes.js)
       startBlocks: null,
       startOffer: null, // карточка «Mit Start öffnen?»: null — ещё не ответил, "ja" | "nein"
       startSeen: false, // «Start» уже открывали — точка «neu» в Darstellung гаснет

@@ -59,6 +59,15 @@ describe("swapClassData (migration and switching)", () => {
     expect(back.byClass[2]).toMatchObject({ coursesChosen: false });
   });
 
+  it("each class has its own Start layout", () => {
+    const withStart = { ...state, startBlocks: [{ kind: "woche" }] };
+    const there = { ...withStart, ...swapClassData(withStart, 1, 2) };
+    expect(there.startBlocks).toBeNull(); // new class starts with the default layout
+    const back = swapClassData({ ...there, startBlocks: [{ kind: "tests" }] }, 2, 1);
+    expect(back.startBlocks).toEqual([{ kind: "woche" }]);
+    expect(back.byClass[2].startBlocks).toEqual([{ kind: "tests" }]);
+  });
+
   it("same class — nothing changes", () => {
     expect(swapClassData(state, 1, 1)).toEqual({});
   });
