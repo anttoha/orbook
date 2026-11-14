@@ -5,6 +5,11 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.15.2",
+    date: "2026-11-14",
+    entfernt: ["Weniger Text: Die ganzen kleinen Hinweise wie „ohne Namen“, „nur für dich“ oder „… antippen“ sind weg. Was zählt, steht noch da."],
+  },
+  {
     version: "0.15.0",
     date: "2026-11-13",
     neu: [
