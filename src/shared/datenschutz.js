@@ -41,7 +41,7 @@ export const SECTIONS = [
     title: "Notizen, Aufgaben und Sync",
     intro: [
       "Notizen, eigene Aufgaben und welche Hausaufgaben du abgehakt hast, speichert die App nur auf deinem Gerät. Die Klasse und die Lehrkräfte sehen davon nichts.",
-      "Mit Sync werden sie auf deinem Gerät verschlüsselt, bevor sie losgeschickt werden — dazu, wenn du es eingeschaltet lässt, deine Kurse, Darstellung und Fachfarben und deine Klassen (Name und Farbe, die du ihnen gibst, Reihenfolge; Notizen und Kurse für jede Klasse getrennt). Zugangscodes kommen nie in den Sync: Auf einem neuen Gerät fügst du eine Klasse mit ihrem eigenen Code hinzu. Der Schlüssel steckt im Sync-Code, und den hast nur du. Der Server sieht eine zufällige Kennung und unlesbaren Datensalat (höchstens 64 KB).",
+      "Mit Sync werden sie auf deinem Gerät verschlüsselt, bevor sie losgeschickt werden — dazu, wenn du es eingeschaltet lässt, deine Kurse, Darstellung (Design, Akzentfarbe, Animationen), Fachfarben und Stundenplan-Ansicht und deine Klassen (Name und Farbe, die du ihnen gibst, Reihenfolge; Notizen, Kurse und dein Start für jede Klasse getrennt). Zugangscodes kommen nie in den Sync: Auf einem neuen Gerät fügst du eine Klasse mit ihrem eigenen Code hinzu. Der Schlüssel steckt im Sync-Code, und den hast nur du. Der Server sieht eine zufällige Kennung und unlesbaren Datensalat (höchstens 64 KB).",
       "Der QR mit dem Sync-Code enthält den Code hinter „#“. Diesen Teil der Adresse schickt der Browser nicht an den Server.",
       "Sync-Code weg heißt: Die Daten auf dem Server kann niemand mehr lesen, auch wir nicht.",
       "Löschen kannst du sie unten mit „Meine Sync-Daten löschen“. Nach 365 Tagen ohne Zugriff löscht der Server sie von selbst.",
@@ -78,7 +78,7 @@ export const SECTIONS = [
     id: "geraet",
     title: "Auf deinem Gerät",
     intro: [
-      "Im Browser (localStorage) liegen: deine Klassen mit dem Namen und der Farbe, die du ihnen gibst, deine Kurse, Darstellung (auch die Sprache) und Fachfarben, deine Notizen, Aufgaben und Häkchen, dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne, damit die App auch ohne Netz geht.",
+      "Im Browser (localStorage) liegen: deine Klassen mit dem Namen und der Farbe, die du ihnen gibst, deine Kurse, Darstellung (auch die Sprache, Design und Akzentfarbe), Fachfarben, Stundenplan-Ansicht und die Blöcke auf deinem Start, deine Notizen, Aufgaben und Häkchen, dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne, damit die App auch ohne Netz geht.",
       "„Klasse verlassen“ oder „Klasse entfernen“ löscht die Kopie der Pläne dieser Klasse. Notizen und Einstellungen bleiben, bis du die Website-Daten im Browser löschst.",
       "Die App lädt nichts von fremden Servern: keine Schriften von Google, kein CDN, keine Analyse.",
     ],

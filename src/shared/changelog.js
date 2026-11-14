@@ -5,6 +5,18 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.17.0",
+    date: "2026-11-14",
+    picture: "start",
+    action: { label: "Mit Start öffnen", startView: "start" },
+    neu: [
+      "Neue Seite „Start“: Du baust sie dir aus Blöcken selbst zusammen – Jetzt, Woche, Tests, Aufgaben, Notizen und mehr. Mit „Anpassen“ ziehst du sie hin und her, änderst die Größe oder nimmst sie raus. Jede Klasse hat ihren eigenen Start.",
+      "Drei Designs: Soft wie bisher, Glas mit echtem Glas-Effekt und Klar, schlicht. Dazu sechs Akzentfarben, vier Glas-Hintergründe und „Animationen“ zum Runterdrehen. Alles unter Mehr → Darstellung.",
+      "Unter Mehr → Darstellung → Stundenplan bestimmst du, was in der Stunde steht: Kürzel oder Name, Raum, Lehrkraft, Fachfarbe, Ausfälle und Pausen.",
+      "Sync nimmt Design, Farben, Stundenplan-Ansicht und deinen Start mit auf dein anderes Gerät.",
+    ],
+  },
+  {
     version: "0.16.1",
     date: "2026-11-14",
     behoben: ["Neue Seite fängt jetzt oben an – vorher warst du manchmal schon so weit unten wie auf der Seite davor. „Zurück“ bringt dich wieder an die alte Stelle."],

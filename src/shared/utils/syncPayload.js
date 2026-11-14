@@ -21,7 +21,9 @@ const MAX_PLAIN_BYTES = 48 * 1024; // блок ≤ 64 КБ в base64: откры
 const MARK_DAYS = 60; // галочки у домашек старше 60 дней больше не нужны
 
 // Что синхронизируется из «Meine Kurse» и «Darstellung» (снимок настроек)
-export const kurseOf = (user) => ({ picked: user.picked ?? [], hiddenRequired: user.hiddenRequired ?? [], coursesChosen: Boolean(user.coursesChosen) });
+// startBlocks (часть 30c) — раскладка «Start» у каждого класса своя, поэтому едет вместе с курсами класса.
+// null — раскладка по умолчанию; блок от старой версии поля не имеет — тогда у нас ничего не меняется
+export const kurseOf = (user) => ({ picked: user.picked ?? [], hiddenRequired: user.hiddenRequired ?? [], coursesChosen: Boolean(user.coursesChosen), startBlocks: user.startBlocks ?? null });
 export const darstellungOf = (user, theme) => ({
   theme,
   startView: user.startView,
@@ -33,6 +35,7 @@ export const darstellungOf = (user, theme) => ({
   colorOverrides: user.colorOverrides ?? {},
   // часть 30a: Design, Akzentfarbe, фон Glas, «Animationen». Старая версия приложения эти поля просто сохранит и не тронет
   ...appearanceOf(user),
+  plan: user.plan ?? {}, // часть 30b: «Stundenplan» (только изменённые поля)
 });
 
 // Расшифрованный блок → полный вид (у старого блока есть только notes)

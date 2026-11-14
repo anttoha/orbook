@@ -57,7 +57,7 @@ describe("mergeBlock", () => {
 describe("снимки настроек", () => {
   it("kurseOf и darstellungOf берут только нужные поля", () => {
     const user = { picked: [3], hiddenRequired: [], coursesChosen: true, notes: [1], startView: "heute", dayView: "liste", compactWeek: true, fontScale: 2, changedFormat: "date", showWeekend: false, colorOverrides: { Ma: "kunst" } };
-    expect(kurseOf(user)).toEqual({ picked: [3], hiddenRequired: [], coursesChosen: true });
+    expect(kurseOf(user)).toEqual({ picked: [3], hiddenRequired: [], coursesChosen: true, startBlocks: null });
     expect(darstellungOf(user, "dark")).toMatchObject({ theme: "dark", startView: "heute", colorOverrides: { Ma: "kunst" } });
     expect(darstellungOf(user, "dark").notes).toBeUndefined();
   });
@@ -119,7 +119,7 @@ describe("syncBlock", () => {
 });
 
 describe("классы в блоке (часть 29d)", () => {
-  const kurse = (picked, updatedAt) => ({ value: { picked, hiddenRequired: [], coursesChosen: true }, updatedAt });
+  const kurse = (picked, updatedAt) => ({ value: { picked, hiddenRequired: [], coursesChosen: true, startBlocks: null }, updatedAt });
   const list = [
     { id: 1, name: "8a", label: "Meine", color: "mathe" },
     { id: 2, name: "8b", label: "", color: "deutsch" },
@@ -199,5 +199,25 @@ describe("darstellungOf · часть 30a", () => {
       theme: "dark", design: "glas", accent: "blau", glassBg: "meer", glassMode: "einfach", motion: "aus",
     });
     expect(darstellungOf({}, "light")).toMatchObject({ design: "soft", accent: "violett", glassBg: "aurora", glassMode: "voll", motion: null });
+  });
+});
+
+describe("plan и startBlocks · часть 30d", () => {
+  it("plan и раскладка Start едут в блоке; по умолчанию — пусто", () => {
+    expect(darstellungOf({ plan: { room: true } }, "light").plan).toEqual({ room: true });
+    expect(darstellungOf({}, "light").plan).toEqual({});
+    const blocks = [{ id: "a", kind: "jetzt", size: "breit" }];
+    expect(kurseOf({ startBlocks: blocks }).startBlocks).toEqual(blocks);
+    expect(kurseOf({}).startBlocks).toBeNull();
+  });
+
+  it("блок от старой версии без новых полей читается и сливается без ошибок", () => {
+    const old = { value: { theme: "dark", startView: "woche" }, updatedAt: "2026-11-01T10:00:00Z" };
+    const local = { ...readBlock(null), darstellung: { value: darstellungOf({ plan: { room: true } }, "dark"), updatedAt: "2026-11-02T10:00:00Z" } };
+    const merged = mergeBlock(local, { ...readBlock(null), darstellung: old });
+    expect(merged.darstellung.value.plan).toEqual({ room: true });
+    // старый блок новее нашего: берём его, новых полей в нём нет — приложение их не трогает
+    const newer = mergeBlock(local, { ...readBlock(null), darstellung: { ...old, updatedAt: "2026-11-03T10:00:00Z" } });
+    expect(newer.darstellung.value.plan).toBeUndefined();
   });
 });
