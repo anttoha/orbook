@@ -5,7 +5,7 @@ import Button from "../ui/Button";
 import Select from "../ui/Select";
 import Field from "../ui/Field";
 import { CheckIcon } from "../ui/icons";
-import Segmented from "../ui/Segmented";
+import ChoiceChips from "../ui/ChoiceChips";
 import Sheet from "../ui/Sheet";
 import TextField from "../ui/TextField";
 
@@ -41,7 +41,7 @@ const ExamEditForm = ({ exam, types, onSaved }) => {
   return (
     <form onSubmit={save} noValidate className="flex flex-col gap-4">
       <Field label="Art">
-        <Segmented label="Art" size="form" value={form.type} options={allTypes.map((type) => ({ value: type, label: type }))} onChange={(type) => change({ type })} />
+        <ChoiceChips label="Art" value={form.type} options={allTypes.map((type) => ({ value: type, label: type }))} onChange={(type) => change({ type })} />
       </Field>
       <TextField id="admin-exam-date" label="Datum" type="date" value={form.date} onChange={(event) => change({ date: event.target.value })} />
       <Field label="Stunde">

@@ -3,6 +3,7 @@ import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
 import { filterSubjects } from "../../shared/utils/exams";
 import Field from "../ui/Field";
+import ChoiceChips from "../ui/ChoiceChips";
 import Segmented from "../ui/Segmented";
 import Switch from "../ui/Switch";
 import ListPicker from "../ui/ListPicker";
@@ -29,9 +30,9 @@ const ExamFilterFields = ({ draft, change }) => {
   return (
     <>
       <Field label="Art">
-        <Segmented
+        {/* видов может быть много и с длинными словами — таблетки с переносом, а не одна полоса */}
+        <ChoiceChips
           label="Art"
-          size="form"
           value={draft.type ?? "alle"}
           options={[{ value: "alle", label: "Alle" }, ...types.map((type) => ({ value: type, label: type }))]}
           onChange={(value) => change({ type: value === "alle" ? null : value })}

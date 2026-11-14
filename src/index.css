@@ -455,6 +455,35 @@
         scrollbar-gutter: stable;
     }
 
+    /* Полоса прокрутки (владелец 14.11: «сделать красивым»): тонкая, круглая, без стрелок, цвет темы.
+       Chrome/Safari берут ::-webkit-scrollbar; Firefox — только стандартные свойства (их ставим лишь ему:
+       Chrome при стандартных свойствах игнорирует ::-webkit-scrollbar и снова рисует стрелки) */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+    ::-webkit-scrollbar-track,
+    ::-webkit-scrollbar-corner {
+        background: transparent;
+    }
+    ::-webkit-scrollbar-button {
+        display: none;
+    }
+    ::-webkit-scrollbar-thumb {
+        border: 3px solid transparent; /* «отступ» вокруг ползунка: он не липнет к краю окна */
+        border-radius: 999px;
+        background: var(--color-faint2) padding-box;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: var(--color-muted);
+    }
+    @supports (-moz-appearance: none) {
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--color-faint2) transparent;
+        }
+    }
+
     /* Відкрите вікно (Radix) ховає прокрутку і додає відступ праворуч на ширину смуги.
        Місце під смугу вже зарезервоване (scrollbar-gutter), тож другий відступ зсунув би сторінку */
     html body[data-scroll-locked] {
