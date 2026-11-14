@@ -534,6 +534,11 @@
 /* у .lg-glass своё transition (только фон) — оно отменяло наши: ширину боковой панели, наведение.
    revert-layer возвращает то, что задал Tailwind (он в слое) */
 .orb-liquid.lg-glass { transition: revert-layer; }
+/* у кнопок библиотеки margin: 0 — он стирал наши отступы (ml-…, mt-…); возвращаем то, что задал Tailwind */
+.lg-button { margin: revert-layer; }
+/* пункты меню (боковая панель, «Mehr») — кнопки библиотеки, но текст слева, счётчик справа */
+.lg-button.orb-start { justify-content: flex-start; }
+.orb-start .lg-button__label { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: 8px; text-align: left; }
 /* переключатель только из иконок (вид дня, тема в боковом меню): подпись — для скрінрідера, на экране не видна */
 .orb-icons-only .lg-nav__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 /* подписи в «таблетках» и нижнем меню — жирные, как во всём приложении */

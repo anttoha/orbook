@@ -18,7 +18,8 @@ const ExamChips = ({ codes, selected, filterActive, onAll, onToggle, onOpenFilte
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори предметів
 
   return (
-    <div className="no-scrollbar -mx-gutter flex min-w-0 items-center gap-1.75 overflow-x-auto px-gutter py-px lg:mx-0 lg:px-0">
+    // -my-3 py-3: место под тени стеклянных чипов — ряд с прокруткой срезал бы их сверху и снизу
+    <div className="no-scrollbar -mx-gutter flex min-w-0 items-center gap-1.75 overflow-x-auto px-gutter -my-3 py-3 lg:mx-0 lg:px-0">
       <ChipButton aria-pressed={selected.length === 0} onClick={onAll} on={selected.length === 0} look={cn(chip, selected.length === 0 ? chipOn : chipOff)}>
         Alle
       </ChipButton>

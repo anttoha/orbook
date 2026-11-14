@@ -12,7 +12,7 @@ import GlassSearch from "../ui/GlassSearch";
 // ─────────────────────────────────────────────────────────────
 const ExamsToolbar = ({ query, onQuery, filter, addTarget, placeholder = "Thema oder Fach suchen", addLabel = "Test eintragen", children }) => (
   <div className="flex items-center gap-2">
-    <GlassSearch value={query} onValue={onQuery} placeholder={placeholder} className="w-57.5" inputProps={{ onKeyDown: (event) => event.key === "Escape" && onQuery("") }}>
+    <GlassSearch value={query} onValue={onQuery} placeholder={placeholder} className="w-57.5 min-w-0 shrink" inputProps={{ onKeyDown: (event) => event.key === "Escape" && onQuery("") }}>
       <label className="flex h-9.5 w-57.5 items-center gap-2 rounded-full border border-hair bg-card px-3.5 focus-within:border-accent">
         <Search className="size-3.75 shrink-0 text-faint" />
         <input
@@ -29,7 +29,7 @@ const ExamsToolbar = ({ query, onQuery, filter, addTarget, placeholder = "Thema 
     {filter && <ExamFilterPopover open={filter.open} onOpenChange={filter.onOpenChange} active={filter.active} />}
     {children}
     {!children && addTarget && (
-      <PillButton glass="filled" size="md" to={addTarget} className="ml-0.5 flex h-12 items-center gap-2 rounded-full bg-accent px-5 text-row font-bold text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
+      <PillButton glass="filled" size="md" to={addTarget} className="ml-0.5 shrink-0 flex h-12 items-center gap-2 rounded-full bg-accent px-5 text-row font-bold text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
         <Plus className="size-4" /> {addLabel}
       </PillButton>
     )}

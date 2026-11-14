@@ -1,5 +1,5 @@
 import { Info, Keyboard, UserPlus } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { settingsGroups, settingsSections } from "../../shared/constants/constants";
 import { useSyncAllowed } from "../../shared/hooks/useNotesSync";
 import { useSheet } from "../../shared/hooks/useSheet";
@@ -10,7 +10,8 @@ import { isTabActive } from "../../shared/utils/isTabActive";
 import { sectionVisible } from "../../shared/utils/settings";
 import NewBadge from "../changelog/NewBadge";
 import LeaveClass from "../more/LeaveClass";
-import Liquid from "../ui/Liquid";
+import { GlassButton } from "@zakisheriff/liquid-glass";
+import { useGlass } from "../../shared/hooks/useGlass";
 
 // Пункт меню: 40px заввишки, вибраний — фіолетова «пігулка» (макет 22)
 const item = "flex h-10 items-center gap-3 rounded-full px-3 text-nav font-bold";
@@ -19,26 +20,47 @@ const idle = "text-muted hover:bg-sand hover:text-ink";
 // Пункт-посилання на розділ
 const SectionLink = ({ section, pathname }) => {
   const active = isTabActive(section, pathname);
+  const glass = useGlass();
+  const navigate = useNavigate();
   return (
     <li>
-      <Liquid as={Link} to={section.to} aria-current={active ? "page" : undefined} className={cn(item, active ? "bg-accent font-extrabold text-on-accent" : idle)}>
-        <section.icon className="size-4 shrink-0" />
-        {section.label}
-        {section.badge === "news" && !active && <NewBadge />}
-      </Liquid>
+      {glass ? (
+        // «Glas» (часть 30a): кнопка библиотеки, выбранная залита акцентом
+        <GlassButton variant={active ? "filled" : "clear"} tint={active ? "var(--color-accent)" : undefined} size="sm" icon={<section.icon className="size-4" />} aria-current={active ? "page" : undefined} onClick={() => navigate(section.to)} className="orb-start w-full">
+          <>
+            {section.label}
+            {section.badge === "news" && !active && <NewBadge />}
+          </>
+        </GlassButton>
+      ) : (
+        <Link to={section.to} aria-current={active ? "page" : undefined} className={cn(item, active ? "bg-accent font-extrabold text-on-accent" : idle)}>
+          <section.icon className="size-4 shrink-0" />
+          {section.label}
+          {section.badge === "news" && !active && <NewBadge />}
+        </Link>
+      )}
     </li>
   );
 };
 
 // Пункт-кнопка: відкриває вікно, а не сторінку («Klasse einladen», «Tastenkürzel»)
-const SheetItem = ({ icon: Icon, label, onClick }) => (
-  <li>
-    <Liquid as="button" type="button" onClick={onClick} className={cn(item, "w-full", idle)}>
-      <Icon className="size-4 shrink-0" />
-      {label}
-    </Liquid>
-  </li>
-);
+const SheetItem = ({ icon: Icon, label, onClick }) => {
+  const glass = useGlass();
+  return (
+    <li>
+      {glass ? (
+        <GlassButton variant="clear" size="sm" icon={<Icon className="size-4" />} onClick={onClick} className="orb-start w-full">
+          {label}
+        </GlassButton>
+      ) : (
+        <button type="button" onClick={onClick} className={cn(item, "w-full", idle)}>
+          <Icon className="size-4 shrink-0" />
+          {label}
+        </button>
+      )}
+    </li>
+  );
+};
 
 // ─────────────────────────────────────────────────────────────
 // Меню розділів «Mehr» на ПК: Übersicht, далі групи «Seiten» і «Einstellungen» (частина 22),

@@ -12,7 +12,9 @@ import { layoutOnly } from "../../shared/utils/glassLayout";
 const GlassSearch = ({ value, onValue, placeholder, label, className, inputProps, children }) => {
   const glass = useGlass();
   if (!glass) return children;
+  // ширину задаёт обёртка: CSS библиотеки (вне слоёв) перебил бы наш w-… на самом поле
   return (
+    <div className={layoutOnly(className)}>
     <GlassInput
       type="search"
       value={value}
@@ -21,9 +23,10 @@ const GlassSearch = ({ value, onValue, placeholder, label, className, inputProps
       placeholder={placeholder}
       aria-label={label ?? placeholder}
       tint="var(--color-accent)"
-      className={layoutOnly(className)}
+      className="w-full"
       {...inputProps}
     />
+    </div>
   );
 };
 
