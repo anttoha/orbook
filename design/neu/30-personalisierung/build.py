@@ -62,6 +62,10 @@ SECTIONS = [
      "цвет предмета — заливкой, полоской или без цвета; неделя (выходные, компактно, свободные уроки, выпавшие уроки зачёркивать или прятать); "
      "день (список или шкала времени, перемены). Сюда же переехали старые настройки недели и дня из «Darstellung».",
      [("handy-13-stundenplan", "Stundenplan")], []),
+    ("angebot", "7 · Как приложение предложит «Start» (твой ответ 14.11.)",
+     "Тем, кто уже пользуется, «Start» не включается сам, но его видно в трёх местах. В окне «Was ist neu» новой версии — что это, где переключить (строка «Startansicht» ведёт прямо в Darstellung) и кнопка «Mit Start öffnen». "
+     "На самой странице Start сверху карточка «Mit Start öffnen?» — «Ja» или ×, после этого она больше не появляется. В Darstellung у «Start» точка «новое», пока ты туда не заходил. Новые пользователи сразу начинают со Start.",
+     [("handy-14-was-ist-neu", "Was ist neu · с кнопкой"), ("handy-15-start-angebot", "Start · предложение сверху"), ("handy-07-darstellung", "Darstellung · точка у «Start»")], []),
 ]
 OLD = [(("1 Handy Hell", "2 Handy Dunkel", "04 Woche"), "Soft 04 · Woche", "phone"), (("1 Handy Hell", "2 Handy Dunkel", "24 Darstellung"), "Soft 24 · Darstellung", "phone"),
        (("1 Handy Hell", "2 Handy Dunkel", "22 Mehr"), "Soft 22 · Mehr", "phone")]
@@ -216,11 +220,11 @@ def page():
     out.append('<section id="vergleich"><h2>Для сравнения: старые экраны Soft</h2><p>Откуда взяты шапка, клетки недели, карточки настроек и меню.</p><div class="row">')
     out += [orig(pth, cap, kind) for pth, cap, kind in OLD]
     out.append('</div></section></div>')
-    out.append("""<div class="box"><h2>Вопросы к тебе</h2><ol>
-<li><b>Что открывается при запуске</b> <span>Предлагаю: у новых — «Start», у тех, кто уже пользуется, остаётся как было (Woche или Heute), вкладка «Start» просто появляется в меню. Или сразу всем «Start»?</span></li>
-<li><b>Оформления</b> <span>Soft, Glas и Klar — хватит трёх? Названия такие оставить?</span></li>
-<li><b>Блоки</b> <span>Одиннадцать: Jetzt, Heute, Woche, Tests, Aufgaben, Änderungen, Termine, Notizen, Materialien, Statistik, Countdown. Что-то убрать или добавить?</span></li>
-</ol></div>""")
+    out.append("""<div class="box"><h2>Решено (твои ответы 14.11.)</h2><ul>
+<li><b>Запуск</b> <span>у новых — Start; у остальных как было, но «Start» заметно предлагается: в «Was ist neu», на самой странице и точкой в Darstellung (раздел 7).</span></li>
+<li><b>Оформления</b> <span>пока Soft, Glas и Klar; позже добавим ещё. Код устроен так, что новое оформление — это один набор токенов.</span></li>
+<li><b>Блоки</b> <span>пока одиннадцать; новый блок — один компонент, добавить легко.</span></li>
+</ul></div>""")
     out.append("""<div class="box"><h2>План (коротко)</h2><ul>
 <li><b>30a · Оформления и анимации</b> <span>Design, Akzentfarbe, фон для Glas, «Animationen». Свой CSS, без новых библиотек.</span></li>
 <li><b>30b · Stundenplan</b> <span>страница настроек расписания, неделя и день слушаются этих настроек.</span></li>

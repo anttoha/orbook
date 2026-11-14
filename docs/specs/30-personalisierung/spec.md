@@ -1,6 +1,6 @@
 # 30 · Personalisierung + Animationen
 
-**Статус:** ждёт «ок дизайн» и «ок» плана (2026-11-14)
+**Статус:** дизайн и план ок (ответы владельца 2026-11-14); код — под-частями 30a–30d
 **Источники:** `design/neu/30-personalisierung/` (`gen.py`, `build.py`, `index.html`), артефакт https://claude.ai/artifact/5oveTVwAgAxMkH77LwRvUz; пожелания владельца `docs/ideas/2026-11-11/ideas.md` (строки 11, 18, 21, 29) и 2026-11-14 (Liquid Glass, образец https://liquidglass.theatom.lk/); Soft 04 «Woche», 22 «Mehr», 24 «Darstellung».
 
 ## Зачем
@@ -18,6 +18,8 @@
 | Glas | `handy-09-start-glas`, `handy-10-woche-glas`, `pc-03-start-glas` | Те же экраны в оформлении Glas |
 | Klar | `handy-11-start-klar`, `handy-12-woche-klar` | Те же экраны в оформлении Klar |
 | Stundenplan | `handy-13-stundenplan` | Vorschau + настройки клетки урока, цветов, недели и дня |
+| Was ist neu · Start | `handy-14-was-ist-neu` | Запись версии про Start, строка «Startansicht» (→ Darstellung), кнопки «Später» / «Mit Start öffnen» |
+| Start · Angebot | `handy-15-start-angebot` | Карточка «Mit Start öffnen?» над блоками: «Ja» / × |
 
 ## Что куда нажимать
 - Нижнее меню телефона: **Start · Woche · Tests · Mehr**; на ПК «Start» — первый пункт сайдбара. Маршрут `/start`.
@@ -104,7 +106,10 @@
 - **Design** — оформление целиком (Soft, Glas, Klar); **Thema** — светлая или тёмная.
 - **Glas-Effekt · Einfach** — Glas без размытия, для слабых устройств.
 
+## Решения владельца (2026-11-14)
+- **Запуск:** новые пользователи начинают со Start. У остальных `startView` не меняется, но Start предлагается заметно: (1) в «Was ist neu» версии со Start — строка «Startansicht · Mehr → Darstellung» и кнопка «Mit Start öffnen» (запись changelog получает необязательное `action`: `{ label, startView }`); (2) на странице Start сверху карточка «Mit Start öffnen?» — «Ja» / ×, после ответа больше не показывается (`userStore.startOffer`: `null | "ja" | "nein"`); (3) в Darstellung точка «новое» у «Start», пока раздел не открывали. Делается в 30c (Start), запись в changelog — в 30d.
+- **Оформления:** пока Soft, Glas, Klar; позже ещё темы — поэтому оформление = только набор токенов в `index.css` (`[data-design="…"]`), без правок компонентов.
+- **Блоки:** пока одиннадцать; позже, может быть, ещё — блок = один компонент + строка в списке `BLOCKS`.
+
 ## Открытые вопросы
-- [ ] Что открывается при запуске: у новых «Start», у нынешних как было (предложение) — или всем «Start»? — владелец
-- [ ] Три оформления (Soft, Glas, Klar) и их названия — владелец
-- [ ] Набор из одиннадцати блоков: убрать или добавить — владелец
+- нет

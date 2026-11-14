@@ -318,8 +318,20 @@ def start_head(st, edit=False):
         return eyebrow(18, 33, "Start", c) + title(18, 65, "Anpassen", c) + st.rbtn(334, 33.31, UNDO)
     return eyebrow(18, 33, "Mittwoch · 17. September", c) + title(18, 65, "Start", c) + st.rbtn(334, 33.31, SLIDERS)
 
-def p_start(st):
-    return st.page(390, 844, start_head(st) + grid(st, P_ITEMS, PX, PY, PCW, PU, PG) + nav(st, 0))
+def p_start(st, offer=False):
+    """offer — Start ist noch nicht die Startseite: oben ein Angebot, es umzustellen (bis «Ja» oder ×)."""
+    c = st.c
+    dy = 0
+    b = [start_head(st)]
+    if offer:
+        dy = 86
+        b.append(R(18, PY, 354, 74, st.rc, c["tint"]) + DOT(50, PY + 37, 18, c["card"]) + ICON(40.5, PY + 27.5, 0.79, c["accink"], HOME, 2)
+                 + T(80, PY + 32, "Mit Start öffnen?", 14.5, 800, c["ink"]) + T(80, PY + 51, "Statt Woche beim Öffnen der App", 12, 400, c["muted"])
+                 + st.button(270, PY + 19, 62, "Ja", "primary", h=36) + ICON(342, PY + 29, 0.67, c["faint"], CLOSE, 2.2))
+    b.append(grid(st, P_ITEMS, PX, PY + dy, PCW, PU, PG))
+    b.append(R(0, 744, 390, 100, 0, c["paper"]) if offer and st.style != "glas" else "")
+    b.append(nav(st, 0))
+    return st.page(390, 844, "".join(b))
 
 def edit_bar(st, y=764):
     c = st.c
@@ -416,6 +428,32 @@ def p_laden(st):
                 for r in range(6):
                     b.append(R(x + 14 + i * 66.4, y + 96 + r * 25, 60.4, 20, 7, sk))
     b.append(nav(st, 0))
+    return st.page(390, 844, "".join(b))
+
+# ════════════════════════════ «Was ist neu»: Start zeigen und gleich anbieten ════════════════════════════
+def p_neu(st):
+    c = st.c
+    top = 150
+    b = [strip(p_woche(st)), sheet(st, top, "Version 0.17.0 · 14.11.", "Was ist neu")]
+    # kleines Bild: Start mit drei Blöcken
+    y = top + 96
+    b.append(R(18, y, 354, 112, 18, c["tint"]))
+    b.append(st.card(30, y + 12, 205, 88, 16) + T(44, y + 34, "JETZT · 2. STUNDE", 9.5, 800, c["accink"], ls=0.5) + T(44, y + 60, "Mathe", 18, 900, c["ink"])
+             + R(44, y + 74, 177, 5, 2.5, c["sand"]) + R(44, y + 74, 106, 5, 2.5, st.sub["Ma"][0]))
+    b.append(st.card(243, y + 12, 117, 40, 14) + T(255, y + 37, "Tests · Fr", 11.5, 800, c["ink"]))
+    b.append(st.card(243, y + 60, 117, 40, 14) + T(255, y + 85, "3 Aufgaben", 11.5, 800, c["ink"]))
+    y += 112 + 26
+    bd, _ = g.badge(18, y, "NEU", c, "accent"); b.append(bd); y += 38
+    lines = ["Neue Seite „Start“: alles Wichtige auf einen Blick.", "Blöcke selbst wählen, verschieben und größer machen.",
+             "Dazu drei Designs – Soft, Glas und Klar – und", "eine eigene Akzentfarbe."]
+    for i, ln in enumerate(lines):
+        if i in (0, 2): b.append(DOT(21.5, y - 4.5, 2.5, c["faint2"]))
+        b.append(T(34, y, ln, 13.5, 400, c["ink"])); y += 19.5 + (5 if i == 1 else 0)
+    y += 14
+    b.append(st.card(18, y, 354, 58) + ICON(32, y + 19.5, 0.79, c["muted"], SLIDERS, 1.9) + T(63, y + 25, "Startansicht", 14.5, 700, c["ink"])
+             + T(63, y + 43, "Mehr → Darstellung", 12, 400, c["faint"]) + T(334, y + 34, "Woche", 13, 400, c["faint"], "end") + ICON(342, y + 21, 0.67, c["faint2"], CHEV_R))
+    b.append(HL(0, 390, 756, c))
+    b.append(st.button(18, 770, 150, "Später", "sand") + st.button(176, 770, 196, "Mit Start öffnen", "primary", HOME))
     return st.page(390, 844, "".join(b))
 
 # ════════════════════════════ Woche (в любом оформлении) ════════════════════════════
@@ -551,7 +589,8 @@ def p_darstellung(st):
         card, h = bg_row(st, x, y, w); b.append(card); y += h + 30
     b.append(label(x, y, "Ansicht", c)); y += 12
     b.append(st.card(x, y, w, 58 * 4))
-    b.append(set_row(st, x, y, w, "Startansicht", st.seg(x + w - 14 - 196, y + 11, 196, ["Start", "Woche", "Heute"], 0), True))
+    b.append(set_row(st, x, y, w, "Startansicht", st.seg(x + w - 14 - 196, y + 11, 196, ["Start", "Woche", "Heute"], 1), True))
+    b.append(DOT(x + w - 14 - 196 + 3 + 190 / 6 + 22, y + 17, 4, c["accent"]))   # Punkt an «Start»: neu
     b.append(set_row(st, x, y + 58, w, "Animationen", st.seg(x + w - 14 - 196, y + 69, 196, ["Voll", "Weniger", "Aus"], 0)))
     b.append(set_row(st, x, y + 116, w, "Schriftgröße", st.seg(x + w - 14 - 150, y + 127, 150, ["A", "A+", "A++"], 1)))
     b.append(set_row(st, x, y + 174, w, "Sprache", T(x + w - 38, y + 208, "Deutsch", 13, 400, c["faint"], "end") + ICON(x + w - 30, y + 195, 0.67, c["faint2"], CHEV_R)))
@@ -718,6 +757,7 @@ SCREENS = {   # имя файла: (функция, оформление)
     "handy-09-start-glas": (p_start, "glas"), "handy-10-woche-glas": (p_woche, "glas"),
     "handy-11-start-klar": (p_start, "klar"), "handy-12-woche-klar": (p_woche, "klar"),
     "handy-13-stundenplan": (p_plan, "soft"),
+    "handy-14-was-ist-neu": (p_neu, "soft"), "handy-15-start-angebot": (lambda st: p_start(st, offer=True), "soft"),
     "pc-01-start": (pc_start, "soft"), "pc-02-start-anpassen": (pc_edit, "soft"), "pc-03-start-glas": (pc_start, "glas"), "pc-04-darstellung": (pc_darstellung, "soft"),
 }
 if __name__ == "__main__":
