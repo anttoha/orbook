@@ -19,7 +19,7 @@ const ChangeRow = ({ change, today, t }) => {
   const where = cancelled ? when : [when, lesson.teacher, lesson.room].filter(Boolean).join(" · ");
   return (
     <li className="min-w-0">
-      <p className={cn("truncate text-body-sm font-extrabold", cancelled ? "text-danger" : "text-accent-ink")}>
+      <p className={cn("truncate text-body-sm leading-tight font-extrabold", cancelled ? "text-danger" : "text-accent-ink")}>
         {cancelled ? (
           <>
             <s>{name}</s> {t("fällt aus")}
@@ -28,7 +28,7 @@ const ChangeRow = ({ change, today, t }) => {
           `${name} ${t(roomOnly ? "in anderem Raum" : "vertreten")}`
         )}
       </p>
-      <p className="truncate text-caption text-faint">{where}</p>
+      <p className="truncate text-caption leading-tight text-faint">{where}</p>
     </li>
   );
 };
@@ -51,7 +51,7 @@ const AenderungenBlock = ({ editing }) => {
     if (!day) return <BlockSkeleton />;
     if (!changes.length) return <BlockEmpty text="Keine Änderungen" />;
     return (
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col gap-1.5 leading-tight">
         {changes.map((change) => (
           <ChangeRow key={`${change.date}-${change.lesson.period}-${change.lesson.subject?.code}`} change={change} today={today} t={t} />
         ))}

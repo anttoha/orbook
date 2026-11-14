@@ -75,7 +75,9 @@ const JetztBlock = ({ editing }) => {
           {cancelled && (
             <p className="flex min-w-0 items-center gap-1.5 truncate text-caption font-bold text-danger">
               <span className="size-1.75 shrink-0 rounded-full bg-danger" />
-              {cancelled.start} · <s>{subjectName(cancelled.subject)}</s> {t("fällt aus")}
+              <span className="truncate">
+                {cancelled.start} · <s>{subjectName(cancelled.subject)}</s> {t("fällt aus")}
+              </span>
             </p>
           )}
           {after && <p className="ml-auto shrink-0 truncate text-caption text-faint">{`${t("dann")} ${subjectName(after.subject)} · ${after.start}`}</p>}

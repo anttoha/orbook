@@ -49,7 +49,7 @@ const BlockSheet = ({ block, onClose, onSize, onOpt, onRemove }) => {
             </ListCard>
           )}
 
-          <Button variant="danger" onClick={onRemove}>
+          <Button variant="danger" onClick={onRemove} className="flex-none">
             <TrashIcon className="size-4.5" />
             {t("Vom Start entfernen")}
           </Button>

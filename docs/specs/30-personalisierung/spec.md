@@ -1,6 +1,6 @@
 # 30 · Personalisierung + Animationen
 
-**Статус:** дизайн и план ок (ответы владельца 2026-11-14); 30a и 30b готовы на демо (2026-11-14), дальше 30c–30d
+**Статус:** дизайн и план ок (ответы владельца 2026-11-14); 30a, 30b и 30c готовы на демо (2026-11-14), дальше 30d
 **Источники:** `design/neu/30-personalisierung/` (`gen.py`, `build.py`, `index.html`), артефакт https://claude.ai/artifact/5oveTVwAgAxMkH77LwRvUz; пожелания владельца `docs/ideas/2026-11-11/ideas.md` (строки 11, 18, 21, 29) и 2026-11-14 (Liquid Glass, образец https://liquidglass.theatom.lk/); Soft 04 «Woche», 22 «Mehr», 24 «Darstellung».
 
 ## Зачем
@@ -105,6 +105,12 @@
 - 30b: «Lehrkraft» по умолчанию выключена — раньше учителя в клетке не было (кто ничего не менял, видит как раньше).
 - 30b: «Änderung unter dem Tag» открывает шторку с выбором и превью (бывшая карточка «Plan» из Darstellung). Настройки недели и дня переехали из Darstellung в «Stundenplan»; в Darstellung — карточка «Anpassen» → «Stundenplan». Sync поля `plan` — в 30d.
 - 30a: «Startansicht» пока Woche / Heute; «Start» и ссылки «Start» / «Stundenplan» в Darstellung появятся в 30b–30c.
+- 30c: размеры на сетке — Klein 1×1, Breit 2×1, Groß 2×2 (ряд 124px телефон / 150px ПК, `auto-rows-block` в `index.css`); содержимое, которое не влезает, обрезается.
+- 30c: стрелки размера только у блоков, где размеров больше одного (у Jetzt и Woche их нет, в макете есть).
+- 30c: «Anpassen» — отдельный адрес `/start/anpassen` (нижнее меню там спрятано, «назад» выходит из режима). Перетаскивание: мышь — сразу, палец — после короткого удержания (200 мс), клавиатура — Пробел и стрелки, Enter — шторка блока.
+- 30c: «Vom Start entfernen» и минус убирают сразу, с «Rückgängig» в сообщении; «Zurücksetzen» — с вопросом.
+- 30c: «Was ist neu» умеет запись с `action: { label, startView }` (строка «Startansicht» и «Später» / «Mit Start öffnen»), картинка `start`; сама запись — в 30d.
+- 30c: в Darstellung — «Startansicht: Start | Woche | Heute» и строка «Start» в «Anpassen» с меткой «Neu», пока Start не открывали.
 
 ## Слова
 - **Block** — карточка на Start с одним видом данных.
