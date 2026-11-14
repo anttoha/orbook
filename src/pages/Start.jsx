@@ -124,7 +124,12 @@ const Start = () => {
   const grid = editing ? (
     <EditGrid
       blocks={blocks}
-      onMove={(id, overId) => setBlocks(moveBlock(all, id, overId))}
+      onMove={(id, overId) => {
+        // берём свежую раскладку из стора: между кадрами она могла уже поменяться
+        const now = blocksOf(useUserStore.getState().startBlocks);
+        const next = moveBlock(now, id, overId);
+        if (next !== now) setBlocks(next);
+      }}
       onOpen={(block) => setSheetId(block.id)}
       onRestore={(list) => setBlocks([...list, ...all.filter((b) => !list.some((x) => x.id === b.id))])}
       onRemove={remove}

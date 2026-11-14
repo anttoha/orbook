@@ -10,9 +10,10 @@ import StartBlock from "./StartBlock";
 const stop = (event) => event.stopPropagation();
 
 // Панель над блоком: ручка (за неё видно, что блок можно тащить), размеры, «убрать»
-const BlockTools = ({ block, info, onResize, onRemove, t }) => (
+// listeners — те же обработчики перетаскивания, что у всего блока: за ручку тоже можно тянуть
+const BlockTools = ({ block, info, listeners, onResize, onRemove, t }) => (
   <div className="absolute -top-3.5 right-2.5 z-10 flex items-center gap-0.5 rounded-full border border-hair bg-paper p-0.5 shadow-menu motion-safe:animate-pop-in">
-    <span className="grid size-7 place-items-center text-faint" title={t("Ziehen zum Verschieben")}>
+    <span {...listeners} className="grid size-7 cursor-grab touch-none place-items-center rounded-full text-faint hover:bg-sand active:cursor-grabbing" title={t("Ziehen zum Verschieben")}>
       <GripVertical className="size-4" />
     </span>
     {info.sizes.length > 1 &&
@@ -75,7 +76,7 @@ const EditableBlock = ({ block, onOpen, onRemove, onResize }) => {
           >
             <StartBlock block={block} editing />
           </div>
-          <BlockTools block={block} info={info} onResize={onResize} onRemove={onRemove} t={t} />
+          <BlockTools block={block} info={info} listeners={listeners} onResize={onResize} onRemove={onRemove} t={t} />
         </>
       )}
     </div>

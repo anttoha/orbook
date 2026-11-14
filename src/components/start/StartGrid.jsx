@@ -30,7 +30,7 @@ export const StartGrid = ({ blocks }) => (
 // Esc — вернуть, как было до перетаскивания
 // ─────────────────────────────────────────────────────────────
 const NO_SHIFT = () => null;
-const MEASURE = { droppable: { strategy: MeasuringStrategy.Always } };
+const MEASURE = { droppable: { strategy: MeasuringStrategy.WhileDragging } };
 const DROP = { duration: 220, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)", sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: "0" } } }) };
 
 export const EditGrid = ({ blocks, onMove, onRestore, onOpen, onRemove, onResize }) => {
@@ -50,14 +50,15 @@ export const EditGrid = ({ blocks, onMove, onRestore, onOpen, onRemove, onResize
     before.current = blocks;
     setDragged(a.id);
   };
-  // Над другим блоком — сразу встать на его место. Тот же блок второй раз подряд за 250 мс не берём:
-  // иначе большой блок, отъехав, снова оказывался бы под пальцем и блоки «дрожали» бы
+  // Над другим блоком — встать на его место. Не чаще раза в 200 мс и в следующем кадре, а не сразу:
+  // иначе большой блок, отъехав, снова оказывался под пальцем, порядок менялся туда-обратно
+  // прямо во время перерисовки, и React останавливался с ошибкой «слишком много обновлений»
   const over = ({ active: a, over: o }) => {
     if (!o || o.id === a.id) return;
     const now = performance.now();
-    if (lastMove.current.over === o.id && now - lastMove.current.at < 250) return;
+    if (now - lastMove.current.at < 200) return;
     lastMove.current = { over: o.id, at: now };
-    onMove(a.id, o.id);
+    requestAnimationFrame(() => onMove(a.id, o.id));
   };
   const cancel = () => {
     setDragged(null);
