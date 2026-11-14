@@ -6,7 +6,7 @@ import AccessList from "../components/admin/access/AccessList";
 import AccessTable from "../components/admin/access/AccessTable";
 import NewAccessSheet from "../components/admin/access/NewAccessSheet";
 import AdminHeader from "../components/admin/AdminHeader";
-import { AdminError, AdminNote, AdminSkeleton } from "../components/admin/AdminState";
+import { AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import SearchField from "../components/admin/SearchField";
 import Button from "../components/ui/Button";
 import { KeyIcon } from "../components/ui/icons";
@@ -16,7 +16,6 @@ import { useNow } from "../shared/hooks/useNow";
 import { useAdminStore } from "../shared/store/adminStore";
 import { summaryText } from "../shared/utils/accessCodes";
 
-const NOTE = "Keine echten Namen — lieber »Eltern«, »Vertretung« oder »Schüler 07«.";
 const matches = (code, query) => `${code.label} ${code.masked}`.toLowerCase().includes(query.trim().toLowerCase());
 
 // Порожньо: є лише Klassenpasswort (макет handy-07)
@@ -92,8 +91,6 @@ const AdminAccessCodes = () => {
           <div className="rounded-card bg-card px-5 pt-4.5 pb-1">
             <AccessTable codes={list} password={query ? null : password} today={today} onToggle={toggle} onAction={onAction} onPasswordToggle={togglePassword} />
           </div>
-          <p className="mt-4 text-label text-faint">Den vollen Code siehst du jederzeit unter ⋮ → »Code anzeigen« (gespeichert verschlüsselt).</p>
-          <p className="mt-1.5 text-label text-faint">»Klassenpasswort« ist das alte gemeinsame Passwort: ausschalten, sobald alle einen Code haben.</p>
           {!codes.length && <EmptyHint onNew={openNew} />}
         </>
       );
@@ -110,7 +107,6 @@ const AdminAccessCodes = () => {
   return (
     <section className="flex flex-col gap-4 lg:gap-5">
       <AdminHeader title="Zugangscodes" backTo="/admin/einstellungen" actions={[isDesktop && <SearchField key="search" value={query} onChange={setQuery} placeholder="Code suchen" className="w-50" />, <span key="add">{addButton}</span>]} />
-      <AdminNote>{isDesktop ? `${NOTE} Sperren oder Löschen meldet die Geräte dieses Codes sofort ab.` : NOTE}</AdminNote>
       <div>{renderBody()}</div>
 
       <NewAccessSheet open={params.get("neu") === "1"} schoolId={Number(params.get("schule")) || null} onClose={() => setParams({}, { replace: true })} />

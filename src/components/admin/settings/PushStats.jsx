@@ -23,7 +23,6 @@ const PushStats = () => {
       <div className="flex min-h-16.75 items-center justify-between gap-3 py-2.5">
         <div>
           <p className="text-row text-ink">Geräte mit Mitteilungen</p>
-          <p className="mt-0.5 text-caption text-faint">ohne Namen, nur die Anzahl</p>
         </div>
         <p className="text-subhead font-black text-ink tabular-nums">{data.devices ?? "–"}</p>
       </div>

@@ -47,7 +47,7 @@ const AdminPasswordForm = () => {
   };
 
   return (
-    <PasswordSection title="Admin-Passwort" note="nur für dich">
+    <PasswordSection title="Admin-Passwort">
       <form onSubmit={submit} noValidate>
         <div className="flex flex-col gap-3.5 lg:grid lg:grid-cols-2 lg:gap-3">
           <PasswordField id="admin-password-current" label="Aktuelles Passwort" autoComplete="current-password" error={errors.current} value={current} onChange={(event) => setCurrent(event.target.value)} />

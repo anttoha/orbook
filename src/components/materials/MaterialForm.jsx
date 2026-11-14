@@ -1,4 +1,4 @@
-import { Info, Link2, Lock } from "lucide-react";
+import { Info, Link2 } from "lucide-react";
 import { useState } from "react";
 import { useExamSave } from "../../shared/hooks/useExamSave";
 import { deleteMaterial, recreateMaterial, saveMaterial } from "../../shared/api/materials";
@@ -105,7 +105,6 @@ const MaterialForm = ({ item }) => {
         />
 
         <Note icon={Info}>In Drive „Jeder mit dem Link“ wählen, sonst kommt nur „Zugriff anfordern“.</Note>
-        <Note icon={Lock}>{teacher ? `Keine Dateien mit Namen oder Noten von Schülern. Die Klasse sieht „von ${me.teacher.short}“.` : "Keine Dateien mit Namen oder Noten von Schülern."}</Note>
       </div>
 
       <div className="mt-auto flex flex-col gap-2.5 pt-6">

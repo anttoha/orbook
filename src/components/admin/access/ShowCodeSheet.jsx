@@ -32,7 +32,7 @@ const ShowCodeSheet = ({ code, onClose, onRegenerate, source = "access", eyebrow
       {state.status === "ready" && extra?.(state.full)}
       {state.status === "hidden" && (
         <>
-          <p className="text-body-sm text-muted">Dieser Code ist älter und nur als Hash gespeichert — er lässt sich nicht mehr anzeigen. »Neu erzeugen« macht einen neuen Code, den du jederzeit wieder sehen kannst. Die Geräte dieses Codes müssen sich danach neu anmelden.</p>
+          <p className="text-body-sm text-muted">Dieser Code ist älter und lässt sich nicht anzeigen. »Neu erzeugen« macht einen neuen – die Geräte dieses Codes melden sich dann neu an.</p>
           <Button variant="primary" className="flex-none" onClick={onRegenerate}>
             <RenewIcon className="size-4" /> Neu erzeugen
           </Button>

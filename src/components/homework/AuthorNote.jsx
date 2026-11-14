@@ -1,7 +1,6 @@
 import { UserRound } from "lucide-react";
 import { usePlanStore } from "../../shared/store/planStore";
 import { authorLine, editRightsText } from "../../shared/utils/homework";
-import { ShieldIcon } from "../ui/icons";
 
 const box = "flex gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-muted";
 
@@ -9,20 +8,12 @@ const box = "flex gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-mut
 // Плашка у вікні Klausur / Hausaufgabe (макети handy-05, 08, 15):
 //   Eingetragen von Mü · Lehrkraft  (· geändert von Schüler)
 //   Ändern: Mü, Admin und Schüler mit Freigabe.
-// Запис учня — без автора: стара плашка «ohne Namen» (privacyText)
+// Запись ученика — без автора: тогда плашки нет (владелец 14.11: без «ohne Namen»)
 // ─────────────────────────────────────────────────────────────
-const AuthorNote = ({ entry, privacyText }) => {
+const AuthorNote = ({ entry }) => {
   const me = usePlanStore((s) => s.me);
   const line = authorLine(entry, me);
-
-  if (!line) {
-    return (
-      <div className={box}>
-        <ShieldIcon className="size-4 shrink-0" />
-        <p>{privacyText}</p>
-      </div>
-    );
-  }
+  if (!line) return null;
 
   return (
     <div className={box}>

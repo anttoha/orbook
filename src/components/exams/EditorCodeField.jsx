@@ -22,6 +22,5 @@ export const EditorCodeField = ({ code, onChange, error }) => (
 export const EditorCodeNote = ({ className }) => (
   <div className={`flex gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-muted ${className ?? ""}`}>
     <Lock className="size-4 shrink-0" />
-    <p>Der Code bleibt nur auf diesem Gerät. Der Admin kann ihn jederzeit sperren.</p>
   </div>
 );

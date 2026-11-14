@@ -30,7 +30,7 @@ const NotesSync = () => {
         <StateScreen icon={SyncIcon} title="Ausgeschaltet" text="Deine Schule hat das Synchronisieren ausgeschaltet. Alles bleibt auf diesem Gerät." />
       ) : (
         <div className="flex flex-col gap-4.5 lg:max-w-186">
-            <p className="text-body-sm leading-5.5 text-muted">Alles von diesem Gerät auch auf deinem anderen — ohne Konto und ohne Namen. Code eingeben oder QR scannen, fertig.</p>
+            <p className="text-body-sm leading-5.5 text-muted">Alles von diesem Gerät auch auf deinem anderen.</p>
             {code ? <SyncCodeCard code={code} /> : <StartSync />}
             <SyncQrCard />
             <SyncParts />

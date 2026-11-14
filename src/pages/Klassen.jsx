@@ -72,10 +72,6 @@ const Klassen = () => {
           {!isDesktop && <AddClassTile />}
         </>
       )}
-
-      <p className="mt-auto pt-6 text-center text-caption text-faint lg:mt-0 lg:pt-1 lg:text-left">
-        {t(side ? "Mehr als 3 Klassen: seitlich wischen · Stunde antippen für Details" : isDesktop ? "Karte anklicken öffnet den Plan der Klasse · Regler = Einstellungen der Klasse" : "Schule antippen: ihre Klassen und „Klasse hinzufügen“")}
-      </p>
     </section>
   );
 };

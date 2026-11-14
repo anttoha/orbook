@@ -68,7 +68,7 @@ const NewAccessForm = ({ yearEnd, schoolId, onDone }) => {
   const until = accessValidUntil(valid, today, yearEnd);
   return (
     <form onSubmit={create} noValidate className="flex flex-col gap-4">
-      <TextField id="access-label" label="Bezeichnung" placeholder="z. B. Schüler 08" hint="Nur für dich sichtbar · keine echten Namen" error={errors.label} value={label} maxLength={40} readOnly={locked} onChange={(event) => setLabel(event.target.value)} autoComplete="off" />
+      <TextField id="access-label" label="Bezeichnung" placeholder="z. B. Schüler 08" error={errors.label} value={label} maxLength={40} readOnly={locked} onChange={(event) => setLabel(event.target.value)} autoComplete="off" />
       <SchoolClassField value={target} onChange={setTarget} disabled={locked} error={errors.target} />
       <Choice label="Für wen?" hint={audienceHint(audience)} options={AUDIENCES} value={audience} onChange={chooseAudience} disabled={locked} />
       <DevicesField value={devices} onChange={setDevices} hint="Handy + Laptop = 2. Voll? Dann kommt kein neues Gerät rein." error={errors.devices} disabled={locked} />

@@ -133,7 +133,6 @@ const MusterEditor = ({ data, courses, onReload }) => {
         {editing && (
           <p className="flex items-center gap-2 text-label text-muted">
             <span className="size-2 rounded-full bg-accent" /> eigene Änderung
-            <span className="text-faint lg:hidden">· Stunde antippen zum Ändern</span>
           </p>
         )}
         {editing && isDesktop && (

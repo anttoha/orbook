@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { useSyncOn } from "../../shared/hooks/useNotesSync";
 import { useNow } from "../../shared/hooks/useNow";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useTasksStore } from "../../shared/store/tasksStore";
@@ -10,7 +9,7 @@ import { mySubjectCodes, subjectItems } from "../../shared/utils/picker";
 import { dueChoices, TASK_MAX, validateTaskText } from "../../shared/utils/tasks";
 import Button from "../ui/Button";
 import Field from "../ui/Field";
-import { CheckIcon, LockIcon, TrashIcon } from "../ui/icons";
+import { CheckIcon, TrashIcon } from "../ui/icons";
 import ListPicker from "../ui/ListPicker";
 import Sheet from "../ui/Sheet";
 import TextField from "../ui/TextField";
@@ -25,7 +24,7 @@ const TaskSheet = ({ open, onClose, sheet }) => {
   const task = useTasksStore((s) => (sheet.id ? s.tasks.find((t) => t.id === sheet.id && !t.deleted) : null)) ?? null;
 
   return (
-    <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow="Nur für dich" title="Eigene Aufgabe">
+    <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow="Aufgaben" title="Eigene Aufgabe">
       {/* key — при смене задачи форма создаётся заново с её полями */}
       <TaskForm key={task?.id ?? "neu"} task={task} onDone={onClose} />
     </Sheet>
@@ -88,7 +87,6 @@ const TaskForm = ({ task, onDone }) => {
       </Field>
 
       <div className="flex flex-col gap-3.5">
-        <StorageHint />
         <div className="flex gap-2">
           {task && (
             <Button variant="danger" onClick={handleDelete} className="flex-none px-4.5">
@@ -104,15 +102,5 @@ const TaskForm = ({ task, onDone }) => {
   );
 };
 
-// Где живёт задача: с Sync-Code — ещё и в зашифрованном блоке, без — только здесь
-const StorageHint = () => {
-  const syncOn = useSyncOn();
-  return (
-    <p className="flex items-center gap-1.5 text-caption text-faint">
-      <LockIcon className="size-3.25 shrink-0" />
-      {syncOn ? "Sieht nur du. Mit Sync-Code auch auf deinen anderen Geräten." : "Sieht nur du. Steht in „Aufgaben“ und im Tag."}
-    </p>
-  );
-};
 
 export default TaskSheet;

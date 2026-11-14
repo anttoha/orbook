@@ -93,7 +93,6 @@ const Aufgaben = () => {
     }
     return (
       <>
-        {list.done.length === 0 && <HowTo />}
         {groups.map((group) => (
           <section key={group.title} className="flex flex-col gap-2">
             <h2 className="mb-0.75 text-hint font-extrabold text-faint">{group.title}</h2>
@@ -157,15 +156,6 @@ function eyebrowText(open, done, wide) {
 // Строки появляются по очереди, с маленькой задержкой (не больше ~0,3 с на весь список)
 const stagger = (i) => ({ animationDelay: `${Math.min(i, 8) * 35}ms` });
 
-// Подсказка, пока ничего не отмечено: что куда нажимать
-const HowTo = () => (
-  <p className="flex items-center gap-3 rounded-field bg-tint px-3.5 py-3 text-label text-accent-ink motion-safe:animate-rise-in">
-    <span className="grid size-6.5 shrink-0 place-items-center rounded-full border-2 border-accent" aria-hidden="true" />
-    <span>
-      <b className="font-extrabold">Kreis antippen</b> = erledigt. <b className="font-extrabold">Zeile antippen</b> = Details oder ändern.
-    </span>
-  </p>
-);
 
 // Открытая строка: нажатие — детали домашки или правка своей задачи
 const OpenRow = (props) => {

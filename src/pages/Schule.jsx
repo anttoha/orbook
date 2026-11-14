@@ -34,7 +34,6 @@ const Schule = () => {
       <div className="motion-safe:animate-rise-in" style={{ animationDelay: `${Math.min(items.length, 6) * 50}ms` }}>
         <AddClassTile schoolId={school.id} hint="Zugangscode einer Klasse dieser Schule" />
       </div>
-      <p className="text-caption text-faint">{t("Code einer anderen Schule? Geht auch – die Klasse landet dann bei ihrer Schule.")}</p>
     </section>
   );
 };

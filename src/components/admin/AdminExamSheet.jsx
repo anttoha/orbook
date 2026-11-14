@@ -47,7 +47,7 @@ const ExamEditForm = ({ exam, types, onSaved }) => {
       <Field label="Stunde">
         <Select variant="field" label="Stunde" value={form.lesson ?? ""} options={LESSONS.map((lesson) => ({ value: lesson ?? "", label: lesson ? `${lesson}. Stunde` : "—" }))} onChange={(value) => change({ lesson: value === "" ? null : value })} />
       </Field>
-      <TextField id="admin-exam-topic" label="Thema" value={form.topic} maxLength={TOPIC_MAX} error={error} hint={`${form.topic.length} von ${TOPIC_MAX} Zeichen · keine Namen`} onChange={(event) => change({ topic: event.target.value })} autoComplete="off" />
+      <TextField id="admin-exam-topic" label="Thema" value={form.topic} maxLength={TOPIC_MAX} error={error} hint={`${form.topic.length} von ${TOPIC_MAX} Zeichen`} onChange={(event) => change({ topic: event.target.value })} autoComplete="off" />
       <Button type="submit" variant="primary" disabled={busy} className="flex-none">
         <CheckIcon className="size-4" /> Speichern
       </Button>

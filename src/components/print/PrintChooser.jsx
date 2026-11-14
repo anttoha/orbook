@@ -94,7 +94,7 @@ const PrintChooser = ({ url, className, onBack }) => {
               <Switch checked={steps} onChange={setSteps} label="Kurze Anleitung aufs Blatt" />
             </div>
           )}
-          <p className="text-caption text-faint">Auf dem Blatt steht nur der Einladungslink — keine Namen. Link aus = Blatt geht nicht mehr.</p>
+          <p className="text-caption text-faint">Link aus = Blatt geht nicht mehr.</p>
         </div>
         {/* ПК: настоящий лист, уменьшенный (zoom меняет и место в разметке, не только картинку) */}
         <div aria-hidden="true" className="hidden shrink-0 rounded-card bg-sand p-3 lg:block">

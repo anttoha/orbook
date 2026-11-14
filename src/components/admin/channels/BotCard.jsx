@@ -32,7 +32,6 @@ const BotCard = ({ username, configured, enabled, chats, onToggle }) => (
         <div className="flex items-center gap-3 py-3">
           <div className="min-w-0 flex-1">
             <p className="text-row text-ink">Verbundene Chats</p>
-            <p className="text-caption text-faint">ohne Namen · nur die Anzahl</p>
           </div>
           <span className="text-subhead font-black text-ink">{chats ?? 0}</span>
         </div>

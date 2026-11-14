@@ -95,7 +95,7 @@ const ExamSheet = ({ open, onClose, sheet }) => {
       <MovedNote entry={exam} />
       <EntryExtras entry={exam} />
 
-      <AuthorNote entry={exam} privacyText="Nur Fach, Datum, Stunde, Thema, Beschreibung und Links — ohne Namen." />
+      <AuthorNote entry={exam} />
       <HistoryList kind="exams" entry={exam} noun="Test" />
     </Sheet>
   );

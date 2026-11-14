@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { UserRound } from "lucide-react";
 import { HOMEWORK_OPS, useExamSave } from "../../shared/hooks/useExamSave";
 import { useNow } from "../../shared/hooks/useNow";
 import { usePlanStore } from "../../shared/store/planStore";
@@ -142,7 +141,7 @@ const HomeworkForm = ({ item, preset = null }) => {
           rows={3}
           value={fields.text}
           error={errors.text}
-          hint={`${fields.text.length} von ${TEXT_MAX} Zeichen · keine Namen von Schülern`}
+          hint={`${fields.text.length} von ${TEXT_MAX} Zeichen`}
           maxLength={TEXT_MAX}
           onChange={(event) => change({ text: event.target.value })}
         />
@@ -151,10 +150,6 @@ const HomeworkForm = ({ item, preset = null }) => {
 
         {teacher && <StudentsMayEdit checked={studentsMayEdit} onChange={(value) => change({ studentsMayEdit: value })} note="An: Schüler mit Freigabe dürfen Abgabe und Text ändern." />}
 
-        <div className="flex gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-muted">
-          <UserRound className="size-4 shrink-0" />
-          <p>{teacher ? `Die Klasse sieht „eingetragen von ${me.teacher.short}“. Wird nach der Abgabe automatisch gelöscht.` : "Ohne Namen. Wird nach der Abgabe automatisch gelöscht."}</p>
-        </div>
       </div>
 
       <div className="mt-auto flex flex-col gap-2.5 pt-6">

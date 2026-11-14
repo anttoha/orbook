@@ -64,7 +64,7 @@ const ConnectBody = ({ onClose }) => {
         </p>
       </Step>
       <p className="text-center text-caption text-faint">
-        Der Link gilt 15 Minuten und nur für dich.
+        Der Link gilt 15 Minuten.
         <br />
         Anderes Handy? Schick dem Bot deinen <b className="font-extrabold text-muted">Zugangscode</b>.
       </p>

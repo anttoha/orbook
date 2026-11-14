@@ -93,7 +93,7 @@ const TeacherLoginForm = ({ schoolClass }) => {
       {/* телефон: плашка внизу екрана */}
       <div className="mt-auto flex gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-muted lg:hidden">
         <Lock className="size-4 shrink-0" />
-        <p>Den Code bekommen Sie vom Admin der Klasse. Er bleibt nur auf diesem Gerät.</p>
+        <p>Den Code bekommen Sie vom Admin der Klasse.</p>
       </div>
     </form>
   );

@@ -72,7 +72,7 @@ const HomeworkSheet = ({ open, onClose, sheet }) => {
       <p className="rounded-card bg-card px-3.75 py-3.5 text-body whitespace-pre-line text-ink">{item.text}</p>
       <MovedNote entry={item} />
       <EntryExtras entry={item} />
-      <AuthorNote entry={item} privacyText="Nur Fach, Abgabe, Aufgabe und Links — ohne Namen." />
+      <AuthorNote entry={item} />
       <HistoryList kind="homework" entry={item} noun="Hausaufgabe" />
     </Sheet>
   );

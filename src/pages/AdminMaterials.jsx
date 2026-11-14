@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import AdminHeader from "../components/admin/AdminHeader";
-import { AdminEmpty, AdminError, AdminNote, AdminSkeleton } from "../components/admin/AdminState";
+import { AdminEmpty, AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import DeleteMaterialDialog from "../components/materials/DeleteMaterialDialog";
 import MaterialRow from "../components/materials/MaterialRow";
 import { TrashIcon } from "../components/ui/icons";
@@ -69,7 +69,6 @@ const AdminMaterials = () => {
     <section className="flex flex-col gap-4 lg:gap-5">
       <AdminHeader title="Materialien" backTo="/admin" />
       {renderList()}
-      <AdminNote>ORBook speichert nur den Link und den Titel. Die Dateien bleiben in Google Drive oder OneDrive.</AdminNote>
       {pending && <DeleteMaterialDialog item={pending} actions={{ confirm: true, closeConfirm: () => setPending(null), remove, busy }} />}
     </section>
   );

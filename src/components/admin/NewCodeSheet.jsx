@@ -122,7 +122,7 @@ const NewCodeForm = ({ yearEnd, onDone, kind }) => {
       {teacherCode ? (
         <TeacherPicker classId={target ? target.id : (current?.id ?? 0)} value={label} onChange={setLabel} disabled={locked} error={errors.label} />
       ) : (
-        <TextField id="code-label" label="Bezeichnung" placeholder="z. B. Code D" hint="Nur für dich sichtbar" error={errors.label} value={label} maxLength={40} readOnly={locked} onChange={(event) => setLabel(event.target.value)} autoComplete="off" />
+        <TextField id="code-label" label="Bezeichnung" placeholder="z. B. Code D" error={errors.label} value={label} maxLength={40} readOnly={locked} onChange={(event) => setLabel(event.target.value)} autoComplete="off" />
       )}
       <RightsFields value={rights} onChange={setRights} disabled={locked} error={errors.rights} kind={kind} />
       <ValidFields choice={valid.choice} date={valid.date} yearEnd={yearEnd} onChange={setValid} disabled={locked} error={errors.valid} />

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import AdminHeader from "../components/admin/AdminHeader";
-import { AdminError, AdminNote, AdminSkeleton } from "../components/admin/AdminState";
+import { AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import AdminPasswordForm from "../components/admin/passwords/AdminPasswordForm";
 import ClassPasswordForm from "../components/admin/passwords/ClassPasswordForm";
 import { useNow } from "../shared/hooks/useNow";
@@ -37,7 +37,6 @@ const AdminPasswords = () => {
     if (settings.status === "error") return <AdminError error={settings.error} onRetry={reloadSettings} />;
     return (
       <>
-        <AdminNote>Gespeichert wird nur ein Hash. Auch du kannst ein Passwort später nicht mehr ansehen.</AdminNote>
         <div className="flex flex-col gap-7 lg:grid lg:grid-cols-2 lg:items-start lg:gap-5">
           <ClassPasswordForm since={since} schoolClass={schoolClass} onChanged={afterClassChange} />
           <AdminPasswordForm />

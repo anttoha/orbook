@@ -176,7 +176,7 @@ const ExamForm = ({ exam, preset = null }) => {
           label="Thema"
           value={fields.topic}
           error={errors.topic}
-          hint={`${fields.topic.length} von ${TOPIC_MAX} Zeichen · keine Namen`}
+          hint={`${fields.topic.length} von ${TOPIC_MAX} Zeichen`}
           maxLength={TOPIC_MAX}
           autoComplete="off"
           onChange={(event) => change({ topic: event.target.value })}

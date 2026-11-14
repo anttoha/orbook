@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Plus } from "lucide-react";
 import AdminHeader from "../components/admin/AdminHeader";
-import { AdminEmpty, AdminError, AdminNote, AdminSkeleton } from "../components/admin/AdminState";
+import { AdminEmpty, AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import CodeCard from "../components/admin/CodeCard";
 import CodeDialogs from "../components/admin/CodeDialogs";
 import CodeTable from "../components/admin/CodeTable";
@@ -18,8 +18,8 @@ import { isTeacherCode } from "../shared/utils/admin";
 
 // Тексти двох списків: Editor-Codes (макети 41, 43) і Lehrer-Codes (частина 14, handy-10, pc-04)
 const TEXTS = {
-  editor: { title: "Editor-Codes", search: "Code suchen", empty: "Noch keine Editor-Codes", note: "Keine echten Namen als Bezeichnung — lieber »Code A« oder »Klassensprecher«." },
-  teacher: { title: "Lehrer-Codes", search: "Kürzel suchen", empty: "Noch keine Lehrer-Codes", note: "Ein Code pro Lehrkraft. Die Klasse sieht das Kürzel aus dem Plan: „eingetragen von Mü“. Lehrkräfte ändern nur ihre eigenen Einträge." },
+  editor: { title: "Editor-Codes", search: "Code suchen", empty: "Noch keine Editor-Codes" },
+  teacher: { title: "Lehrer-Codes", search: "Kürzel suchen", empty: "Noch keine Lehrer-Codes" },
 };
 
 // Телефон: «Editor-Codes · 4 | Lehrer-Codes · 3» — дві адреси, одна вкладка «Codes»
@@ -116,7 +116,6 @@ const AdminCodes = ({ kind = "editor" }) => {
         <div className="rounded-card bg-card px-5 pt-4.5 pb-1">
           <CodeTable codes={list} today={today} onToggle={toggle} onAction={(name, code) => (name === "lock" ? toggle(code) : setAction({ kind: name, code }))} subjectsOf={teacher ? subjectsOf : null} />
         </div>
-        <p className="mt-4 text-label text-faint">Den vollen Code siehst du jederzeit unter ⋮ → »Code anzeigen« (gespeichert verschlüsselt). Ältere Codes: einmal »Neu erzeugen«.</p>
       </>
     );
   };
@@ -125,7 +124,6 @@ const AdminCodes = ({ kind = "editor" }) => {
     <section className="flex flex-col gap-4 lg:gap-5">
       <AdminHeader title={texts.title} actions={[isDesktop && <SearchField key="search" value={query} onChange={setQuery} placeholder={texts.search} className="w-50" />, <span key="add">{addButton}</span>]} />
       <KindSwitch kind={kind} codes={all} />
-      <AdminNote>{texts.note}</AdminNote>
       <div>{renderList()}</div>
 
       <NewCodeSheet open={newOpen} kind={kind} onClose={() => setParams({}, { replace: true })} />

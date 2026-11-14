@@ -36,7 +36,7 @@ const NotesSection = ({ date, lessons = [], variant = "list", hideEmpty = false 
   // Підпис під нотаткою (макет): телефон — «synchronisiert · nur für dich», ПК — «Sport · 6. Std · nur für dich».
   // Предмет — з уроку (до уроку) або вибраний у нотатці; без синхронізації і на телефоні показуємо предмет
   const meta = (note) => {
-    if (synced && !isCard) return "synchronisiert · nur für dich";
+    if (synced && !isCard) return "synchronisiert";
     const lesson = note.period ? lessons.find((l) => l.period === note.period) : null;
     const label = lesson ? lessonName(lesson) : note.subject ? (subjectNames?.[note.subject] ?? note.subject) : null;
     return noteMeta(label, note.period);

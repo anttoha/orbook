@@ -1,4 +1,4 @@
-import { MapPin, UserRound } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { useState } from "react";
 import { useExamSave } from "../../shared/hooks/useExamSave";
 import { useNow } from "../../shared/hooks/useNow";
@@ -48,7 +48,7 @@ const Choice = ({ selected, onClick, children }) => (
 // Форма терміну (макети 18 handy-03/04, pc-03/04). item = null — новий, інакше правка.
 // subjects — предмети для «Für» (учитель — лише свої); eyebrow — хто записує; admin — запис від школи.
 // ─────────────────────────────────────────────────────────────
-const AppointmentForm = ({ item, subjects, eyebrow, admin = false, authorShort = null }) => {
+const AppointmentForm = ({ item, subjects, eyebrow, admin = false }) => {
   const { today } = useNow();
   const [fields, setFields] = useState(() => appointmentToForm(item));
   const [localErrors, setLocalErrors] = useState({});
@@ -71,8 +71,6 @@ const AppointmentForm = ({ item, subjects, eyebrow, admin = false, authorShort =
     else flow.save(fields);
   };
 
-  const who = admin ? "Die Klasse sieht „eingetragen von der Schule“." : authorShort ? `Die Klasse sieht „eingetragen von ${authorShort}“.` : "Ohne Namen — die Klasse sieht nur den Termin.";
-  const audience = fields.subject ? ` Nur Schüler mit dem Kurs ${subjectName(subjects.find((s) => s.code === fields.subject) ?? { code: fields.subject })} sehen ihn.` : "";
 
   return (
     <form
@@ -113,7 +111,7 @@ const AppointmentForm = ({ item, subjects, eyebrow, admin = false, authorShort =
           placeholder="z. B. Exkursion Phänomenta"
           value={fields.title}
           error={errors.title}
-          hint={fields.title ? `${fields.title.length} von ${TITLE_MAX} Zeichen · keine Namen von Schülern` : "Keine Namen von Schülern."}
+          hint={fields.title ? `${fields.title.length} von ${TITLE_MAX} Zeichen` : undefined}
           maxLength={TITLE_MAX}
           onChange={(event) => change({ title: event.target.value })}
         />
@@ -142,13 +140,6 @@ const AppointmentForm = ({ item, subjects, eyebrow, admin = false, authorShort =
           onChange={(event) => change({ note: event.target.value })}
         />
 
-        <div className="flex gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-muted">
-          <UserRound className="mt-0.5 size-4 shrink-0" />
-          <p>
-            {who}
-            {audience} Wird nach dem Termin automatisch gelöscht.
-          </p>
-        </div>
       </div>
 
       <div className="mt-auto flex flex-col gap-2.5 pt-6">

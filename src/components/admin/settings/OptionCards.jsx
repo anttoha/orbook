@@ -85,7 +85,7 @@ export const FeaturesCard = ({ className, ...props }) => (
   <SettingsCard title="Funktionen" className={className}>
     <div className={divided}>
       <SwitchRow label="Statistik zeigen" section="features" field="statistics" {...props} />
-      <SwitchRow label="Sync erlauben" hint="Notizen, Aufgaben, Einstellungen · zufällige Codes, ohne Namen" section="features" field="notesSync" {...props} />
+      <SwitchRow label="Sync erlauben" hint="Notizen, Aufgaben, Einstellungen" section="features" field="notesSync" {...props} />
       <SwitchRow label="Teilen-Knopf" hint="Text für WhatsApp erzeugen" section="features" field="share" {...props} />
       <SwitchRow label="Tests ohne Editor-Code" hint="Jeder mit Klassenpasswort darf eintragen" section="features" field="examsWithoutCode" {...props} />
     </div>

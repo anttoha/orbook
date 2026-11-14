@@ -1,5 +1,4 @@
 import { weekProgress } from "../../shared/utils/tasks";
-import { LockIcon } from "../ui/icons";
 
 // Правая колонка «Aufgaben» на широком ПК (макет 25 pc-01): «3 von 7 erledigt» с полоской и подсказка
 const WeekProgress = ({ list, today }) => {
@@ -17,12 +16,6 @@ const WeekProgress = ({ list, today }) => {
         </div>
         <p className="mt-3 text-label text-faint">{dueSoon > 0 ? `Noch offen bis morgen: ${dueSoon}` : "Bis morgen ist nichts offen."}</p>
       </div>
-      <p className="flex gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-muted">
-        <LockIcon className="mt-0.5 size-4 shrink-0" />
-        <span>
-          <b className="text-ink">Abhaken sieht nur du.</b> Mit Sync-Code auch auf dem Handy.
-        </span>
-      </p>
     </aside>
   );
 };

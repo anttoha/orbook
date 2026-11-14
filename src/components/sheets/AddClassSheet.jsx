@@ -77,7 +77,7 @@ const AddClassForm = ({ onClose, schoolId }) => {
           autoCapitalize="characters"
           spellCheck={false}
           error={error}
-          hint={found ? null : t("Der Code sagt ORBook, welche Schule und Klasse es ist.")}
+          hint={null}
           inputClassName={found ? "border-ok font-bold tracking-code read-only:opacity-100" : "font-bold tracking-code"}
           trailing={found && <Check className="mr-2.5 size-5 text-ok" />}
         />
@@ -98,7 +98,7 @@ const AddClassForm = ({ onClose, schoolId }) => {
                 )}
               </div>
             </div>
-            <TextField id="add-class-label" label={t("Name auf diesem Gerät")} value={label} onChange={(e) => setLabel(e.target.value)} maxLength={30} placeholder={`${t("Klasse")} ${item.name}`} hint={t("Nur du siehst den Namen. Kann leer bleiben.")} />
+            <TextField id="add-class-label" label={t("Name auf diesem Gerät")} value={label} onChange={(e) => setLabel(e.target.value)} maxLength={30} placeholder={`${t("Klasse")} ${item.name}`} />
             <Button variant="primary" onClick={finish} className="w-full flex-none">
               <ChevronRight className="size-4.5" /> {t("Hinzufügen und Kurse wählen")}
             </Button>
@@ -112,7 +112,6 @@ const AddClassForm = ({ onClose, schoolId }) => {
             <button type="submit" disabled={busy || !code.trim()} className="flex h-12 w-full items-center justify-center rounded-full bg-accent text-row font-bold text-on-accent disabled:opacity-40">
               {t("Weiter")}
             </button>
-            <p className="text-center text-caption text-faint">{t("Einladungslink bekommen? Antippen genügt.")}</p>
           </>
         )}
     </form>

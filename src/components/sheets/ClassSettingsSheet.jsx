@@ -81,7 +81,6 @@ const ClassSettings = ({ item, onClose }) => {
       </ul>
 
       <RemoveClass item={item} onDone={onClose} />
-      <p className="text-caption text-faint">{t("Nur auf diesem Gerät. Der Zugangscode bleibt gültig.")}</p>
     </div>
   );
 };

@@ -38,7 +38,7 @@ const Poster = ({ url, className, steps }) => (
         ))}
       </ol>
     )}
-    <PrintFoot lines={["Kein Konto, keine E-Mail, keine Namen.", "Fragen? Admin der Klasse. Bitte nur in der Klasse aufhängen."]} />
+    <PrintFoot lines={["Fragen? Admin der Klasse."]} />
   </article>
 );
 

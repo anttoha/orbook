@@ -105,7 +105,7 @@ const RenameSheet = ({ code, actions, onClose }) => {
   };
   return (
     <FormSheet code={code} title="Umbenennen" onClose={onClose} onSave={save}>
-      <TextField id="access-rename" label="Bezeichnung" hint="Keine echten Namen — lieber »Eltern« oder »Schüler 07«." value={label} maxLength={40} error={error} onChange={(event) => setLabel(event.target.value)} autoComplete="off" />
+      <TextField id="access-rename" label="Bezeichnung" value={label} maxLength={40} error={error} onChange={(event) => setLabel(event.target.value)} autoComplete="off" />
     </FormSheet>
   );
 };

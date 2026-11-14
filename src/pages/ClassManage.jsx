@@ -5,7 +5,6 @@ import AccessList from "../components/admin/access/AccessList";
 import NewAccessSheet from "../components/admin/access/NewAccessSheet";
 import { AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import Button from "../components/ui/Button";
-import { ShieldIcon } from "../components/ui/icons";
 import PageHeader from "../components/ui/PageHeader";
 import { classAccess } from "../shared/api/admin";
 import { AccessScope } from "../shared/hooks/useAccessScope";
@@ -97,11 +96,7 @@ const ClassManage = () => {
         {inPanel && me?.canManageClass && addButton}
         {me?.canManageClass ? (
           <>
-            <p className="flex gap-3 rounded-card bg-sand px-4 py-3.5 text-body-sm text-muted">
-              <ShieldIcon className="mt-0.5 size-4.5 shrink-0" /> {t("Keine echten Namen — lieber »Eltern«, »Vertretung« oder »Schüler 07«.")}
-            </p>
             <CodesBody access={access} reload={reload} onNew={() => setCreating(true)} />
-            <p className="text-caption text-faint">{t("Nur die Codes deiner Klasse. Schulen und andere Klassen sieht nur der Admin.")}</p>
           </>
         ) : (
           <p className="rounded-card bg-card p-4 text-body-sm text-muted">{t("Dafür brauchst du das Recht „Klasse verwalten“. Es kommt mit einem Lehrer- oder Editor-Code.")}</p>

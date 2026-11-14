@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import AdminHeader from "../components/admin/AdminHeader";
-import { AdminEmpty, AdminError, AdminNote, AdminSkeleton } from "../components/admin/AdminState";
+import { AdminEmpty, AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import EventList from "../components/admin/EventList";
 import SearchField from "../components/admin/SearchField";
 import Segmented from "../components/ui/Segmented";
@@ -25,7 +25,6 @@ const AdminLog = () => {
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const { today } = useNow();
   const ensureSettings = useAdminStore((s) => s.ensureSettings);
-  const keepDays = useAdminStore((s) => s.settings.data?.settings.logs.retentionDays ?? 30);
   const [kind, setKind] = useState("all");
   const [query, setQuery] = useState("");
   const q = useDebounced(query); // запит — коли перестали друкувати
@@ -71,7 +70,6 @@ const AdminLog = () => {
           {extra.busy ? "Wird geladen…" : "Mehr laden"}
         </button>
       )}
-      <AdminNote>Im Protokoll stehen keine IP-Adressen und keine Namen. Einträge älter als {keepDays} Tage werden gelöscht.</AdminNote>
     </section>
   );
 };

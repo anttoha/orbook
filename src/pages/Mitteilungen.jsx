@@ -83,7 +83,6 @@ const Mitteilungen = () => {
           <Button variant="danger" onClick={turnOff} disabled={busy} className="w-full flex-none bg-card">
             <BellOff className="size-4" /> Auf diesem Gerät ausschalten
           </Button>
-          <p className="text-center text-caption text-faint">Ohne Namen. Der Server kennt nur dieses Gerät und deine Kurse.</p>
         </div>
       )}
     </section>

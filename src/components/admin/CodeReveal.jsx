@@ -4,7 +4,7 @@ import { CopyIcon } from "../ui/icons";
 // Фіолетова картка «… · nur jetzt sichtbar» (макети 42 і 44, пароль класу — 14b).
 // Повний код або пароль є тільки у відповіді сервера: ніде не зберігаємо, лише показуємо один раз.
 // title і note — для пароля класу інші тексти; за замовчуванням — новий Editor-Code
-const CodeReveal = ({ code, masked, title = "Neuer Code · nur jetzt sichtbar", note, copyLabel = "Code kopieren" }) => (
+const CodeReveal = ({ code, masked, title = "Neuer Code", note, copyLabel = "Code kopieren" }) => (
   <div className="rounded-card bg-accent px-4 py-4 text-on-accent">
     <p className="text-label font-extrabold text-on-accent/80">{title}</p>
     <div className="mt-2 flex items-center gap-3">

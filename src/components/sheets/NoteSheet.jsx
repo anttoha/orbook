@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { useSyncOn } from "../../shared/hooks/useNotesSync";
 import { useDay } from "../../shared/hooks/usePlan";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
@@ -10,7 +9,7 @@ import ListPicker from "../ui/ListPicker";
 import { subjectItems } from "../../shared/utils/picker";
 import Button from "../ui/Button";
 import Field from "../ui/Field";
-import { CalendarIcon, CheckIcon, LockIcon, TrashIcon } from "../ui/icons";
+import { CalendarIcon, CheckIcon, TrashIcon } from "../ui/icons";
 import Sheet from "../ui/Sheet";
 
 // ─────────────────────────────────────────────────────────────
@@ -29,7 +28,7 @@ const NoteSheet = ({ open, onClose, sheet }) => {
   if (!valid) return null; // крива адреса
 
   return (
-    <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow="Nur für dich" title="Notiz">
+    <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow="Notizen" title="Notiz">
       {/* key — при зміні нотатки форма створюється заново з її текстом */}
       <NoteForm key={noteId ?? "neu"} note={note} noteId={noteId} date={sheet.datum} period={period} onDone={onClose} />
     </Sheet>
@@ -94,7 +93,6 @@ const NoteForm = ({ note, noteId, date: openedOn, period, onDone }) => {
       <DateRow date={date} period={period} onChange={setDate} />
 
       <div className="flex flex-col gap-3.5">
-        <StorageHint />
         <div className="flex gap-2">
           {/* «Löschen» тільки для вже збереженої нотатки */}
           {note && (
@@ -140,16 +138,5 @@ const DateRow = ({ date, period, onChange }) => {
   );
 };
 
-// Де живе нотатка: з Sync-Code — ще й на сервері (зашифровано), без — тільки тут
-const StorageHint = () => {
-  const syncOn = useSyncOn();
-
-  return (
-    <p className="flex items-center gap-1.5 text-caption text-faint">
-      <LockIcon className="size-3.25 shrink-0" />
-      {syncOn ? "Nur für dich. Wird mit deinem Sync-Code gespeichert." : "Nur für dich. Bleibt auf diesem Gerät."}
-    </p>
-  );
-};
 
 export default NoteSheet;

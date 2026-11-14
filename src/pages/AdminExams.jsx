@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import AdminExamList from "../components/admin/AdminExamList";
 import AdminExamSheet from "../components/admin/AdminExamSheet";
 import AdminHeader from "../components/admin/AdminHeader";
-import { AdminEmpty, AdminError, AdminNote, AdminSkeleton } from "../components/admin/AdminState";
+import { AdminEmpty, AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import DangerDialog from "../components/admin/DangerDialog";
 import SearchField from "../components/admin/SearchField";
 import Segmented from "../components/ui/Segmented";
@@ -109,7 +109,6 @@ const AdminExams = () => {
         </div>
       )}
       <div>{renderList()}</div>
-      {isDesktop && <AdminNote>»Eingetragen von« zeigt nur die Code-Bezeichnung — die Klasse sieht keine Namen.</AdminNote>}
 
       <AdminExamSheet exam={editing} types={types} onClose={() => setEditing(null)} onSaved={saved} />
       <DangerDialog
