@@ -5,6 +5,11 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.16.1",
+    date: "2026-11-14",
+    behoben: ["Neue Seite fängt jetzt oben an – vorher warst du manchmal schon so weit unten wie auf der Seite davor. „Zurück“ bringt dich wieder an die alte Stelle."],
+  },
+  {
     version: "0.16.0",
     date: "2026-11-14",
     neu: ["Geht’s unten noch weiter? Dann zeigt ein kleiner Pfeil-Knopf unten nach unten – antippen, und es scrollt weiter."],
