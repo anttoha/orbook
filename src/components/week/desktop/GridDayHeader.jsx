@@ -37,7 +37,7 @@ const GridDayHeader = ({ as: Component = "button", day, isToday, className, styl
         onClick={() => openSheet("info", { datum: day.date })}
         aria-label={`Info zum Tag · ${weekdayLong(day.date)}`}
         title="Info zum Tag"
-        className="top-2" // «Glas»: кнопка библиотеки 36px — её середина на той же высоте (26px), что и у нашей 28px
+        style={{ "--lg-h": "1.75rem" }} // «Glas»: кнопка библиотеки того же размера 28px, что и наша, — не вылезает за плашку дня
         look={cn(
           "absolute top-6.5 right-1.5 -mt-3.5 grid size-7 place-items-center rounded-full outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent/50",
           isToday ? "text-today-sub hover:bg-on-accent/15" : hasNews ? "text-accent hover:bg-tint" : "text-faint hover:bg-card hover:text-ink",
