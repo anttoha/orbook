@@ -1,6 +1,6 @@
 # 30 · Personalisierung + Animationen
 
-**Статус:** дизайн и план ок (ответы владельца 2026-11-14); 30a готово на демо (2026-11-14), дальше 30b–30d
+**Статус:** дизайн и план ок (ответы владельца 2026-11-14); 30a и 30b готовы на демо (2026-11-14), дальше 30c–30d
 **Источники:** `design/neu/30-personalisierung/` (`gen.py`, `build.py`, `index.html`), артефакт https://claude.ai/artifact/5oveTVwAgAxMkH77LwRvUz; пожелания владельца `docs/ideas/2026-11-11/ideas.md` (строки 11, 18, 21, 29) и 2026-11-14 (Liquid Glass, образец https://liquidglass.theatom.lk/); Soft 04 «Woche», 22 «Mehr», 24 «Darstellung».
 
 ## Зачем
@@ -101,6 +101,9 @@
 ## Отличия от дизайна
 - 30a: в Klar кнопки и переключатели остаются круглыми «таблетками» (`rounded-full` не токен); углы карточек, клеток и полей — меньше, как в макете.
 - 30a: в Klar и Glas клетки уроков пока залиты цветом предмета, как в Soft. Полоска вместо заливки — настройка «Fachfarbe» в 30b.
+- 30b: «In der Stunde» (Kürzel/Name, Raum, Lehrkraft) — для клеток недели на телефоне, где мало места; на ПК и в списке дня всегда полное имя, учитель и кабинет. Остальное (Fachfarbe, Uhrzeit links, Freie Stunden, Ausfall, Pausen) — везде: неделя телефон/ПК, Liste и Zeitleiste.
+- 30b: «Lehrkraft» по умолчанию выключена — раньше учителя в клетке не было (кто ничего не менял, видит как раньше).
+- 30b: «Änderung unter dem Tag» открывает шторку с выбором и превью (бывшая карточка «Plan» из Darstellung). Настройки недели и дня переехали из Darstellung в «Stundenplan»; в Darstellung — карточка «Anpassen» → «Stundenplan». Sync поля `plan` — в 30d.
 - 30a: «Startansicht» пока Woche / Heute; «Start» и ссылки «Start» / «Stundenplan» в Darstellung появятся в 30b–30c.
 
 ## Слова

@@ -1,30 +1,26 @@
 import { toast } from "sonner";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Table } from "lucide-react";
 import AccentPicker from "../components/more/AccentPicker";
 import DesignPicker from "../components/more/DesignPicker";
 import GlassCard from "../components/more/GlassCard";
 import LanguageSelect from "../components/more/LanguageSelect";
-import ChangedFormatCard from "../components/more/ChangedFormatCard";
+import MenuRow from "../components/more/MenuRow";
 import SettingRow from "../components/more/SettingRow";
 import ThemePicker from "../components/more/ThemePicker";
 import ListCard from "../components/ui/ListCard";
 import PageHeader from "../components/ui/PageHeader";
 import Segmented from "../components/ui/Segmented";
-import Switch from "../components/ui/Switch";
 import { useT } from "../shared/hooks/useT";
 import { useTheme } from "../shared/hooks/useTheme";
 import { useUserStore } from "../shared/store/userStore";
 import { effectiveMotion } from "../shared/utils/appearance";
+import { planOf, planSummary } from "../shared/utils/planView";
 import { useMediaQuery } from "../shared/hooks/useMediaQuery";
 import PillButton from "../components/ui/PillButton";
 
 const START_VIEWS = [
   { value: "woche", label: "Woche" },
   { value: "heute", label: "Heute" },
-];
-const DAY_VIEWS = [
-  { value: "liste", label: "Liste" },
-  { value: "zeitleiste", label: "Zeit" },
 ];
 const MOTIONS = [
   { value: "voll", label: "Voll" },
@@ -76,15 +72,6 @@ const Appearance = () => {
         <SettingRow label="Startansicht">
           <Segmented label="Startansicht" size="form" className="w-fit" options={START_VIEWS} value={user.startView} onChange={user.setStartView} />
         </SettingRow>
-        <SettingRow label="Tag anzeigen als">
-          <Segmented label="Tag anzeigen als" size="form" className="w-fit" options={DAY_VIEWS} value={user.dayView} onChange={user.setDayView} />
-        </SettingRow>
-        <SettingRow label="Wochenende zeigen">
-          <Switch label="Wochenende zeigen" checked={user.showWeekend} onChange={user.toggleWeekend} />
-        </SettingRow>
-        <SettingRow label="Kompakte Woche" hint="Kleinere Zellen, mehr auf einen Blick">
-          <Switch label="Kompakte Woche" checked={user.compactWeek} onChange={user.setCompactWeek} />
-        </SettingRow>
         <SettingRow label="Animationen">
           <Segmented label="Animationen" size="form" className="w-fit" options={MOTIONS} value={effectiveMotion(user.motion, systemReduced)} onChange={user.setMotion} />
         </SettingRow>
@@ -99,7 +86,10 @@ const Appearance = () => {
         </SettingRow>
       </ListCard>
 
-      <ChangedFormatCard />
+      {/* «Anpassen» (частина 30): окремі сторінки; «Start» з'явиться в 30c. Woche, Tag і «Änderung unter dem Tag» тепер у «Stundenplan» */}
+      <ListCard title="Anpassen">
+        <MenuRow to="/mehr/darstellung/stundenplan" icon={Table} label="Stundenplan" value={planSummary(planOf(user.plan)).map(t).join(" · ")} />
+      </ListCard>
 
       <PillButton glass="glass" size="lg" onClick={reset} className="flex h-12 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink transition-opacity active:opacity-80">
         <RotateCcw className="size-4" />

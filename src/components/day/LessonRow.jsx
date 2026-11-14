@@ -3,7 +3,8 @@ import { useNow } from "../../shared/hooks/useNow";
 import { cn } from "../../shared/utils/cn";
 import { lessonName } from "../../shared/utils/format";
 import { lessonProgress } from "../../shared/utils/lessonClock";
-import { fachClasses, lessonNote } from "../../shared/utils/lessons";
+import { lessonNote } from "../../shared/utils/lessons";
+import { PLAN_DEFAULTS, subjectLook } from "../../shared/utils/planView";
 import { slotText } from "../../shared/utils/entries";
 import Badge from "../ui/Badge";
 import { FlagIcon } from "../ui/icons";
@@ -42,7 +43,8 @@ const EntryLine = ({ icon: Icon, accent, children }) => (
   </p>
 );
 
-const LessonRow = ({ lesson, exam, homework = [], movedAway = [], date, isPast, live, note, overrides, onOpen }) => {
+// plan — «Stundenplan» (частина 30b): тут діє «Fachfarbe»
+const LessonRow = ({ lesson, exam, homework = [], movedAway = [], date, isPast, live, note, overrides, plan = PLAN_DEFAULTS, onOpen }) => {
   const { now } = useNow(); // для смужки прогресу
   const isCancelled = lesson.status === "cancelled"; // fällt aus?
   const isChanged = !isCancelled && lesson.status !== "normal"; // зміна (рамка)
@@ -55,7 +57,7 @@ const LessonRow = ({ lesson, exam, homework = [], movedAway = [], date, isPast, 
       disabled={!onOpen}
       className={cn(
         "relative flex min-h-16 w-full rounded-box px-3.5 py-3 text-left transition-shadow outline-none select-none [-webkit-touch-callout:none] hover:shadow-raise focus-visible:ring-2 focus-visible:ring-accent/60",
-        lesson.notMine ? "border border-dashed border-faint2 text-faint" : isCancelled ? "bg-sand text-faint" : fachClasses(lesson.subject?.code, overrides),
+        lesson.notMine ? "border border-dashed border-faint2 text-faint" : isCancelled ? "bg-sand text-faint" : subjectLook(lesson.subject?.code, overrides, plan),
         lesson.muster && "hatch-muster", // урок із Muster (частина 19)
         (isChanged || live) && "ring-2 ring-accent", // рамка в зміни й в уроку, що йде
         live && "pb-5", // місце під смужку прогресу

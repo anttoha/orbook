@@ -6,6 +6,8 @@ import { lessonEntries, movedAway } from "../../shared/utils/entries";
 import { berlinParts, isLessonNow, isLessonPast, toMinutes } from "../../shared/utils/lessonClock";
 import { lessonExam, lessonKey } from "../../shared/utils/lessons";
 import { findNote } from "../../shared/utils/notes";
+import { usePlanView } from "../../shared/hooks/usePlanView";
+import { shownLessons } from "../../shared/utils/planView";
 import BreakRow from "./BreakRow";
 import LessonRow from "./LessonRow";
 
@@ -25,9 +27,10 @@ const LessonList = ({ day, lessons, onOpen, preliminary = false }) => {
   const homework = usePlanStore((s) => s.homework); // Hausaufgaben «bis zu dieser Stunde» (часть 24)
   const exams = usePlanStore((s) => s.exams); // предстоящие Tests: какие сервер увёз с выпавшего урока
   const minutes = berlinParts(now).minutes; // зараз у хвилинах
+  const plan = usePlanView(); // «Stundenplan» (частина 30b): Ausfall, Pausen, Fachfarbe
 
   // Спершу уроки з часом (за часом), уроки без часу (10) — у кінець
-  const sorted = [...lessons].sort((a, b) => (a.start ? toMinutes(a.start) : 9999) - (b.start ? toMinutes(b.start) : 9999) || a.period - b.period);
+  const sorted = [...shownLessons(lessons, plan)].sort((a, b) => (a.start ? toMinutes(a.start) : 9999) - (b.start ? toMinutes(b.start) : 9999) || a.period - b.period);
 
   return (
     <div className="flex flex-col gap-2">
@@ -40,7 +43,7 @@ const LessonList = ({ day, lessons, onOpen, preliminary = false }) => {
 
         return (
           <Fragment key={lessonKey(lesson)}>
-            {gap >= MIN_BREAK && <BreakRow minutes={gap} />}
+            {plan.showBreaks && gap >= MIN_BREAK && <BreakRow minutes={gap} />}
             <LessonRow
               lesson={lesson}
               exam={lessonExam(day, lesson)}
@@ -51,6 +54,7 @@ const LessonList = ({ day, lessons, onOpen, preliminary = false }) => {
               live={live}
               note={findNote(notes, `${day.date}#${lesson.period}`)} // нотатка до цього уроку
               overrides={overrides}
+              plan={plan}
               onOpen={preliminary ? undefined : () => onOpen(lesson)}
             />
           </Fragment>

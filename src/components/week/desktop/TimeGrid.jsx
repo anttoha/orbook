@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { useNow } from "../../../shared/hooks/useNow";
 import { useLessonFilter } from "../../../shared/hooks/usePlan";
+import { usePlanView } from "../../../shared/hooks/usePlanView";
+import { shownLessons } from "../../../shared/utils/planView";
 import { FONT_SCALES } from "../../../shared/constants/constants";
 import { useUserStore } from "../../../shared/store/userStore";
 import { cn } from "../../../shared/utils/cn";
@@ -30,7 +32,8 @@ const TimeGrid = ({ days, onLessonClick }) => {
   // Висота шкали: більший шрифт і вимкнена «Kompakte Woche» роблять картки вищими
   const pxPerMin = useUserStore((s) => PX_PER_MIN * FONT_SCALES[s.fontScale] * (s.compactWeek ? 1 : 1.25));
 
-  const shown = days.map((day) => ({ ...day, lessons: filter(day.lessons) })); // без прихованих курсів
+  const plan = usePlanView(); // «Stundenplan» (частина 30b)
+  const shown = days.map((day) => ({ ...day, lessons: shownLessons(filter(day.lessons), plan) })); // без прихованих курсів (і випалих при «Ausblenden»)
   const todayIndex = days.findIndex((d) => d.date === today); // колонка «сьогодні» (-1 — не цей тиждень)
   const timed = shown.flatMap((d) => d.lessons.filter((l) => l.start)); // уроки з часом
 
@@ -56,7 +59,7 @@ const TimeGrid = ({ days, onLessonClick }) => {
   const card = (day, lesson, className, style) => (
     <LessonContextMenu key={lessonKey(lesson)} lesson={lesson} date={day.date}>
       <LessonTooltip lesson={lesson}>
-        <DesktopLessonCard lesson={lesson} overrides={overrides} isPast={isLessonPast(lesson, day.date, now)} onClick={() => onLessonClick(day, lesson)} className={className} style={style} />
+        <DesktopLessonCard lesson={lesson} overrides={overrides} plan={plan} isPast={isLessonPast(lesson, day.date, now)} onClick={() => onLessonClick(day, lesson)} className={className} style={style} />
       </LessonTooltip>
     </LessonContextMenu>
   );

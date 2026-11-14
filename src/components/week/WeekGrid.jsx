@@ -6,6 +6,8 @@ import { berlinParts, isLessonPast, toMinutes } from "../../shared/utils/lessonC
 import { freeText, lessonExam, lessonKey, periodRows } from "../../shared/utils/lessons";
 import { typeList, typeShort } from "../../shared/utils/entries";
 import { usePlanStore } from "../../shared/store/planStore";
+import { usePlanView } from "../../shared/hooks/usePlanView";
+import { shownLessons } from "../../shared/utils/planView";
 import LessonContextMenu from "../lesson/LessonContextMenu";
 import DayAppointmentPills from "../appointments/DayAppointmentPills";
 import DayHeader from "./DayHeader";
@@ -36,8 +38,9 @@ const WeekGrid = ({ days, onLessonClick }) => {
   const meta = usePlanStore((s) => s.meta); // виды Tests с Kürzel (часть 24)
   const compact = useUserStore((s) => s.compactWeek); // «Kompakte Woche»
   const cellHeight = compact ? "min-h-13" : "min-h-16"; // висота рядка уроку
+  const plan = usePlanView(); // «Stundenplan» (частина 30b)
 
-  const shown = days.map((day) => ({ ...day, lessons: filter(day.lessons) })); // дні без прихованих курсів
+  const shown = days.map((day) => ({ ...day, lessons: shownLessons(filter(day.lessons), plan) })); // дні без прихованих курсів (і випалих, якщо «Ausblenden»)
   const rows = periodRows(shown, lessonTimes); // рядки: уроки, що є в цьому тижні
   const dayCount = days.length;
   const todayIndex = days.findIndex((d) => d.date === today); // колонка сьогодні (-1 — не цей тиждень)
@@ -57,7 +60,7 @@ const WeekGrid = ({ days, onLessonClick }) => {
       {rows.map((row, ri) => (
         <div key={row.period} style={{ gridRow: ri + 2, gridColumn: 1 }} className="flex flex-col items-center justify-center gap-0.5">
           <span className="text-hint leading-none font-bold text-ink">{row.period}</span>
-          {row.start && <span className="text-nano leading-none text-faint">{row.start}</span>}
+          {plan.showTimes && row.start && <span className="text-nano leading-none text-faint">{row.start}</span>}
         </div>
       ))}
 
@@ -80,14 +83,15 @@ const WeekGrid = ({ days, onLessonClick }) => {
         return rows.map((row, ri) => {
           const lessons = day.lessons.filter((l) => l.period === row.period); // уроки в цій клітинці (паралельні — кілька)
           const style = { gridRow: ri + 2, gridColumn: di + 2 }; // місце в сітці
-          if (lessons.length === 0) return <div key={`${day.date}-${row.period}`} style={style} className={cn("rounded-cell bg-sand", cellHeight)} />;
+          // вільний урок: сіра клітинка або порожнє місце («Freie Stunden zeigen»)
+          if (lessons.length === 0) return <div key={`${day.date}-${row.period}`} style={style} className={cn("rounded-cell", plan.showFree && "bg-sand", cellHeight)} />;
 
           return (
             // кілька паралельних курсів — стовпчиком в одній клітинці
             <div key={`${day.date}-${row.period}`} style={style} className={cn("flex flex-col gap-0.5", cellHeight)}>
               {lessons.map((lesson) => (
                 <LessonContextMenu key={lessonKey(lesson)} lesson={lesson} date={day.date}>
-                  <LessonCell lesson={lesson} isPast={isLessonPast(lesson, day.date, now)} overrides={overrides} examShort={lesson.examId ? typeShort(lessonExam(day, lesson)?.type ?? "Test", typeList(meta)) : null} onClick={() => onLessonClick(day, lesson)} />
+                  <LessonCell lesson={lesson} isPast={isLessonPast(lesson, day.date, now)} overrides={overrides} plan={plan} examShort={lesson.examId ? typeShort(lessonExam(day, lesson)?.type ?? "Test", typeList(meta)) : null} onClick={() => onLessonClick(day, lesson)} />
                 </LessonContextMenu>
               ))}
             </div>

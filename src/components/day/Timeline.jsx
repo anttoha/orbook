@@ -4,7 +4,9 @@ import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
 import { lessonName } from "../../shared/utils/format";
 import { berlinParts, isLessonNow, isLessonPast, toMinutes } from "../../shared/utils/lessonClock";
-import { fachClasses, lessonExam, lessonKey } from "../../shared/utils/lessons";
+import { lessonExam, lessonKey } from "../../shared/utils/lessons";
+import { usePlanView } from "../../shared/hooks/usePlanView";
+import { shownLessons, subjectLook } from "../../shared/utils/planView";
 import StatusBadge from "../ui/StatusBadge";
 import LessonContextMenu from "../lesson/LessonContextMenu";
 
@@ -23,8 +25,9 @@ const Timeline = ({ day, lessons, onOpen }) => {
   const { now, today } = useNow(); // час школи
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
   const scale = useUserStore((s) => FONT_SCALES[s.fontScale]); // шрифт більший — блоки теж вищі
+  const plan = usePlanView(); // «Stundenplan» (частина 30b): Ausfall, Pausen, Fachfarbe
 
-  const items = lessons.filter((l) => l.start && l.end).sort((a, b) => toMinutes(a.start) - toMinutes(b.start)); // тільки з часом
+  const items = shownLessons(lessons, plan).filter((l) => l.start && l.end).sort((a, b) => toMinutes(a.start) - toMinutes(b.start)); // тільки з часом
   if (items.length === 0) return null; // нічого малювати
 
   const dayStart = Math.min(...items.map((l) => toMinutes(l.start))); // початок першого уроку (хв)
@@ -37,7 +40,7 @@ const Timeline = ({ day, lessons, onOpen }) => {
 
   // Перерви ≥ 10 хв між сусідніми різними часами (для підпису «Pause · 20 min»)
   const times = [...new Set(items.map((l) => `${l.start}-${l.end}`))].map((t) => t.split("-")); // унікальні слоти
-  const breaks = times.slice(1).map(([start], i) => ({ from: toMinutes(times[i][1]), to: toMinutes(start) })).filter((b) => b.to - b.from >= 10);
+  const breaks = times.slice(1).map(([start], i) => ({ from: toMinutes(times[i][1]), to: toMinutes(start) })).filter((b) => plan.showBreaks && b.to - b.from >= 10);
 
   // Лінія «зараз» — тільки сьогодні і тільки під час уроків
   const { minutes: nowMin, hhmm } = berlinParts(now);
@@ -78,7 +81,7 @@ const Timeline = ({ day, lessons, onOpen }) => {
               onClick={() => onOpen(lesson)}
               className={cn(
                 "absolute flex flex-col justify-center gap-0.5 overflow-hidden text-left select-none [-webkit-touch-callout:none]",
-                isCancelled || lesson.notMine ? "rounded-cell border border-dashed border-faint2 text-faint" : cn("rounded-block", fachClasses(lesson.subject?.code, overrides)),
+                isCancelled || lesson.notMine ? "rounded-cell border border-dashed border-faint2 text-faint" : cn("rounded-block", subjectLook(lesson.subject?.code, overrides, plan)),
                 isHighlighted && "ring-2 ring-accent",
                 isLessonPast(lesson, day.date, now) && "opacity-50",
               )}

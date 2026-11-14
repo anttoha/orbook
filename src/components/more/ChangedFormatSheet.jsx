@@ -3,14 +3,9 @@ import Segmented from "../ui/Segmented";
 import { useUserStore } from "../../shared/store/userStore";
 import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
-import Liquid from "../ui/Liquid";
+import Sheet from "../ui/Sheet";
+import { CHANGED_FORMATS } from "../../shared/utils/planView";
 
-// Підписи сегмента — самі вже приклад формату
-const FORMATS = [
-  { value: "weekday", label: "Mi 15:15" },
-  { value: "date", label: "15.09." },
-  { value: "datetime", label: "15.09. 15:15" },
-];
 
 // Приклад тижня для прев'ю (сьогодні — Mi 17.): дні з тими самими полями, що й з сервера.
 // Малюємо їх справжнім ChangedLine — тож прев'ю завжди таке, як у тижні
@@ -32,26 +27,18 @@ const PreviewDay = ({ day }) => (
 );
 
 // ─────────────────────────────────────────────────────────────
-// Картка «Plan → Änderung unter dem Tag» у «Darstellung» (частина 22, макет handy-03 / pc-02).
+// Шторка «Änderung unter dem Tag» зі сторінки «Stundenplan» (частини 22 і 30b).
 // Вибір діє одразу; прев'ю тижня під сегментом показує, як це виглядатиме.
 // ─────────────────────────────────────────────────────────────
-const ChangedFormatCard = () => {
+const ChangedFormatSheet = ({ open, onClose }) => {
   const t = useT();
   const format = useUserStore((s) => s.changedFormat);
   const setFormat = useUserStore((s) => s.setChangedFormat);
 
   return (
-    <section>
-      <h2 className="mb-2.5 text-hint font-extrabold text-faint">{t("Plan")}</h2>
-      <Liquid as="div" refract press={false} className="flex flex-col gap-3 rounded-card bg-card p-3.5">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="min-w-0">
-            <p className="text-row text-ink">{t("Änderung unter dem Tag")}</p>
-            <p className="mt-0.5 text-caption text-faint">{t("So steht es unter jedem Tag in der Woche.")}</p>
-          </div>
-          <Segmented label={t("Änderung unter dem Tag")} size="form" options={FORMATS} value={format} onChange={setFormat} className="lg:w-fit" />
-        </div>
-
+    <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow={t("Stundenplan")} title={t("Änderung unter dem Tag")}>
+      <div className="flex flex-col gap-3 pb-2">
+        <Segmented label={t("Änderung unter dem Tag")} size="form" options={CHANGED_FORMATS} value={format} onChange={setFormat} />
         <p className="text-caption font-extrabold text-faint">{t("Vorschau")}</p>
         <div aria-hidden="true" className="flex gap-1 lg:gap-2">
           {SAMPLE.map((day) => (
@@ -59,9 +46,9 @@ const ChangedFormatCard = () => {
           ))}
         </div>
         <p className="text-caption text-faint">{t("Am selben Tag steht nur die Uhrzeit, z. B. 07:08.")}</p>
-      </Liquid>
-    </section>
+      </div>
+    </Sheet>
   );
 };
 
-export default ChangedFormatCard;
+export default ChangedFormatSheet;

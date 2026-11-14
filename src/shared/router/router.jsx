@@ -12,6 +12,7 @@ import Statistic from "../../pages/Statistic";
 import More from "../../pages/More";
 import MyCourses from "../../pages/MyCourses";
 import Appearance from "../../pages/Appearance";
+import PlanSettings from "../../pages/PlanSettings";
 import SubjectColors from "../../pages/SubjectColors";
 import NotesSync from "../../pages/NotesSync";
 import Mitteilungen from "../../pages/Mitteilungen";
@@ -115,6 +116,7 @@ export const router = createBrowserRouter([
               page({ index: true, Component: More }),
               page({ path: "kurse", Component: MyCourses }),
               page({ path: "darstellung", Component: Appearance }),
+              page({ path: "darstellung/stundenplan", Component: PlanSettings }), // що видно в клітинці уроку (частина 30b)
               page({ path: "fachfarben", Component: SubjectColors }),
               page({ path: "sync", Component: NotesSync }), // Notizen synchronisieren
               page({ path: "mitteilungen", Component: Mitteilungen }), // Web Push (частина 17)

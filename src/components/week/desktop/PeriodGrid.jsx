@@ -4,6 +4,9 @@ import { usePlanStore } from "../../../shared/store/planStore";
 import { useUserStore } from "../../../shared/store/userStore";
 import { isLessonPast } from "../../../shared/utils/lessonClock";
 import { freeText, lessonKey, periodRows } from "../../../shared/utils/lessons";
+import { usePlanView } from "../../../shared/hooks/usePlanView";
+import { shownLessons } from "../../../shared/utils/planView";
+import { cn } from "../../../shared/utils/cn";
 import LessonContextMenu from "../../lesson/LessonContextMenu";
 import LessonTooltip from "../../lesson/LessonTooltip";
 import DesktopLessonCard from "./DesktopLessonCard";
@@ -22,7 +25,9 @@ const PeriodGrid = ({ days, selectedDay, onSelectDay, onLessonClick }) => {
   const lessonTimes = usePlanStore((s) => s.meta?.lessonTimes); // час уроків
   const rowHeight = useUserStore((s) => (s.compactWeek ? 104 : 130)); // «Kompakte Woche»
 
-  const shown = days.map((day) => ({ ...day, lessons: filter(day.lessons) })); // без прихованих курсів
+  const plan = usePlanView(); // «Stundenplan» (частина 30b)
+
+  const shown = days.map((day) => ({ ...day, lessons: shownLessons(filter(day.lessons), plan) })); // без прихованих курсів (і випалих при «Ausblenden»)
   const rows = periodRows(shown, lessonTimes); // номери уроків цього тижня
   const selectedIndex = days.findIndex((d) => d.date === selectedDay); // колонка вибраного дня
 
@@ -55,8 +60,8 @@ const PeriodGrid = ({ days, selectedDay, onSelectDay, onLessonClick }) => {
       {rows.map((row, ri) => (
         <div key={row.period} className="flex flex-col justify-center pl-1" style={{ gridRow: ri + 2, gridColumn: 1 }}>
           <span className="text-logo leading-none font-black text-ink">{row.period}</span>
-          {row.start && <span className="mt-1 text-small font-semibold text-faint">{row.start}</span>}
-          {row.end && <span className="text-small font-semibold text-faint">{row.end}</span>}
+          {plan.showTimes && row.start && <span className="mt-1 text-small font-semibold text-faint">{row.start}</span>}
+          {plan.showTimes && row.end && <span className="text-small font-semibold text-faint">{row.end}</span>}
         </div>
       ))}
 
@@ -80,11 +85,11 @@ const PeriodGrid = ({ days, selectedDay, onSelectDay, onLessonClick }) => {
           const lessons = day.lessons.filter((l) => l.period === row.period); // уроки клітинки
           const place = { gridRow: ri + 2, gridColumn: di + 2 }; // місце в сітці
 
-          // Вільний урок — пунктирна клітинка «frei»
+          // Вільний урок — пунктирна клітинка «frei» або порожнє місце («Freie Stunden zeigen»)
           if (lessons.length === 0) {
             return (
-              <div key={`${day.date}-${row.period}`} style={place} className="relative grid place-items-center rounded-cell border-[1.5px] border-dashed border-rule text-caption font-semibold text-faint">
-                frei
+              <div key={`${day.date}-${row.period}`} style={place} className={cn("relative grid place-items-center", plan.showFree && "rounded-cell border-[1.5px] border-dashed border-rule text-caption font-semibold text-faint")}>
+                {plan.showFree && "frei"}
               </div>
             );
           }
@@ -95,7 +100,7 @@ const PeriodGrid = ({ days, selectedDay, onSelectDay, onLessonClick }) => {
               {lessons.map((lesson) => (
                 <LessonContextMenu key={lessonKey(lesson)} lesson={lesson} date={day.date}>
                   <LessonTooltip lesson={lesson}>
-                    <DesktopLessonCard lesson={lesson} overrides={overrides} isPast={isLessonPast(lesson, day.date, now)} onClick={() => onLessonClick(day, lesson)} className="flex-1" />
+                    <DesktopLessonCard lesson={lesson} overrides={overrides} plan={plan} isPast={isLessonPast(lesson, day.date, now)} onClick={() => onLessonClick(day, lesson)} className="flex-1" />
                   </LessonTooltip>
                 </LessonContextMenu>
               ))}
