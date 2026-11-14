@@ -1,15 +1,16 @@
 import { RenewIcon, ShieldIcon, WarningIcon } from "../ui/icons";
 import { Skeleton } from "../ui/PlanState";
 import { cn } from "../../shared/utils/cn";
+import PillButton from "../ui/PillButton";
 
 // Помилка завантаження: текст сервера і «Erneut versuchen» (кешу в адмінці немає)
 export const AdminError = ({ error, onRetry }) => (
   <div className="flex flex-col items-center gap-3 rounded-card bg-card px-5 py-10 text-center">
     <WarningIcon className="size-7 text-danger" />
     <p className="text-body-sm font-semibold text-muted">{error?.message ?? "Konnte nicht laden."}</p>
-    <button type="button" onClick={onRetry} className="flex h-10 items-center gap-2 rounded-full bg-sand px-4 text-label font-extrabold text-ink">
+    <PillButton glass="glass" size="md" onClick={onRetry} className="flex h-10 items-center gap-2 rounded-full bg-sand px-4 text-label font-extrabold text-ink">
       <RenewIcon className="size-4" /> Erneut versuchen
-    </button>
+    </PillButton>
   </div>
 );
 

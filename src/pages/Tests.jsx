@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ExamChips from "../components/exams/ExamChips";
 import ExamRow from "../components/exams/ExamRow";
 import ExamSkeleton from "../components/exams/ExamSkeleton";
@@ -25,6 +25,7 @@ import { addExamTarget } from "../shared/utils/examRules";
 import Appointments from "./Appointments";
 import Aufgaben from "./Aufgaben";
 import { filterExams, groupExams, isFilterActive, searchExams, subjectChips, toggleSubject } from "../shared/utils/exams";
+import PillButton from "../components/ui/PillButton";
 
 // «Ab heute · 5 geplant». Поки записів немає — без числа
 const eyebrowText = (past, count) => {
@@ -141,9 +142,9 @@ const ExamList = () => {
           <ExamsToolbar query={query} onQuery={setQuery} filter={{ open: filterOpen, onOpenChange: setFilterOpen, active: isFilterActive(filter) }} addTarget={addTarget} />
         ) : (
           addTarget && (
-            <Link to={addTarget} aria-label="Test eintragen" className="grid size-9.5 shrink-0 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
+            <PillButton glass="filled" size="sm" to={addTarget} aria-label="Test eintragen" className="grid size-9.5 shrink-0 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
               <Plus className="size-4.25" />
-            </Link>
+            </PillButton>
           )
         )}
       </header>

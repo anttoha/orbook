@@ -4,6 +4,7 @@ import { useSheet } from "../../shared/hooks/useSheet";
 import { useT } from "../../shared/hooks/useT";
 import { usePlanStore } from "../../shared/store/planStore";
 import { LockIcon } from "../ui/icons";
+import PillButton from "../ui/PillButton";
 
 // «Zugang beendet» (макет 29 handy-10): код класса выключили, остальные классы работают.
 // «Neuen Code eingeben» — та же шторка «Klasse hinzufügen»; «Entfernen» — убрать класс с устройства
@@ -33,9 +34,9 @@ const GoneNotice = ({ item }) => {
         </div>
       </div>
       <div className="flex gap-2">
-        <button type="button" onClick={() => openSheet("klasseneu", { id: item.id })} className="h-10.5 flex-3 rounded-full bg-sand text-label font-extrabold text-ink">
+        <PillButton glass="glass" size="md" onClick={() => openSheet("klasseneu", { id: item.id })} className="h-10.5 flex-3 rounded-full bg-sand text-label font-extrabold text-ink">
           {t("Neuen Code eingeben")}
-        </button>
+        </PillButton>
         <button type="button" onClick={remove} disabled={busy} className="h-10.5 flex-2 rounded-full bg-danger-tint text-label font-extrabold text-danger disabled:opacity-40">
           {t("Entfernen")}
         </button>

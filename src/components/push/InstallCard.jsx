@@ -5,6 +5,7 @@ import { useSheet } from "../../shared/hooks/useSheet";
 import { usePushStore } from "../../shared/store/pushStore";
 import { promptInstall } from "../../shared/utils/serviceWorker";
 import OrbitMark from "../ui/OrbitMark";
+import PillButton from "../ui/PillButton";
 
 // «ORBook als App» вверху Mehr (макет 17 handy-09): пока не установлено и не закрыто ✕.
 // Android/ПК — окно браузера, iPhone — шторка с шагами
@@ -34,9 +35,9 @@ const InstallCard = () => {
       <button type="button" onClick={dismiss} aria-label="Nicht mehr zeigen" className="absolute top-2.5 right-2.5 grid size-8 place-items-center rounded-full bg-card text-muted">
         <X className="size-4" />
       </button>
-      <button type="button" onClick={install} className="flex h-10 items-center justify-center gap-2 rounded-full bg-accent text-label font-extrabold text-on-accent transition-transform active:scale-95">
+      <PillButton glass="filled" size="md" onClick={install} className="flex h-10 items-center justify-center gap-2 rounded-full bg-accent text-label font-extrabold text-on-accent transition-transform active:scale-95">
         <Download className="size-4" aria-hidden="true" /> Installieren
-      </button>
+      </PillButton>
     </section>
   );
 };

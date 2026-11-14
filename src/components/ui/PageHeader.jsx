@@ -1,8 +1,8 @@
 import { ChevronLeft } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useInSettingsPanel } from "../../shared/hooks/useSettingsPanel";
 import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
+import RoundButton from "./RoundButton";
 
 // Шапка сторінки на весь екран: кнопка «назад», рядок над заголовком, заголовок.
 // Усередині «Einstellungen» на ПК — тільки заголовок розділу (panelTitle, якщо він інший):
@@ -14,9 +14,9 @@ const PageHeader = ({ backTo, eyebrow, eyebrowClassName, title, panelTitle, asid
 
   return (
     <header className="flex items-end gap-2.5">
-      <Link to={backTo} aria-label={t("Zurück")} className="grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
+      <RoundButton to={backTo} aria-label={t("Zurück")}>
         <ChevronLeft className="size-4.5" />
-      </Link>
+      </RoundButton>
       <div className="min-w-0 space-y-1">
         <p className={cn("text-hint font-extrabold text-faint", eyebrowClassName)}>{eyebrow && t(eyebrow)}</p>
         <h1 className="truncate text-title text-ink">{t(title)}</h1>

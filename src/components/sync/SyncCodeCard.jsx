@@ -6,6 +6,7 @@ import { useSyncStore } from "../../shared/store/syncStore";
 import { cn } from "../../shared/utils/cn";
 import { syncedText } from "../../shared/utils/notes";
 import { CheckIcon, CopyIcon, SyncIcon, WarningIcon } from "../ui/icons";
+import PillButton from "../ui/PillButton";
 
 // ─────────────────────────────────────────────────────────────
 // Карточка «Dein Sync-Code» (макет 21, часть 25 handy-07): код, «QR» и «Kopieren», строка состояния под ним.
@@ -34,9 +35,9 @@ const SyncCodeCard = ({ code }) => {
       <p className="text-hint font-extrabold text-faint">Dein Sync-Code</p>
       <div className="mt-2.5 flex items-start gap-2">
         <p className="min-w-0 flex-1 text-number tracking-code text-ink">{code}</p>
-        <button type="button" onClick={() => openSheet("syncqr")} aria-label="Code als QR zeigen" className="-mt-1 grid size-11 shrink-0 place-items-center rounded-full bg-tint text-accent-ink transition-transform duration-150 active:scale-90 lg:hidden">
+        <PillButton glass="tinted" size="sm" onClick={() => openSheet("syncqr")} aria-label="Code als QR zeigen" className="-mt-1 grid size-11 shrink-0 place-items-center rounded-full bg-tint text-accent-ink transition-transform duration-150 active:scale-90 lg:hidden">
           <QrIcon className="size-4.25" />
-        </button>
+        </PillButton>
         <button type="button" onClick={copy} aria-label="Code kopieren" className={cn("-mt-1 grid size-11 shrink-0 place-items-center rounded-full transition-[background-color,scale] duration-200 active:scale-90", copied ? "bg-ok-tint text-ok" : "bg-sand text-ink hover:bg-paper")}>
           {copied ? <CheckIcon key="ok" className="size-4.25 motion-safe:animate-check-pop" /> : <CopyIcon className="size-4.25" />}
         </button>

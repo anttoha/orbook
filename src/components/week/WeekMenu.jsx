@@ -6,6 +6,9 @@ import { DESKTOP_QUERY, useMediaQuery } from "../../shared/hooks/useMediaQuery";
 import { useSheet } from "../../shared/hooks/useSheet";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
+import { GlassMenu } from "@zakisheriff/liquid-glass";
+import { useGlass } from "../../shared/hooks/useGlass";
+import { useT } from "../../shared/hooks/useT";
 import Kbd from "../ui/Kbd";
 import Switch from "../ui/Switch";
 import { menuContentClass, menuIconClass, menuItemClass, menuSeparatorClass } from "../ui/menuStyles";
@@ -33,6 +36,25 @@ const WeekMenu = ({ monday, onToday, onPickWeek }) => {
 
   // Підказка клавіші справа в пункті (тільки на ПК)
   const shortcut = (key) => isDesktop && <Kbd className="ml-auto">{key}</Kbd>;
+  const glass = useGlass();
+  const t = useT();
+
+  // «Glas» (часть 30a): меню библиотеки — вырастает из кнопки «⋮» и складывается обратно.
+  // Те же пункты; включённые «Wochenende» и «Alle Kurse» — с галочкой
+  if (glass) {
+    const icon = (Icon) => <Icon className="size-4.5" />;
+    const items = [
+      !isDesktop && { label: t("Woche wählen"), icon: icon(Calendar), onSelect: onPickWeek },
+      { label: t("Zu heute springen"), icon: icon(CalendarCheck), onSelect: onToday },
+      { label: t(isDesktop ? "Tagesansicht" : "Heute öffnen"), icon: icon(List), onSelect: () => navigate("/heute") },
+      { label: t("Wochenende anzeigen"), icon: icon(CalendarRange), checked: showWeekend, onSelect: toggleWeekend },
+      { label: t("Alle Kurse zeigen"), icon: icon(Layers), checked: allCourses, onSelect: () => setAllCourses(!allCourses) },
+      { label: t("Plan neu laden"), icon: icon(RefreshCw), onSelect: refreshPlan },
+      shareEnabled && { label: t("Woche teilen"), icon: icon(Share), onSelect: () => openSheet("teilen", { bereich: "woche", kw: monday }) },
+      isDesktop && { label: t("Drucken"), icon: icon(Printer), onSelect: () => window.print() },
+    ].filter(Boolean);
+    return <GlassMenu icon={<MoreVertical className="size-4.25" />} aria-label={t("Weitere Optionen")} size="sm" width={250} items={items} />;
+  }
 
   return (
     <DropdownMenu.Root onOpenChange={setOpen}>

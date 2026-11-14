@@ -1,5 +1,7 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MoreVertical } from "lucide-react";
+import { GlassMenu } from "@zakisheriff/liquid-glass";
+import { useGlass } from "../../shared/hooks/useGlass";
 import { cn } from "../../shared/utils/cn";
 import { menuContentClass, menuIconClass, menuItemClass, menuSeparatorClass } from "../ui/menuStyles";
 import { codeActions } from "./codeActions";
@@ -13,9 +15,22 @@ const CodeMenu = ({ code, onAction, onOpenSheet, items: ownItems }) => {
       <MoreVertical className="size-4.5" />
     </button>
   );
+  const glass = useGlass();
   if (onOpenSheet) return button({ onClick: onOpenSheet });
 
   const items = ownItems ?? codeActions(code);
+  // «Glas» (часть 30a): меню библиотеки, вырастает из кнопки; опасные пункты красные
+  if (glass) {
+    return (
+      <GlassMenu
+        icon={<MoreVertical className="size-4.5" />}
+        aria-label={`Aktionen für ${code.label}`}
+        size="sm"
+        width={250}
+        items={items.map((item) => ({ label: item.label, icon: <item.icon className="size-4.5" />, destructive: Boolean(item.danger), onSelect: () => onAction(item.kind, code) }))}
+      />
+    );
+  }
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>{button()}</DropdownMenu.Trigger>

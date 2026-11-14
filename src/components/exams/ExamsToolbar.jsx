@@ -1,6 +1,6 @@
 import { Plus, Search } from "lucide-react";
-import { Link } from "react-router-dom";
 import ExamFilterPopover from "./ExamFilterPopover";
+import PillButton from "../ui/PillButton";
 
 // ─────────────────────────────────────────────────────────────
 // Праворуч від заголовка на ПК (макет 14): пошук · фільтр · «+ Klausur eintragen».
@@ -26,9 +26,9 @@ const ExamsToolbar = ({ query, onQuery, filter, addTarget, placeholder = "Thema 
     {filter && <ExamFilterPopover open={filter.open} onOpenChange={filter.onOpenChange} active={filter.active} />}
     {children}
     {!children && addTarget && (
-      <Link to={addTarget} className="ml-0.5 flex h-12 items-center gap-2 rounded-full bg-accent px-5 text-row font-bold text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
+      <PillButton glass="filled" size="lg" to={addTarget} className="ml-0.5 flex h-12 items-center gap-2 rounded-full bg-accent px-5 text-row font-bold text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
         <Plus className="size-4" /> {addLabel}
-      </Link>
+      </PillButton>
     )}
   </div>
 );

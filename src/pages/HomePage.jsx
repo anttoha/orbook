@@ -25,6 +25,7 @@ import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { cn } from "../shared/utils/cn";
 import { isFullScreenPage } from "../shared/utils/isTabActive";
+import PillButton from "../components/ui/PillButton";
 
 // ─────────────────────────────────────────────────────────────
 // Оболонка застосунку. Вирішує, що показати:
@@ -76,9 +77,9 @@ const HomePage = () => {
         <TriangleAlert className="size-8 text-danger" />
         <p className="text-subhead text-ink">ORBook ist gerade nicht erreichbar</p>
         <p className="text-label font-semibold text-muted">{startError.message}</p>
-        <button type="button" onClick={start} className="rounded-full bg-accent px-5 py-3 text-body font-extrabold text-on-accent">
+        <PillButton glass="filled" size="sm" onClick={start} className="rounded-full bg-accent px-5 py-3 text-body font-extrabold text-on-accent">
           Erneut versuchen
-        </button>
+        </PillButton>
       </div>
     );
   }

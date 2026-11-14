@@ -1,7 +1,8 @@
-import { Link, useRouteError } from "react-router-dom";
+import { useRouteError } from "react-router-dom";
 import { RefreshCw, TriangleAlert } from "lucide-react";
 import { routeErrorText } from "../shared/utils/routeError";
 import { cn } from "../shared/utils/cn";
+import PillButton from "../components/ui/PillButton";
 
 // Показується замість сторінки, яка впала (errorElement у router.jsx).
 // inline — усередині застосунку, меню лишається. Без inline — на весь екран.
@@ -16,17 +17,15 @@ const RouteError = ({ inline = false }) => {
         <p className="text-label font-semibold text-muted">{routeErrorText(error)}</p>
         <div className="flex flex-wrap justify-center gap-2">
           {/* повне перезавантаження: скидає стан, через який сторінка могла впасти */}
-          <button
-            type="button"
-            onClick={() => window.location.reload()}
-            className="flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-label font-extrabold text-on-accent"
-          >
+          <PillButton glass="filled" size="sm"
+           
+            onClick={() => window.location.reload()} className="flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-label font-extrabold text-on-accent">
             <RefreshCw className="size-3.5" /> Neu laden
-          </button>
+          </PillButton>
           {/* reloadDocument: повне завантаження, бо стан застосунку міг зламатися */}
-          <Link to="/woche" reloadDocument className="rounded-full bg-sand px-4 py-2 text-label font-extrabold text-ink">
+          <PillButton glass="glass" size="sm" to="/woche" reloadDocument className="rounded-full bg-sand px-4 py-2 text-label font-extrabold text-ink">
             Zur Woche
-          </Link>
+          </PillButton>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { HEALTH, hoursStrip, planHealth, planTimesText, serverLine } from "../..
 import { cn } from "../../shared/utils/cn";
 import Badge from "../ui/Badge";
 import { RenewIcon } from "../ui/icons";
+import PillButton from "../ui/PillButton";
 
 const BAR = { ok: "bg-ok", error: "bg-danger" }; // null (опиту не було) — сірий
 const CHIP = { ok: "ok", warn: "changed", error: "danger" };
@@ -44,9 +45,9 @@ const PlanHealthCard = ({ overview, baseUrl, classCount, withButton }) => {
         <HoursStrip hours={plan.hours} />
       </div>
       {withButton && (
-        <button type="button" disabled={refresh.busy} onClick={refresh.run} className="mt-3.5 flex h-10.5 w-full items-center justify-center gap-2 rounded-full bg-sand lg:hidden text-row font-extrabold text-ink disabled:opacity-50">
+        <PillButton glass="glass" size="md" disabled={refresh.busy} onClick={refresh.run} className="mt-3.5 flex h-10.5 w-full items-center justify-center gap-2 rounded-full bg-sand lg:hidden text-row font-extrabold text-ink disabled:opacity-50">
           <RenewIcon className={cn("size-4", refresh.busy && "animate-spin")} /> Plan jetzt neu laden
-        </button>
+        </PillButton>
       )}
     </div>
   );

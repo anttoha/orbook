@@ -8,6 +8,7 @@ import SelectPill from "../../ui/SelectPill";
 import TextField from "../../ui/TextField";
 import OptionRow from "./OptionRow";
 import SettingsCard from "./SettingsCard";
+import PillButton from "../../ui/PillButton";
 
 // Результат «Verbindung testen»: зелена або червона плашка
 export const TestResult = ({ result }) => (
@@ -60,9 +61,9 @@ const SchoolCard = ({ school, onChange, schoolPassword, onSchoolPassword, passwo
         <SelectPill label="Klasse" value={school.className} options={classOptions} onChange={(value) => onChange("className", value)} />
       </OptionRow>
       <div className="flex flex-col gap-2.5 pb-3 lg:flex-row lg:items-center">
-        <button type="button" disabled={testing} onClick={test} className="flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-sand px-5 text-row font-extrabold text-ink disabled:opacity-50">
+        <PillButton glass="glass" size="lg" disabled={testing} onClick={test} className="flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-sand px-5 text-row font-extrabold text-ink disabled:opacity-50">
           <RenewIcon className={cn("size-4", testing && "animate-spin")} /> Verbindung testen
-        </button>
+        </PillButton>
         {result && <TestResult result={result} />}
       </div>
     </SettingsCard>

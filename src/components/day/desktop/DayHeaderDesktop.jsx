@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Info, List, Share } from "lucide-react";
 import { usePlanStore } from "../../../shared/store/planStore";
 import { longDate, nextSchoolDay, relativeDayWord, weekdayLong } from "../../../shared/utils/format";
@@ -6,10 +5,8 @@ import ChangedLine from "../../week/ChangedLine";
 import { TimelineIcon } from "../../ui/icons";
 import Segmented from "../../ui/Segmented";
 import { AllCoursesButton } from "../../week/AllCourses";
+import RoundButton from "../../ui/RoundButton";
 
-// Кругла біла кнопка 38×38 (як на макеті)
-const roundButton =
-  "grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink transition-colors outline-none hover:bg-sand focus-visible:ring-2 focus-visible:ring-accent/50";
 
 // Варіанти вигляду дня
 const VIEWS = [
@@ -45,21 +42,21 @@ const DayHeaderDesktop = ({ date, today, day, view, onViewChange, onInfo, onShar
           <Segmented label="Ansicht" options={VIEWS} value={view} onChange={onViewChange} variant="accent" size="sm" className="shrink-0" />
         </div>
         <div className="flex items-center gap-2">
-          <Link to={`/tag/${nextSchoolDay(date, holidays, -1)}`} aria-label="Vortag" className={roundButton}>
+          <RoundButton to={`/tag/${nextSchoolDay(date, holidays, -1)}`} aria-label="Vortag">
             <ChevronLeft className="size-4.25" />
-          </Link>
-          <Link to={`/tag/${nextSchoolDay(date, holidays, 1)}`} aria-label="Nächster Tag" className={roundButton}>
+          </RoundButton>
+          <RoundButton to={`/tag/${nextSchoolDay(date, holidays, 1)}`} aria-label="Nächster Tag">
             <ChevronRight className="size-4.25" />
-          </Link>
+          </RoundButton>
           {day && (
-            <button type="button" aria-label="Info zum Tag" onClick={onInfo} className={roundButton}>
+            <RoundButton aria-label="Info zum Tag" onClick={onInfo}>
               <Info className="size-4.25" />
-            </button>
+            </RoundButton>
           )}
           {onShare && (
-            <button type="button" aria-label="Tag teilen" onClick={onShare} className={roundButton}>
+            <RoundButton aria-label="Tag teilen" onClick={onShare}>
               <Share className="size-4.25" />
-            </button>
+            </RoundButton>
           )}
         </div>
       </div>

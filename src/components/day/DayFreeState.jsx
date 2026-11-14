@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { ChevronRight, Clock, RotateCw, Sun } from "lucide-react";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useTicker } from "../../shared/hooks/useTicker";
@@ -7,6 +6,7 @@ import { agoText } from "../../shared/utils/liveText";
 import Button from "../ui/Button";
 import { PlanDown } from "../ui/PlanState";
 import StateScreen from "../ui/StateScreen";
+import PillButton from "../ui/PillButton";
 
 // Заголовок вільного дня. Назви свята в даних немає, тому пишемо загальне «Schulfrei».
 const freeTitle = (day, isToday) => {
@@ -30,9 +30,9 @@ const DayFreeState = ({ day, today, week, onRetry, fill }) => {
     return (
       <StateScreen icon={Sun} title={freeTitle(day, day.date === today)} text="Laut Plan kein Unterricht." fill={fill}>
         {next && (
-          <Link to={`/tag/${next}`} className="flex h-12 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink">
+          <PillButton glass="glass" size="lg" to={`/tag/${next}`} className="flex h-12 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink">
             <ChevronRight className="size-4" /> Nächster Schultag · {weekdayShort(next)}, {shortDate(next)}
-          </Link>
+          </PillButton>
         )}
       </StateScreen>
     );

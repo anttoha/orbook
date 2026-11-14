@@ -33,9 +33,8 @@ import MusterBadge from "../components/muster/MusterBadge";
 import MusterNote from "../components/muster/MusterNote";
 import NoMusterState from "../components/muster/NoMusterState";
 import WeekLetter from "../components/muster/WeekLetter";
+import RoundButton from "../components/ui/RoundButton";
 
-// Кругла кнопка в шапці
-const roundButton = "flex size-9.5 items-center justify-center rounded-full bg-card outline-none focus-visible:ring-2 focus-visible:ring-accent/50";
 
 // Рядок підсумку тижня. Статистику школа може вимкнути: тоді це просто текст
 const WeekSummaryRow = ({ text, linked }) => {
@@ -217,13 +216,13 @@ const Week = () => {
           <h1 className="min-w-0 truncate text-title text-ink">{heading}</h1>
           {/* як на макеті: ‹ ⋮ › (календар — у меню «⋮» і по натисканню на рядок KW) */}
           <div className="flex shrink-0 gap-1.5">
-            <button type="button" aria-label="Vorherige Woche" onClick={() => setWeek(addDays(monday, -7))} className={roundButton}>
+            <RoundButton aria-label="Vorherige Woche" onClick={() => setWeek(addDays(monday, -7))}>
               <ChevronLeft className="size-4.5" />
-            </button>
+            </RoundButton>
             <WeekMenu monday={monday} onToday={goToday} onPickWeek={() => openSheet("kalender", { kw: monday })} />
-            <button type="button" aria-label="Nächste Woche" onClick={() => setWeek(addDays(monday, 7))} className={roundButton}>
+            <RoundButton aria-label="Nächste Woche" onClick={() => setWeek(addDays(monday, 7))}>
               <ChevronRight className="size-4.5" />
-            </button>
+            </RoundButton>
           </div>
         </div>
       </header>

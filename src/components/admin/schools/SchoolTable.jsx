@@ -4,6 +4,7 @@ import ClassBadge from "../../ui/ClassBadge";
 import { TrashIcon } from "../../ui/icons";
 import { menuContentClass, menuIconClass, menuItemClass } from "../../ui/menuStyles";
 import SchoolHead from "./SchoolHead";
+import PillButton from "../../ui/PillButton";
 
 const cell = "py-3.5 pr-4 text-body-sm";
 
@@ -34,9 +35,9 @@ const SchoolTable = ({ school, colorOf, onOpen, onEdit, onNewCode, onDelete }) =
         <button type="button" onClick={() => onEdit(school)} className="shrink-0 px-2 text-row font-extrabold text-accent-ink">
           Zugang ändern
         </button>
-        <button type="button" onClick={() => onNewCode(school)} className="flex h-10.5 shrink-0 items-center gap-2 rounded-full bg-sand px-4.5 text-row font-extrabold text-ink">
+        <PillButton glass="glass" size="md" onClick={() => onNewCode(school)} className="flex h-10.5 shrink-0 items-center gap-2 rounded-full bg-sand px-4.5 text-row font-extrabold text-ink">
           <Plus className="size-4.5" /> Code für neue Klasse
-        </button>
+        </PillButton>
       </SchoolHead>
     </div>
     {(school.classes ?? []).length === 0 ? (

@@ -16,6 +16,7 @@ import { useTheme } from "../shared/hooks/useTheme";
 import { useUserStore } from "../shared/store/userStore";
 import { effectiveMotion } from "../shared/utils/appearance";
 import { useMediaQuery } from "../shared/hooks/useMediaQuery";
+import PillButton from "../components/ui/PillButton";
 
 const START_VIEWS = [
   { value: "woche", label: "Woche" },
@@ -100,10 +101,10 @@ const Appearance = () => {
 
       <ChangedFormatCard />
 
-      <button type="button" onClick={reset} className="flex h-12 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink transition-opacity active:opacity-80">
+      <PillButton glass="glass" size="lg" onClick={reset} className="flex h-12 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink transition-opacity active:opacity-80">
         <RotateCcw className="size-4" />
         {t("Darstellung zurücksetzen")}
-      </button>
+      </PillButton>
     </section>
   );
 };

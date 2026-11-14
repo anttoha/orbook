@@ -14,6 +14,8 @@ import { schoolGroups } from "../shared/utils/classes";
 import { berlinParts } from "../shared/utils/lessonClock";
 import { isWeekend, longDate, mondayOf, weekdayLong } from "../shared/utils/format";
 import { currentMonday } from "../shared/utils/lessons";
+import RoundButton from "../components/ui/RoundButton";
+import PillButton from "../components/ui/PillButton";
 
 const VIEWS = [
   { value: "karten", label: "Karten" },
@@ -49,13 +51,13 @@ const Klassen = () => {
           <h1 className="truncate text-title text-ink">{t("Meine Klassen")}</h1>
         </div>
         {isDesktop ? (
-          <button type="button" onClick={() => openSheet("klasseneu")} className="flex h-11 shrink-0 items-center gap-2 rounded-full bg-accent px-5 text-row font-extrabold text-on-accent">
+          <PillButton glass="filled" size="lg" onClick={() => openSheet("klasseneu")} className="flex h-11 shrink-0 items-center gap-2 rounded-full bg-accent px-5 text-row font-extrabold text-on-accent">
             <Plus className="size-4.5" /> {t("Klasse hinzufügen")}
-          </button>
+          </PillButton>
         ) : (
-          <button type="button" onClick={() => openSheet("klasseneu")} aria-label={t("Klasse hinzufügen")} className="grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink">
+          <RoundButton onClick={() => openSheet("klasseneu")} aria-label={t("Klasse hinzufügen")}>
             <Plus className="size-4.5" />
-          </button>
+          </RoundButton>
         )}
       </header>
 

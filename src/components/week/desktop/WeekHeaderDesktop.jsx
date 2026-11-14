@@ -6,6 +6,8 @@ import { AllCoursesButton } from "../AllCourses";
 import WeekPickerPopover from "./WeekPickerPopover";
 import MusterBadge from "../../muster/MusterBadge";
 import WeekLetter from "../../muster/WeekLetter";
+import RoundButton from "../../ui/RoundButton";
+import PillButton from "../../ui/PillButton";
 
 // Кругла біла кнопка 38×38 (як на макеті)
 const roundButton =
@@ -39,15 +41,15 @@ const WeekHeaderDesktop = ({ monday, subtitle, title, letter, muster = false, vi
       <div className="flex items-center gap-6">
         {/* навігація по тижнях */}
         <div className="flex items-center gap-2">
-          <button type="button" aria-label="Vorige Woche" onClick={() => onWeekChange(addDays(monday, -7))} className={roundButton}>
+          <RoundButton aria-label="Vorige Woche" onClick={() => onWeekChange(addDays(monday, -7))}>
             <ChevronLeft className="size-4.25" />
-          </button>
-          <button type="button" onClick={onToday} className="h-10 rounded-full bg-sand px-4.5 text-body font-bold text-ink transition-colors hover:bg-hair">
+          </RoundButton>
+          <PillButton glass="glass" size="md" onClick={onToday} className="h-10 rounded-full bg-sand px-4.5 text-body font-bold text-ink transition-colors hover:bg-hair">
             Heute
-          </button>
-          <button type="button" aria-label="Nächste Woche" onClick={() => onWeekChange(addDays(monday, 7))} className={roundButton}>
+          </PillButton>
+          <RoundButton aria-label="Nächste Woche" onClick={() => onWeekChange(addDays(monday, 7))}>
             <ChevronRight className="size-4.25" />
-          </button>
+          </RoundButton>
           <WeekPickerPopover monday={monday} onPick={onWeekChange} buttonClassName={roundButton} />
         </div>
 

@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Info } from "lucide-react";
 import { usePlanStore } from "../../shared/store/planStore";
 import { cn } from "../../shared/utils/cn";
@@ -6,9 +5,8 @@ import { longDate, mondayOf, nextSchoolDay, relativeDayWord, weekdayLong } from 
 import ChangedLine from "../week/ChangedLine";
 import WeekLetter from "../muster/WeekLetter";
 import { abLetter } from "../../shared/utils/muster";
+import RoundButton from "../ui/RoundButton";
 
-// Кругла кнопка-посилання 38×38
-const roundLink = "grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink";
 
 // ─────────────────────────────────────────────────────────────
 // Шапка сторінки дня (телефон):  ‹  «Mittwoch · heute (i)» / «7. Oktober» / «↻ 07:08»   ‹ ›
@@ -25,9 +23,9 @@ const DayPageHeader = ({ date, today, day, onInfo }) => {
   return (
     <header className="flex items-start gap-2.5">
       {/* назад до тижня */}
-      <Link to={`/woche?woche=${mondayOf(date)}`} aria-label="Zur Woche" className={`${roundLink} mt-1`}>
+      <RoundButton to={`/woche?woche=${mondayOf(date)}`} aria-label="Zur Woche" className="mt-1">
         <ChevronLeft className="size-4.25" />
-      </Link>
+      </RoundButton>
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-0.5">
@@ -53,12 +51,12 @@ const DayPageHeader = ({ date, today, day, onInfo }) => {
 
       {/* гортати дні (вихідні та канікули пропускаються) */}
       <div className="mt-1 flex shrink-0 gap-1.5">
-        <Link to={`/tag/${prev}`} aria-label="Vorheriger Schultag" className={roundLink}>
+        <RoundButton to={`/tag/${prev}`} aria-label="Vorheriger Schultag">
           <ChevronLeft className="size-4.25" />
-        </Link>
-        <Link to={`/tag/${next}`} aria-label="Nächster Schultag" className={roundLink}>
+        </RoundButton>
+        <RoundButton to={`/tag/${next}`} aria-label="Nächster Schultag">
           <ChevronRight className="size-4.25" />
-        </Link>
+        </RoundButton>
       </div>
     </header>
   );

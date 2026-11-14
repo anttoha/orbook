@@ -7,6 +7,7 @@ import OptionRow from "./OptionRow";
 import WeekLetter from "../../muster/WeekLetter";
 import { abLetter } from "../../../shared/utils/muster";
 import SettingsCard from "./SettingsCard";
+import PillButton from "../../ui/PillButton";
 
 // Варіанти списків (межі — як перевіряє сервер, appsettings.py)
 const minutes = (values) => values.map((value) => ({ value, label: `${value} min` }));
@@ -173,9 +174,9 @@ export const HomeworkCard = ({ className, onPurge, purging, ...props }) =>
       <div className={divided}>
         <SelectRow label="Automatisch löschen" hint="nach dem Abgabetag" section="homework" field="keepDays" options={HOMEWORK_KEEP} {...props} />
         <OptionRow label="Hausaufgaben jetzt aufräumen" hint="Abgelaufene nach dieser Regel löschen">
-          <button type="button" disabled={purging} onClick={onPurge} className="h-8.5 rounded-full bg-sand px-3.5 text-hint font-bold text-ink disabled:opacity-50">
+          <PillButton glass="glass" size="sm" disabled={purging} onClick={onPurge} className="h-8.5 rounded-full bg-sand px-3.5 text-hint font-bold text-ink disabled:opacity-50">
             Aufräumen
-          </button>
+          </PillButton>
         </OptionRow>
       </div>
     </SettingsCard>

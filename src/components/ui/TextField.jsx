@@ -1,4 +1,6 @@
 import { TriangleAlert } from "lucide-react";
+import { GlassInput } from "@zakisheriff/liquid-glass";
+import { useGlass } from "../../shared/hooks/useGlass";
 import { cn } from "../../shared/utils/cn";
 
 // Поле вводу з підписом. Під полем одне з двох:
@@ -11,12 +13,27 @@ import { cn } from "../../shared/utils/cn";
 const TextField = ({ id, label, hint, error, className, inputClassName, ref, multiline = false, leading, trailing, ...inputProps }) => {
   const messageId = `${id}-message`;
   const Input = multiline ? "textarea" : "input";
+  const glass = useGlass() && !multiline; // у библиотеки нет многострочного поля — там остаётся наше
 
   return (
     <div className={className}>
       <label htmlFor={id} className="mb-1.5 block text-hint font-extrabold text-faint">
         {label}
       </label>
+      {glass ? (
+        // «Glas»: поле библиотеки (стекло, тянется при нажатии). Подпись и ошибка — наши, как везде
+        <GlassInput
+          ref={ref}
+          id={id}
+          aria-invalid={Boolean(error)}
+          aria-describedby={error || hint ? messageId : undefined}
+          icon={leading}
+          trailing={trailing}
+          tint={error ? "var(--color-danger)" : "var(--color-accent)"}
+          className={inputClassName}
+          {...inputProps}
+        />
+      ) : (
       <div className="relative">
         <Input
           ref={ref}
@@ -36,6 +53,7 @@ const TextField = ({ id, label, hint, error, className, inputClassName, ref, mul
         {leading && <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-faint">{leading}</div>}
         {trailing && <div className="absolute inset-y-0 right-1.5 flex items-center">{trailing}</div>}
       </div>
+      )}
       {error ? (
         <p id={messageId} role="alert" className="mt-1.5 flex gap-1 text-hint leading-4.25 text-danger">
           <TriangleAlert className="mt-0.5 size-3.5 shrink-0" />

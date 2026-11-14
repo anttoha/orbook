@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { CalendarDays, Plus } from "lucide-react";
-import { Link } from "react-router-dom";
 import AppointmentRow from "../components/appointments/AppointmentRow";
 import AppointmentsAside from "../components/appointments/AppointmentsAside";
 import ExamSkeleton from "../components/exams/ExamSkeleton";
@@ -17,6 +16,7 @@ import { useAppointmentStore } from "../shared/store/appointmentsStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { addAppointmentTarget, groupAppointments, kindInfo, upcomingAppointments } from "../shared/utils/appointments";
 import { subjectName } from "../shared/utils/format";
+import PillButton from "../components/ui/PillButton";
 
 // Пошук на ПК: у назві, місці, виді, предметі й Kürzel
 const matches = (item, query) => {
@@ -82,9 +82,9 @@ const Appointments = () => {
           <ExamsToolbar query={query} onQuery={setQuery} filter={null} addTarget={addTarget} placeholder="Titel oder Ort" addLabel="Termin eintragen" />
         ) : (
           addTarget && (
-            <Link to={addTarget} aria-label="Termin eintragen" className="grid size-9.5 shrink-0 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
+            <PillButton glass="filled" size="sm" to={addTarget} aria-label="Termin eintragen" className="grid size-9.5 shrink-0 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
               <Plus className="size-4.25" />
-            </Link>
+            </PillButton>
           )
         )}
       </header>

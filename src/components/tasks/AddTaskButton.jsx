@@ -1,6 +1,8 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { BookOpen, Plus, UserRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { GlassButton, GlassMenu } from "@zakisheriff/liquid-glass";
+import { useGlass } from "../../shared/hooks/useGlass";
 import { useSheet } from "../../shared/hooks/useSheet";
 import { cn } from "../../shared/utils/cn";
 import { menuContentClass, menuIconClass, menuItemClass } from "../ui/menuStyles";
@@ -25,6 +27,29 @@ const AddTaskButton = ({ classTarget, wide }) => {
   ) : (
     <Plus className="size-4.25" />
   );
+
+  const glass = useGlass();
+
+  // «Glas» (часть 30a): кнопка и меню библиотеки liquid-glass
+  if (glass) {
+    if (!classTarget) {
+      return (
+        <GlassButton variant="filled" tint="var(--color-accent)" size={wide ? "lg" : "md"} icon={<Plus className="size-4.25" />} aria-label="Eigene Aufgabe" onClick={own}>
+          {wide ? "Eigene Aufgabe" : undefined}
+        </GlassButton>
+      );
+    }
+    return (
+      <GlassMenu
+        icon={<Plus className="size-4.25" />}
+        aria-label="Aufgabe hinzufügen"
+        items={[
+          { label: "Eigene Aufgabe", icon: <UserRound className="size-4.5" />, onSelect: own },
+          { label: "Hausaufgabe für die Klasse", icon: <BookOpen className="size-4.5" />, onSelect: () => navigate(classTarget) },
+        ]}
+      />
+    );
+  }
 
   if (!classTarget) {
     return (

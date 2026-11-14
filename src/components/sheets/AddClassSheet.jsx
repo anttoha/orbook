@@ -9,6 +9,7 @@ import Button from "../ui/Button";
 import ClassBadge from "../ui/ClassBadge";
 import Sheet from "../ui/Sheet";
 import TextField from "../ui/TextField";
+import PillButton from "../ui/PillButton";
 
 // ─────────────────────────────────────────────────────────────
 // «Klasse hinzufügen» (макеты 29 handy-03, -04, -05). Адрес: ?sheet=klasseneu
@@ -109,9 +110,9 @@ const AddClassForm = ({ onClose, schoolId }) => {
               <ScanLine className="size-4.5" /> {t("QR-Code scannen")}
             </Button>
             {qrHelp && <p className="rounded-field bg-sand px-3.5 py-3 text-label text-muted">{t("Mit der Handy-Kamera scannen: der Link öffnet ORBook und fügt die Klasse hinzu.")}</p>}
-            <button type="submit" disabled={busy || !code.trim()} className="flex h-12 w-full items-center justify-center rounded-full bg-accent text-row font-bold text-on-accent disabled:opacity-40">
+            <PillButton glass="filled" size="lg" type="submit" disabled={busy || !code.trim()} className="flex h-12 w-full items-center justify-center rounded-full bg-accent text-row font-bold text-on-accent disabled:opacity-40">
               {t("Weiter")}
-            </button>
+            </PillButton>
           </>
         )}
     </form>

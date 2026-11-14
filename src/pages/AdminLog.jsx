@@ -10,6 +10,7 @@ import { useDebounced } from "../shared/hooks/useDebounced";
 import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useNow } from "../shared/hooks/useNow";
 import { useAdminStore } from "../shared/store/adminStore";
+import PillButton from "../components/ui/PillButton";
 
 const FILTERS = [
   { value: "all", label: "Alles" },
@@ -66,9 +67,9 @@ const AdminLog = () => {
       {!isDesktop && filters}
       <div>{renderList()}</div>
       {extra.nextBefore && first.status === "ready" && (
-        <button type="button" disabled={extra.busy} onClick={loadMore} className="mx-auto h-10.5 rounded-full bg-sand px-5 text-label font-extrabold text-ink disabled:opacity-50">
+        <PillButton glass="glass" size="md" disabled={extra.busy} onClick={loadMore} className="mx-auto h-10.5 rounded-full bg-sand px-5 text-label font-extrabold text-ink disabled:opacity-50">
           {extra.busy ? "Wird geladen…" : "Mehr laden"}
-        </button>
+        </PillButton>
       )}
     </section>
   );

@@ -15,6 +15,7 @@ import { useCodeActions } from "../shared/hooks/useCodeActions";
 import { useNow } from "../shared/hooks/useNow";
 import { useAdminStore } from "../shared/store/adminStore";
 import { isTeacherCode } from "../shared/utils/admin";
+import PillButton from "../components/ui/PillButton";
 
 // Тексти двох списків: Editor-Codes (макети 41, 43) і Lehrer-Codes (частина 14, handy-10, pc-04)
 const TEXTS = {
@@ -84,9 +85,9 @@ const AdminCodes = ({ kind = "editor" }) => {
       <Plus className="size-4.5" /> Neuer Code
     </Button>
   ) : (
-    <button type="button" aria-label="Neuer Code" onClick={openNew} className="grid size-9.5 place-items-center rounded-full bg-accent text-on-accent">
+    <PillButton glass="filled" size="sm" aria-label="Neuer Code" onClick={openNew} className="grid size-9.5 place-items-center rounded-full bg-accent text-on-accent">
       <Plus className="size-5" />
-    </button>
+    </PillButton>
   );
 
   const renderList = () => {

@@ -1,5 +1,6 @@
 import { RefreshCw, TriangleAlert } from "lucide-react";
 import { Skeleton } from "../ui/PlanState";
+import PillButton from "../ui/PillButton";
 
 // Лента ещё грузится (макет handy-05): три строки-заглушки
 export const HistorySkeleton = () => (
@@ -30,9 +31,9 @@ export const HistoryError = ({ onRetry }) => (
         Der Plan selbst ist gespeichert und stimmt.
       </span>
     </p>
-    <button type="button" onClick={onRetry} className="flex h-12 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink active:opacity-80">
+    <PillButton glass="glass" size="lg" onClick={onRetry} className="flex h-12 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink active:opacity-80">
       <RefreshCw className="size-4" /> Nochmal versuchen
-    </button>
+    </PillButton>
     <p className="text-center text-caption text-faint">Den Verlauf gibt es nur mit Internet.</p>
   </div>
 );

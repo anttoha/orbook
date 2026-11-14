@@ -9,6 +9,7 @@ import { currentMonday } from "../../shared/utils/lessons";
 import { askedText, dayCheck } from "../../shared/utils/liveText";
 import { Skeleton } from "../ui/PlanState";
 import LiveDot from "./LiveDot";
+import PillButton from "../ui/PillButton";
 
 // Значок справа в строке дня: ✓ план есть · пунктирный круг — плана ещё нет · «?» — не проверяли · «–» — свободно
 const Mark = ({ kind, index }) => {
@@ -91,15 +92,13 @@ const PlanStatusBody = ({ monday, compact = false }) => {
         <p className="text-caption text-faint">{askedText(status, now)}</p>
       </section>
 
-      <button
-        type="button"
+      <PillButton glass="filled" size="lg"
+       
         disabled={refreshing}
-        onClick={() => refreshPlan(monday)}
-        className="flex h-12 items-center justify-center gap-2 rounded-full bg-accent text-row font-bold text-on-accent transition-opacity active:opacity-80 disabled:opacity-60"
-      >
+        onClick={() => refreshPlan(monday)} className="flex h-12 items-center justify-center gap-2 rounded-full bg-accent text-row font-bold text-on-accent transition-opacity active:opacity-80 disabled:opacity-60">
         <RefreshCw className={cn("size-4", refreshing && "motion-safe:animate-spin")} />
         {refreshing ? "Wird geprüft…" : thisWeek ? "Diese Woche jetzt prüfen" : "Diese Woche prüfen"}
-      </button>
+      </PillButton>
     </div>
   );
 };

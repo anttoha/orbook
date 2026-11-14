@@ -15,6 +15,7 @@ import { FlagIcon } from "../ui/icons";
 import ClassDayList from "./ClassDayList";
 import GoneNotice from "./GoneNotice";
 import TodayStrip from "./TodayStrip";
+import PillButton from "../ui/PillButton";
 
 // ─────────────────────────────────────────────────────────────
 // Карточка класса на «Meine Klassen» (макет 29 handy-01, pc-01).
@@ -45,9 +46,9 @@ const ClassCard = ({ item, today, wide, inSchool = false }) => {
           <h2 className="truncate text-subhead text-ink">{classTitle(item, t)}</h2>
           <p className="truncate text-label text-faint">{inSchool ? `${t("Klasse")} ${item.name}` : classSubtitle(item)}</p>
         </div>
-        <button type="button" onClick={() => openSheet("klasse", { id: item.id })} aria-label={t("Klasse einstellen")} className="pointer-events-auto grid size-8.5 shrink-0 place-items-center rounded-full bg-sand text-ink">
+        <PillButton glass="glass" size="sm" onClick={() => openSheet("klasse", { id: item.id })} aria-label={t("Klasse einstellen")} className="pointer-events-auto grid size-8.5 shrink-0 place-items-center rounded-full bg-sand text-ink">
           <SlidersHorizontal className="size-4" />
-        </button>
+        </PillButton>
       </header>
 
       {item.gone ? <GoneNotice item={item} /> : <CardBody data={data} item={item} today={today} wide={wide} onRetry={() => setReload((n) => n + 1)} />}
@@ -67,9 +68,9 @@ const CardBody = ({ data, item, today, wide, onRetry }) => {
     return (
       <div className="relative mt-3.5 flex items-center justify-between gap-3 rounded-field bg-paper px-3.5 py-3">
         <p className="text-label text-muted">{t("Plan kommt gerade nicht an")}</p>
-        <button type="button" onClick={onRetry} className="shrink-0 rounded-full bg-sand px-3.5 py-1.5 text-label font-extrabold text-ink">
+        <PillButton glass="glass" size="sm" onClick={onRetry} className="shrink-0 rounded-full bg-sand px-3.5 py-1.5 text-label font-extrabold text-ink">
           {t("Nochmal")}
-        </button>
+        </PillButton>
       </div>
     );
   }

@@ -7,6 +7,7 @@ import { loadAdminAppointments } from "../shared/api/appointments";
 import { useAdminLoad } from "../shared/hooks/useAdminLoad";
 import { useNow } from "../shared/hooks/useNow";
 import { groupAppointments, upcomingAppointments } from "../shared/utils/appointments";
+import PillButton from "../components/ui/PillButton";
 
 // ─────────────────────────────────────────────────────────────
 // «Termine» адмінки (частина 18): усі терміни класу (і курсові), «Termin eintragen» від школи,
@@ -40,9 +41,9 @@ const AdminAppointments = () => {
         title="Termine"
         backTo="/admin"
         actions={
-          <Link to="/admin/termine/neu" aria-label="Termin eintragen" className="flex h-9.5 items-center gap-2 rounded-full bg-accent px-3.5 text-row font-bold text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50 lg:h-12 lg:px-5">
+          <PillButton glass="filled" size="lg" to="/admin/termine/neu" aria-label="Termin eintragen" className="flex h-9.5 items-center gap-2 rounded-full bg-accent px-3.5 text-row font-bold text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50 lg:h-12 lg:px-5">
             <Plus className="size-4" /> <span className="hidden lg:inline">Termin eintragen</span>
-          </Link>
+          </PillButton>
         }
       />
       <p className="text-body-sm text-muted">Termine der Schule erscheinen als „Eingetragen von der Schule“. Die Frist für das automatische Löschen steht unter Einstellungen.</p>
