@@ -206,13 +206,7 @@ const JoinPage = () => {
           </>
         ) : (
           <>
-            <p className="mt-4 text-caption text-faint">
-              {mode === "known"
-                ? t("Diese Klasse hast du schon.")
-                : mode === "add"
-                  ? t("Deine anderen Klassen bleiben auf dem Gerät.")
-                  : "Kein Konto, keine E-Mail — ein Tippen genügt."}
-            </p>
+            {mode === "known" && <p className="mt-4 text-caption text-faint">{t("Diese Klasse hast du schon.")}</p>}
             <Button
               variant="primary"
               className="mt-4 w-full flex-none gap-1.5"
@@ -292,7 +286,7 @@ const JoinPage = () => {
             <p className="mt-3 text-body leading-5.75 text-muted">
               {invalid
                 ? "Dieser Einladungslink gilt nicht mehr — mit Zugangscode oder Klassenpasswort geht es trotzdem."
-                : `ORBook zeigt Stundenplan, Vertretungen und Tests${className ? ` der ${className}` : ""}. Kein Konto, keine E-Mail.`}
+                : `ORBook zeigt Stundenplan, Vertretungen und Tests${className ? ` der ${className}` : ""}.`}
             </p>
           </div>
           {renderBottom()}
