@@ -5,6 +5,7 @@
     var theme = localStorage.getItem("theme") || "system";
     var dark = theme === "dark" || (theme === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
     if (dark) document.documentElement.classList.add("dark");
+    document.documentElement.dataset.theme = dark ? "dark" : "light"; // для библиотеки стекла (часть 30a)
 
     // Шрифт лежить серед налаштувань userStore (ключ "orbook-user")
     var user = JSON.parse(localStorage.getItem("orbook-user") || "{}");

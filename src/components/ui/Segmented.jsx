@@ -1,3 +1,5 @@
+import { GlassSegmented } from "@zakisheriff/liquid-glass";
+import { useGlass } from "../../shared/hooks/useGlass";
 import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
 
@@ -17,6 +19,21 @@ const SIZES = { md: "h-8 px-3 text-hint", form: "h-7.25 px-3 text-hint", sm: "h-
 const Segmented = ({ options, value, onChange, label, className, variant = "card", size = "md", iconOnly = false }) => {
   const t = useT();
   const index = options.findIndex((option) => option.value === value); // котрий вибраний (-1 — жоден)
+  const glass = useGlass();
+
+  // «Glas»: перемикач із бібліотеки — вибране стає лінзою, її можна тягти (тільки іконки — лишаємо наш)
+  if (glass && !iconOnly) {
+    return (
+      <GlassSegmented
+        aria-label={label && t(label)}
+        className={className}
+        size={size === "sm" ? "sm" : "md"}
+        value={Math.max(0, index)}
+        onChange={(i) => onChange(options[i].value)}
+        options={options.map((option) => (option.icon ? { label: t(option.label), icon: <option.icon className="size-3.75" /> } : t(option.label)))}
+      />
+    );
+  }
 
   return (
     // role="group" + aria-label — скрінрідер прочитає, що це за перемикач

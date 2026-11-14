@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Drawer } from "vaul";
+import { GlassSheet } from "@zakisheriff/liquid-glass";
+import { useGlass } from "../../shared/hooks/useGlass";
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { cn } from "../../shared/utils/cn";
@@ -33,6 +35,7 @@ import ScrollDownButton from "./ScrollDownButton";
 const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, titleAside, titleClassName, hideClose = false, icon, footer, children }) => {
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // який варіант показувати
   const isPanel = isDesktop && desktop === "panel"; // панель праворуч?
+  const glass = useGlass(); // «Glas» на телефоні — шторка з бібліотеки liquid-glass
   const dialogWidth = { wide: "w-dialog-wide", qr: "w-dialog-qr" }[desktop] ?? "w-dialog"; // ширина вікна по центру
   // Часть 29d: ниже есть ещё — кнопка «вниз» внизу шторки. scroller — блок, который прокручивается
   const [scroller, setScroller] = useState(null);
@@ -124,6 +127,21 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
+    );
+  }
+
+  // ── Телефон, «Glas»: стеклянная шторка библиотеки — выезжает пружиной, смахивается вниз.
+  // Заголовок тот же; вместо примитивов vaul — обычные h2/p и кнопка, которая закрывает шторку
+  if (glass) {
+    const PlainClose = (props) => <button type="button" onClick={onClose} {...props} />;
+    return (
+      <GlassSheet open={open} onClose={onClose} aria-label={typeof title === "string" ? title : eyebrow}>
+        <div ref={setScroller} className="max-h-[80dvh] min-h-0 overflow-y-auto scroll-stable pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
+          {renderHeader("h2", "p", PlainClose)}
+          {body}
+        </div>
+        {downButton}
+      </GlassSheet>
     );
   }
 

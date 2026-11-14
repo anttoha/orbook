@@ -1,4 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { GlassNav } from "@zakisheriff/liquid-glass";
+import { useGlass } from "../../shared/hooks/useGlass";
 import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
 import { isTabActive } from "../../shared/utils/isTabActive";
@@ -10,7 +12,27 @@ import { isTabActive } from "../../shared/utils/isTabActive";
 // ─────────────────────────────────────────────────────────────
 const TabBar = ({ tabs }) => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const t = useT();
+  const glass = useGlass();
+
+  // «Glas»: панель вкладок из библиотеки — выбранная вкладка становится линзой, её можно тянуть пальцем
+  if (glass) {
+    const active = Math.max(0, tabs.findIndex((tab) => isTabActive(tab, pathname)));
+    return (
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-10 pb-5.5 lg:hidden print:hidden">
+        <div className="flex justify-center px-4">
+          <GlassNav
+            className="pointer-events-auto"
+            aria-label={t("Navigation")}
+            activeIndex={active}
+            onChange={(index) => navigate(tabs[index].to)}
+            items={tabs.map((tab) => ({ label: t(tab.short ?? tab.label), icon: <tab.icon className="size-5" /> }))}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-10 bg-linear-to-t from-paper to-transparent pt-10 pb-5.5 lg:hidden print:hidden">

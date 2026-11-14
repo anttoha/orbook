@@ -30,6 +30,8 @@ export const paintThemeColor = () => {
 const applyTheme = (theme) => {
     if (!browser) return;
     document.documentElement.classList.toggle("dark", isDarkTheme(theme));
+    // библиотека стекла (часть 30a) смотрит на data-theme, а не на наш класс dark
+    document.documentElement.dataset.theme = isDarkTheme(theme) ? "dark" : "light";
     paintThemeColor();
 };
 

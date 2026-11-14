@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { changelog } from "../changelog";
+import { setGlassQuality } from "@zakisheriff/liquid-glass";
 import { paintThemeColor } from "../hooks/useTheme";
 import { APPEARANCE_DEFAULTS, appearanceOf, applyAppearance } from "../utils/appearance";
 import { swapClassData } from "../utils/classes";
@@ -172,6 +173,8 @@ const watchAppearance = (state) => {
   lastAppearance = now;
   applyAppearance(state);
   paintThemeColor();
+  // «Glas-Effekt · Einfach» — библиотека оставляет только размытие и край, без преломления в покое
+  setGlassQuality(state.glassMode === "einfach" ? "low" : "auto");
 };
 watchAppearance(useUserStore.getState());
 useUserStore.subscribe(watchAppearance);

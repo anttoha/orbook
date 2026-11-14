@@ -17,6 +17,7 @@
     "@radix-ui/react-popover": "^1.1.23",
     "@radix-ui/react-tooltip": "^1.2.16",
     "@tailwindcss/vite": "^4.3.1",
+    "@zakisheriff/liquid-glass": "4.0.0",
     "clsx": "^2.1.1",
     "lucide-react": "^1.48.0",
     "react": "^19.2.6",

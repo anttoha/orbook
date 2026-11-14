@@ -516,6 +516,16 @@
 [data-glass-bg="wald"] { --color-glass-1: #bfe8c6; --color-glass-2: #e6ebb0; --color-glass-3: #a9e0d8; }
 .dark[data-glass-bg="wald"], .dark [data-glass-bg="wald"] { --color-glass-1: #1f7a4a; --color-glass-2: #6e7a1f; --color-glass-3: #167a72; }
 
+/* Библиотека @zakisheriff/liquid-glass (нижнее меню, «таблетки», переключатели, шторки, карточки в «Glas»):
+   её токены заданы через :where(), поэтому эти строки их перекрывают — шрифт и цвет как у нас */
+:root {
+    --lg-font: var(--font-sans);
+    --lg-accent: var(--color-accent);
+    --lg-green: var(--color-accent);
+}
+/* подписи в «таблетках» и нижнем меню — жирные, как во всём приложении */
+.lg-track { font-weight: 800; }
+
 /* Пятна — мягкие радиальные градиенты: без картинок и без тяжёлого filter: blur */
 .glass-backdrop {
     background:
