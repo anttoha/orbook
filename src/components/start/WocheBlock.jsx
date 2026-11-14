@@ -8,6 +8,7 @@ import { cn } from "../../shared/utils/cn";
 import { isoWeek, lessonCode, mineOnly, weekdayShort } from "../../shared/utils/format";
 import { currentMonday, periodRows } from "../../shared/utils/lessons";
 import { subjectLook } from "../../shared/utils/planView";
+import MusterBadge from "../muster/MusterBadge";
 import BlockCard from "./BlockCard";
 import BlockEmpty from "./BlockEmpty";
 import BlockSkeleton from "./BlockSkeleton";
@@ -20,6 +21,7 @@ const MiniCell = ({ lesson, overrides, plan }) => {
     <span
       className={cn(
         "relative grid min-w-0 place-items-center rounded-chip text-caption font-black",
+        lesson.muster && !cancelled && "hatch-muster", // из Muster: полосы поверх цвета, как в Woche
         cancelled ? "border border-dashed border-danger bg-danger-tint text-danger line-through" : subjectLook(lesson.subject?.code, overrides, plan),
       )}
     >
@@ -31,7 +33,7 @@ const MiniCell = ({ lesson, overrides, plan }) => {
 
 // ─────────────────────────────────────────────────────────────
 // Блок «Woche» (макет handy-01): эта неделя в миниатюре — Mo–Fr по столбцам, уроки по строкам.
-// В выходные — следующая неделя (как вкладка Woche)
+// В выходные — следующая неделя (как вкладка Woche). Если это Muster — метка «Muster» и полосы на клетках
 // ─────────────────────────────────────────────────────────────
 const WocheBlock = ({ editing }) => {
   const t = useT();
@@ -43,6 +45,7 @@ const WocheBlock = ({ editing }) => {
   const overrides = useUserStore((s) => s.colorOverrides);
   const lessonTimes = usePlanStore((s) => s.meta?.lessonTimes);
   const days = (week.data?.days ?? []).map((day) => ({ ...day, lessons: day.status === "ok" ? mineOnly(filter(day.lessons)) : [] }));
+  const isMuster = days.some((day) => day.muster); // неделя целиком или частично из Muster — это не настоящий план
   const rows = periodRows(days, lessonTimes ?? []);
 
   const body = () => {
@@ -63,7 +66,7 @@ const WocheBlock = ({ editing }) => {
   };
 
   return (
-    <BlockCard kind="woche" title={`${t("Woche")} · KW ${isoWeek(monday)}`} to="/woche" editing={editing}>
+    <BlockCard kind="woche" title={`${t("Woche")} · KW ${isoWeek(monday)}`} to="/woche" editing={editing} aside={isMuster && <MusterBadge />}>
       {body()}
     </BlockCard>
   );

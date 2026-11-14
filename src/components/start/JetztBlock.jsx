@@ -7,6 +7,7 @@ import { berlinParts, lessonProgress, lessonState } from "../../shared/utils/les
 import { addDays, mineOnly, nextSchoolDay, subjectName, weekdayLong } from "../../shared/utils/format";
 import { fachDotClass } from "../../shared/utils/lessons";
 import { nextCancelled } from "../../shared/utils/startData";
+import MusterBadge from "../muster/MusterBadge";
 import BlockCard from "./BlockCard";
 import BlockEmpty from "./BlockEmpty";
 import BlockSkeleton from "./BlockSkeleton";
@@ -55,7 +56,16 @@ const JetztBlock = ({ editing }) => {
   if (lesson) {
     const running = Boolean(live.current);
     const head = `${t(running ? "Jetzt" : "Gleich")} · ${lesson.period}. ${t("Stunde")}`;
-    const aside = running ? t("noch {n} min").replace("{n}", live.minutesLeft) : t("in {n} min").replace("{n}", live.breakMinutes);
+    const timeLeft = running ? t("noch {n} min").replace("{n}", live.minutesLeft) : t("in {n} min").replace("{n}", live.breakMinutes);
+    // урок из Muster (плана ещё нет) — с меткой, чтобы не принять за настоящий
+    const aside = lesson.muster ? (
+      <span className="flex items-center gap-1.5">
+        <MusterBadge />
+        {timeLeft}
+      </span>
+    ) : (
+      timeLeft
+    );
     const after = running ? live.next : lessons.find((l) => l.start > lesson.start && l.status !== "cancelled");
     const cancelled = nextCancelled(lessons, berlinParts(now).minutes);
     return card(
@@ -91,7 +101,7 @@ const JetztBlock = ({ editing }) => {
   if (!first) return card({ title: t("Jetzt") }, <BlockEmpty text="Heute kein Unterricht" />);
   const when = nextDate === addDays(today, 1) ? t("Morgen") : weekdayLong(nextDate);
   return card(
-    { title: `${when} · ${first.period}. ${t("Stunde")}` },
+    { title: `${when} · ${first.period}. ${t("Stunde")}`, aside: first.muster && <MusterBadge /> },
     <>
       <div className="flex items-baseline justify-between gap-2">
         <p className="truncate text-number text-ink lg:text-cell">{subjectName(first.subject)}</p>

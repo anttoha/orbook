@@ -6,6 +6,7 @@ import { cn } from "../../shared/utils/cn";
 import { mineOnly, subjectName } from "../../shared/utils/format";
 import { isLessonNow, isLessonPast } from "../../shared/utils/lessonClock";
 import { fachDotClass } from "../../shared/utils/lessons";
+import MusterBadge from "../muster/MusterBadge";
 import BlockCard from "./BlockCard";
 import BlockEmpty from "./BlockEmpty";
 import BlockSkeleton from "./BlockSkeleton";
@@ -56,7 +57,7 @@ const HeuteBlock = ({ block, editing }) => {
   };
 
   return (
-    <BlockCard kind="heute" title={title} to="/heute" editing={editing}>
+    <BlockCard kind="heute" title={title} to="/heute" editing={editing} aside={lessons.some((l) => l.muster) && <MusterBadge />}>
       {body()}
     </BlockCard>
   );
