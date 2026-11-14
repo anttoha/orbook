@@ -5,6 +5,11 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.17.1",
+    date: "2026-11-14",
+    neu: ["Auf Start steht jetzt „Muster“, wenn Woche, Jetzt oder Heute nur nach dem normalen Stundenplan gebaut sind und der echte Plan noch fehlt. Die Stunden sind dann gestreift – so verwechselst du sie nicht mit dem echten Plan."],
+  },
+  {
     version: "0.17.0",
     date: "2026-11-14",
     picture: "start",
