@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useHotkeys } from "../../shared/hooks/useHotkeys";
 import { usePlanStore } from "../../shared/store/planStore";
@@ -10,7 +10,6 @@ import QuickSearch from "./QuickSearch";
 import SideNavFooter from "./SideNavFooter";
 import SideNavHeader from "./SideNavHeader";
 import SoonList from "./SoonList";
-import { useLiquid } from "../../shared/hooks/useLiquid";
 
 // ─────────────────────────────────────────────────────────────
 // Сайдбар на комп'ютері (≥ 1024px), як на макеті:
@@ -25,20 +24,14 @@ const SideNav = () => {
   const features = usePlanStore((s) => s.me?.features); // вимкнені школою розділи не показуємо
 
   useHotkeys({ "mod+b": () => setIsHidden((prev) => !prev) }); // ⌘B / Ctrl+B — згорнути або розгорнути
-  const panel = useRef(null);
-  // «Glas»: панель — матове скло бібліотеки. Без заломлення: при згортанні ширина змінюється,
-  // а бібліотека перераховує заломлення із затримкою — воно б розтягувалося
-  const glass = useLiquid(panel, { refract: false, press: false });
 
   return (
     <aside
-      ref={panel}
       className={cn(
         // sticky: сайдбар лишається на місці при прокручуванні; висота = екран − 2×16px
-        "sticky top-4 my-4 hidden h-[calc(100dvh-2rem)] shrink-0 flex-col overflow-hidden rounded-panel px-3.5 pt-4 pb-3.5 lg:flex print:hidden",
+        "sticky top-4 my-4 hidden h-[calc(100dvh-2rem)] shrink-0 flex-col overflow-hidden rounded-panel bg-card px-3.5 pt-4 pb-3.5 lg:flex print:hidden",
         "transition-[width] duration-500 ease-soft motion-reduce:transition-none",
         isHidden ? "w-sidebar-mini" : "w-sidebar",
-        glass ? "lg-glass orb-liquid" : "bg-card",
       )}
     >
       <SideNavHeader isHidden={isHidden} onChangeIsHidden={setIsHidden} />

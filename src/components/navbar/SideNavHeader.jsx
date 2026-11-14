@@ -5,7 +5,6 @@ import { usePlanStore } from "../../shared/store/planStore";
 import { cn } from "../../shared/utils/cn";
 import ClassSwitcher from "../klassen/ClassSwitcher";
 import Logo from "../ui/Logo";
-import RoundButton from "../ui/RoundButton";
 
 // Шапка сайдбара: логотип, клас («8A», з сервера), «Demo» і кнопка згорнути/розгорнути
 const SideNavHeader = ({ isHidden, onChangeIsHidden }) => {
@@ -32,11 +31,14 @@ const SideNavHeader = ({ isHidden, onChangeIsHidden }) => {
       </div>
 
       {/* згорнути / розгорнути */}
-      <RoundButton
+      <button
+        type="button"
         onClick={() => onChangeIsHidden((prev) => !prev)}
-        aria-label={isHidden ? "Seitenleiste ausklappen" : "Seitenleiste einklappen"} look="ml-auto grid size-9.5 shrink-0 cursor-pointer place-items-center rounded-full text-faint transition-colors hover:bg-sand">
+        aria-label={isHidden ? "Seitenleiste ausklappen" : "Seitenleiste einklappen"}
+        className="ml-auto grid size-9.5 shrink-0 cursor-pointer place-items-center rounded-full text-faint transition-colors hover:bg-sand"
+      >
         <PanelLeft className="size-4.5" />
-      </RoundButton>
+      </button>
     </header>
   );
 };

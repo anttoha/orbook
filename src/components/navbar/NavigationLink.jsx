@@ -1,6 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
-import { GlassButton } from "@zakisheriff/liquid-glass";
-import { useGlass } from "../../shared/hooks/useGlass";
+import { Link } from "react-router-dom";
 import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
 
@@ -12,32 +10,6 @@ import { cn } from "../../shared/utils/cn";
 // ─────────────────────────────────────────────────────────────
 const NavigationLink = ({ active, tab, isHidden = false, badge = null, index = 0, className = "", iconClassName = "", textClassName = "" }) => {
   const t = useT();
-  const glass = useGlass();
-  const navigate = useNavigate();
-
-  // «Glas» (часть 30a): пункт — кнопка библиотеки; выбранный залит акцентом. Свёрнутая панель — только иконка
-  if (glass) {
-    return (
-      <GlassButton
-        variant={active ? "filled" : "clear"}
-        tint={active ? "var(--color-accent)" : undefined}
-        icon={<tab.icon className="size-5" />}
-        aria-current={active ? "page" : undefined}
-        aria-label={isHidden ? t(tab.label) : undefined}
-        title={isHidden ? t(tab.label) : undefined}
-        onClick={() => navigate(tab.to)}
-        className={cn(isHidden ? "" : "orb-start w-full", className)}
-      >
-        {isHidden ? undefined : (
-          <>
-            {t(tab.label)}
-            {badge > 0 && <span className="text-caption font-extrabold opacity-70">{badge}</span>}
-          </>
-        )}
-      </GlassButton>
-    );
-  }
-
   return (
     <Link
       to={tab.to}
