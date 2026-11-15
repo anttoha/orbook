@@ -317,4 +317,9 @@ export const uk = {
   "Schon auf Start": "Уже на «Старті»",
   "Dein Start": "Твій «Старт»",
   "Alle Blöcke": "Усі блоки",
+  // часть 33: демо-коды
+  "Schüler:in": "Учень/учениця",
+  "Editor": "Редактор",
+  "Freischalten": "Розблокувати",
+  "Editor-Code freigeschaltet": "Editor-Code розблоковано",
 };

@@ -1,6 +1,7 @@
 import { ChevronLeft } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import AuthAside from "../components/auth/AuthAside";
+import DemoLogin from "../components/auth/DemoLogin";
 import LoginForm from "../components/auth/LoginForm";
 import SignedOutBanner from "../components/auth/SignedOutBanner";
 import TeacherLoginForm from "../components/auth/TeacherLoginForm";
@@ -39,7 +40,8 @@ const TeacherAccess = ({ schoolClass }) => (
 // Телефон: знак і назва вгорі, форма внизу. ПК: дві половини, форма по центру правої.
 // ?zugang=lehrkraft — вхід учителя: адреса, щоб кнопка «назад» браузера поверталась до пароля
 const AuthPage = () => {
-  const schoolClass = usePublicInfo()?.className; // поки не прийшло — текст без назви класу
+  const info = usePublicInfo(); // на демо тут ще й готові коди (частина 33)
+  const schoolClass = info?.className; // поки не прийшло — текст без назви класу
   const [params] = useSearchParams();
 
   if (params.get("zugang") === "lehrkraft") {
@@ -63,6 +65,7 @@ const AuthPage = () => {
           <p className="mt-2.75 text-input leading-6 text-muted">
             Stundenplan, Vertretungen und Tests{schoolClass ? ` der ${schoolClass}` : ""} — an einem Ort.
           </p>
+          <DemoLogin info={info} className="mt-8" />
         </div>
 
         <div className="mt-auto w-full lg:mt-0 lg:w-95">
@@ -74,6 +77,7 @@ const AuthPage = () => {
           </div>
           <SignedOutBanner className="mb-6" />
           <LoginForm />
+          <DemoLogin info={info} className="mt-6 hidden lg:block" />
         </div>
       </main>
     </div>

@@ -550,3 +550,7 @@ Spec и план: `docs/specs/30-personalisierung/spec.md` — под-части
 ## Часть 30d «Sync, Datenschutz, Changelog» — готово на демо (2026-11-14)
 `darstellungOf` везёт `plan`, `kurseOf` — `startBlocks` (раскладка Start у каждого класса своя); поля Design/Akzent/Glas/Animationen уже ехали с 30a. Тест: старый блок без новых полей сливается без ошибок. Datenschutz (Sync и «Auf deinem Gerät») дополнен. Changelog 0.17.0 (Start, Designs, Stundenplan, Sync, `action` «Mit Start öffnen») + `docs/releases/v0.17.0.md`; тег не ставил — только по «на прод». Текст changelog не переводится (только немецкий), новых строк интерфейса в 30d нет.
 **Дальше:** 31 (приложения и виджеты) — дизайн и план на Fable · effort high.
+
+## Часть 33 «Demo-Zugang + README» — готово на демо (2026-11-15)
+Экран входа на демо: карточка `DemoLogin` (Schüler:in, Lehrkraft — вход одной кнопкой по `demoAccess` из `/api/public/info`); Editor-Code — только после входа, `DemoEditorCode` на экране «Editor-Code» (`GET /api/demo/editor-code`). Общая карточка `components/demo/DemoCard.jsx`, чистая функция `demoCode` с тестом. На проде сервер кодов не присылает — карточек нет. Бэкенд: ночной `orbook demo-reset` (03:45). Новый README (DE). About на GitHub — вручную владельцем (gh не залогинен).
+**Дальше:** 31 (приложения и виджеты) — дизайн и план на Fable · effort high.

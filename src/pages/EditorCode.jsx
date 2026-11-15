@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import DemoEditorCode from "../components/exams/DemoEditorCode";
 import { EditorCodeField, EditorCodeNote } from "../components/exams/EditorCodeField";
 import Button from "../components/ui/Button";
 import { KeyIcon, TrashIcon } from "../components/ui/icons";
@@ -28,6 +29,7 @@ const UnlockForm = ({ backTo }) => {
       <Button variant="primary" type="submit" disabled={busy} className="flex-none">
         <KeyIcon className="size-4" /> Freischalten
       </Button>
+      <DemoEditorCode onUnlocked={() => navigate(next, { replace: true })} className="mt-2" />
       <EditorCodeNote className="mt-auto" />
     </form>
   );
