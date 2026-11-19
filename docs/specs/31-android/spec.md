@@ -46,7 +46,17 @@
 - Бэкенд: `GET /api/public/android`, `/api/public/android/apk`, папка `ORBOOK_ANDROID_DIR` (по умолчанию `android` рядом с базой); выложен 19.11, пока отвечает `null`.
 - Ограничения WebView: Web Push внутри APK не работает (Mitteilungen — через браузер/PWA или Telegram); скачивание через `blob:` (ICS в Termin) в APK не сохраняется — решить в 31b вместе с мостом.
 
+## 31b — как сделано (2026-11-19)
+- **Бэкенд** `GET /api/widget?courses=&hidden=` (`orbook/widget.py`): 10 учебных дней (эта и следующая неделя; без плана — Muster, `expected`), до 10 Tests, до 20 Hausaufgaben, до 10 Termine, `countdown`, `now` (часы школы). Фильтр курсов — тот же, что у Statistik (`_course_filter`); у сервера нет курсов устройства, поэтому их присылает виджет из снимка. Тесты `tests/test_widget.py`.
+- **Виджет** (`android/…/widget/`): `OrbWidget` (Glance, `SizeMode.Exact`, 9 видов, число строк — по высоте), `WidgetModel` (разбор ответа, «Jetzt», «Heute/morgen», «Änderungen», неделя), `WidgetSync` + `WidgetWorker` (раз в 30 минут с сетью, сразу — при добавлении, открытии приложения, новом плане), `WidgetStore` (SharedPreferences), `Soft` (цвета из `index.css`, «App/Hell/Dunkel», «Halb» — полупрозрачная карточка), значки `res/drawable/w_*.xml`. Время виджет считает от `now` сервера + сколько прошло (у демо своя дата).
+- **Состояния:** нет данных — скелет; `401` — «Nicht angemeldet» + Öffnen; `403` — «Zugang beendet» + Neuer Code; данные старше 45 минут — «Stand Mi 07:12»; уроков больше нет — первый урок следующего учебного дня («Wochenende» / «Morgen»).
+- **Изменение решения:** «Widget einstellen» — **не нативный экран, а страница сайта** `/mehr/android/widget/:id` в маленькой `WidgetConfigActivity` (WebView). Так экран точно в дизайне Soft (те же компоненты, Nunito, тёмная тема, Glas), с переводами EN/UK, а превью — настоящий блок Start. «Fertig» → `ORBookAndroid.saveWidget(id, json)`, ✕ → `closeWidget()` (при первой настройке виджет не кладётся).
+- **Мост:** `widgets()`, `widget(id)`, `saveWidget`, `closeWidget`, `saveSnapshot(json)`, `refreshWidgets()`. Снимок (`shared/utils/widgetSnapshot.js`, хук `useAndroidWidgetSync`): классы, «Meine Kurse» каждого класса, 5 последних заметок, галочки домашек, свои цвета, тема, язык и тексты виджета (`WIDGET_TEXTS`, переводы — из словарей сайта).
+- **Ограничения:** шрифт виджета — системный (Android не даёт виджетам свой шрифт); превью в «Widget einstellen» показывает данные открытого класса; «Klasse» видна, только если классов больше одного.
+- Демо-APK `0.17.1 (2)`.
+
 ## Datenschutz (дописать в 31b/31c)
+31b: абзац про копию для виджета и запрос раз в 30 минут — в «Auf deinem Gerät». 31c: остальное.
 APK и виджет хранят на телефоне то же, что сайт, плюс копию данных виджета (план на несколько дней, тесты, домашки, заметки для виджета) — только на устройстве. Сервер отдаёт APK без входа и не узнаёт, установлено ли приложение. Проверка обновлений — анонимный запрос раз в день.
 
 ## Проверка

@@ -587,3 +587,11 @@ Android: `android/` — Kotlin, `MainActivity` (WebView на сайт, отст�
 Владелец 19.11: «ок». Поставлены Android SDK (`/opt/android-sdk`: cmdline-tools, `platforms;android-35`, `build-tools;35.0.0`, 436 МБ), Gradle 8.11.1 (wrapper в `android/`, кеш `/root/.gradle` ~2 ГБ), ключ подписи `/root/.orbook-android/` (RSA 4096, 10000 дней, пароль случайный, только в `keystore.properties`, 600). `./gradlew lintDemoDebug` — 0 ошибок, 3 осознанных предупреждения (JS в WebView нужен; новые core/activity требуют SDK 36). `scripts/android-build.sh --site orbook-demo` → APK `net.orbitium.orbook.demo` 0.17.1 (versionCode 1), 166 КБ, подпись `CN=ORBook, O=ORBitium` (SHA-256 `e12d1016…b26f`), отдаётся демо-сервером. Прод-APK (`--site orbook`) — только вместе с «на прод».
 **Важно владельцу:** скачать копию `/root/.orbook-android/` к себе (`scp -r root@СЕРВЕР:/root/.orbook-android .`).
 **Дальше:** новый чат → Opus · effort high → `/orb 31b` (виджет).
+
+## Часть 31b «Widget» — готово на демо (2026-11-19)
+Бэкенд `4479f83` (выложен `scripts/update.sh`, прод и демо health 200): `GET /api/widget` — план 10 учебных дней, Tests, Hausaufgaben, Termine, Countdown, фильтр курсов как у Statistik; `tests/test_widget.py`, `API.md`, `FRONTEND.md`, `openapi.json`, `api.http` (заодно дописаны `/api/public/android*` из 31a — тест документации падал). `make lint test` — 1047 ok + исправленный тест.
+Android: виджет на Glance (9 видов, размеры, состояния, «Stand …»), WorkManager раз в 30 минут, `WidgetConfigActivity` открывает страницу сайта «Widget einstellen». Lint — 0 ошибок. Демо-APK 0.17.1 (2), 1,2 МБ, раздаётся `/api/public/android/apk`.
+Фронт: `/mehr/android/widget/:id`, список виджетов и «Widget hinzufügen» в «Android-App», снимок для виджета (`widgetSnapshot.js` + тест, переводы EN/UK), Datenschutz (абзац про копию для виджета). Снимки с подставным мостом: `/root/work/orbook-compare/31b-widget/` (`_tools/p31b.mjs`).
+Решение: «Widget einstellen» — страница сайта вместо нативного экрана (дизайн Soft и переводы без копии в Kotlin). Сам виджет на сервере проверить нечем (эмулятора нет) — проверяет владелец на телефоне.
+**Дальше:** новый чат → Sonnet · effort medium → `/orb 31c`.
+
