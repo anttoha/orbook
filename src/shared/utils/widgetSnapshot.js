@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────
-// Часть 31b: Android-Widget. Чистые функции без React — их проверяет widgetSnapshot.test.js.
+// Часть 31b/31d: Android-Widget. Чистые функции без React — их проверяет widgetSnapshot.test.js.
 //
 // Снимок для приложения (ORBookAndroid.saveSnapshot): то, чего нет на сервере, но нужно виджету —
 // классы устройства, «Meine Kurse» каждого класса (как courses/hidden у /api/stats), последние заметки,
@@ -7,6 +7,8 @@
 // Сам план, тесты и домашки виджет берёт у сервера: GET /api/widget.
 // ─────────────────────────────────────────────────────────────
 import { translate, translateTo } from "../i18n/translate";
+import { appearanceOf } from "./appearance";
+import { planOf } from "./planView";
 import { latestNotes } from "./startData";
 
 // Тексты, которые рисует сам виджет (android/…/widget/OrbWidget.kt). {n} подставляет виджет.
@@ -18,6 +20,8 @@ export const WIDGET_TEXTS = [
   "offen", "Alles erledigt", "bis {n}", "heute", "morgen", "in {n} Tagen", "Änderungen", "Termine", "Keine Termine",
   "Notizen", "Keine Notizen", "Countdown", "Schultag", "Schultage", "Keine Ferien eingetragen", "Gerade frei",
   "Stand {n}", "Nicht angemeldet", "Öffnen", "Zugang beendet", "Neuer Code", "Klasse {n}",
+  // часть 31d: «+ N weitere», «Danach» у большого «Jetzt», Countdown в календарных днях
+  "+ {n} weitere", "Danach", "Vertr.", "Tag", "Tage",
 ];
 
 const NOTES_IN_WIDGET = 5;
@@ -29,11 +33,20 @@ const coursesOf = (data) => ({ courses: data?.picked ?? [], hidden: data?.hidden
 // Поля класса: у открытого — наверху userStore, у остальных — в byClass (часть 29)
 const classData = (user, id, activeId) => (id === activeId || activeId == null ? user : user.byClass?.[id]);
 
+// Часть 31d: настройки приложения, от которых зависит вид или содержание блоков Start, — виджет повторяет их
+// («Wie App» в «Widget einstellen»). Новая такая настройка → сюда, тест «каждая настройка есть в снимке» проверит.
+export const WIDGET_APP_SETTINGS = ["design", "accent", "glassBg", "glassMode", "plan", "showWeekend", "fontScale", "colorOverrides"];
+
+const lookOf = (user) => {
+  const { design, accent, glassBg, glassMode } = appearanceOf(user);
+  return { design, accent, glassBg, glassMode, fontScale: [1, 2, 3].includes(user.fontScale) ? user.fontScale : 2 };
+};
+
 // fallbackName — имя класса, если сервер ещё без классов (часть 29): тогда один класс без id
 export function buildSnapshot({ classes = [], activeId = null, user = {}, marks = [], theme = "system", lang = "de", fallbackName = "" }) {
   const list = classes.length ? classes : [{ id: null, name: fallbackName }];
   return {
-    v: 1,
+    v: 2,
     classes: list
       .filter((item) => !item.gone)
       .map((item) => {
@@ -48,6 +61,9 @@ export function buildSnapshot({ classes = [], activeId = null, user = {}, marks 
     done: marks.filter((m) => m.done).map((m) => String(m.id)),
     palette: { ...(user.colorOverrides ?? {}) },
     theme: theme === "light" || theme === "dark" ? theme : null,
+    look: lookOf(user), // Design, Akzent, фон Glas, размер шрифта
+    plan: planOf(user.plan), // «Stundenplan»: Kürzel/Name, Raum, Lehrkraft, Ausfall …
+    showWeekend: Boolean(user.showWeekend),
     lang,
     texts: Object.fromEntries(WIDGET_TEXTS.map((key) => [key, translateTo(lang, key)])),
   };
@@ -68,56 +84,8 @@ export const WIDGET_KINDS = [
   { kind: "countdown", get hint() { return translate("Tage bis zu den Ferien"); } },
 ];
 
-export const LOOKS = [
-  { value: "app", label: "App" },
-  { value: "hell", label: "Hell" },
-  { value: "dunkel", label: "Dunkel" },
-];
-export const BACKGROUNDS = [
-  { value: "voll", label: "Voll" },
-  { value: "halb", label: "Halb" },
-];
-
-export const DEFAULT_WIDGET = { kind: "jetzt", classId: null, mine: true, look: "app", background: "voll" };
-
-// Ответ ORBookAndroid.widget(id) / widgets() — строка JSON. Что-то не то → null / []
-export function parseWidget(json) {
-  try {
-    const w = typeof json === "string" ? JSON.parse(json) : null;
-    if (!Number.isInteger(w?.id)) return null;
-    return {
-      id: w.id,
-      kind: WIDGET_KINDS.some((k) => k.kind === w.kind) ? w.kind : DEFAULT_WIDGET.kind,
-      classId: Number.isInteger(w.classId) ? w.classId : null,
-      mine: w.mine !== false,
-      look: LOOKS.some((l) => l.value === w.look) ? w.look : "app",
-      background: w.background === "halb" ? "halb" : "voll",
-      cols: Number.isInteger(w.cols) ? w.cols : 4,
-      rows: Number.isInteger(w.rows) ? w.rows : 2,
-    };
-  } catch {
-    return null;
-  }
-}
-
-export function parseWidgets(json) {
-  try {
-    const list = typeof json === "string" ? JSON.parse(json) : null;
-    return Array.isArray(list) ? list.map((w) => parseWidget(JSON.stringify(w))).filter(Boolean) : [];
-  } catch {
-    return [];
-  }
-}
-
-// «4 × 2»
-export const cellsLabel = (widget) => `${widget.cols} × ${widget.rows}`;
-
 // Блок Start для превью: размер по клеткам виджета (узкий — Klein, высокий — Groß)
 export function previewSize(widget) {
   if (widget.cols <= 2) return "klein";
   return widget.rows >= 3 ? "gross" : "breit";
 }
-
-// Класс виджета: сохранённый, если он ещё есть на устройстве, иначе открытый
-export const widgetClass = (widget, classes, activeId) =>
-  classes.some((c) => c.id === widget.classId) ? widget.classId : (activeId ?? classes[0]?.id ?? null);

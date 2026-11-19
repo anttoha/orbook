@@ -5,7 +5,7 @@ import { androidWidgets } from "../../shared/api/android";
 import { useT } from "../../shared/hooks/useT";
 import { useClasses } from "../../shared/store/classesStore";
 import { blockInfo } from "../../shared/utils/startBlocks";
-import { cellsLabel, parseWidgets } from "../../shared/utils/widgetSnapshot";
+import { cellsLabel, parseWidgets } from "../../shared/utils/widgetConfig";
 import { BLOCK_ICONS } from "../start/blockIcons";
 import ListCard from "../ui/ListCard";
 import Step from "./Step";

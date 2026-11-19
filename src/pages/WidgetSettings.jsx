@@ -4,21 +4,22 @@ import { Check, X } from "lucide-react";
 import { androidWidget, closeWidget, saveWidget } from "../shared/api/android";
 import { useT } from "../shared/hooks/useT";
 import { useClasses } from "../shared/store/classesStore";
-import { BACKGROUNDS, LOOKS, cellsLabel, parseWidget, widgetClass } from "../shared/utils/widgetSnapshot";
-import WidgetKindList from "../components/android/WidgetKindList";
+import { cellsLabel, configToSave, parseWidget, widgetClass } from "../shared/utils/widgetConfig";
+import WidgetBehaviour from "../components/android/WidgetBehaviour";
+import WidgetKindGrid from "../components/android/WidgetKindGrid";
+import WidgetLook from "../components/android/WidgetLook";
 import WidgetPreview from "../components/android/WidgetPreview";
-import SettingRow from "../components/more/SettingRow";
+import WidgetShow from "../components/android/WidgetShow";
 import Button from "../components/ui/Button";
-import ListCard from "../components/ui/ListCard";
 import RoundButton from "../components/ui/RoundButton";
-import RowSwitch from "../components/ui/RowSwitch";
 import Segmented from "../components/ui/Segmented";
 
 // «9b · Geschwister» — имя класса и своё название на устройстве, если оно есть
 const classLabel = (item) => (item.label?.trim() ? `${item.name} · ${item.label.trim()}` : item.name);
 
 // ─────────────────────────────────────────────────────────────
-// «Widget einstellen» (часть 31b, макет 31 handy-04). Открывается в Android-App:
+// «Widget einstellen» (часть 31b; с 31d — макет 31d handy-12/13: плитки видов, свои строки у каждого вида,
+// Aussehen и Verhalten). Открывается в Android-App:
 //   • сразу, когда виджет кладут на рабочий стол (?neu=1, WidgetConfigActivity) — ✕ отменяет виджет;
 //   • из «Android-App → Widgets auf diesem Handy» — ✕ просто назад.
 // Настройку хранит приложение (ORBookAndroid.saveWidget), сайт её только показывает и меняет.
@@ -41,7 +42,7 @@ const WidgetSettings = () => {
   const change = (patch) => setDraft((old) => ({ ...old, ...patch }));
   const back = () => (first ? closeWidget() : navigate("/mehr/android"));
   const done = () => {
-    saveWidget(id, draft);
+    saveWidget(id, configToSave(draft));
     if (!first) navigate("/mehr/android"); // при первой настройке экран закроет само приложение
   };
 
@@ -61,6 +62,8 @@ const WidgetSettings = () => {
 
       <WidgetPreview widget={draft} />
 
+      <WidgetKindGrid value={draft.kind} onChange={(kind) => change({ kind })} />
+
       {classes.length > 1 && (
         <section>
           <h2 className="mb-2.5 text-hint font-extrabold text-faint">{t("Klasse")}</h2>
@@ -68,21 +71,9 @@ const WidgetSettings = () => {
         </section>
       )}
 
-      <WidgetKindList value={draft.kind} onChange={(kind) => change({ kind })} />
-
-      <ListCard title={t("Anzeige")}>
-        <li className="flex">
-          <RowSwitch checked={draft.mine} onToggle={() => change({ mine: !draft.mine })} label={t("Nur meine Kurse")} className="flex h-14.5 flex-1 items-center justify-between gap-3 text-left">
-            <span className="text-row text-ink">{t("Nur meine Kurse")}</span>
-          </RowSwitch>
-        </li>
-        <SettingRow label={t("Aussehen")}>
-          <Segmented label={t("Aussehen")} size="form" className="w-60" options={LOOKS} value={draft.look} onChange={(look) => change({ look })} />
-        </SettingRow>
-        <SettingRow label={t("Hintergrund")}>
-          <Segmented label={t("Hintergrund")} size="form" className="w-60" options={BACKGROUNDS} value={draft.background} onChange={(background) => change({ background })} />
-        </SettingRow>
-      </ListCard>
+      <WidgetShow draft={draft} change={change} />
+      <WidgetLook draft={draft} change={change} />
+      <WidgetBehaviour draft={draft} change={change} />
 
       {/* «Fertig» прилипает к низу экрана */}
       <div className="fixed inset-x-0 bottom-0 z-10 border-t border-hair bg-paper px-gutter pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">

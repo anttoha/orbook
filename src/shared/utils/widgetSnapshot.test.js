@@ -1,11 +1,29 @@
 import { describe, expect, it } from "vitest";
 import { en } from "../i18n/en";
 import { uk } from "../i18n/uk";
-import { WIDGET_KINDS, WIDGET_TEXTS, buildSnapshot, cellsLabel, parseWidget, parseWidgets, previewSize, widgetClass } from "./widgetSnapshot";
+import { WIDGET_APP_SETTINGS, WIDGET_KINDS, WIDGET_TEXTS, buildSnapshot, previewSize } from "./widgetSnapshot";
 
 const note = (id, text, updatedAt, deleted = false) => ({ id, text, updatedAt, deleted });
 
 describe("buildSnapshot", () => {
+  // Часть 31d: виджет повторяет приложение — каждая настройка, которая меняет вид или содержание Start, должна быть в снимке
+  it("каждая настройка приложения, влияющая на виджет, попадает в снимок", () => {
+    const changed = { design: "klar", accent: "blau", glassBg: "meer", glassMode: "einfach", plan: { showRoom: false }, showWeekend: true, fontScale: 3, colorOverrides: { Ma: "kunst" } };
+    expect(Object.keys(changed).sort()).toEqual([...WIDGET_APP_SETTINGS].sort());
+    const base = JSON.stringify(buildSnapshot({ user: {} }));
+    for (const key of WIDGET_APP_SETTINGS) {
+      expect(JSON.stringify(buildSnapshot({ user: { [key]: changed[key] } })), key).not.toBe(base);
+    }
+  });
+
+  it("оформление и «Stundenplan»: по умолчанию — как у нового пользователя", () => {
+    const snap = buildSnapshot({ user: {} });
+    expect(snap.look).toEqual({ design: "soft", accent: "violett", glassBg: "aurora", glassMode: "voll", fontScale: 2 });
+    expect(snap.plan.lessonLabel).toBe("kuerzel");
+    expect(snap.plan.cancelled).toBe("durchstreichen");
+    expect(snap.showWeekend).toBe(false);
+  });
+
   const classes = [
     { id: 1, name: "9b", label: "" },
     { id: 2, name: "5a", label: "Geschwister" },
@@ -62,35 +80,11 @@ it("у каждого текста виджета есть перевод на E
   }
 });
 
-describe("parseWidget", () => {
-  it("читает ответ моста и подставляет значения по умолчанию", () => {
-    expect(parseWidget('{"id":7,"kind":"woche","classId":2,"mine":false,"look":"dunkel","background":"halb","cols":4,"rows":4}')).toEqual({
-      id: 7, kind: "woche", classId: 2, mine: false, look: "dunkel", background: "halb", cols: 4, rows: 4,
-    });
-    expect(parseWidget('{"id":3,"kind":"materialien","classId":null}')).toMatchObject({ kind: "jetzt", classId: null, mine: true, look: "app", background: "voll", cols: 4, rows: 2 });
-  });
-
-  it("мусор → null, список с мусором → только верные", () => {
-    expect(parseWidget("nope")).toBeNull();
-    expect(parseWidget(null)).toBeNull();
-    expect(parseWidgets('[{"id":1},{"x":2}]').map((w) => w.id)).toEqual([1]);
-    expect(parseWidgets(undefined)).toEqual([]);
-  });
-});
-
 it("подписи и размеры превью", () => {
-  expect(cellsLabel({ cols: 4, rows: 2 })).toBe("4 × 2");
   expect(previewSize({ cols: 2, rows: 2 })).toBe("klein");
   expect(previewSize({ cols: 4, rows: 2 })).toBe("breit");
   expect(previewSize({ cols: 4, rows: 4 })).toBe("gross");
   expect(WIDGET_KINDS).toHaveLength(9);
-});
-
-it("класс виджета: сохранённый, если он ещё есть, иначе открытый", () => {
-  const classes = [{ id: 1 }, { id: 2 }];
-  expect(widgetClass({ classId: 2 }, classes, 1)).toBe(2);
-  expect(widgetClass({ classId: 9 }, classes, 1)).toBe(1);
-  expect(widgetClass({ classId: null }, [], null)).toBeNull();
 });
 
 it("заголовки видов виджета с заглавной буквы на любом языке", async () => {
