@@ -249,12 +249,27 @@ internal fun ColumnScope.Woche(s: WidgetState, data: WidgetData, look: Look, now
     val weekend = now.dayOfWeek.value >= 6
     val days = if (weekend && s.config.weekend == "leer") emptyList() else weekToShow(data.days, now)
     val week = (days.firstOrNull()?.date ?: now.toLocalDate()).get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)
-    Header(s, look, if (area.narrow) "${t.t("KW")} $week" else "${t.t("Woche")} · ${t.t("KW")} $week", R.drawable.w_week, chip = true)
-    if (days.isEmpty()) { Label(t.t("Wochenende"), look.of(look.p.faint), 13); Fill(); return }
+    val title = if (area.narrow) "${t.t("KW")} $week" else "${t.t("Woche")} · ${t.t("KW")} $week"
+    if (days.isEmpty()) { Header(s, look, title, R.drawable.w_week, chip = true); Label(t.t("Wochenende"), look.of(look.p.faint), 13); Fill(); return }
     val periods = days.flatMap { d -> d.lessons.map { it.period } }.distinct().sorted()
     // Показываем ВСЕ уроки недели: высота ячейки подбирается под виджет, а не наоборот
     val gap = if (periods.size > 6 || area.height < 200.dp) 2 else 4
-    val cell = WeekCellSize.of(freeDp(s, area.height.value) - 16, periods.size, gap, s.config.cell)
+    val free = freeDp(s, area.height.value)
+    val cell = WeekCellSize.of(free - 16, periods.size, gap, s.config.cell)
+    // Широкий и низкий (4×2, 5×2): 8–10 уроков в высоту не влезают с текстом — поворачиваем неделю:
+    // дни строками, уроки столбцами. Строк всего 5, и в клетке хватает места на Kürzel.
+    // Совсем низкий — ещё и без шапки «Woche · KW»: важнее предметы, чем номер недели
+    if (!cell.text && !area.narrow) {
+        val across = WeekCellSize.of(free, days.size, 2, "kuerzel")
+        val bare = WeekCellSize.of(freeDp(s, area.height.value, header = false), days.size, 2, "kuerzel")
+        if (across.text || bare.text) {
+            if (across.text) Header(s, look, title, R.drawable.w_week, chip = true)
+            WeekAcross(s, look, days, periods, if (across.text) across else bare, now)
+            Fill(); Footer(s, look)
+            return
+        }
+    }
+    Header(s, look, title, R.drawable.w_week, chip = true)
     Row(GlanceModifier.fillMaxWidth()) {
         days.forEach { d ->
             Box(GlanceModifier.defaultWeight().padding(bottom = 3.dp), contentAlignment = Alignment.Center) {
@@ -273,6 +288,23 @@ internal fun ColumnScope.Woche(s: WidgetState, data: WidgetData, look: Look, now
         }
     }
     Fill(); Footer(s, look)
+}
+
+/** Неделя «лёжа»: слева буква дня (сегодня — цветом акцента), справа уроки дня по порядку. */
+@Composable
+private fun WeekAcross(s: WidgetState, look: Look, days: List<Day>, periods: List<Int>, cell: WeekCellSize, now: LocalDateTime) {
+    days.forEach { d ->
+        Row(GlanceModifier.fillMaxWidth().padding(bottom = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+            Box(GlanceModifier.width(24.dp), contentAlignment = Alignment.CenterStart) {
+                Label(weekday(d.date, s.texts).uppercase(), look.of(if (d.date == now.toLocalDate()) look.p.accent else look.p.faint), 10, heavy = true)
+            }
+            periods.forEach { period ->
+                val all = d.lessons.filter { it.period == period && !(s.hideCancelled && it.cancelled) }
+                val lesson = all.firstOrNull { !it.cancelled } ?: all.firstOrNull()
+                Box(GlanceModifier.defaultWeight().padding(horizontal = 1.dp)) { WeekCell(s, look, lesson, cell) }
+            }
+        }
+    }
 }
 
 /** Ячейка недели: чем больше места, тем больше в ней написано (не больше, чем разрешено в «In der Zelle»). */

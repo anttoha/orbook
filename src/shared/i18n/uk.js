@@ -1901,7 +1901,7 @@ export const uk = {
   "Danach": "Далі",
   "Vertr.": "Зам.",
   "Tage": "днів",
-  "Wie App": "Як у застосунку",
+  "Wie App": "Авто",
   "Raum · Lehrkraft": "Кабінет · вчитель",
   "Beides": "Обидва",
   "Am Wochenende": "У вихідні",

@@ -1,5 +1,4 @@
 import { useT } from "../../shared/hooks/useT";
-import SettingRow from "../more/SettingRow";
 import RowSwitch from "../ui/RowSwitch";
 import Segmented from "../ui/Segmented";
 
@@ -16,11 +15,14 @@ export const SwitchRow = ({ label, checked, onToggle }) => {
   );
 };
 
-// width — ширина переключателя по числу вариантов: на телефоне строка 354px, подпись слева должна остаться
-const WIDTH = { 2: "w-44", 3: "w-48", 4: "w-56" };
-
-export const ChoiceRow = ({ label, options, value, onChange }) => (
-  <SettingRow label={label}>
-    <Segmented label={label} size="form" className={WIDTH[options.length] ?? "w-48"} options={options} value={value} onChange={onChange} />
-  </SettingRow>
-);
+// Подпись сверху, переключатель под ней на всю ширину: на узком телефоне и с длинными переводами
+// («Як у застосунку», «+ Lehrkraft») варианты справа от подписи наезжали друг на друга
+export const ChoiceRow = ({ label, options, value, onChange }) => {
+  const t = useT();
+  return (
+    <li className="flex flex-col gap-2.5 py-3.5">
+      <p className="text-row text-ink">{t(label)}</p>
+      <Segmented label={label} size="form" className="w-full" options={options} value={value} onChange={onChange} />
+    </li>
+  );
+};

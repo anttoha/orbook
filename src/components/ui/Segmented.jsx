@@ -62,13 +62,14 @@ const Segmented = ({ options, value, onChange, label, className, variant = "card
             title={iconOnly ? t(option.label) : undefined}
             onClick={() => onChange(option.value)}
             className={cn(
-              "relative flex items-center justify-center gap-1.5 rounded-full font-extrabold whitespace-nowrap transition-colors duration-250",
+              "relative flex min-w-0 items-center justify-center gap-1.5 rounded-full font-extrabold whitespace-nowrap transition-colors duration-250",
               SIZES[size],
               active ? (variant === "accent" ? "text-on-accent" : "text-ink") : "text-muted hover:text-ink",
             )}
           >
             {option.icon && <option.icon className="size-3.75 shrink-0" />}
-            {!iconOnly && t(option.label)}
+            {/* не влезает — «…», а не наезд на соседний вариант (min-w-0 у кнопки разрешает ей сжиматься) */}
+            {!iconOnly && <span className="truncate">{t(option.label)}</span>}
           </button>
         );
       })}
