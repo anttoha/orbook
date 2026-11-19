@@ -7,9 +7,11 @@ import { isTabActive } from "../../shared/utils/isTabActive";
 import NavigationLink from "../navbar/NavigationLink";
 import Logo from "../ui/Logo";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Карточка «Plan läuft · 16:40 · nächster Abruf 16:45» під меню
 const PlanCard = ({ plan }) => {
+  const t = useT();
   const health = HEALTH[planHealth(plan)];
   const last = clock(plan.status?.lastOkAt) ?? "noch nie";
   const next = clock(plan.status?.nextFetchAt);
@@ -18,9 +20,9 @@ const PlanCard = ({ plan }) => {
     <div className="mt-5 rounded-card bg-sand px-3.5 py-3">
       <p className="flex items-center gap-2 text-label font-extrabold text-ink">
         <span className={`size-2 rounded-full ${health.dot}`} />
-        {planHealth(plan) === "ok" ? "Plan läuft" : health.title}
+        {planHealth(plan) === "ok" ? t("Plan läuft") : health.title}
       </p>
-      <p className="mt-1 text-caption text-muted">{next ? `${last} · nächster Abruf ${next}` : last}</p>
+      <p className="mt-1 text-caption text-muted">{next ? t("{last} · nächster Abruf {next}", { last, next }) : last}</p>
     </div>
   );
 };
@@ -33,6 +35,7 @@ const footerItem = "flex h-10 items-center gap-3 rounded-full px-3 text-body-sm 
 // стан плану, внизу «Zur App» і «Abmelden».
 // ─────────────────────────────────────────────────────────────
 const AdminSideNav = () => {
+  const t = useT();
   const { pathname } = useLocation();
   const overview = useAdminStore((s) => s.overview.data);
   const codes = useAdminStore((s) => s.codes.data?.codes);
@@ -65,10 +68,10 @@ const AdminSideNav = () => {
 
       <div className="mt-auto border-t border-hair pt-3">
         <Link to="/" className={footerItem}>
-          <Table2 className="size-4.5" /> Zur App
+          <Table2 className="size-4.5" /> {t("Zur App")}
         </Link>
         <button type="button" onClick={logout} className={`w-full ${footerItem}`}>
-          <LogOut className="size-4.5" /> Abmelden
+          <LogOut className="size-4.5" /> {t("Abmelden")}
         </button>
       </div>
     </Liquid>

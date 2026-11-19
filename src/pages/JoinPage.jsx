@@ -24,7 +24,9 @@ import {
 } from "../shared/utils/invite";
 
 // Картка «Klasse 9b · Einladung zu ORBook» (макет handy-11); поки перевіряємо посилання — скелет
-const InviteCard = ({ className, loading }) => (
+const InviteCard = ({ className, loading }) => {
+  const t = useT();
+  return (
   <Liquid as="div" refract press={false} className="flex items-center gap-3 rounded-card bg-card px-3.5 py-4">
     {loading ? (
       <>
@@ -44,30 +46,33 @@ const InviteCard = ({ className, loading }) => (
             {classTitle(className)}
           </span>
           <span className="block text-label text-muted">
-            Einladung zu ORBook
+            {t("Einladung zu ORBook")}
           </span>
         </span>
       </>
     )}
   </Liquid>
 );
+};
 
 // «Dieser Link gilt nicht mehr» (макет handy-13): далі звичайне поле коду
-const InvalidBanner = () => (
+const InvalidBanner = () => {
+  const t = useT();
+  return (
   <div
     role="status"
     className="mb-6 flex gap-2.5 rounded-field bg-danger-tint px-3.5 py-3 text-danger"
   >
     <Link2 className="mt-0.5 size-4 shrink-0" />
     <div>
-      <p className="text-label font-extrabold">Dieser Link gilt nicht mehr</p>
+      <p className="text-label font-extrabold">{t("Dieser Link gilt nicht mehr")}</p>
       <p className="mt-0.5 text-caption leading-4.25">
-        Der Admin hat ihn geändert oder ausgeschaltet. Mit Code geht es
-        trotzdem:
+        {t("Der Admin hat ihn geändert oder ausgeschaltet. Mit Code geht es trotzdem:")}
       </p>
     </div>
   </div>
 );
+};
 
 // Уже є вхід: замість «Mit Code anmelden» — назад до своїх класів
 const BackToApp = () => {
@@ -179,7 +184,7 @@ const JoinPage = () => {
     return (
       <>
         <p className="mb-2.5 text-hint font-extrabold text-accent-ink lg:hidden">
-          Du wurdest eingeladen
+          {t("Du wurdest eingeladen")}
         </p>
         <InviteCard
           className={className}
@@ -196,13 +201,13 @@ const JoinPage = () => {
                 {problem.text}
                 {problem.kind === "full" && (
                   <span className="block">
-                    Frag den Admin, ob er das Limit erhöht.
+                    {t("Frag den Admin, ob er das Limit erhöht.")}
                   </span>
                 )}
               </span>
             </p>
             <Button className="mt-4 w-full flex-none" onClick={retry}>
-              <RefreshCw className="size-4" /> Nochmal versuchen
+              <RefreshCw className="size-4" /> {t("Nochmal versuchen")}
             </Button>
           </>
         ) : (
@@ -216,7 +221,7 @@ const JoinPage = () => {
             >
               {!busy && <ChevronRight className="size-4" />}
               {busy
-                ? "Wird geprüft…"
+                ? t("Wird geprüft…")
                 : {
                     join: "Beitreten",
                     add: t("Klasse hinzufügen"),
@@ -230,19 +235,19 @@ const JoinPage = () => {
         ) : (
           <>
             <p className="mt-4 text-center text-label text-muted">
-              Schon einen Code?{" "}
+              {t("Schon einen Code?")}{" "}
               <Link to="/" className="font-extrabold text-accent-ink">
-                Mit Code anmelden
+                {t("Mit Code anmelden")}
               </Link>
             </p>
             {/* часть 25: учитель по этой же ссылке входит или как ученик («Beitreten»), или своим Lehrer-Code */}
             <p className="mt-2 text-center text-label text-muted">
-              Lehrkraft?{" "}
+              {t("Lehrkraft?")}{" "}
               <Link
                 to="/?zugang=lehrkraft"
                 className="font-extrabold text-accent-ink"
               >
-                Mit Lehrer-Code anmelden
+                {t("Mit Lehrer-Code anmelden")}
               </Link>
             </p>
           </>
@@ -252,10 +257,10 @@ const JoinPage = () => {
             to="/datenschutz"
             className="text-caption font-semibold text-muted lg:text-hint"
           >
-            Datenschutz
+            {t("Datenschutz")}
           </Link>
           <p className="text-caption text-faint lg:hidden">
-            Keine offizielle App von Indiware
+            {t("Keine offizielle App von Indiware")}
           </p>
         </div>
       </>
@@ -271,23 +276,23 @@ const JoinPage = () => {
           <OrbitMark className="size-13.5" />
           <h1 className="mt-3 text-display text-ink">ORBook</h1>
           <p className="mt-2.75 text-input leading-6 text-muted">
-            Stundenplan, Vertretungen und Tests
-            {className ? ` der ${className}` : ""} — an einem Ort.
+            {t("Stundenplan, Vertretungen und Tests")}
+            {className ? ` der ${className}` : ""} {t("— an einem Ort.")}
           </p>
         </div>
         <div className="mt-auto w-full lg:mt-0 lg:w-95">
           {/* заголовок ПК */}
           <div className="mb-6 hidden lg:block">
             <p className="text-hint font-extrabold text-accent-ink">
-              Du wurdest eingeladen
+              {t("Du wurdest eingeladen")}
             </p>
             <h2 className="mt-2.5 text-lobby text-ink">
               {classTitle(className)}
             </h2>
             <p className="mt-3 text-body leading-5.75 text-muted">
               {invalid
-                ? "Dieser Einladungslink gilt nicht mehr — mit Zugangscode oder Klassenpasswort geht es trotzdem."
-                : `ORBook zeigt Stundenplan, Vertretungen und Tests${className ? ` der ${className}` : ""}.`}
+                ? t("Dieser Einladungslink gilt nicht mehr — mit Zugangscode oder Klassenpasswort geht es trotzdem.")
+                : t("ORBook zeigt Stundenplan, Vertretungen und Tests{1}.", { "1": className ? ` der ${className}` : "" })}
             </p>
           </div>
           {renderBottom()}

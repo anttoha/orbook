@@ -14,6 +14,7 @@ import { useAdminLoad } from "../shared/hooks/useAdminLoad";
 import { countText, moveRow, toPayload, toRows } from "../shared/utils/examTypes";
 import RoundButton from "../components/ui/RoundButton";
 import Liquid from "../components/ui/Liquid";
+import { useT } from "../shared/hooks/useT";
 
 // Строка вида: «⋮⋮» тянуть (порядок), имя, Kürzel, сколько записей, ✎
 const TypeRow = ({ row, onEdit, onGrab, rowRef }) => (
@@ -41,6 +42,7 @@ const TypeRow = ({ row, onEdit, onGrab, rowRef }) => (
 // Каждое изменение сразу уходит на сервер (весь список — PUT /api/admin/exam-types).
 // ─────────────────────────────────────────────────────────────
 const AdminExamTypes = () => {
+  const t = useT();
   const data = useAdminLoad("examTypes", loadExamTypes);
   // Порядок во время перетаскивания и до ответа сервера; новый ответ сервера (data.data) его заменяет
   const [draft, setDraft] = useState({ source: null, rows: null });
@@ -123,24 +125,24 @@ const AdminExamTypes = () => {
           ))}
         </Liquid>
         <Button variant="tint" className="flex-none" disabled={busy || rows.length >= 12} onClick={() => setEditing(null)}>
-          <Plus className="size-4.5" /> Art hinzufügen
+          <Plus className="size-4.5" /> {t("Art hinzufügen")}
         </Button>
 
         <section>
-          <h2 className="mb-2.5 text-hint font-extrabold text-faint">Wenn eine Stunde ausfällt</h2>
+          <h2 className="mb-2.5 text-hint font-extrabold text-faint">{t("Wenn eine Stunde ausfällt")}</h2>
           <div className="flex flex-col gap-2.5">
             <Liquid as="div" refract press={false} className="rounded-card bg-card px-3.5">
-              <OptionRow label="Tests verschieben" hint="auf die nächste Stunde des Fachs">
-                <Switch checked={data.data?.examsAutoMove ?? true} label="Tests verschieben" onChange={(value) => toggle("exams", value)} />
+              <OptionRow label={t("Tests verschieben")} hint={t("auf die nächste Stunde des Fachs")}>
+                <Switch checked={data.data?.examsAutoMove ?? true} label={t("Tests verschieben")} onChange={(value) => toggle("exams", value)} />
               </OptionRow>
             </Liquid>
             <Liquid as="div" refract press={false} className="rounded-card bg-card px-3.5">
-              <OptionRow label="Hausaufgaben verschieben" hint="Abgabe rutscht mit, wenn sie an der Stunde hängt">
-                <Switch checked={data.data?.homeworkAutoMove ?? true} label="Hausaufgaben verschieben" onChange={(value) => toggle("homework", value)} />
+              <OptionRow label={t("Hausaufgaben verschieben")} hint={t("Abgabe rutscht mit, wenn sie an der Stunde hängt")}>
+                <Switch checked={data.data?.homeworkAutoMove ?? true} label={t("Hausaufgaben verschieben")} onChange={(value) => toggle("homework", value)} />
               </OptionRow>
             </Liquid>
           </div>
-          <p className="mt-2.5 text-caption text-faint">Verschobene Einträge zeigen „verschoben von …“.</p>
+          <p className="mt-2.5 text-caption text-faint">{t("Verschobene Einträge zeigen „verschoben von …“.")}</p>
         </section>
       </>
     );
@@ -148,8 +150,8 @@ const AdminExamTypes = () => {
 
   return (
     <section className="flex flex-col gap-4 lg:max-w-186 lg:gap-5">
-      <AdminHeader title="Arten von Tests" backTo="/admin/einstellungen" />
-      <p className="text-body-sm text-faint">So heißen die Einträge in Tests, Woche und Tag. Kürzel stehen in der Woche. Ziehen = Reihenfolge.</p>
+      <AdminHeader title={t("Arten von Tests")} backTo="/admin/einstellungen" />
+      <p className="text-body-sm text-faint">{t("So heißen die Einträge in Tests, Woche und Tag. Kürzel stehen in der Woche. Ziehen = Reihenfolge.")}</p>
       {renderBody()}
 
       {editing !== undefined && rows && (

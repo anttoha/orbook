@@ -10,6 +10,7 @@ import MovedLine from "../entries/MovedLine";
 import ExamDateTile from "../exams/ExamDateTile";
 import CheckCircle from "./CheckCircle";
 import DoneText from "./DoneText";
+import { useT } from "../../shared/hooks/useT";
 
 // Плашка своей задачи без предмета: песочная, с днём или (без даты) со значком человека
 const OwnTile = ({ due }) => (
@@ -49,6 +50,7 @@ function metaParts({ own, done, subject, lesson, author, when, soon }) {
 const MOVE_AFTER_MS = 420; // сначала кружок пружинит и текст зачёркивается, потом строка переезжает
 
 const AufgabeRow = ({ row, today, overrides, subjectNames, highlight, onOpen, style }) => {
+  const t = useT();
   const toggleTask = useTasksStore((s) => s.toggleTask);
   const markHomework = useTasksStore((s) => s.markHomework);
   const [leaving, setLeaving] = useState(false); // нажали кружок: показываем новое состояние, переезд — чуть позже
@@ -95,7 +97,7 @@ const AufgabeRow = ({ row, today, overrides, subjectNames, highlight, onOpen, st
           <DoneText done={done} className="mt-1 text-row font-extrabold">
             {row.text}
           </DoneText>
-          {moved && !done && <MovedLine>{moved} – fiel aus</MovedLine>}
+          {moved && !done && <MovedLine>{moved} {t("– fiel aus")}</MovedLine>}
         </span>
       </button>
       <CheckCircle done={done} label={row.text} onToggle={toggle} />

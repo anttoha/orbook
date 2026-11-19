@@ -6,6 +6,7 @@ import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import { SyncIcon, WarningIcon } from "../ui/icons";
 import TextField from "../ui/TextField";
+import { useT } from "../../shared/hooks/useT";
 
 
 // ─────────────────────────────────────────────────────────────
@@ -13,6 +14,7 @@ import TextField from "../ui/TextField";
 // Перевіряємо пробним GET: якщо під кодом нічого немає — питаємо (захист від помилки в коді).
 // ─────────────────────────────────────────────────────────────
 const ConnectDevice = () => {
+  const t = useT();
   const connect = useSyncStore((s) => s.connect);
   const switchCode = useSyncStore((s) => s.switchCode);
   const [text, setText] = useState("");
@@ -49,10 +51,10 @@ const ConnectDevice = () => {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <h2 className="mt-1 text-hint font-extrabold text-faint">Anderes Gerät verbinden</h2>
+      <h2 className="mt-1 text-hint font-extrabold text-faint">{t("Anderes Gerät verbinden")}</h2>
       <TextField
         id="sync-code"
-        label="Code eingeben"
+        label={t("Code eingeben")}
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="XXXX-XXXX-XXXX-XXXX-XXXX"
@@ -63,23 +65,23 @@ const ConnectDevice = () => {
         inputClassName="h-13.5 text-subhead tracking-code"
       />
       <Button type="submit" variant="primary" disabled={busy || !text.trim()} className="flex-none">
-        <SyncIcon className="size-4" /> {busy ? "Wird verbunden …" : "Verbinden"}
+        <SyncIcon className="size-4" /> {busy ? t("Wird verbunden …") : t("Verbinden")}
       </Button>
       {/* часть 25: проще всего — QR этого кода на другом устройстве */}
       <p className="text-center text-label text-faint">
-        Oder: <span className="font-bold text-muted">am anderen Gerät den QR scannen</span>
+        {t("Oder:")} <span className="font-bold text-muted">{t("am anderen Gerät den QR scannen")}</span>
       </p>
 
       <ConfirmDialog
         open={Boolean(emptyCode)}
         onClose={() => setEmptyCode(null)}
         icon={<WarningIcon className="size-6.5 text-accent-ink" />}
-        title="Trotzdem verwenden?"
-        text="Zu diesem Code gibt es noch keine Notizen. Prüf, ob du dich vertippt hast."
+        title={t("Trotzdem verwenden?")}
+        text={t("Zu diesem Code gibt es noch keine Notizen. Prüf, ob du dich vertippt hast.")}
       >
-        <Button onClick={() => setEmptyCode(null)}>Abbrechen</Button>
+        <Button onClick={() => setEmptyCode(null)}>{t("Abbrechen")}</Button>
         <Button variant="primary" onClick={confirmEmpty}>
-          Verwenden
+          {t("Verwenden")}
         </Button>
       </ConfirmDialog>
     </form>

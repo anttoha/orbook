@@ -5,9 +5,11 @@ import Button from "../ui/Button";
 import TextField from "../ui/TextField";
 import { useAdminStore } from "../../shared/store/adminStore";
 import { adminLoginErrorText, lockDuration } from "../../shared/utils/authErrors";
+import { useT } from "../../shared/hooks/useT";
 
 // Форма входу адміна (макети 39 і 41). Після успіху оболонка сама покаже адмінку.
 const AdminLoginForm = () => {
+  const t = useT();
   const login = useAdminStore((s) => s.login);
   const loginNotice = useAdminStore((s) => s.loginNotice); // «Bitte erneut anmelden.», коли сесія закінчилась
   const inputRef = useRef(null);
@@ -48,9 +50,9 @@ const AdminLoginForm = () => {
         ref={inputRef}
         id="admin-password"
         type="password"
-        label="Admin-Passwort"
-        placeholder="Passwort"
-        hint={loginNotice ?? "Nach 5 Fehlversuchen 30 Minuten gesperrt."}
+        label={t("Admin-Passwort")}
+        placeholder={t("Passwort")}
+        hint={loginNotice ?? t("Nach 5 Fehlversuchen 30 Minuten gesperrt.")}
         error={error}
         value={password}
         onChange={(event) => {
@@ -65,10 +67,10 @@ const AdminLoginForm = () => {
       />
       <Button type="submit" variant="primary" disabled={loading || locked} className="mt-4 w-full flex-none gap-1.5">
         {!loading && <ChevronRight className="size-4" />}
-        {loading ? "Wird geprüft…" : "Anmelden"}
+        {loading ? t("Wird geprüft…") : t("Anmelden")}
       </Button>
       <Link to="/" className="mt-5 block text-center text-hint font-extrabold text-muted lg:text-left">
-        <span className="hidden lg:inline">← </span>Zurück zur App
+        <span className="hidden lg:inline">← </span>{t("Zurück zur App")}
       </Link>
     </form>
   );

@@ -2,6 +2,7 @@ import { cn } from "../../shared/utils/cn";
 import { lessonBadge, lessonName } from "../../shared/utils/format";
 import { cellTitle, PLAN_DEFAULTS, subjectLook } from "../../shared/utils/planView";
 import { FlagIcon } from "../ui/icons";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Клітинка уроку в сітці тижня (телефон): код предмета + кабінет.
@@ -11,6 +12,7 @@ import { FlagIcon } from "../ui/icons";
 // examShort — Kürzel вида Test («KA», «LK»; часть 24) вместо слова в клетке
 // plan — «Darstellung → Stundenplan» (частина 30b): назва, вчитель/кабінет, колір предмета
 const LessonCell = ({ lesson, isPast, overrides, examShort, plan = PLAN_DEFAULTS, className, ...props }) => {
+  const t = useT();
   // Спільні класи клітинки; кнопка: текст зліва, без виділення тексту і системного меню iOS
   const base =
     "relative flex min-h-0 flex-1 flex-col justify-between gap-1 overflow-hidden rounded-cell px-2 py-2 text-left leading-none select-none [-webkit-touch-callout:none] transition-transform active:scale-[0.97]";
@@ -23,7 +25,7 @@ const LessonCell = ({ lesson, isPast, overrides, examShort, plan = PLAN_DEFAULTS
     return (
       <button type="button" aria-label={label} {...props} className={cn(base, "border border-dashed border-faint2", isPast && "opacity-50", className)}>
         <span className="truncate text-hint font-semibold text-faint line-through">{cellTitle(lesson, plan)}</span>
-        <span className="truncate text-nano font-bold text-muted">fällt aus</span>
+        <span className="truncate text-nano font-bold text-muted">{t("fällt aus")}</span>
       </button>
     );
   }
@@ -31,7 +33,7 @@ const LessonCell = ({ lesson, isPast, overrides, examShort, plan = PLAN_DEFAULTS
   // Чужий курс у режимі «Alle Kurse»: пунктир і сірий текст, без кольору предмета (макет 22)
   if (lesson.notMine) {
     return (
-      <button type="button" aria-label={`${label}, nicht dein Kurs`} {...props} className={cn(base, "border border-dashed border-faint2 text-faint", isPast && "opacity-50", className)}>
+      <button type="button" aria-label={t("{label}, nicht dein Kurs", { label })} {...props} className={cn(base, "border border-dashed border-faint2 text-faint", isPast && "opacity-50", className)}>
         <span className="truncate text-hint font-extrabold">{cellTitle(lesson, plan)}</span>
         <span className="truncate text-room font-semibold text-faint2">{room || "\u00a0"}</span>
       </button>
@@ -59,7 +61,7 @@ const LessonCell = ({ lesson, isPast, overrides, examShort, plan = PLAN_DEFAULTS
         {teacher && <span className="shrink-0 text-nano font-semibold opacity-85">{teacher}</span>}
       </span>
       <span className={cn("truncate", lesson.examId ? "text-nano font-extrabold text-accent-ink" : "text-room", isChanged && !lesson.examId && "font-extrabold text-accent-ink", !isChanged && !lesson.examId && "font-semibold opacity-85")}>
-        {lesson.examId ? (examShort ?? "Test") : room || "\u00a0"}
+        {lesson.examId ? (examShort ?? t("Test")) : room || "\u00a0"}
       </span>
 
       {/* прапорець Test у куті */}

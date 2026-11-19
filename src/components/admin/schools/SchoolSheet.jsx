@@ -9,6 +9,7 @@ import PasswordField from "../../ui/PasswordField";
 import Sheet from "../../ui/Sheet";
 import TextField from "../../ui/TextField";
 import { TestResult } from "../settings/SchoolCard";
+import { useT } from "../../../shared/hooks/useT";
 
 const DEFAULT_SERVER = "https://www.stundenplan24.de";
 
@@ -27,6 +28,7 @@ const testText = (answer) => (answer.ok ? { ok: true, text: `Verbindung steht ·
 
 // Форма школы. school = null — новая школа
 const SchoolForm = ({ school, onDone }) => {
+  const t = useT();
   const reloadSchools = useAdminStore((s) => s.reloadSchools);
   const [form, setForm] = useState({ name: school?.name ?? "", number: school?.number ?? "", password: "", baseUrl: school?.baseUrl ?? DEFAULT_SERVER });
   const [errors, setErrors] = useState({});
@@ -87,25 +89,25 @@ const SchoolForm = ({ school, onDone }) => {
 
   return (
     <form onSubmit={save} noValidate className="flex flex-col gap-4">
-      <TextField id="school-name" label="Name der Schule" placeholder="z. B. Schiller-Schule" maxLength={80} autoComplete="off" error={errors.name} value={form.name} onChange={set("name")} />
+      <TextField id="school-name" label={t("Name der Schule")} placeholder={t("z. B. Schiller-Schule")} maxLength={80} autoComplete="off" error={errors.name} value={form.name} onChange={set("name")} />
       <div className="grid grid-cols-2 gap-3">
-        <TextField id="school-nr" label="Schulnummer" inputMode="numeric" autoComplete="off" maxLength={20} error={errors.number} value={form.number} onChange={set("number")} />
-        <PasswordField id="school-pass" label="Passwort der Schule" autoComplete="new-password" placeholder={school?.passwordSet ? "unverändert" : ""} error={errors.password} value={form.password} onChange={set("password")} />
+        <TextField id="school-nr" label={t("Schulnummer")} inputMode="numeric" autoComplete="off" maxLength={20} error={errors.number} value={form.number} onChange={set("number")} />
+        <PasswordField id="school-pass" label={t("Passwort der Schule")} autoComplete="new-password" placeholder={school?.passwordSet ? "unverändert" : ""} error={errors.password} value={form.password} onChange={set("password")} />
       </div>
-      <TextField id="school-url" label="Server" inputMode="url" autoComplete="off" error={errors.baseUrl} hint="Schulnummer und Passwort gibt die Schule aus." value={form.baseUrl} onChange={set("baseUrl")} />
+      <TextField id="school-url" label={t("Server")} inputMode="url" autoComplete="off" error={errors.baseUrl} hint={t("Schulnummer und Passwort gibt die Schule aus.")} value={form.baseUrl} onChange={set("baseUrl")} />
       {result && <TestResult result={result} />}
       {errors.form && <p role="alert" className="text-hint text-danger">{errors.form}</p>}
       <div className="grid grid-cols-2 gap-2.5">
         <Button className="flex-none" disabled={busy !== null} onClick={test}>
-          <RenewIcon className={cn("size-4", busy === "test" && "animate-spin")} /> Verbindung testen
+          <RenewIcon className={cn("size-4", busy === "test" && "animate-spin")} /> {t("Verbindung testen")}
         </Button>
         <Button type="submit" variant="primary" className="flex-none" disabled={busy !== null}>
-          <CheckIcon className="size-4" /> {busy === "save" ? "Wird gespeichert…" : "Speichern"}
+          <CheckIcon className="size-4" /> {busy === "save" ? t("Wird gespeichert…") : t("Speichern")}
         </Button>
       </div>
       {canDelete && (
         <button type="button" disabled={busy !== null} onClick={remove} className="flex h-11 items-center justify-center gap-2 text-label font-extrabold text-danger disabled:opacity-50">
-          <TrashIcon className="size-4" /> Schule entfernen
+          <TrashIcon className="size-4" /> {t("Schule entfernen")}
         </button>
       )}
     </form>
@@ -117,10 +119,13 @@ const SchoolForm = ({ school, onDone }) => {
 // имя, Schulnummer, Passwort der Schule, Server; «Verbindung testen» проверяет, ничего не сохраняя.
 // school = null — новая школа
 // ─────────────────────────────────────────────────────────────
-const SchoolSheet = ({ open, school, onClose }) => (
-  <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow="Schulen & Klassen" title={school ? school.name : "Schule hinzufügen"}>
+const SchoolSheet = ({ open, school, onClose }) => {
+  const t = useT();
+  return (
+  <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow={t("Schulen & Klassen")} title={school ? school.name : t("Schule hinzufügen")}>
     {open && <SchoolForm key={school?.id ?? "neu"} school={school} onDone={onClose} />}
   </Sheet>
 );
+};
 
 export default SchoolSheet;

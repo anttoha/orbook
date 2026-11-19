@@ -13,6 +13,7 @@ import NavigationLink from "./NavigationLink";
 import { useGlass } from "../../shared/hooks/useGlass";
 import RoundButton from "../ui/RoundButton";
 import Segmented from "../ui/Segmented";
+import { useT } from "../../shared/hooks/useT";
 
 // Вкладка «Mehr» (частина 22: раніше «Einstellungen»): сторінки й налаштування; Statistik теж відкривається звідти
 const settingsTab = { to: "/mehr", label: "Mehr", icon: Ellipsis, activeOn: ["/statistik"] };
@@ -33,6 +34,7 @@ const planText = (status, today, live) => {
 // collapsed — сайдбар згорнутий: лишаємо тільки іконки
 // ─────────────────────────────────────────────────────────────
 const SideNavFooter = ({ collapsed }) => {
+  const t = useT();
   const { pathname } = useLocation(); // для підсвічування «Mehr»
   const { theme, setTheme } = useTheme(); // світла / темна тема
   const { today } = useNow(); // сьогодні (для «Stand von gestern»)
@@ -59,7 +61,7 @@ const SideNavFooter = ({ collapsed }) => {
           <Popover.Trigger asChild>
             <button
               type="button"
-              aria-label="Plan-Status"
+              aria-label={t("Plan-Status")}
               className="-mx-0.5 flex w-full items-center gap-2 overflow-hidden rounded-full px-2.5 py-1 text-left text-caption font-semibold whitespace-nowrap text-muted transition-colors hover:bg-sand"
               title={text}
             >
@@ -87,7 +89,7 @@ const SideNavFooter = ({ collapsed }) => {
               >
                 {live && !refreshing && !status?.stale ? (
                   <>
-                    <b className="font-extrabold">Live</b>
+                    <b className="font-extrabold">{t("Live")}</b>
                     {text.slice(4)}
                   </>
                 ) : (
@@ -104,8 +106,8 @@ const SideNavFooter = ({ collapsed }) => {
               sideOffset={10}
               className="z-50 w-popover rounded-panel border border-hair bg-paper p-4.5 shadow-sheet shadow-ink/15 outline-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
             >
-              <p className="text-caption font-extrabold text-faint">Stundenplan</p>
-              <p className="mb-3 text-subhead text-ink">Plan-Status</p>
+              <p className="text-caption font-extrabold text-faint">{t("Stundenplan")}</p>
+              <p className="mb-3 text-subhead text-ink">{t("Plan-Status")}</p>
               <PlanStatusBody monday={currentMonday(today)} compact />
             </Popover.Content>
           </Popover.Portal>
@@ -117,17 +119,17 @@ const SideNavFooter = ({ collapsed }) => {
           {/* перемикач теми: ☀ / ☾. «Glas» — перемикач бібліотеки (у згорнутому сайдбарі — одна кругла кнопка) */}
           {glass ? (
             collapsed ? (
-              <RoundButton aria-label={isDark ? "Hell" : "Dunkel"} onClick={() => setTheme(isDark ? "light" : "dark")}>
+              <RoundButton aria-label={isDark ? t("Hell") : t("Dunkel")} onClick={() => setTheme(isDark ? "light" : "dark")}>
                 {isDark ? <Moon className="size-3.5" /> : <Sun className="size-3.5" />}
               </RoundButton>
             ) : (
               <Segmented
-                label="Darstellung"
+                label={t("Darstellung")}
                 iconOnly
                 size="sm"
                 options={[
-                  { value: "light", icon: Sun, label: "Hell" },
-                  { value: "dark", icon: Moon, label: "Dunkel" },
+                  { value: "light", icon: Sun, label: t("Hell") },
+                  { value: "dark", icon: Moon, label: t("Dunkel") },
                 ]}
                 value={isDark ? "dark" : "light"}
                 onChange={setTheme}
@@ -136,7 +138,7 @@ const SideNavFooter = ({ collapsed }) => {
           ) : (
           <div
             role="group"
-            aria-label="Darstellung"
+            aria-label={t("Darstellung")}
             className="relative flex shrink-0 rounded-full bg-sand p-0.75"
           >
             {/* фіолетова пігулка їде до вибраної теми; у згорнутому лишається тільки вона */}
@@ -148,8 +150,8 @@ const SideNavFooter = ({ collapsed }) => {
               )}
             />
             {[
-              { value: "light", icon: Sun, label: "Hell", on: !isDark },
-              { value: "dark", icon: Moon, label: "Dunkel", on: isDark },
+              { value: "light", icon: Sun, label: t("Hell"), on: !isDark },
+              { value: "dark", icon: Moon, label: t("Dunkel"), on: isDark },
             ].map((option) => {
               const hidden = collapsed && !option.on; // згорнутий сайдбар: невибрана тема стискається
               return (
@@ -157,7 +159,7 @@ const SideNavFooter = ({ collapsed }) => {
                   key={option.value}
                   type="button"
                   aria-label={
-                    collapsed ? (isDark ? "Hell" : "Dunkel") : option.label
+                    collapsed ? (isDark ? t("Hell") : t("Dunkel")) : option.label
                   }
                   aria-pressed={collapsed ? undefined : option.on}
                   tabIndex={hidden ? -1 : undefined}

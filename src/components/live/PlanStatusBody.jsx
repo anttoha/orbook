@@ -11,6 +11,7 @@ import { Skeleton } from "../ui/PlanState";
 import LiveDot from "./LiveDot";
 import PillButton from "../ui/PillButton";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Значок справа в строке дня: ✓ план есть · пунктирный круг — плана ещё нет · «?» — не проверяли · «–» — свободно
 const Mark = ({ kind, index }) => {
@@ -31,15 +32,18 @@ const Mark = ({ kind, index }) => {
 };
 
 // Зелёная карточка «Live verbunden» / песочная «Gerade nicht live»
-const LiveCard = ({ live, compact }) => (
+const LiveCard = ({ live, compact }) => {
+  const t = useT();
+  return (
   <div className={cn("flex items-center gap-3 rounded-tile px-4 transition-colors duration-500", compact ? "py-3" : "py-3.5", live ? "bg-ok-tint" : "bg-sand")}>
     <LiveDot on={live} size="md" />
     <div className="min-w-0">
-      <p className={cn("text-row font-extrabold", live ? "text-ok" : "text-ink")}>{live ? "Live verbunden" : "Gerade nicht live"}</p>
-      <p className="text-caption text-muted">{live ? (compact ? "Ein neuer Plan erscheint von selbst." : "Ein neuer Plan erscheint von selbst – in Sekunden.") : "ORBook fragt stattdessen jede Minute nach."}</p>
+      <p className={cn("text-row font-extrabold", live ? "text-ok" : "text-ink")}>{live ? t("Live verbunden") : t("Gerade nicht live")}</p>
+      <p className="text-caption text-muted">{live ? (compact ? t("Ein neuer Plan erscheint von selbst.") : t("Ein neuer Plan erscheint von selbst – in Sekunden.")) : "ORBook fragt stattdessen jede Minute nach."}</p>
     </div>
   </div>
 );
+};
 
 // ─────────────────────────────────────────────────────────────
 // «Plan-Status» (часть 26, макеты handy-09…11, pc-03): связь Live, что проверено по каждому дню недели,
@@ -47,6 +51,7 @@ const LiveCard = ({ live, compact }) => (
 // Общее для шторки (телефон) и окошка над левым меню (ПК, compact).
 // ─────────────────────────────────────────────────────────────
 const PlanStatusBody = ({ monday, compact = false }) => {
+  const t = useT();
   const { today } = useNow();
   const now = useTicker();
   const live = usePlanStore((s) => s.live) === "live";
@@ -62,7 +67,7 @@ const PlanStatusBody = ({ monday, compact = false }) => {
 
       <section className="flex flex-col gap-2">
         <h3 className="text-label font-extrabold text-faint">
-          {thisWeek ? "Diese Woche" : `${numericDate(monday)}–${numericDate(addDays(monday, 4))}`} · KW {isoWeek(monday)}
+          {thisWeek ? t("Diese Woche") : `${numericDate(monday)}–${numericDate(addDays(monday, 4))}`} {t("· KW")} {isoWeek(monday)}
         </h3>
         <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
           {week.state === "loading" &&
@@ -72,7 +77,7 @@ const PlanStatusBody = ({ monday, compact = false }) => {
                 <Skeleton className="h-3 w-40" />
               </li>
             ))}
-          {week.state === "error" && <li className="py-3.5 text-caption text-muted">Die Tage kommen gerade nicht an.</li>}
+          {week.state === "error" && <li className="py-3.5 text-caption text-muted">{t("Die Tage kommen gerade nicht an.")}</li>}
           {week.state === "ready" &&
             week.days.map((day, i) => {
               const check = dayCheck(day, today, now);
@@ -98,7 +103,7 @@ const PlanStatusBody = ({ monday, compact = false }) => {
         disabled={refreshing}
         onClick={() => refreshPlan(monday)} className="flex h-12 items-center justify-center gap-2 rounded-full bg-accent text-row font-bold text-on-accent transition-opacity active:opacity-80 disabled:opacity-60">
         <RefreshCw className={cn("size-4", refreshing && "motion-safe:animate-spin")} />
-        {refreshing ? "Wird geprüft…" : thisWeek ? "Diese Woche jetzt prüfen" : "Diese Woche prüfen"}
+        {refreshing ? t("Wird geprüft…") : thisWeek ? t("Diese Woche jetzt prüfen") : t("Diese Woche prüfen")}
       </PillButton>
     </div>
   );

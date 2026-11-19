@@ -1,6 +1,7 @@
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { lessonBadge, lessonName } from "../../shared/utils/format";
 import { lessonNote } from "../../shared/utils/lessons";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Підказка при наведенні мишкою на урок (тільки ПК — на телефоні
@@ -9,6 +10,7 @@ import { lessonNote } from "../../shared/utils/lessons";
 // всередину LessonContextMenu (той передає свої обробники далі).
 // ─────────────────────────────────────────────────────────────
 const LessonTooltip = ({ lesson, children, ...props }) => {
+  const t = useT();
   const badge = lessonBadge(lesson); // «VERTRETUNG» / «FÄLLT AUS» / «KLAUSUR» / null
   const note = lessonNote(lesson, null); // пояснення школи / перенос
 
@@ -31,7 +33,7 @@ const LessonTooltip = ({ lesson, children, ...props }) => {
           className="z-50 max-w-64 rounded-tile bg-ink px-3 py-2 text-caption font-semibold text-paper shadow-menu data-[state=closed]:animate-fade-out data-[state=delayed-open]:animate-fade-in"
         >
           <p className="text-body-sm font-extrabold">
-            {lessonName(lesson)} · {lesson.period}. Std
+            {lessonName(lesson)} · {lesson.period}{t(". Std")}
           </p>
           {details && <p className="opacity-80">{details}</p>}
           {badge && <p className="mt-0.5 font-extrabold text-today-sub">{badge}</p>}

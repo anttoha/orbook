@@ -1,4 +1,5 @@
 import { cn } from "../../shared/utils/cn";
+import { useT } from "../../shared/hooks/useT";
 
 // Квадратик легенди і його підпис
 const LegendItem = ({ className, label }) => (
@@ -25,6 +26,7 @@ const Bar = ({ bar, showValue }) => (
 // bars — з stackedBars (shared/utils/stats.js); large — вищий графік з числами над стовпчиками (ПК)
 // ─────────────────────────────────────────────────────────────
 const StackedChart = ({ title, bars, large = false, className }) => {
+  const t = useT();
   // для скрінрідера — те саме словами: «Mo: 1 fällt aus, 0 Vertretung»
   const summary = bars.map((b) => `${b.label}: ${b.cancelled} fällt aus, ${b.substitutions} Vertretung`).join("; ");
 
@@ -44,8 +46,8 @@ const StackedChart = ({ title, bars, large = false, className }) => {
         ))}
       </div>
       <div className="mt-3.5 flex gap-4 text-note text-muted">
-        <LegendItem className="bg-faint2" label="fällt aus" />
-        <LegendItem className="bg-accent" label="Vertretung" />
+        <LegendItem className="bg-faint2" label={t("fällt aus")} />
+        <LegendItem className="bg-accent" label={t("Vertretung")} />
       </div>
     </section>
   );

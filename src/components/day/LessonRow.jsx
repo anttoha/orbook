@@ -12,9 +12,11 @@ import StatusBadge from "../ui/StatusBadge";
 import ChangedValue from "../lesson/ChangedValue";
 import LessonContextMenu from "../lesson/LessonContextMenu";
 import LessonTooltip from "../lesson/LessonTooltip";
+import { useT } from "../../shared/hooks/useT";
 
 // Рядок «Kle ~~Mü~~ · Raum 204». Учитель і кабінет бувають null: тоді без зайвої крапки, а без обох рядка немає.
 const PlaceLine = ({ lesson }) => {
+  const t = useT();
   const { teacher, room, changes } = lesson;
   if (!teacher && !room) return null;
 
@@ -24,7 +26,7 @@ const PlaceLine = ({ lesson }) => {
       {teacher && room && " · "}
       {room && (
         <>
-          {"Raum "}
+          {t("Raum ")}
           <ChangedValue value={room} change={changes?.room} oldClassName="ml-1" />
         </>
       )}
@@ -45,6 +47,7 @@ const EntryLine = ({ icon: Icon, accent, children }) => (
 
 // plan — «Stundenplan» (частина 30b): тут діє «Fachfarbe»
 const LessonRow = ({ lesson, exam, homework = [], movedAway = [], date, isPast, live, note, overrides, plan = PLAN_DEFAULTS, onOpen }) => {
+  const t = useT();
   const { now } = useNow(); // для смужки прогресу
   const isCancelled = lesson.status === "cancelled"; // fällt aus?
   const isChanged = !isCancelled && lesson.status !== "normal"; // зміна (рамка)
@@ -67,14 +70,14 @@ const LessonRow = ({ lesson, exam, homework = [], movedAway = [], date, isPast, 
       {/* час: «07:30 / 08:15» (в уроку 10 часу немає) */}
       <div className="w-13.5 shrink-0">
         <p className={cn("text-label font-bold", live ? "text-accent-ink" : "text-ink")}>{lesson.start ?? `${lesson.period}.`}</p>
-        <p className="mt-0.5 text-small text-faint">{lesson.end ?? "Std"}</p>
+        <p className="mt-0.5 text-small text-faint">{lesson.end ?? t("Std")}</p>
       </div>
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
           <span className={cn("truncate text-body font-extrabold", isCancelled && "line-through")}>{lessonName(lesson)}</span>
           {/* чужий курс у режимі «Alle Kurse» (частина 22) */}
-          {lesson.notMine ? <Badge variant="cancelled">Nicht dein Kurs</Badge> : live ? <Badge variant="live">Läuft · {live.minutesLeft} min</Badge> : <StatusBadge lesson={lesson} exam={exam} />}
+          {lesson.notMine ? <Badge variant="cancelled">{t("Nicht dein Kurs")}</Badge> : live ? <Badge variant="live">{t("Läuft ·")} {live.minutesLeft} min</Badge> : <StatusBadge lesson={lesson} exam={exam} />}
         </div>
 
         {!isCancelled && <PlaceLine lesson={lesson} />}
@@ -93,7 +96,7 @@ const LessonRow = ({ lesson, exam, homework = [], movedAway = [], date, isPast, 
         )}
         {homework.map((item) => (
           <EntryLine key={item.id} icon={BookOpen}>
-            <b className="font-bold">Hausaufgabe:</b> {item.text?.split("\n")[0]}
+            <b className="font-bold">{t("Hausaufgabe:")}</b> {item.text?.split("\n")[0]}
           </EntryLine>
         ))}
         {movedAway.map((item) => (

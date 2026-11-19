@@ -20,7 +20,7 @@ const TermineBlock = ({ block, editing }) => {
     .slice(0, block.opts.count ?? 2);
 
   const body = () => {
-    if (!list.length) return status === "loading" || status === "idle" ? <BlockSkeleton /> : <BlockEmpty text="Keine Termine" />;
+    if (!list.length) return status === "loading" || status === "idle" ? <BlockSkeleton /> : <BlockEmpty text={t("Keine Termine")} />;
     const [first, ...rest] = list;
     return (
       <>

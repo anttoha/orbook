@@ -17,24 +17,28 @@ import { useAdminStore } from "../shared/store/adminStore";
 import { summaryText } from "../shared/utils/accessCodes";
 import RoundButton from "../components/ui/RoundButton";
 import Liquid from "../components/ui/Liquid";
+import { useT } from "../shared/hooks/useT";
 
 const matches = (code, query) => `${code.label} ${code.masked}`.toLowerCase().includes(query.trim().toLowerCase());
 
 // Порожньо: є лише Klassenpasswort (макет handy-07)
-const EmptyHint = ({ onNew }) => (
+const EmptyHint = ({ onNew }) => {
+  const t = useT();
+  return (
   <div className="flex flex-col items-center gap-3 px-5 pt-8 text-center">
     <span className="grid size-16 place-items-center rounded-full bg-tint text-accent-ink">
       <KeyIcon className="size-6.5" />
     </span>
-    <p className="mt-2 text-dialog text-ink">Noch keine Zugangscodes</p>
-    <p className="max-w-80 text-body-sm leading-5.5 text-muted">Ein Code für eine Gruppe (Eltern, Vertretung) oder einer pro Schüler — jeder einzeln sperrbar, mit Ablaufdatum.</p>
+    <p className="mt-2 text-dialog text-ink">{t("Noch keine Zugangscodes")}</p>
+    <p className="max-w-80 text-body-sm leading-5.5 text-muted">{t("Ein Code für eine Gruppe (Eltern, Vertretung) oder einer pro Schüler — jeder einzeln sperrbar, mit Ablaufdatum.")}</p>
     {/* частина 16: «Einladen» є в меню коду — без коду його не знайти */}
-    <p className="max-w-80 text-caption text-faint">Link und QR zum Einladen: einen Code erstellen, dann ⋮ → »Einladen«.</p>
+    <p className="max-w-80 text-caption text-faint">{t("Link und QR zum Einladen: einen Code erstellen, dann ⋮ → »Einladen«.")}</p>
     <Button variant="primary" className="mt-2 flex-none px-5" onClick={onNew}>
-      <Plus className="size-4.5" /> Ersten Code erstellen
+      <Plus className="size-4.5" /> {t("Ersten Code erstellen")}
     </Button>
   </div>
 );
+};
 
 // ─────────────────────────────────────────────────────────────
 // «Zugangscodes» (частина 14c, макети handy-01…08, pc-01…07): коди входу в застосунок.
@@ -42,6 +46,7 @@ const EmptyHint = ({ onNew }) => (
 // ?neu=1 у адресі одразу відкриває вікно нового коду
 // ─────────────────────────────────────────────────────────────
 const AdminAccessCodes = () => {
+  const t = useT();
   const { today } = useNow();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const navigate = useNavigate();
@@ -76,10 +81,10 @@ const AdminAccessCodes = () => {
 
   const addButton = isDesktop ? (
     <Button variant="primary" className="flex-none px-5" onClick={openNew}>
-      <Plus className="size-4.5" /> Neuer Code
+      <Plus className="size-4.5" /> {t("Neuer Code")}
     </Button>
   ) : (
-    <RoundButton aria-label="Neuer Code" onClick={openNew} look="grid size-9.5 place-items-center rounded-full bg-accent text-on-accent">
+    <RoundButton aria-label={t("Neuer Code")} onClick={openNew} look="grid size-9.5 place-items-center rounded-full bg-accent text-on-accent">
       <Plus className="size-5" />
     </RoundButton>
   );
@@ -108,7 +113,7 @@ const AdminAccessCodes = () => {
 
   return (
     <section className="flex flex-col gap-4 lg:gap-5">
-      <AdminHeader title="Zugangscodes" backTo="/admin/einstellungen" actions={[isDesktop && <SearchField key="search" value={query} onChange={setQuery} placeholder="Code suchen" className="w-50" />, <span key="add">{addButton}</span>]} />
+      <AdminHeader title={t("Zugangscodes")} backTo="/admin/einstellungen" actions={[isDesktop && <SearchField key="search" value={query} onChange={setQuery} placeholder={t("Code suchen")} className="w-50" />, <span key="add">{addButton}</span>]} />
       <div>{renderBody()}</div>
 
       <NewAccessSheet open={params.get("neu") === "1"} schoolId={Number(params.get("schule")) || null} onClose={() => setParams({}, { replace: true })} />

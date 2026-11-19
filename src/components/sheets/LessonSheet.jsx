@@ -18,6 +18,7 @@ import MusterBadge from "../muster/MusterBadge";
 import LessonEntries from "../entries/LessonEntries";
 import { addExamTarget, addHomeworkTarget, canCreateExam, canCreateHomework } from "../../shared/utils/examRules";
 import { lessonEntries } from "../../shared/utils/entries";
+import { useT } from "../../shared/hooks/useT";
 
 // Рядок «Lehrer / Raum / Kurs / Info»: однаковий на телефоні й на ПК
 const Row = ({ label, children }) => (
@@ -33,6 +34,7 @@ const Row = ({ label, children }) => (
 // Своїх запитів немає — урок береться з уже завантаженого тижня.
 // ─────────────────────────────────────────────────────────────
 const LessonSheet = ({ open, onClose, sheet }) => {
+  const t = useT();
   const { openSheet } = useSheet(); // щоб відкрити шторку нотатки
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
   const note = useUserStore((s) => findNote(s.notes, `${sheet.datum}#${sheet.stunde}`)); // нотатка до уроку
@@ -58,8 +60,8 @@ const LessonSheet = ({ open, onClose, sheet }) => {
     <Sheet
       open={open}
       onClose={onClose}
-      panelLabel="Stunde"
-      eyebrow={`${lesson.period}. Stunde${lesson.start ? ` · ${lesson.start}–${lesson.end}` : ""}`}
+      panelLabel={t("Stunde")}
+      eyebrow={t("{period}. Stunde{2}", { period: lesson.period, "2": lesson.start ? ` · ${lesson.start}–${lesson.end}` : "" })}
       title={lessonName(lesson)}
       titleAside={lesson.muster ? <MusterBadge /> : <StatusBadge lesson={lesson} exam={exam} />}
       titleClassName={fachTextClass(lesson.subject?.code, overrides)}
@@ -71,21 +73,21 @@ const LessonSheet = ({ open, onClose, sheet }) => {
           {/* записи на этот урок (часть 24; урок из Muster тоже можно) */}
           {homeworkTarget && (
             <Button variant="tint" className="grow basis-2/5" onClick={() => navigate(homeworkTarget)}>
-              <Plus className="size-4.5" /> Hausaufgabe
+              <Plus className="size-4.5" /> {t("Hausaufgabe")}
             </Button>
           )}
           {examTarget && (
             <Button variant="tint" className="grow basis-2/5" onClick={() => navigate(examTarget)}>
-              <Plus className="size-4.5" /> Test
+              <Plus className="size-4.5" /> {t("Test")}
             </Button>
           )}
           {/* replace: true — «Назад» із нотатки не поверне в цю шторку */}
           <Button className="grow basis-2/5" onClick={() => openSheet("notiz", { datum: sheet.datum, stunde: lesson.period }, { replace: true })}>
-            <File className="size-4.5" /> Notiz
+            <File className="size-4.5" /> {t("Notiz")}
           </Button>
           {shareEnabled && (
             <Button className="grow basis-2/5" onClick={() => shareText(lessonText(lesson, sheet.datum))}>
-              <Share className="size-4.5" /> Teilen
+              <Share className="size-4.5" /> {t("Teilen")}
             </Button>
           )}
         </>
@@ -94,20 +96,20 @@ const LessonSheet = ({ open, onClose, sheet }) => {
       {/* dl — список «назва: значення» */}
       <dl className="divide-y divide-hair">
         {lesson.status === "cancelled" ? (
-          <Row label="Status">fällt aus</Row>
+          <Row label={t("Status")}>{t("fällt aus")}</Row>
         ) : (
           <>
-            <Row label="Lehrer">
+            <Row label={t("Lehrer")}>
               <ChangedValue value={lesson.teacher} change={lesson.changes?.teacher} oldClassName="ml-2" />
             </Row>
-            <Row label="Raum">
+            <Row label={t("Raum")}>
               <ChangedValue value={lesson.room} change={lesson.changes?.room} oldClassName="ml-2" />
             </Row>
           </>
         )}
-        {lesson.course && <Row label="Kurs">{lesson.course.label}</Row>}
-        {info && <Row label="Info">{info}</Row>}
-        {lesson.muster && <Row label="Info">aus dem Muster – kann sich noch ändern</Row>}
+        {lesson.course && <Row label={t("Kurs")}>{lesson.course.label}</Row>}
+        {info && <Row label={t("Info")}>{info}</Row>}
+        {lesson.muster && <Row label={t("Info")}>{t("aus dem Muster – kann sich noch ändern")}</Row>}
       </dl>
 
       {/* Tests и Hausaufgaben этого урока (часть 24) */}
@@ -119,7 +121,7 @@ const LessonSheet = ({ open, onClose, sheet }) => {
       {/* своя нотатка до уроку, якщо є */}
       {note && (
         <div className="rounded-field bg-tint p-4 text-body-sm font-bold whitespace-pre-wrap text-ink">
-          <p className="mb-1 text-small font-extrabold text-accent-ink uppercase">Meine Notiz</p>
+          <p className="mb-1 text-small font-extrabold text-accent-ink uppercase">{t("Meine Notiz")}</p>
           {note.text}
         </div>
       )}

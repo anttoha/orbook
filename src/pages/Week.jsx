@@ -35,6 +35,7 @@ import NoMusterState from "../components/muster/NoMusterState";
 import WeekLetter from "../components/muster/WeekLetter";
 import RoundButton from "../components/ui/RoundButton";
 import Liquid from "../components/ui/Liquid";
+import { useT } from "../shared/hooks/useT";
 
 
 // Рядок підсумку тижня. Статистику школа може вимкнути: тоді це просто текст
@@ -62,6 +63,7 @@ const WeekSummaryRow = ({ text, linked }) => {
 // Дані: GET /api/week?date=<понеділок> (хук useWeek), Klausuren — з planStore.
 // ─────────────────────────────────────────────────────────────
 const Week = () => {
+  const t = useT();
   const { today } = useNow(); // сьогодні (час школи)
   const { openSheet } = useSheet(); // відкрити шторку
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // ≥ 1024px — комп'ютерний вигляд
@@ -131,7 +133,7 @@ const Week = () => {
       return (
         <div className="flex min-w-0 flex-col gap-3">
           <Liquid as="div" refract press={false} className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-card bg-card px-4 py-3">
-            <p className="text-body-sm text-muted">Noch kein Plan für diese Woche. Die Schule veröffentlicht ihn meist kurz vorher.</p>
+            <p className="text-body-sm text-muted">{t("Noch kein Plan für diese Woche. Die Schule veröffentlicht ihn meist kurz vorher.")}</p>
             <RefreshButton className="ml-auto" monday={monday} />
           </Liquid>
           {grid}
@@ -143,8 +145,8 @@ const Week = () => {
 
   // Пояснення над сіткою, коли весь тиждень — Muster (макет 19 handy-01)
   const musterNote = allMuster && !down && (
-    <MusterNote lead="Muster-Stundenplan:">
-      so läuft {letter ? `Woche ${letter}` : "diese Woche"} normalerweise – ohne Ausfälle und Vertretungen. Der echte Plan kommt meist am Vortag.
+    <MusterNote lead={t("Muster-Stundenplan:")}>
+      {t("so läuft")} {letter ? t("Woche {letter}", { letter }) : "diese Woche"} {t("normalerweise – ohne Ausfälle und Vertretungen. Der echte Plan kommt meist am Vortag.")}
     </MusterNote>
   );
 
@@ -211,17 +213,17 @@ const Week = () => {
             {title}
           </button>
           {/* на телефоні одна мітка в рядку KW: дві окремі обрізали б «KW 42 · 12.–16. Okt» */}
-          {allMuster ? <MusterBadge>{letter && ` · Woche ${letter}`}</MusterBadge> : <WeekLetter letter={letter} />}
+          {allMuster ? <MusterBadge>{letter && t(" · Woche {letter}", { letter })}</MusterBadge> : <WeekLetter letter={letter} />}
         </div>
         <div className="flex items-end justify-between gap-3">
           <h1 className="min-w-0 truncate text-title text-ink">{heading}</h1>
           {/* як на макеті: ‹ ⋮ › (календар — у меню «⋮» і по натисканню на рядок KW) */}
           <div className="flex shrink-0 gap-1.5">
-            <RoundButton aria-label="Vorherige Woche" onClick={() => setWeek(addDays(monday, -7))}>
+            <RoundButton aria-label={t("Vorherige Woche")} onClick={() => setWeek(addDays(monday, -7))}>
               <ChevronLeft className="size-4.5" />
             </RoundButton>
             <WeekMenu monday={monday} onToday={goToday} onPickWeek={() => openSheet("kalender", { kw: monday })} />
-            <RoundButton aria-label="Nächste Woche" onClick={() => setWeek(addDays(monday, 7))}>
+            <RoundButton aria-label={t("Nächste Woche")} onClick={() => setWeek(addDays(monday, 7))}>
               <ChevronRight className="size-4.5" />
             </RoundButton>
           </div>
@@ -250,7 +252,7 @@ const Week = () => {
                   {weekdayShort(nextExam.date)} · {subjectName(nextExam.subject)}
                 </h3>
                 <p className="mt-0.5 text-caption leading-4">
-                  Nächste {nextExam.type}
+                  {t("Nächste")} {nextExam.type}
                   {nextExam.topic && ` · ${nextExam.topic}`}
                 </p>
               </div>
@@ -277,8 +279,8 @@ const Week = () => {
             <div className="flex items-center gap-3 py-2">
               <Layers className="size-4.75 shrink-0 text-accent-ink" />
               <div className="min-w-0 flex-1">
-                <h3 className="text-row leading-5 font-medium text-ink">{partMuster.join(", ")} · noch Muster</h3>
-                <p className="mt-0.5 text-caption leading-4">Der Plan kommt meist am Vortag</p>
+                <h3 className="text-row leading-5 font-medium text-ink">{partMuster.join(", ")} {t("· noch Muster")}</h3>
+                <p className="mt-0.5 text-caption leading-4">{t("Der Plan kommt meist am Vortag")}</p>
               </div>
             </div>
           )}

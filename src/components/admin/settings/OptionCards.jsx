@@ -8,6 +8,7 @@ import WeekLetter from "../../muster/WeekLetter";
 import { abLetter } from "../../../shared/utils/muster";
 import SettingsCard from "./SettingsCard";
 import PillButton from "../../ui/PillButton";
+import { useT } from "../../../shared/hooks/useT";
 
 // Варіанти списків (межі — як перевіряє сервер, appsettings.py)
 const minutes = (values) => values.map((value) => ({ value, label: `${value} min` }));
@@ -51,58 +52,70 @@ const SwitchRow = ({ label, hint, section, field, form, set }) => (
 );
 
 // «Aktualisierung»: як часто питати план і скільки зберігати
-export const UpdateCard = ({ className, ...props }) => (
-  <SettingsCard title="Aktualisierung" className={className}>
+export const UpdateCard = ({ className, ...props }) => {
+  const t = useT();
+  return (
+  <SettingsCard title={t("Aktualisierung")} className={className}>
     <div className={divided}>
-      <SelectRow label="Plan abrufen alle" section="plan" field="pollMinutes" options={POLL} {...props} />
+      <SelectRow label={t("Plan abrufen alle")} section="plan" field="pollMinutes" options={POLL} {...props} />
       {/* часть 26: старые серверы этих полей не знают — тогда строк нет */}
       {props.form.plan.fastSeconds !== undefined && (
-        <SelectRow label="Heute und morgen prüfen" hint="06–16 Uhr an Schultagen · neuer Plan prüft sofort die ganze Woche" section="plan" field="fastSeconds" options={FAST} {...props} />
+        <SelectRow label={t("Heute und morgen prüfen")} hint={t("06–16 Uhr an Schultagen · neuer Plan prüft sofort die ganze Woche")} section="plan" field="fastSeconds" options={FAST} {...props} />
       )}
-      {props.form.plan.live !== undefined && <SwitchRow label="Live-Aktualisierung" hint="Neuer Plan erscheint in offenen Apps von selbst" section="plan" field="live" {...props} />}
-      <SwitchRow label="Nur an Schultagen" hint="Wochenende und Ferien überspringen" section="plan" field="onlySchoolDays" {...props} />
-      <SelectRow label="Alte Pläne behalten" hint="für die Statistik" section="plan" field="retentionDays" options={KEEP} {...props} />
+      {props.form.plan.live !== undefined && <SwitchRow label={t("Live-Aktualisierung")} hint={t("Neuer Plan erscheint in offenen Apps von selbst")} section="plan" field="live" {...props} />}
+      <SwitchRow label={t("Nur an Schultagen")} hint={t("Wochenende und Ferien überspringen")} section="plan" field="onlySchoolDays" {...props} />
+      <SelectRow label={t("Alte Pläne behalten")} hint={t("für die Statistik")} section="plan" field="retentionDays" options={KEEP} {...props} />
       {props.form.plan.versionsDays !== undefined && (
-        <SelectRow label="Verlauf des Tages behalten" hint="frühere Fassungen eines Tages" section="plan" field="versionsDays" options={VERSIONS} {...props} />
+        <SelectRow label={t("Verlauf des Tages behalten")} hint={t("frühere Fassungen eines Tages")} section="plan" field="versionsDays" options={VERSIONS} {...props} />
       )}
     </div>
   </SettingsCard>
 );
+};
 
 // «Mitteilungen» (часть 17): включить для класса и когда напоминать. Число устройств — PushStats ниже
 export const PushCard = ({ className, children, ...props }) =>
-  props.form.push ? (
-    <SettingsCard title="Mitteilungen" className={className}>
+  {
+  const t = useT();
+  return props.form.push ? (
+    <SettingsCard title={t("Mitteilungen")} className={className}>
       <div className={divided}>
-        <SwitchRow label="Mitteilungen erlauben" hint="Jeder kann sie unter „Mehr“ für sich einschalten" section="features" field="push" {...props} />
-        <SelectRow label="Erinnerung für morgen" hint="Tests und Hausaufgaben am Vortag" section="push" field="reminderTime" options={REMINDER} {...props} />
+        <SwitchRow label={t("Mitteilungen erlauben")} hint={t("Jeder kann sie unter „Mehr“ für sich einschalten")} section="features" field="push" {...props} />
+        <SelectRow label={t("Erinnerung für morgen")} hint={t("Tests und Hausaufgaben am Vortag")} section="push" field="reminderTime" options={REMINDER} {...props} />
       </div>
       {children}
     </SettingsCard>
   ) : null;
+};
 
 // «Funktionen»: що бачить клас
-export const FeaturesCard = ({ className, ...props }) => (
-  <SettingsCard title="Funktionen" className={className}>
+export const FeaturesCard = ({ className, ...props }) => {
+  const t = useT();
+  return (
+  <SettingsCard title={t("Funktionen")} className={className}>
     <div className={divided}>
-      <SwitchRow label="Statistik zeigen" section="features" field="statistics" {...props} />
-      <SwitchRow label="Sync erlauben" hint="Notizen, Aufgaben, Einstellungen" section="features" field="notesSync" {...props} />
-      <SwitchRow label="Teilen-Knopf" hint="Text für WhatsApp erzeugen" section="features" field="share" {...props} />
-      <SwitchRow label="Tests ohne Editor-Code" hint="Jeder mit Klassenpasswort darf eintragen" section="features" field="examsWithoutCode" {...props} />
+      <SwitchRow label={t("Statistik zeigen")} section="features" field="statistics" {...props} />
+      <SwitchRow label={t("Sync erlauben")} hint={t("Notizen, Aufgaben, Einstellungen")} section="features" field="notesSync" {...props} />
+      <SwitchRow label={t("Teilen-Knopf")} hint={t("Text für WhatsApp erzeugen")} section="features" field="share" {...props} />
+      <SwitchRow label={t("Tests ohne Editor-Code")} hint={t("Jeder mit Klassenpasswort darf eintragen")} section="features" field="examsWithoutCode" {...props} />
     </div>
   </SettingsCard>
 );
+};
 
 // «Sicherheit»: вхід класу
-export const SecurityCard = ({ className, ...props }) => (
-  <SettingsCard title="Sicherheit" className={className}>
+export const SecurityCard = ({ className, ...props }) => {
+  const t = useT();
+  return (
+  <SettingsCard title={t("Sicherheit")} className={className}>
     <div className={divided}>
-      <SelectRow label="Anmeldung gültig" hint="danach Passwort neu eingeben" section="security" field="sessionDays" options={SESSION} {...props} />
-      <SelectRow label="Fehlversuche bis Sperre" section="security" field="maxFailedAttempts" options={ATTEMPTS} {...props} />
-      <SelectRow label="Sperrzeit" section="security" field="lockMinutes" options={LOCK} {...props} />
+      <SelectRow label={t("Anmeldung gültig")} hint={t("danach Passwort neu eingeben")} section="security" field="sessionDays" options={SESSION} {...props} />
+      <SelectRow label={t("Fehlversuche bis Sperre")} section="security" field="maxFailedAttempts" options={ATTEMPTS} {...props} />
+      <SelectRow label={t("Sperrzeit")} section="security" field="lockMinutes" options={LOCK} {...props} />
     </div>
   </SettingsCard>
 );
+};
 
 // «Hausaufgaben» (частина 14, макет handy-12): коли видаляти після строку здачі. 0 — у кінці навчального року
 const HOMEWORK_KEEP = [
@@ -115,13 +128,16 @@ const HOMEWORK_KEEP = [
 
 // «Termine» (частина 18): коли видаляти після останнього дня (рішення власника — налаштовується)
 export const AppointmentsCard = ({ className, ...props }) =>
-  props.form.appointments ? (
-    <SettingsCard title="Termine" className={className}>
+  {
+  const t = useT();
+  return props.form.appointments ? (
+    <SettingsCard title={t("Termine")} className={className}>
       <div className={divided}>
-        <SelectRow label="Automatisch löschen" hint="nach dem letzten Tag" section="appointments" field="keepDays" options={HOMEWORK_KEEP} {...props} />
+        <SelectRow label={t("Automatisch löschen")} hint={t("nach dem letzten Tag")} section="appointments" field="keepDays" options={HOMEWORK_KEEP} {...props} />
       </div>
     </SettingsCard>
   ) : null;
+};
 
 // «Muster-Stundenplan» (частина 19, макет 19 handy-11): до якого дня показувати Muster у днях без плану
 const MUSTER_UNTIL = [
@@ -149,17 +165,18 @@ const LinkRow = ({ to, label, hint, children }) => (
 );
 
 export const MusterCard = ({ className, abWeek, saved, ...props }) => {
+  const t = useT();
   if (!props.form.muster) return null;
   const letter = saved?.abMode === "none" ? null : abLetter(abWeek);
   const mode = saved?.abMode ?? "school";
   // Букву знаємо, лише якщо цей браузер увійшов і в клас (meta.abWeek)
   const abHint = mode === "none" ? "Jede Woche gleich" : letter ? `Diese Woche ist ${letter} · ${AB_MODE[mode]}` : mode === "swap" ? "A und B getauscht" : "Kommt aus dem Plan der Schule";
   return (
-    <SettingsCard title="Muster-Stundenplan" className={className}>
+    <SettingsCard title={t("Muster-Stundenplan")} className={className}>
       <div className={divided}>
-        <SelectRow label="Muster zeigen bis" hint="für Tage ohne echten Plan, nicht in Ferien" section="muster" field="until" options={MUSTER_UNTIL} {...props} />
-        <LinkRow to="/admin/muster" label="Muster bearbeiten" hint={MUSTER_SOURCE[saved?.source ?? "auto"]} />
-        <LinkRow to="/admin/muster" label="Wochen A und B" hint={abHint}>
+        <SelectRow label={t("Muster zeigen bis")} hint={t("für Tage ohne echten Plan, nicht in Ferien")} section="muster" field="until" options={MUSTER_UNTIL} {...props} />
+        <LinkRow to="/admin/muster" label={t("Muster bearbeiten")} hint={MUSTER_SOURCE[saved?.source ?? "auto"]} />
+        <LinkRow to="/admin/muster" label={t("Wochen A und B")} hint={abHint}>
           <WeekLetter letter={letter} />
         </LinkRow>
       </div>
@@ -169,15 +186,18 @@ export const MusterCard = ({ className, abWeek, saved, ...props }) => {
 
 // Старі сервери не мають розділу homework у settings — тоді картки немає
 export const HomeworkCard = ({ className, onPurge, purging, ...props }) =>
-  props.form.homework ? (
-    <SettingsCard title="Hausaufgaben" className={className}>
+  {
+  const t = useT();
+  return props.form.homework ? (
+    <SettingsCard title={t("Hausaufgaben")} className={className}>
       <div className={divided}>
-        <SelectRow label="Automatisch löschen" hint="nach dem Abgabetag" section="homework" field="keepDays" options={HOMEWORK_KEEP} {...props} />
-        <OptionRow label="Hausaufgaben jetzt aufräumen" hint="Abgelaufene nach dieser Regel löschen">
+        <SelectRow label={t("Automatisch löschen")} hint={t("nach dem Abgabetag")} section="homework" field="keepDays" options={HOMEWORK_KEEP} {...props} />
+        <OptionRow label={t("Hausaufgaben jetzt aufräumen")} hint={t("Abgelaufene nach dieser Regel löschen")}>
           <PillButton glass="glass" size="sm" disabled={purging} onClick={onPurge} className="h-8.5 rounded-full bg-sand px-3.5 text-hint font-bold text-ink disabled:opacity-50">
-            Aufräumen
+            {t("Aufräumen")}
           </PillButton>
         </OptionRow>
       </div>
     </SettingsCard>
   ) : null;
+};

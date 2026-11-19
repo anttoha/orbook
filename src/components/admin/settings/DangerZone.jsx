@@ -5,6 +5,7 @@ import { TrashIcon } from "../../ui/icons";
 import { Undo2 } from "lucide-react";
 import DangerDialog from "../DangerDialog";
 import PillButton from "../../ui/PillButton";
+import { useT } from "../../../shared/hooks/useT";
 
 // Три дії «Gefahrenzone»: заголовок і текст вікна для кожної
 const dangers = (counts) => [
@@ -34,6 +35,7 @@ const dangers = (counts) => [
 
 // «Gefahrenzone» (макети 45 і 47): кожна кнопка відкриває вікно з LÖSCHEN і паролем адміна
 const DangerZone = ({ onDone }) => {
+  const t = useT();
   const { today } = useNow();
   const counts = useAdminStore((s) => s.overview.data?.counts);
   const [open, setOpen] = useState(null); // яка дія у вікні
@@ -42,9 +44,9 @@ const DangerZone = ({ onDone }) => {
 
   return (
     <section>
-      <h2 className="mb-2.5 text-hint font-extrabold text-faint lg:hidden">Gefahrenzone</h2>
+      <h2 className="mb-2.5 text-hint font-extrabold text-faint lg:hidden">{t("Gefahrenzone")}</h2>
       <div className="flex flex-col gap-2.5 lg:rounded-card lg:border lg:border-danger lg:bg-danger-tint lg:px-5 lg:pt-4.5 lg:pb-3">
-        <h2 className="hidden text-hint font-extrabold text-danger lg:block">Gefahrenzone</h2>
+        <h2 className="hidden text-hint font-extrabold text-danger lg:block">{t("Gefahrenzone")}</h2>
         <div className="flex flex-col gap-2.5 lg:flex-row lg:justify-around">
           {items.map((item) => (
             <PillButton glass="destructive" size="lg" key={item.action} onClick={() => setOpen(item.action)} className="flex h-12 items-center justify-center gap-2 rounded-full bg-danger-tint px-5 text-row font-extrabold text-danger lg:bg-transparent">

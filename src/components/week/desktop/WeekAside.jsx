@@ -11,6 +11,7 @@ import CurrentLessonCard from "../../day/CurrentLessonCard";
 import DayInfoBanner from "../../day/DayInfoBanner";
 import ExamCard from "./ExamCard";
 import WeekStatsCard from "./WeekStatsCard";
+import { useT } from "../../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Права колонка тижня на ПК (макет «Seitenspalte», ширина 330px):
@@ -19,6 +20,7 @@ import WeekStatsCard from "./WeekStatsCard";
 // days — дні показаного тижня (Mo–Fr)
 // ─────────────────────────────────────────────────────────────
 const WeekAside = ({ days }) => {
+  const t = useT();
   const { now, today } = useNow(); // час школи
   const { openSheet } = useSheet(); // відкрити шторку
   const filter = useLessonFilter(); // «Meine Kurse»
@@ -39,9 +41,9 @@ const WeekAside = ({ days }) => {
       {exams.length > 0 && (
         <section className="flex flex-col gap-2 lg:col-span-2 desktop:col-span-1">
           <header className="mt-1 flex items-center justify-between px-0.5">
-            <h2 className="text-label font-extrabold text-muted">Nächste Tests</h2>
+            <h2 className="text-label font-extrabold text-muted">{t("Nächste Tests")}</h2>
             <Link to="/testen" className="text-label font-extrabold text-accent">
-              Alle
+              {t("Alle")}
             </Link>
           </header>
           {exams.map((exam, i) => (

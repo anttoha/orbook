@@ -11,6 +11,7 @@ import MaterialTile from "../materials/MaterialTile";
 import { TrashIcon } from "../ui/icons";
 import Sheet from "../ui/Sheet";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Рядок дії, як у «Code-Aktionen» (макет 43): іконка, текст, підпис праворуч, стрілка
 const ActionRow = ({ icon: Icon, label, value, danger = false, onClick }) => (
@@ -26,6 +27,7 @@ const ActionRow = ({ icon: Icon, label, value, danger = false, onClick }) => (
 
 // Вміст шторки: усі дії з посиланням (макет handy-02)
 const MaterialActions = ({ item, onClose }) => {
+  const t = useT();
   const actions = useMaterialActions(item, { onDone: onClose });
   const provider = PROVIDER_LABEL[item.provider] ?? "Drive";
   return (
@@ -35,11 +37,11 @@ const MaterialActions = ({ item, onClose }) => {
         <span className="truncate">{shortUrl(item.url)}</span>
       </p>
       <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5 py-0.5">
-        <ActionRow icon={ExternalLink} label="Öffnen" value={`in ${provider}`} onClick={actions.open} />
-        <ActionRow icon={Copy} label="Link kopieren" onClick={actions.copy} />
-        <ActionRow icon={Share} label="Teilen" onClick={actions.share} />
-        {item.canEdit && <ActionRow icon={Pencil} label="Bearbeiten" onClick={actions.edit} />}
-        {item.canDelete && <ActionRow icon={TrashIcon} label="Löschen" danger onClick={actions.askDelete} />}
+        <ActionRow icon={ExternalLink} label={t("Öffnen")} value={`in ${provider}`} onClick={actions.open} />
+        <ActionRow icon={Copy} label={t("Link kopieren")} onClick={actions.copy} />
+        <ActionRow icon={Share} label={t("Teilen")} onClick={actions.share} />
+        {item.canEdit && <ActionRow icon={Pencil} label={t("Bearbeiten")} onClick={actions.edit} />}
+        {item.canDelete && <ActionRow icon={TrashIcon} label={t("Löschen")} danger onClick={actions.askDelete} />}
       </Liquid>
       <p className="text-caption text-faint">{addedText(item)}</p>
       <DeleteMaterialDialog item={item} actions={actions} />

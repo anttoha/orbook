@@ -34,7 +34,7 @@ const HeuteBlock = ({ block, editing }) => {
 
   const body = () => {
     if (!day) return <BlockSkeleton />;
-    if (!lessons.length) return <BlockEmpty text="Heute kein Unterricht" />;
+    if (!lessons.length) return <BlockEmpty text={t("Heute kein Unterricht")} />;
     const from = block.size === "gross" ? 0 : Math.max(0, lessons.findIndex((l) => !isLessonPast(l, today, now)));
     const shown = block.size === "gross" ? lessons : lessons.slice(from, from + 3);
     return (

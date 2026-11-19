@@ -1,6 +1,7 @@
 import { eventTime, levelOf } from "../../shared/utils/admin";
 import { cn } from "../../shared/utils/cn";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 const Dot = ({ level }) => <span className={cn("size-2 shrink-0 rounded-full", levelOf(level).dot)} />;
 
@@ -25,12 +26,14 @@ const EventCards = ({ events, today }) => (
 const th = "pb-3 text-left text-hint font-extrabold text-faint";
 
 // ПК (макет 49): таблиця Status · Zeit · Ereignis · Details
-const EventTable = ({ events, today }) => (
+const EventTable = ({ events, today }) => {
+  const t = useT();
+  return (
   <Liquid as="div" refract press={false} className="rounded-card bg-card px-5 pt-4.5 pb-1">
     <table className="w-full border-collapse">
       <thead className="border-b border-hair">
         <tr>
-          {["Status", "Zeit", "Ereignis", "Details"].map((title) => (
+          {[t("Status"), t("Zeit"), t("Ereignis"), t("Details")].map((title) => (
             <th key={title} className={th}>
               {title}
             </th>
@@ -55,6 +58,7 @@ const EventTable = ({ events, today }) => (
     </table>
   </Liquid>
 );
+};
 
 // Записи Protokoll: картки на телефоні, таблиця на ПК
 const EventList = ({ isDesktop, ...props }) => (isDesktop ? <EventTable {...props} /> : <EventCards {...props} />);

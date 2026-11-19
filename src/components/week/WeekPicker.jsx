@@ -9,6 +9,7 @@ import MonthGrid from "../ui/MonthGrid";
 import MonthNav from "../ui/MonthNav";
 import { abForMonday } from "../../shared/utils/muster";
 import { currentMonday } from "../../shared/utils/lessons";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Місячний календар «Woche wählen» (у шторці на телефоні і у випадаючому вікні на ПК).
@@ -19,6 +20,7 @@ import { currentMonday } from "../../shared/utils/lessons";
 // onOpenWeek(понеділок) — натиснули «KW xx öffnen»
 // ─────────────────────────────────────────────────────────────
 const WeekPicker = ({ initialWeek, onOpenWeek }) => {
+  const t = useT();
   const { today } = useNow(); // сьогодні
   const holidays = usePlanStore((s) => s.meta?.holidays); // вільні дні навчального року
   const abWeek = usePlanStore((s) => s.meta?.abWeek); // тиждень циклу зараз (1/2) — для букв A/B біля KW
@@ -55,7 +57,7 @@ const WeekPicker = ({ initialWeek, onOpenWeek }) => {
       {/* ── легенда ── */}
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-caption font-bold text-muted">
         <span className="flex items-center gap-1.5">
-          <span className="size-1.5 rounded-full bg-accent" /> Test
+          <span className="size-1.5 rounded-full bg-accent" /> {t("Test")}
         </span>
         <span className="flex items-center gap-1.5">
           <span className="size-1.5 rounded-full bg-faint2" /> frei
@@ -70,10 +72,10 @@ const WeekPicker = ({ initialWeek, onOpenWeek }) => {
             setMonth(firstOfMonth(today)); // і його місяць
           }}
         >
-          Heute
+          {t("Heute")}
         </Button>
         <Button variant="primary" onClick={() => onOpenWeek(selected)}>
-          KW {isoWeek(selected)} öffnen
+          KW {isoWeek(selected)} {t("öffnen")}
         </Button>
       </div>
     </>

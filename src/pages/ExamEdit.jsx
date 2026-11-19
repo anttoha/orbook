@@ -6,22 +6,27 @@ import PageHeader from "../components/ui/PageHeader";
 import { useExam } from "../shared/hooks/useExams";
 import { usePlanStore } from "../shared/store/planStore";
 import { canCreateExam, examPreset } from "../shared/utils/examRules";
+import { useT } from "../shared/hooks/useT";
 
 // Запису немає, її ще вантажимо або її не можна міняти
-const Placeholder = ({ text }) => (
+const Placeholder = ({ text }) => {
+  const t = useT();
+  return (
   <section className="flex flex-col gap-5 lg:max-w-186">
-    <PageHeader backTo="/testen" eyebrow="Tests" title="Test ändern" />
+    <PageHeader backTo="/testen" eyebrow={t("Tests")} title={t("Test ändern")} />
     {text ? <p className="text-body-sm text-muted">{text}</p> : <Skeleton className="h-40 rounded-card" />}
   </section>
 );
+};
 
 // Правка: /testen/12/bearbeiten. key — інша запис означає нову форму з її значеннями
 const EditExistingExam = ({ id }) => {
+  const t = useT();
   const { exam, status, error } = useExam(id);
 
   if (status === "loading") return <Placeholder />;
-  if (!exam) return <Placeholder text={status === "missing" ? "Diesen Test gibt es nicht (mehr)." : error?.message} />;
-  if (!exam.canEdit) return <Placeholder text="Diesen Test kannst du mit deinem Code nicht ändern." />;
+  if (!exam) return <Placeholder text={status === "missing" ? t("Diesen Test gibt es nicht (mehr).") : error?.message} />;
+  if (!exam.canEdit) return <Placeholder text={t("Diesen Test kannst du mit deinem Code nicht ändern.")} />;
   return <ExamForm key={exam.id} exam={exam} />;
 };
 

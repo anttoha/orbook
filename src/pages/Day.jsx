@@ -35,6 +35,7 @@ import MusterNote from "../components/muster/MusterNote";
 import DayCheckRow from "../components/live/DayCheckRow";
 import PlanCheckBanner from "../components/muster/PlanCheckBanner";
 import Liquid from "../components/ui/Liquid";
+import { useT } from "../shared/hooks/useT";
 
 // Варіанти перемикача вигляду
 const VIEWS = [
@@ -52,6 +53,7 @@ const VIEWS = [
 // unavailable — сервер школи недоступний. День із Muster (частина 19) приходить уже як ok з muster: true
 // ─────────────────────────────────────────────────────────────
 const Day = () => {
+  const t = useT();
   const { datum } = useParams(); // дата з адреси (у /heute її немає)
   const { now, today } = useNow(); // час школи
   const { openSheet } = useSheet(); // відкрити шторку
@@ -122,7 +124,7 @@ const Day = () => {
             <FlagIcon className="size-4 shrink-0" />
             <span>
               <span className="font-bold">{exam.type}:</span> {subjectName(exam.subject)}
-              {exam.lesson && `, ${exam.lesson}. Stunde`}
+              {exam.lesson && t(", {lesson}. Stunde", { lesson: exam.lesson })}
             </span>
           </p>
         ))}
@@ -132,14 +134,14 @@ const Day = () => {
   // День із Muster (частина 19): плану ще немає, уроки — звичайні для цього дня тижня (макет 19 handy-03)
   const musterNote = day?.muster && (
     <>
-      <MusterNote lead="Muster:">
-        so ist der {weekdayLong(date)} normalerweise. Der echte Plan kommt meist am Vortag.
+      <MusterNote lead={t("Muster:")}>
+        {t("so ist der")} {weekdayLong(date)} {t("normalerweise. Der echte Plan kommt meist am Vortag.")}
       </MusterNote>
       {/* часть 26: когда этот день проверяли — «noch kein Plan» значит правда нет, а не «не смотрели» */}
       {date >= today && <DayCheckRow day={day} />}
     </>
   );
-  const musterHint = day?.muster && <p className="px-1 text-caption text-faint">Notizen und Tests in Muster-Stunden prüft ORBook, sobald der echte Plan da ist.</p>;
+  const musterHint = day?.muster && <p className="px-1 text-caption text-faint">{t("Notizen und Tests in Muster-Stunden prüft ORBook, sobald der echte Plan da ist.")}</p>;
 
   // Прийшов справжній план, а запис висить на уроці, якого вже немає → «Plan ist da · prüfen»
   const checkBanner = day && <PlanCheckBanner day={day} />;
@@ -147,15 +149,15 @@ const Day = () => {
   // План є, але всі уроки сховані
   const allHidden = day?.status === "ok" && lessons.length === 0 && (
     <Liquid as="div" refract press={false} className="rounded-card bg-card px-4 py-10 text-center">
-      <p className="text-subhead text-ink">Kein Unterricht</p>
-      <p className="mt-1 text-label font-bold text-faint">{hiddenHere > 0 ? "Alle Kurse ausgeblendet" : "Keine Stunden"}</p>
+      <p className="text-subhead text-ink">{t("Kein Unterricht")}</p>
+      <p className="mt-1 text-label font-bold text-faint">{hiddenHere > 0 ? t("Alle Kurse ausgeblendet") : t("Keine Stunden")}</p>
     </Liquid>
   );
 
   // Кнопка «показати сховані курси»
   const restoreHidden = hiddenHere > 0 && (
     <button type="button" onClick={() => setAllCourses(true)} className="flex items-center justify-center gap-2 text-label font-extrabold text-accent">
-      <Eye className="size-4" /> {hiddenHere} {hiddenHere === 1 ? "Stunde" : "Stunden"} ausgeblendet · alle zeigen
+      <Eye className="size-4" /> {hiddenHere} {hiddenHere === 1 ? t("Stunde") : t("Stunden")} {t("ausgeblendet · alle zeigen")}
     </button>
   );
 
@@ -227,7 +229,7 @@ const Day = () => {
           {/* «Liste / Zeitleiste» і поруч кнопка «Alle Kurse» (частина 22) */}
           {(lessons.length > 0 || isLoading) && (
             <div className="mt-0.5 flex items-center gap-2">
-              <Segmented label="Ansicht" options={VIEWS} value={view} onChange={setView} className="min-w-0 flex-1" />
+              <Segmented label={t("Ansicht")} options={VIEWS} value={view} onChange={setView} className="min-w-0 flex-1" />
               <AllCoursesButton />
             </div>
           )}

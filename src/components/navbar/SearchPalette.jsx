@@ -16,6 +16,7 @@ import { searchActions, searchGroups } from "../../shared/utils/search";
 import Kbd from "../ui/Kbd";
 import SubjectBadge from "../ui/SubjectBadge";
 import GlassSearch from "../ui/GlassSearch";
+import { useT } from "../../shared/hooks/useT";
 
 // Іконки рядків без предмета (ключ icon з shared/utils/search.js)
 const ICONS = { note: NotebookPen, settings: Settings, plus: Plus, calendar: CalendarDays, sun: Sun, moon: Moon };
@@ -49,6 +50,7 @@ const ResultRow = ({ item, active, onHover, onChoose }) => {
 // open / onOpenChange — ззовні (поле в сайдбарі і ⌘K)
 // ─────────────────────────────────────────────────────────────
 const SearchPalette = ({ open, onOpenChange }) => {
+  const t = useT();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0); // номер вибраного рядка в загальному списку
   const { today } = useNow();
@@ -104,9 +106,9 @@ const SearchPalette = ({ open, onOpenChange }) => {
           aria-describedby={undefined}
           className="fixed top-27.5 left-1/2 z-50 flex max-h-[calc(100dvh-8rem)] w-palette max-w-[calc(100%-2rem)] -translate-x-1/2 flex-col overflow-hidden rounded-panel bg-card shadow-sheet outline-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
         >
-          <Dialog.Title className="sr-only">Suchen</Dialog.Title>
+          <Dialog.Title className="sr-only">{t("Suchen")}</Dialog.Title>
           <div className="flex h-17 shrink-0 items-center gap-3 border-b border-hair px-5">
-            <GlassSearch value={query} onValue={(text) => { setQuery(text); setActive(0); }} placeholder="Stunde, Test, Notiz suchen" label="Suchen" className="flex-1" inputProps={{ onKeyDown: handleKeyDown, autoFocus: true }}>
+            <GlassSearch value={query} onValue={(text) => { setQuery(text); setActive(0); }} placeholder={t("Stunde, Test, Notiz suchen")} label={t("Suchen")} className="flex-1" inputProps={{ onKeyDown: handleKeyDown, autoFocus: true }}>
               <>
                 <Search className="size-5 shrink-0 text-faint" />
                 <input
@@ -116,8 +118,8 @@ const SearchPalette = ({ open, onOpenChange }) => {
                     setActive(0); // новий запит — вибір на першому
                   }}
                   onKeyDown={handleKeyDown}
-                  placeholder="Stunde, Test, Notiz suchen"
-                  aria-label="Suchen"
+                  placeholder={t("Stunde, Test, Notiz suchen")}
+                  aria-label={t("Suchen")}
                   className="min-w-0 flex-1 bg-transparent text-cell-sm font-normal text-ink outline-none placeholder:text-faint2"
                 />
               </>
@@ -125,8 +127,8 @@ const SearchPalette = ({ open, onOpenChange }) => {
             <Kbd>Esc</Kbd>
           </div>
 
-          <div role="listbox" aria-label="Ergebnisse" className="min-h-0 flex-1 overflow-y-auto scroll-stable px-2.5 pt-3 pb-2">
-            {query.trim() && groups.length === 1 && <p className="px-3 pb-3 text-body-sm font-bold text-faint">Nichts gefunden</p>}
+          <div role="listbox" aria-label={t("Ergebnisse")} className="min-h-0 flex-1 overflow-y-auto scroll-stable px-2.5 pt-3 pb-2">
+            {query.trim() && groups.length === 1 && <p className="px-3 pb-3 text-body-sm font-bold text-faint">{t("Nichts gefunden")}</p>}
             {groups.map((group) => (
               <section key={group.title} className="mb-2">
                 <h3 className="px-3 pb-1.5 text-hint font-extrabold text-faint">{group.title}</h3>
@@ -144,10 +146,10 @@ const SearchPalette = ({ open, onOpenChange }) => {
           <footer className="flex h-11 shrink-0 items-center gap-2 border-t border-hair bg-paper px-5 text-caption text-faint">
             <Kbd>↑</Kbd>
             <Kbd>↓</Kbd>
-            <span>wählen</span>
+            <span>{t("wählen")}</span>
             <Kbd className="ml-2">↵</Kbd>
-            <span>öffnen</span>
-            <span className="ml-auto truncate">Stunden, Tests, Notizen, Einstellungen</span>
+            <span>{t("öffnen")}</span>
+            <span className="ml-auto truncate">{t("Stunden, Tests, Notizen, Einstellungen")}</span>
           </footer>
         </Dialog.Content>
       </Dialog.Portal>

@@ -2,12 +2,15 @@ import { Link } from "react-router-dom";
 import { eventTime } from "../../shared/utils/admin";
 import EventIcon from "./EventIcon";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // «Letzte Aktivität» (до 5 записів з overview.events) і посилання на весь Protokoll
-const RecentEvents = ({ events, today, linkLabel }) => (
+const RecentEvents = ({ events, today, linkLabel }) => {
+  const t = useT();
+  return (
   <section>
     <div className="mb-2.5 flex items-center justify-between">
-      <h2 className="text-hint font-extrabold text-faint">Letzte Aktivität</h2>
+      <h2 className="text-hint font-extrabold text-faint">{t("Letzte Aktivität")}</h2>
       <Link to="/admin/protokoll" className="text-label font-extrabold text-accent-ink">
         {linkLabel}
       </Link>
@@ -23,9 +26,10 @@ const RecentEvents = ({ events, today, linkLabel }) => (
         ))}
       </Liquid>
     ) : (
-      <p className="rounded-card bg-card px-3.5 py-4 text-body-sm text-muted">Noch keine Einträge.</p>
+      <p className="rounded-card bg-card px-3.5 py-4 text-body-sm text-muted">{t("Noch keine Einträge.")}</p>
     )}
   </section>
 );
+};
 
 export default RecentEvents;

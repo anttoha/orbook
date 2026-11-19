@@ -93,7 +93,7 @@ const ClassManage = () => {
   return (
     <AccessScope.Provider value={scope}>
       <section className="flex flex-col gap-4">
-        <PageHeader backTo="/mehr" eyebrow={className ? `${t("Mehr")} · ${t("Klasse")} ${className} ${t("verwalten")}` : "Mehr"} eyebrowClassName="text-accent-ink" title="Zugangscodes" panelTitle="Klasse verwalten" aside={me?.canManageClass && addButton} />
+        <PageHeader backTo="/mehr" eyebrow={className ? `${t("Mehr")} · ${t("Klasse")} ${className} ${t("verwalten")}` : t("Mehr")} eyebrowClassName="text-accent-ink" title={t("Zugangscodes")} panelTitle={t("Klasse verwalten")} aside={me?.canManageClass && addButton} />
         {inPanel && me?.canManageClass && addButton}
         {me?.canManageClass ? (
           <>

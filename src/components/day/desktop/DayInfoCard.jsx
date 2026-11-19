@@ -1,5 +1,6 @@
 import { infoParagraphs } from "../../../shared/utils/format";
 import Liquid from "../../ui/Liquid";
+import { useT } from "../../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Картка «Info zum Tag» у правій колонці дня (ПК):
@@ -7,14 +8,15 @@ import Liquid from "../../ui/Liquid";
 // day — день із сервера: info (рядки), publishedAt (коли школа опублікувала план)
 // ─────────────────────────────────────────────────────────────
 const DayInfoCard = ({ day, onOpen }) => {
+  const t = useT();
   const paragraphs = infoParagraphs(day.info); // абзаци тексту школи
 
   return (
     <Liquid as="section" refract press={false} className="rounded-card bg-card p-4">
       <header className="flex items-center justify-between">
-        <h2 className="text-label font-extrabold text-faint">Info zum Tag</h2>
+        <h2 className="text-label font-extrabold text-faint">{t("Info zum Tag")}</h2>
         <button type="button" onClick={onOpen} className="text-label font-extrabold text-accent">
-          Alles
+          {t("Alles")}
         </button>
       </header>
       <div className="mt-2.5 flex flex-col gap-2.5 text-body font-medium text-ink">
@@ -25,7 +27,7 @@ const DayInfoCard = ({ day, onOpen }) => {
         ))}
       </div>
       {/* «Stand 11:26» — час публікації плану школою (HH:MM з ISO-рядка) */}
-      {day.publishedAt && <p className="mt-2.5 text-caption font-semibold text-faint">Aus dem Vertretungsplan · Stand {day.publishedAt.slice(11, 16)}</p>}
+      {day.publishedAt && <p className="mt-2.5 text-caption font-semibold text-faint">{t("Aus dem Vertretungsplan · Stand")} {day.publishedAt.slice(11, 16)}</p>}
     </Liquid>
   );
 };

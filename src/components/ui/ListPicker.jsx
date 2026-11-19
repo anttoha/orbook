@@ -7,6 +7,7 @@ import { summaryText } from "../../shared/utils/picker";
 import Button from "./Button";
 import PickerList, { PickerBadge } from "./PickerList";
 import Sheet from "./Sheet";
+import { useT } from "../../shared/hooks/useT";
 
 // Що показує саме поле: вибраний пункт (кружечок, назва, підпис), кілька — «Mathe, Deutsch +2», нічого — placeholder
 const FieldFace = ({ items, values, placeholder }) => {
@@ -39,6 +40,7 @@ const FieldFace = ({ items, values, placeholder }) => {
 //   title         — заголовок шторки на телефоні, error — червона рамка
 // ─────────────────────────────────────────────────────────────
 const ListPicker = ({ id, label, items, value, onChange, multiple = false, clearable = false, clearLabel = "Ohne Fach", inline = false, title = "Fach wählen", placeholder = "Fach wählen", error = false, className }) => {
+  const t = useT();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const [open, setOpen] = useState(false);
   const values = multiple ? (value ?? []) : value ? [value] : [];
@@ -72,7 +74,7 @@ const ListPicker = ({ id, label, items, value, onChange, multiple = false, clear
   );
   const clearRow = (clearable || multiple) && values.length > 0 && (
     <button type="button" onClick={clear} className="self-start px-2.5 pb-1 text-label font-bold text-accent-ink">
-      {multiple ? "Alle Fächer" : clearLabel}
+      {multiple ? t("Alle Fächer") : clearLabel}
     </button>
   );
   const list = (props) => <PickerList items={items} selected={values} onChoose={choose} {...props} />;
@@ -108,7 +110,7 @@ const ListPicker = ({ id, label, items, value, onChange, multiple = false, clear
             {list({ className: "max-h-80" })}
             {multiple && (
               <Button variant="primary" onClick={() => setOpen(false)} className="mt-1">
-                Fertig
+                {t("Fertig")}
               </Button>
             )}
           </div>
@@ -121,7 +123,7 @@ const ListPicker = ({ id, label, items, value, onChange, multiple = false, clear
   return (
     <>
       {trigger}
-      <Sheet open={open} onClose={() => setOpen(false)} title={title} footer={multiple && <Button variant="primary" onClick={() => setOpen(false)} className="flex-1">Fertig</Button>}>
+      <Sheet open={open} onClose={() => setOpen(false)} title={title} footer={multiple && <Button variant="primary" onClick={() => setOpen(false)} className="flex-1">{t("Fertig")}</Button>}>
         {clearRow}
         {list({})}
       </Sheet>

@@ -26,6 +26,7 @@ import Appointments from "./Appointments";
 import Aufgaben from "./Aufgaben";
 import { filterExams, groupExams, isFilterActive, searchExams, subjectChips, toggleSubject } from "../shared/utils/exams";
 import RoundButton from "../components/ui/RoundButton";
+import { useT } from "../shared/hooks/useT";
 
 // «Ab heute · 5 geplant». Поки записів немає — без числа
 const eyebrowText = (past, count) => {
@@ -44,6 +45,7 @@ const withCount = (label, count) => (count > 0 ? `${label} · ${count}` : label)
 // а на ширині від 1440px праворуч картка «2 Tage bis» і календар.
 // ─────────────────────────────────────────────────────────────
 const ExamList = () => {
+  const t = useT();
   const { today } = useNow();
   const { openSheet } = useSheet();
   const navigate = useNavigate();
@@ -78,14 +80,14 @@ const ExamList = () => {
   const groups = filter.past ? [{ title: "Vergangen", exams: shown }] : groupExams(shown, today);
 
   const body = () => {
-    if (resource.status === "error") return <PlanError resource={resource} onRetry={reload} title="Tests konnten nicht geladen werden" />;
+    if (resource.status === "error") return <PlanError resource={resource} onRetry={reload} title={t("Tests konnten nicht geladen werden")} />;
     if (list.length === 0 && resource.status === "loading") return <ExamSkeleton />;
     if (list.length === 0 && !filterActive) {
       return (
-        <StateScreen icon={FlagIcon} title="Keine Tests in Sicht" text="Sobald jemand mit Editor-Code einen Test einträgt, steht er hier — mit Countdown.">
+        <StateScreen icon={FlagIcon} title={t("Keine Tests in Sicht")} text={t("Sobald jemand mit Editor-Code einen Test einträgt, steht er hier — mit Countdown.")}>
           {!me?.editor && (
             <Button onClick={() => navigate("/editor-code")} className="flex-none">
-              <KeyIcon className="size-4" /> Editor-Code eingeben
+              <KeyIcon className="size-4" /> {t("Editor-Code eingeben")}
             </Button>
           )}
         </StateScreen>
@@ -93,7 +95,7 @@ const ExamList = () => {
     }
     if (shown.length === 0) {
       return (
-        <StateScreen icon={FilterIcon} title="Nichts gefunden" text="Für diesen Filter gibt es keine Einträge." fill={false}>
+        <StateScreen icon={FilterIcon} title={t("Nichts gefunden")} text={t("Für diesen Filter gibt es keine Einträge.")} fill={false}>
           <Button
             onClick={() => {
               resetFilter();
@@ -101,7 +103,7 @@ const ExamList = () => {
             }}
             className="flex-none"
           >
-            Filter zurücksetzen
+            {t("Filter zurücksetzen")}
           </Button>
         </StateScreen>
       );
@@ -119,13 +121,13 @@ const ExamList = () => {
   // «Kommend | Vergangen» праворуч від чипів (ПК)
   const scope = (
     <Segmented
-      label="Zeitraum"
+      label={t("Zeitraum")}
       size="form"
       className="shrink-0"
       value={filter.past ? "past" : "upcoming"}
       options={[
-        { value: "upcoming", label: withCount("Kommend", upcoming.length) },
-        { value: "past", label: withCount("Vergangen", pastExams.exams.length) },
+        { value: "upcoming", label: withCount(t("Kommend"), upcoming.length) },
+        { value: "past", label: withCount(t("Vergangen"), pastExams.exams.length) },
       ]}
       onChange={(value) => setFilter({ ...filter, past: value === "past" })}
     />
@@ -136,13 +138,13 @@ const ExamList = () => {
       <header className="flex items-end justify-between gap-3">
         <div className="min-w-0 space-y-1">
           <p className="text-hint font-extrabold text-faint">{eyebrowText(filter.past, list.length)}</p>
-          <h1 className="text-title text-ink lg:text-hero">Tests</h1>
+          <h1 className="text-title text-ink lg:text-hero">{t("Tests")}</h1>
         </div>
         {isDesktop ? (
           <ExamsToolbar query={query} onQuery={setQuery} filter={{ open: filterOpen, onOpenChange: setFilterOpen, active: isFilterActive(filter) }} addTarget={addTarget} />
         ) : (
           addTarget && (
-            <RoundButton to={addTarget} aria-label="Test eintragen" look="grid size-9.5 shrink-0 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
+            <RoundButton to={addTarget} aria-label={t("Test eintragen")} look="grid size-9.5 shrink-0 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
               <Plus className="size-4.25" />
             </RoundButton>
           )

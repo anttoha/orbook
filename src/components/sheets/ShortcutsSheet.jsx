@@ -1,5 +1,6 @@
 import Kbd from "../ui/Kbd";
 import Sheet from "../ui/Sheet";
+import { useT } from "../../shared/hooks/useT";
 
 // Клавіші з макету 52. Кожна клавіша — окрема плашка: «⌘» і «K» поруч.
 const NAVIGATION = [
@@ -43,13 +44,16 @@ const Column = ({ title, rows }) => (
 // ─────────────────────────────────────────────────────────────
 // Вікно «Tastenkürzel» (макет 52): відкривається клавішею «?» або плиткою в «Einstellungen».
 // ─────────────────────────────────────────────────────────────
-const ShortcutsSheet = ({ open, onClose }) => (
-  <Sheet open={open} onClose={onClose} desktop="wide" eyebrow="Drück ? für diese Hilfe" title="Tastenkürzel">
+const ShortcutsSheet = ({ open, onClose }) => {
+  const t = useT();
+  return (
+  <Sheet open={open} onClose={onClose} desktop="wide" eyebrow={t("Drück ? für diese Hilfe")} title={t("Tastenkürzel")}>
     <div className="grid gap-x-8 gap-y-5 lg:grid-cols-2">
-      <Column title="Navigation" rows={NAVIGATION} />
-      <Column title="Aktionen" rows={ACTIONS} />
+      <Column title={t("Navigation")} rows={NAVIGATION} />
+      <Column title={t("Aktionen")} rows={ACTIONS} />
     </div>
   </Sheet>
 );
+};
 
 export default ShortcutsSheet;

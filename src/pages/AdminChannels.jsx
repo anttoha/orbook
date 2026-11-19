@@ -17,6 +17,7 @@ import Button from "../components/ui/Button";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { loadChannels, saveSettings, telegramDisconnect, telegramTest } from "../shared/api/admin";
 import { useAdminStore } from "../shared/store/adminStore";
+import { useT } from "../shared/hooks/useT";
 
 // Настройки по умолчанию, пока /admin/settings не ответил (как на сервере)
 const DEFAULTS = { plan: true, tomorrow: true, exam: false, bot: true, minutesAfter: 30 };
@@ -26,6 +27,7 @@ const DEFAULTS = { plan: true, tomorrow: true, exam: false, bot: true, minutesAf
 // по нажатию раскрывается прежний экран группы. Статус — GET /admin/channels; настройки — channels.*
 // ─────────────────────────────────────────────────────────────
 const AdminChannels = () => {
+  const t = useT();
   const [state, setState] = useState({ status: "loading", data: null, error: null });
   const [open, setOpen] = useState(null); // "connect" | "share" | "disconnect"
   const [busy, setBusy] = useState(false);
@@ -111,7 +113,7 @@ const AdminChannels = () => {
               {group && <MessagePreview />}
               {group && (
                 <Button className="flex-none bg-card text-danger lg:max-w-60" onClick={() => setOpen("disconnect")}>
-                  <X className="size-4" /> Telegram trennen
+                  <X className="size-4" /> {t("Telegram trennen")}
                 </Button>
               )}
             </div>
@@ -127,7 +129,7 @@ const AdminChannels = () => {
 
   return (
     <section className="flex flex-col gap-5">
-      <AdminHeader title="Kanäle" backTo="/admin/einstellungen" />
+      <AdminHeader title={t("Kanäle")} backTo="/admin/einstellungen" />
       {renderBody()}
       <ConnectSheet open={open === "connect"} onClose={() => setOpen(null)} onConnected={connected} />
       <ShareTextSheet open={open === "share"} onClose={() => setOpen(null)} />
@@ -135,12 +137,12 @@ const AdminChannels = () => {
         open={open === "disconnect"}
         onClose={() => setOpen(null)}
         icon={<X className="size-6.5 text-danger" />}
-        title="Telegram trennen?"
+        title={t("Telegram trennen?")}
         text={`Der Bot verlässt „${state.data?.group?.title ?? "die Gruppe"}“.`}
       >
-        <Button onClick={() => setOpen(null)}>Abbrechen</Button>
+        <Button onClick={() => setOpen(null)}>{t("Abbrechen")}</Button>
         <Button variant="danger" onClick={disconnect} disabled={busy}>
-          Trennen
+          {t("Trennen")}
         </Button>
       </ConfirmDialog>
     </section>

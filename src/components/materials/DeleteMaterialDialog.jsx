@@ -2,12 +2,15 @@ import { PROVIDER_LABEL } from "../../shared/utils/materials";
 import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import { TrashIcon } from "../ui/icons";
+import { useT } from "../../shared/hooks/useT";
 
 // «Der Ordner in Google Drive», «Die Datei in OneDrive» — що саме лишається недоторканим
 const whatStays = (item) => `${item.kind === "folder" ? "Der Ordner" : "Die Datei"} in ${PROVIDER_LABEL[item.provider] ?? "Drive"}`;
 
 // Питання перед видаленням (макет handy-06): зникає лише посилання, файл у Drive лишається
-const DeleteMaterialDialog = ({ item, actions }) => (
+const DeleteMaterialDialog = ({ item, actions }) => {
+  const t = useT();
+  return (
   <ConfirmDialog
     open={actions.confirm}
     onClose={actions.closeConfirm}
@@ -16,14 +19,15 @@ const DeleteMaterialDialog = ({ item, actions }) => (
         <TrashIcon className="size-5.5 text-danger" />
       </span>
     }
-    title="Link löschen?"
-    text={`„${item.title}“ verschwindet für die ganze Klasse. ${whatStays(item)} bleibt unverändert.`}
+    title={t("Link löschen?")}
+    text={t("„{title}“ verschwindet für die ganze Klasse. {2} bleibt unverändert.", { title: item.title, "2": whatStays(item) })}
   >
-    <Button onClick={actions.closeConfirm}>Abbrechen</Button>
+    <Button onClick={actions.closeConfirm}>{t("Abbrechen")}</Button>
     <Button variant="danger" disabled={actions.busy} onClick={actions.remove}>
-      <TrashIcon className="size-4" /> Löschen
+      <TrashIcon className="size-4" /> {t("Löschen")}
     </Button>
   </ConfirmDialog>
 );
+};
 
 export default DeleteMaterialDialog;

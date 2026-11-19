@@ -6,12 +6,14 @@ import { cn } from "../../shared/utils/cn";
 import { paletteOf } from "../../shared/utils/lessons";
 import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Шторка «Fachfarbe ändern». Адреса: ?sheet=farbe&fach=Ma (код предмета)
 // Вибираємо одну з 8 палітр — предмет малюватиметься нею (тільки на цьому пристрої).
 // ─────────────────────────────────────────────────────────────
 const ColorSheet = ({ open, onClose, sheet }) => {
+  const t = useT();
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
   const setFachColor = useUserStore((s) => s.setFachColor); // змінити колір
   const subjects = usePlanStore((s) => s.meta?.subjects); // назви предметів { Ma: "Mathe" }
@@ -31,10 +33,10 @@ const ColorSheet = ({ open, onClose, sheet }) => {
     <Sheet
       open={open}
       onClose={onClose}
-      panelLabel="Fachfarbe"
+      panelLabel={t("Fachfarbe")}
       eyebrow={subjects?.[code] ?? code}
-      title="Fachfarbe ändern"
-      footer={<Button onClick={() => choose(null)}>Standardfarbe</Button>}
+      title={t("Fachfarbe ändern")}
+      footer={<Button onClick={() => choose(null)}>{t("Standardfarbe")}</Button>}
     >
       {/* сітка 4×2 кольорових кружечків */}
       <div className="grid grid-cols-4 gap-3">

@@ -14,6 +14,7 @@ import { useNow } from "../shared/hooks/useNow";
 import { useAdminStore } from "../shared/store/adminStore";
 import { authorText } from "../shared/utils/admin";
 import { subjectName } from "../shared/utils/format";
+import { useT } from "../shared/hooks/useT";
 
 const DEFAULT_TYPES = ["Klassenarbeit", "Leistungskontrolle", "Test", "Abgabe"];
 
@@ -28,6 +29,7 @@ const loadBoth = () => Promise.all([loadAdminExams({ scope: "upcoming" }), loadA
 // видалення з «Rückgängig», «Alte löschen» — через Gefahrenzone (слово LÖSCHEN + пароль).
 // ─────────────────────────────────────────────────────────────
 const AdminExams = () => {
+  const t = useT();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const { today } = useNow();
   const now = new Date().toISOString(); // для «vor 2 Tagen»
@@ -75,33 +77,33 @@ const AdminExams = () => {
   const list = data[scope].filter((exam) => matches(exam, query));
   const tabs = (
     <Segmented
-      label="Zeitraum"
+      label={t("Zeitraum")}
       size="form"
       className="min-w-0 flex-1 lg:flex-none"
       value={scope}
       onChange={setScope}
       options={[
-        { value: "upcoming", label: `Kommend · ${data.upcoming.length}` },
-        { value: "past", label: `Vergangen · ${data.past.length}` },
+        { value: "upcoming", label: t("Kommend · {length}", { length: data.upcoming.length }) },
+        { value: "past", label: t("Vergangen · {length}", { length: data.past.length }) },
       ]}
     />
   );
   const purgeLink = (
     <button type="button" onClick={() => setPurgeOpen(true)} className="shrink-0 text-label font-extrabold whitespace-nowrap text-danger">
-      Alte löschen
+      {t("Alte löschen")}
     </button>
   );
 
   const renderList = () => {
     if (exams.status === "loading") return <AdminSkeleton />;
     if (exams.status === "error") return <AdminError error={exams.error} onRetry={exams.reload} />;
-    if (!list.length) return <AdminEmpty text={query ? "Kein Test passt zur Suche." : "Keine Tests"} />;
+    if (!list.length) return <AdminEmpty text={query ? t("Kein Test passt zur Suche.") : t("Keine Tests")} />;
     return <AdminExamList isDesktop={isDesktop} exams={list} now={now} onEdit={setEditing} onDelete={remove} />;
   };
 
   return (
     <section className="flex flex-col gap-4 lg:gap-5">
-      <AdminHeader title="Tests" actions={isDesktop && [<span key="tabs">{tabs}</span>, <SearchField key="search" value={query} onChange={setQuery} className="w-45" />, <span key="purge">{purgeLink}</span>]} />
+      <AdminHeader title={t("Tests")} actions={isDesktop && [<span key="tabs">{tabs}</span>, <SearchField key="search" value={query} onChange={setQuery} className="w-45" />, <span key="purge">{purgeLink}</span>]} />
       {!isDesktop && (
         <div className="flex items-center gap-3">
           {tabs}
@@ -117,8 +119,8 @@ const AdminExams = () => {
         action="purge"
         withDate
         today={today}
-        title="Alte Tests löschen?"
-        text="Alle Tests vor diesem Datum verschwinden endgültig für die ganze Klasse, auch bereits gelöschte."
+        title={t("Alte Tests löschen?")}
+        text={t("Alle Tests vor diesem Datum verschwinden endgültig für die ganze Klasse, auch bereits gelöschte.")}
         onDone={changed}
       />
     </section>

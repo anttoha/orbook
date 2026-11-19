@@ -2,6 +2,7 @@ import { useHistory } from "../../shared/hooks/useHomework";
 import { cn } from "../../shared/utils/cn";
 import { changeActor, changeText, changeTime } from "../../shared/utils/homework";
 import { Skeleton } from "../ui/PlanState";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // «Verlauf» (макет handy-15): хто і що змінив, нові зверху. Без імен учнів.
@@ -9,12 +10,13 @@ import { Skeleton } from "../ui/PlanState";
 // kind — "homework" | "exams", noun — «Hausaufgabe» / «Klausur» для підпису внизу
 // ─────────────────────────────────────────────────────────────
 const HistoryList = ({ kind, entry, noun }) => {
+  const t = useT();
   const history = useHistory(kind, entry.id, entry.version, Boolean(entry.lastChange));
   if (history.status === "off") return null;
 
   return (
     <section className="flex flex-col gap-2">
-      <h3 className="text-hint font-extrabold text-faint">Verlauf</h3>
+      <h3 className="text-hint font-extrabold text-faint">{t("Verlauf")}</h3>
       {history.status === "loading" && <Skeleton className="h-16 rounded-card" />}
       {history.status === "error" && <p className="text-label text-muted">{history.error?.message}</p>}
       {history.status === "ready" && (
@@ -32,7 +34,7 @@ const HistoryList = ({ kind, entry, noun }) => {
           ))}
         </ol>
       )}
-      <p className="text-caption text-faint">Der Verlauf wird mit {noun === "Test" ? "dem Test" : `der ${noun}`} gelöscht.</p>
+      <p className="text-caption text-faint">{t("Der Verlauf wird mit")} {noun === "Test" ? "dem Test" : `der ${noun}`} {t("gelöscht.")}</p>
     </section>
   );
 };

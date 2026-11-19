@@ -5,6 +5,7 @@ import { useMaterials } from "../../shared/store/materialsStore";
 import { materialMeta } from "../../shared/utils/materials";
 import MaterialTile from "./MaterialTile";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 const SHOWN = 3; // більше — через «Alle»
 const NONE = []; // стала порожня відповідь: селектор Zustand не повинен щоразу давати новий масив
@@ -14,6 +15,7 @@ const NONE = []; // стала порожня відповідь: селекто
 // Немає посилань (або предмета) — блоку немає. «Alle» — повний список із фільтром.
 // ─────────────────────────────────────────────────────────────
 const LessonMaterials = ({ subject, overrides }) => {
+  const t = useT();
   const code = subject?.code;
   const all = useMaterials((s) => s.items);
   const ensure = useMaterials((s) => s.ensure);
@@ -28,9 +30,9 @@ const LessonMaterials = ({ subject, overrides }) => {
   return (
     <section className="flex flex-col gap-2.5">
       <div className="flex items-center justify-between">
-        <h3 className="text-hint font-extrabold text-faint">Materialien · {subject.name ?? code}</h3>
+        <h3 className="text-hint font-extrabold text-faint">{t("Materialien ·")} {subject.name ?? code}</h3>
         <Link to={`/materialien?filter=${encodeURIComponent(code)}`} className="text-label font-bold text-accent-ink">
-          Alle
+          {t("Alle")}
         </Link>
       </div>
       <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3">

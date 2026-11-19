@@ -17,6 +17,7 @@ import TextField from "../../ui/TextField";
 import CodeReveal from "../CodeReveal";
 import SchoolClassField from "../schools/SchoolClassField";
 import DevicesField from "./DevicesField";
+import { useT } from "../../../shared/hooks/useT";
 
 // Поле-перемикач з підписом і сірою підказкою під ним (Für wen, Geräte, Gültig bis)
 const Choice = ({ label, hint, options, value, onChange, disabled }) => (
@@ -30,6 +31,7 @@ const REVEAL_NOTE = () => "Gib ihn nur an die Person oder Gruppe weiter, für di
 
 // Форма: поки код не створено — поля і «Code erstellen»; після — поля лише для читання, код, «Kopieren», «Fertig»
 const NewAccessForm = ({ yearEnd, schoolId, onDone }) => {
+  const t = useT();
   const { today } = useNow();
   const { current } = useAdminClasses(); // в «Klasse verwalten» классов админки нет — полей «Schule/Klasse» тоже
   const { api } = useAccessScope();
@@ -68,27 +70,27 @@ const NewAccessForm = ({ yearEnd, schoolId, onDone }) => {
   const until = accessValidUntil(valid, today, yearEnd);
   return (
     <form onSubmit={create} noValidate className="flex flex-col gap-4">
-      <TextField id="access-label" label="Bezeichnung" placeholder="z. B. Schüler 08" error={errors.label} value={label} maxLength={40} readOnly={locked} onChange={(event) => setLabel(event.target.value)} autoComplete="off" />
+      <TextField id="access-label" label={t("Bezeichnung")} placeholder={t("z. B. Schüler 08")} error={errors.label} value={label} maxLength={40} readOnly={locked} onChange={(event) => setLabel(event.target.value)} autoComplete="off" />
       <SchoolClassField value={target} onChange={setTarget} disabled={locked} error={errors.target} />
-      <Choice label="Für wen?" hint={audienceHint(audience)} options={AUDIENCES} value={audience} onChange={chooseAudience} disabled={locked} />
-      <DevicesField value={devices} onChange={setDevices} hint="Handy + Laptop = 2. Voll? Dann kommt kein neues Gerät rein." error={errors.devices} disabled={locked} />
-      <Choice label="Gültig bis" hint={until ? `${longDate(until)} ${until.slice(0, 4)} · danach automatisch gesperrt` : ""} options={accessValidChoices(yearEnd)} value={valid} onChange={setValid} disabled={locked} />
+      <Choice label={t("Für wen?")} hint={audienceHint(audience)} options={AUDIENCES} value={audience} onChange={chooseAudience} disabled={locked} />
+      <DevicesField value={devices} onChange={setDevices} hint={t("Handy + Laptop = 2. Voll? Dann kommt kein neues Gerät rein.")} error={errors.devices} disabled={locked} />
+      <Choice label={t("Gültig bis")} hint={until ? t("{1} {2} · danach automatisch gesperrt", { "1": longDate(until), "2": until.slice(0, 4) }) : ""} options={accessValidChoices(yearEnd)} value={valid} onChange={setValid} disabled={locked} />
       {errors.form && <p role="alert" className="text-hint text-danger">{errors.form}</p>}
       {created ? (
         <>
-          <CodeReveal code={created.code} masked={created.item.masked} title={created.class?.name ? `Neuer Zugangscode · Klasse ${created.class.name}` : "Neuer Zugangscode"} note={REVEAL_NOTE()} />
+          <CodeReveal code={created.code} masked={created.item.masked} title={created.class?.name ? t("Neuer Zugangscode · Klasse {name}", { name: created.class.name }) : t("Neuer Zugangscode")} note={REVEAL_NOTE()} />
           <div className="grid grid-cols-2 gap-2.5">
             <Button className="flex-none" onClick={() => copyText(created.code)}>
-              <CopyIcon className="size-4" /> Kopieren
+              <CopyIcon className="size-4" /> {t("Kopieren")}
             </Button>
             <Button variant="primary" className="flex-none" onClick={onDone}>
-              <CheckIcon className="size-4" /> Fertig
+              <CheckIcon className="size-4" /> {t("Fertig")}
             </Button>
           </div>
         </>
       ) : (
         <Button type="submit" variant="primary" disabled={busy} className="flex-none">
-          <KeyIcon className="size-4" /> {busy ? "Wird erstellt…" : "Code erstellen"}
+          <KeyIcon className="size-4" /> {busy ? t("Wird erstellt…") : t("Code erstellen")}
         </Button>
       )}
     </form>
@@ -98,6 +100,7 @@ const NewAccessForm = ({ yearEnd, schoolId, onDone }) => {
 // Вікно «Neuer Zugangscode» (ПК — по центру, телефон — шторка). Список оновлюємо при закритті
 // schoolId — «Code für neue Klasse» на «Schulen & Klassen»: эта школа уже выбрана
 const NewAccessSheet = ({ open, schoolId = null, onClose }) => {
+  const t = useT();
   const { yearEnd, reload, admin } = useAccessScope();
   const settingsReady = useAdminStore((s) => !admin || s.settings.status !== "loading");
   const reloadSchools = useAdminStore((s) => s.reloadSchools);
@@ -108,7 +111,7 @@ const NewAccessSheet = ({ open, schoolId = null, onClose }) => {
     onClose();
   };
   return (
-    <Sheet open={open} onClose={close} desktop="dialog" eyebrow={admin ? "Admin · Zugangscodes" : "Zugangscodes"} title="Neuer Zugangscode">
+    <Sheet open={open} onClose={close} desktop="dialog" eyebrow={admin ? t("Admin · Zugangscodes") : t("Zugangscodes")} title={t("Neuer Zugangscode")}>
       {open && settingsReady && <NewAccessForm yearEnd={yearEnd} schoolId={schoolId} onDone={close} />}
     </Sheet>
   );

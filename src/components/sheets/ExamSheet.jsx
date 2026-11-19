@@ -18,9 +18,11 @@ import Button from "../ui/Button";
 import { PencilIcon } from "../ui/icons";
 import { Skeleton } from "../ui/PlanState";
 import Sheet from "../ui/Sheet";
+import { useT } from "../../shared/hooks/useT";
 
 // Скільки днів лишилось. Минула запис без рамки: вона вже нічого не чекає
 const Countdown = ({ exam }) => {
+  const t = useT();
   const { number, label } = examCountdown(exam);
   return (
     <div className={cn("flex h-19 items-center gap-3.5 rounded-card bg-card px-3.75", exam.daysLeft >= 0 && "border border-accent")}>
@@ -29,7 +31,7 @@ const Countdown = ({ exam }) => {
         <p className="text-body font-bold text-ink">{label}</p>
         <p className="mt-0.5 text-hint text-muted">
           {weekdayLong(exam.date)}, {longDate(exam.date)}
-          {exam.lesson && ` · ${exam.lesson}. Stunde`}
+          {exam.lesson && t(" · {lesson}. Stunde", { lesson: exam.lesson })}
         </p>
       </div>
     </div>
@@ -37,11 +39,14 @@ const Countdown = ({ exam }) => {
 };
 
 // Вікно без запису: вантажиться, не знайдена або помилка
-const ExamPlaceholder = ({ open, onClose, status, error }) => (
-  <Sheet open={open} onClose={onClose} panelLabel="Test" title="Test">
-    {status === "loading" ? <Skeleton className="h-19 rounded-card" /> : <p className="text-body-sm text-muted">{status === "missing" ? "Diesen Test gibt es nicht (mehr)." : error?.message}</p>}
+const ExamPlaceholder = ({ open, onClose, status, error }) => {
+  const t = useT();
+  return (
+  <Sheet open={open} onClose={onClose} panelLabel={t("Test")} title={t("Test")}>
+    {status === "loading" ? <Skeleton className="h-19 rounded-card" /> : <p className="text-body-sm text-muted">{status === "missing" ? t("Diesen Test gibt es nicht (mehr).") : error?.message}</p>}
   </Sheet>
 );
+};
 
 // ─────────────────────────────────────────────────────────────
 // Вікно Test (раньше «Klausur»). Адреса: ?sheet=klausur&id=12 (посилання можна переслати).
@@ -49,6 +54,7 @@ const ExamPlaceholder = ({ open, onClose, status, error }) => (
 // Автор-учитель, хто може міняти і «Verlauf» — частина 14 (AuthorNote, HistoryList).
 // ─────────────────────────────────────────────────────────────
 const ExamSheet = ({ open, onClose, sheet }) => {
+  const t = useT();
   const { exam, status, error } = useExam(sheet.id);
   const navigate = useNavigate();
   const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // адмін міг вимкнути «Teilen»
@@ -59,11 +65,11 @@ const ExamSheet = ({ open, onClose, sheet }) => {
     <Sheet
       open={open}
       onClose={onClose}
-      panelLabel="Test"
+      panelLabel={t("Test")}
       eyebrow={
         <span className="flex items-center gap-2">
           <ExamBadge type={exam.type} />
-          {exam.movedFrom && <Badge variant="changed">Verschoben</Badge>}
+          {exam.movedFrom && <Badge variant="changed">{t("Verschoben")}</Badge>}
           <span className="truncate text-hint font-normal">{subjectName(exam.subject)}</span>
         </span>
       }
@@ -75,17 +81,17 @@ const ExamSheet = ({ open, onClose, sheet }) => {
         <div className="flex w-full flex-col gap-3.5">
           <div className="flex gap-2">
             <Button href={examIcsUrl(exam.id)} download>
-              <Calendar className="size-4" /> Kalender
+              <Calendar className="size-4" /> {t("Kalender")}
             </Button>
             {shareEnabled && (
               <Button onClick={() => shareText(examText(exam))}>
-                <Share className="size-4" /> Teilen
+                <Share className="size-4" /> {t("Teilen")}
               </Button>
             )}
           </div>
           {exam.canEdit && (
             <Button variant="primary" className="flex-none" onClick={() => navigate(`/testen/${exam.id}/bearbeiten`)}>
-              <PencilIcon className="size-4" /> Bearbeiten
+              <PencilIcon className="size-4" /> {t("Bearbeiten")}
             </Button>
           )}
         </div>
@@ -96,7 +102,7 @@ const ExamSheet = ({ open, onClose, sheet }) => {
       <EntryExtras entry={exam} />
 
       <AuthorNote entry={exam} />
-      <HistoryList kind="exams" entry={exam} noun="Test" />
+      <HistoryList kind="exams" entry={exam} noun={t("Test")} />
     </Sheet>
   );
 };

@@ -64,7 +64,7 @@ const WeekMenu = ({ monday, onToday, onPickWeek }) => {
       <DropdownMenu.Trigger asChild>
         <button
           type="button"
-          aria-label="Weitere Optionen"
+          aria-label={t("Weitere Optionen")}
           className="relative flex size-9.5 items-center justify-center rounded-full bg-card outline-none data-[state=open]:bg-sand focus-visible:ring-2 focus-visible:ring-accent/50"
         >
           <MoreVertical className="size-4.25" />
@@ -79,19 +79,19 @@ const WeekMenu = ({ monday, onToday, onPickWeek }) => {
           {/* на ПК календар — окрема кнопка 📅 у шапці, в меню він не потрібен */}
           {!isDesktop && (
             <DropdownMenu.Item className={menuItemClass} onSelect={onPickWeek}>
-              <Calendar className={menuIconClass} /> Woche wählen
+              <Calendar className={menuIconClass} /> {t("Woche wählen")}
             </DropdownMenu.Item>
           )}
           <DropdownMenu.Item className={menuItemClass} onSelect={onToday}>
-            <CalendarCheck className={menuIconClass} /> Zu heute springen {shortcut("T")}
+            <CalendarCheck className={menuIconClass} /> {t("Zu heute springen")} {shortcut("T")}
           </DropdownMenu.Item>
           <DropdownMenu.Item className={menuItemClass} onSelect={() => navigate("/heute")}>
-            <List className={menuIconClass} /> {isDesktop ? "Tagesansicht" : "Heute öffnen"} {shortcut("D")}
+            <List className={menuIconClass} /> {isDesktop ? t("Tagesansicht") : t("Heute öffnen")} {shortcut("D")}
           </DropdownMenu.Item>
 
           {/* пункт-галочка: сам показує, чи увімкнено */}
           <DropdownMenu.CheckboxItem className={menuItemClass} checked={showWeekend} onCheckedChange={toggleWeekend}>
-            <CalendarRange className={menuIconClass} /> Wochenende anzeigen
+            <CalendarRange className={menuIconClass} /> {t("Wochenende anzeigen")}
             <DropdownMenu.ItemIndicator className="ml-auto text-accent">
               <Check className="size-4" strokeWidth={3} />
             </DropdownMenu.ItemIndicator>
@@ -100,24 +100,24 @@ const WeekMenu = ({ monday, onToday, onPickWeek }) => {
           {/* «Alle Kurse zeigen»: весь план класу, чужі курси пунктиром. «Meine Kurse» не змінюється */}
           <DropdownMenu.Separator className={menuSeparatorClass} />
           <DropdownMenu.CheckboxItem className={menuItemClass} checked={allCourses} onCheckedChange={setAllCourses}>
-            <Layers className={menuIconClass} /> Alle Kurse zeigen
+            <Layers className={menuIconClass} /> {t("Alle Kurse zeigen")}
             <Switch checked={allCourses} className="ml-auto" />
           </DropdownMenu.CheckboxItem>
 
           <DropdownMenu.Separator className={menuSeparatorClass} />
 
           <DropdownMenu.Item className={menuItemClass} onSelect={refreshPlan}>
-            <RefreshCw className={menuIconClass} /> Plan neu laden {shortcut("R")}
+            <RefreshCw className={menuIconClass} /> {t("Plan neu laden")} {shortcut("R")}
           </DropdownMenu.Item>
           {shareEnabled && (
             <DropdownMenu.Item className={menuItemClass} onSelect={() => openSheet("teilen", { bereich: "woche", kw: monday })}>
-              <Share className={menuIconClass} /> Woche teilen
+              <Share className={menuIconClass} /> {t("Woche teilen")}
             </DropdownMenu.Item>
           )}
           {/* «Drucken» — системний друк браузера (тільки ПК) */}
           {isDesktop && (
             <DropdownMenu.Item className={menuItemClass} onSelect={() => window.print()}>
-              <Printer className={menuIconClass} /> Drucken {shortcut("⌘P")}
+              <Printer className={menuIconClass} /> {t("Drucken")} {shortcut("⌘P")}
             </DropdownMenu.Item>
           )}
 

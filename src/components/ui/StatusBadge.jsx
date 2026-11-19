@@ -1,12 +1,14 @@
 import { lessonBadge } from "../../shared/utils/format";
 import Badge from "./Badge";
+import { useT } from "../../shared/hooks/useT";
 
 // Бейдж уроку: FÄLLT AUS / VERTRETUNG / RAUM / KLAUSUR (або нічого).
 // exam — Klausur цього уроку (якщо є): тоді пишемо її тип — «Klausur», «Test», «Abgabe»
 const StatusBadge = ({ lesson, exam, className }) => {
+  const t = useT();
   const label = lessonBadge(lesson); // текст бейджа за статусом
   if (!label) return null; // звичайний урок — без бейджа
-  if (lesson.examId) return <Badge variant="exam" className={className}>{exam?.type ?? "Test"}</Badge>;
+  if (lesson.examId) return <Badge variant="exam" className={className}>{exam?.type ?? t("Test")}</Badge>;
   return (
     <Badge variant={lesson.status === "cancelled" ? "cancelled" : "changed"} className={className}>
       {label}

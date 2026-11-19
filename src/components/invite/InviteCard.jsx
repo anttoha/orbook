@@ -7,6 +7,7 @@ import Button from "../ui/Button";
 import { WhatsappIcon } from "../ui/icons";
 import QrCode from "../ui/QrCode";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Скелет, поки посилання вантажиться (макет handy-07)
 export const InviteCardSkeleton = () => (
@@ -24,6 +25,7 @@ export const InviteCardSkeleton = () => (
 //   onBig     — «QR groß zeigen» кнопкою (учень і ПК); адмін на телефоні має окремий рядок
 // ─────────────────────────────────────────────────────────────
 const InviteCard = ({ url, className, off = false, onBig, caption = "Mit der Handy-Kamera scannen oder Link senden" }) => {
+  const t = useT();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const short = shortUrl(url);
 
@@ -32,7 +34,7 @@ const InviteCard = ({ url, className, off = false, onBig, caption = "Mit der Han
       <QrCode value={url} dim={off} className="size-42 lg:size-50" />
       {off && (
         <span className="absolute flex items-center gap-1.5 rounded-full bg-sand px-3.5 py-1.5 text-label font-extrabold text-muted">
-          <Lock className="size-4" /> Link ist aus
+          <Lock className="size-4" /> {t("Link ist aus")}
         </span>
       )}
     </div>
@@ -41,7 +43,7 @@ const InviteCard = ({ url, className, off = false, onBig, caption = "Mit der Han
   const buttons = (
     <div className={cn("flex gap-2", off && "pointer-events-none opacity-40")} aria-disabled={off || undefined}>
       <Button onClick={() => copyText(url)} disabled={off}>
-        <Copy className="size-4" /> Kopieren
+        <Copy className="size-4" /> {t("Kopieren")}
       </Button>
       <Button variant="primary" href={whatsappUrl(inviteMessage(url, className))} target="_blank" rel="noreferrer">
         <WhatsappIcon className="size-4" /> {isDesktop ? "WhatsApp Web" : "WhatsApp"}
@@ -51,7 +53,7 @@ const InviteCard = ({ url, className, off = false, onBig, caption = "Mit der Han
 
   const big = onBig && (
     <Button onClick={onBig} disabled={off} className="flex-none">
-      <Maximize className="size-4" /> QR groß zeigen
+      <Maximize className="size-4" /> {t("QR groß zeigen")}
     </Button>
   );
 
@@ -60,9 +62,9 @@ const InviteCard = ({ url, className, off = false, onBig, caption = "Mit der Han
       <div className="flex gap-5">
         <Liquid as="div" refract press={false} className="rounded-card bg-card p-4.5">{qr}</Liquid>
         <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <p className="text-hint font-extrabold text-faint">Einladungslink</p>
+          <p className="text-hint font-extrabold text-faint">{t("Einladungslink")}</p>
           <p className={cn("-mt-1.5 truncate rounded-field bg-card px-4 py-3.5 text-body-sm font-extrabold", off ? "text-faint" : "text-accent-ink")}>{short}</p>
-          <p className="-mt-1 text-caption text-faint">{off ? "Niemand kommt mehr über diesen Link rein." : "Scannen oder Link in die Klassengruppe senden."}</p>
+          <p className="-mt-1 text-caption text-faint">{off ? t("Niemand kommt mehr über diesen Link rein.") : t("Scannen oder Link in die Klassengruppe senden.")}</p>
           {buttons}
           {big}
         </div>
@@ -75,7 +77,7 @@ const InviteCard = ({ url, className, off = false, onBig, caption = "Mit der Han
       <Liquid as="div" refract press={false} className="flex flex-col items-center gap-2 rounded-card bg-card px-4 pt-4 pb-4.5 text-center">
         {qr}
         <p className={cn("mt-2 break-all text-body-sm font-extrabold", off ? "text-faint" : "text-accent-ink")}>{short}</p>
-        <p className="text-caption text-faint">{off ? "Niemand kommt mehr über diesen Link rein." : caption}</p>
+        <p className="text-caption text-faint">{off ? t("Niemand kommt mehr über diesen Link rein.") : caption}</p>
       </Liquid>
       {buttons}
       {big}

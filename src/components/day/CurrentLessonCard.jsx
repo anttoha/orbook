@@ -1,6 +1,7 @@
 import { useNow } from "../../shared/hooks/useNow";
 import { lessonName, subjectName } from "../../shared/utils/format";
 import { afterText, lessonProgress } from "../../shared/utils/lessonClock";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Фіолетова картка «Jetzt · Physik · 301 · noch 27 min».
@@ -10,6 +11,7 @@ import { afterText, lessonProgress } from "../../shared/utils/lessonClock";
 // onOpen(lesson) — відкрити шторку уроку
 // ─────────────────────────────────────────────────────────────
 const CurrentLessonCard = ({ live, onOpen }) => {
+  const t = useT();
   const { now } = useNow(); // час школи (для смужки прогресу)
   const isRunning = Boolean(live.current); // урок іде?
   const lesson = live.current ?? live.next; // про який урок картка
@@ -21,7 +23,7 @@ const CurrentLessonCard = ({ live, onOpen }) => {
     <button type="button" onClick={() => onOpen(lesson)} className="flex flex-col gap-1.5 rounded-card bg-accent px-3.5 py-3 text-left text-on-accent">
       {/* верхній рядок */}
       <div className="flex items-baseline gap-2">
-        <span className="text-hint font-extrabold text-today-sub">{isRunning ? "Jetzt" : "Gleich"}</span>
+        <span className="text-hint font-extrabold text-today-sub">{isRunning ? t("Jetzt") : t("Gleich")}</span>
         <span className="min-w-0 flex-1 truncate text-lead font-bold">
           {lessonName(lesson)}
           {lesson.room && ` · ${lesson.room}`}

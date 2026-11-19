@@ -10,6 +10,7 @@ import { isTabActive } from "../../shared/utils/isTabActive";
 import { sectionVisible } from "../../shared/utils/settings";
 import NewBadge from "../changelog/NewBadge";
 import LeaveClass from "../more/LeaveClass";
+import { useT } from "../../shared/hooks/useT";
 
 // Пункт меню: 40px заввишки, вибраний — фіолетова «пігулка» (макет 22)
 const item = "flex h-10 items-center gap-3 rounded-full px-3 text-nav font-bold";
@@ -44,6 +45,7 @@ const SheetItem = ({ icon: Icon, label, onClick }) => (
 // під рискою «Klasse verlassen».
 // ─────────────────────────────────────────────────────────────
 const SettingsNav = () => {
+  const t = useT();
   const { pathname } = useLocation();
   const syncAllowed = useSyncAllowed(); // школа могла вимкнути синхронізацію
   const me = usePlanStore((s) => s.me);
@@ -51,7 +53,7 @@ const SettingsNav = () => {
   const visible = settingsSections.filter((section) => sectionVisible(section, { syncAllowed, teacher: isTeacher(me), features: me?.features, canManage: Boolean(me?.canManageClass) }));
 
   return (
-    <nav aria-label="Mehr" className="w-settings-nav shrink-0">
+    <nav aria-label={t("Mehr")} className="w-settings-nav shrink-0">
       <ul>
         {visible
           .filter((section) => !section.group)
@@ -72,9 +74,9 @@ const SettingsNav = () => {
             {/* вікна, а не сторінки: «Klasse einladen» (частина 16) і «Tastenkürzel» */}
             {group.key === "seiten" && (
               <>
-                <SheetItem icon={UserPlus} label="Klasse einladen" onClick={() => openSheet("einladen")} />
-                <SheetItem icon={Info} label="Kurz erklärt" onClick={() => openSheet("tipps")} />
-                <SheetItem icon={Keyboard} label="Tastenkürzel" onClick={() => openSheet("tasten")} />
+                <SheetItem icon={UserPlus} label={t("Klasse einladen")} onClick={() => openSheet("einladen")} />
+                <SheetItem icon={Info} label={t("Kurz erklärt")} onClick={() => openSheet("tipps")} />
+                <SheetItem icon={Keyboard} label={t("Tastenkürzel")} onClick={() => openSheet("tasten")} />
               </>
             )}
           </ul>

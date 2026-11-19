@@ -12,6 +12,7 @@ import CheckCircle from "../tasks/CheckCircle";
 import DoneText from "../tasks/DoneText";
 import SubjectBadge from "../ui/SubjectBadge";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Вторая строка: «Mathe · von Mü» у домашки, «Eigene Aufgabe» у своей
 function subline(row, names) {
@@ -24,6 +25,7 @@ function subline(row, names) {
 // Домашки этого дня + свои задачи на этот день, кружок — «erledigt». Ничего нет — блока нет.
 // ─────────────────────────────────────────────────────────────
 const HomeworkDue = ({ date, className }) => {
+  const t = useT();
   const { today } = useNow();
   const homework = useHomeworkDue(date, today);
   const tasks = useTasksStore((s) => s.tasks);
@@ -39,7 +41,7 @@ const HomeworkDue = ({ date, className }) => {
   return (
     <section className={cn("flex flex-col gap-2", className)}>
       <h2 className="flex justify-between text-hint font-extrabold text-faint">
-        <span>Aufgaben · {date === today ? "fällig heute" : "fällig an diesem Tag"}</span>
+        <span>{t("Aufgaben ·")} {date === today ? t("fällig heute") : t("fällig an diesem Tag")}</span>
         {doneCount > 0 && <span>{doneCount} von {rows.length}</span>}
       </h2>
       <Liquid as="ul" refract press={false} className="rounded-card bg-card pr-1.5 pl-3.5">

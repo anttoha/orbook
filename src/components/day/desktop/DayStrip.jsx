@@ -4,6 +4,7 @@ import { useGlass } from "../../../shared/hooks/useGlass";
 import { CircleDashed } from "lucide-react";
 import { cn } from "../../../shared/utils/cn";
 import { FlagIcon } from "../../ui/icons";
+import { useT } from "../../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Смуга днів тижня над списком (макет «Tag · Liste»):
@@ -14,6 +15,7 @@ import { FlagIcon } from "../../ui/icons";
 // Вибраний день — одна фіолетова «пігулка» під кнопками, яка плавно їде до нового дня (як у Segmented).
 // Кнопки однакової ширини (flex-1), тому зсув = номер × (ширина + проміжок 4px)
 const DayStrip = ({ days, date, today }) => {
+  const t = useT();
   const index = days.findIndex((day) => day.date === date);
   const glass = useGlass();
   const navigate = useNavigate();
@@ -26,14 +28,14 @@ const DayStrip = ({ days, date, today }) => {
       icon: day.exams.length > 0 ? <FlagIcon className="size-3.5" /> : undefined,
     }));
     return (
-      <nav aria-label="Wochentage">
-        <GlassSegmented aria-label="Wochentage" className="w-full" options={options} value={Math.max(0, index)} onChange={(i) => navigate(`/tag/${days[i].date}`)} />
+      <nav aria-label={t("Wochentage")}>
+        <GlassSegmented aria-label={t("Wochentage")} className="w-full" options={options} value={Math.max(0, index)} onChange={(i) => navigate(`/tag/${days[i].date}`)} />
       </nav>
     );
   }
 
   return (
-    <nav aria-label="Wochentage" className="relative flex h-13 gap-1 rounded-full bg-sand p-1">
+    <nav aria-label={t("Wochentage")} className="relative flex h-13 gap-1 rounded-full bg-sand p-1">
       {index >= 0 && (
         <span
           aria-hidden="true"

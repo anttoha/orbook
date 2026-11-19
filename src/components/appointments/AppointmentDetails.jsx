@@ -2,6 +2,7 @@ import { Info, MapPin, UserRound } from "lucide-react";
 import { usePlanStore } from "../../shared/store/planStore";
 import { audienceText, sourceText } from "../../shared/utils/appointments";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 const box = "flex gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-muted";
 
@@ -26,13 +27,14 @@ export const PlaceAndNote = ({ item }) => {
 
 // «Eingetragen von Ric · Lehrkraft / Gilt für alle mit dem Kurs Physik.»
 export const SourceNote = ({ item }) => {
+  const t = useT();
   const me = usePlanStore((s) => s.me);
   const source = sourceText(item, me);
   return (
     <div className={box}>
       <UserRound className="size-4 shrink-0" />
       <p>
-        Eingetragen {source.name ? "von " : ""}
+        {t("Eingetragen")} {source.name ? "von " : ""}
         {source.name && <b className="font-extrabold text-ink">{source.name}</b>}
         {source.role && `${source.name ? " · " : ""}${source.role}`}
         <br />

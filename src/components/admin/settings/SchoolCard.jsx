@@ -9,6 +9,7 @@ import TextField from "../../ui/TextField";
 import OptionRow from "./OptionRow";
 import SettingsCard from "./SettingsCard";
 import PillButton from "../../ui/PillButton";
+import { useT } from "../../../shared/hooks/useT";
 
 // Результат «Verbindung testen»: зелена або червона плашка
 export const TestResult = ({ result }) => (
@@ -31,6 +32,7 @@ function resultText(answer) {
 // school — form.school; onChange(key, value); bad — ключі, які сервер не прийняв
 // ─────────────────────────────────────────────────────────────
 const SchoolCard = ({ school, onChange, schoolPassword, onSchoolPassword, passwordSet, demo, bad, className }) => {
+  const t = useT();
   const classes = useAdminLoad("classes", loadClasses);
   const [testing, setTesting] = useState(false);
   const [result, setResult] = useState(null);
@@ -51,18 +53,18 @@ const SchoolCard = ({ school, onChange, schoolPassword, onSchoolPassword, passwo
   };
 
   return (
-    <SettingsCard title="Schule & Plan" plain className={className}>
+    <SettingsCard title={t("Schule & Plan")} plain className={className}>
       <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-x-5">
-        <TextField id="school-number" label="Schulnummer" inputMode="numeric" autoComplete="off" disabled={demo} hint={demoHint} error={bad.has("school.number") ? "Nur Ziffern (4 bis 12)." : null} value={school.number ?? ""} onChange={(event) => onChange("number", event.target.value || null)} />
-        <TextField id="school-password" label="Passwort der Schule" type="password" autoComplete="new-password" disabled={demo} placeholder={passwordSet ? "••••••" : "Passwort"} hint={passwordSet ? "Gespeichert · leer lassen = unverändert" : null} value={schoolPassword} onChange={(event) => onSchoolPassword(event.target.value)} />
-        <TextField id="school-server" className="lg:col-span-2" label="Server" inputMode="url" autoComplete="off" disabled={demo} error={bad.has("school.baseUrl") ? "Nur https://, ohne Pfad, keine lokalen Adressen." : null} value={school.baseUrl} onChange={(event) => onChange("baseUrl", event.target.value)} />
+        <TextField id="school-number" label={t("Schulnummer")} inputMode="numeric" autoComplete="off" disabled={demo} hint={demoHint} error={bad.has("school.number") ? t("Nur Ziffern (4 bis 12).") : null} value={school.number ?? ""} onChange={(event) => onChange("number", event.target.value || null)} />
+        <TextField id="school-password" label={t("Passwort der Schule")} type="password" autoComplete="new-password" disabled={demo} placeholder={passwordSet ? "••••••" : t("Passwort")} hint={passwordSet ? t("Gespeichert · leer lassen = unverändert") : null} value={schoolPassword} onChange={(event) => onSchoolPassword(event.target.value)} />
+        <TextField id="school-server" className="lg:col-span-2" label={t("Server")} inputMode="url" autoComplete="off" disabled={demo} error={bad.has("school.baseUrl") ? t("Nur https://, ohne Pfad, keine lokalen Adressen.") : null} value={school.baseUrl} onChange={(event) => onChange("baseUrl", event.target.value)} />
       </div>
-      <OptionRow label="Klasse" invalid={bad.has("school.className")}>
-        <SelectPill label="Klasse" value={school.className} options={classOptions} onChange={(value) => onChange("className", value)} />
+      <OptionRow label={t("Klasse")} invalid={bad.has("school.className")}>
+        <SelectPill label={t("Klasse")} value={school.className} options={classOptions} onChange={(value) => onChange("className", value)} />
       </OptionRow>
       <div className="flex flex-col gap-2.5 pb-3 lg:flex-row lg:items-center">
         <PillButton glass="glass" size="lg" disabled={testing} onClick={test} className="flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-sand px-5 text-row font-extrabold text-ink disabled:opacity-50">
-          <RenewIcon className={cn("size-4", testing && "animate-spin")} /> Verbindung testen
+          <RenewIcon className={cn("size-4", testing && "animate-spin")} /> {t("Verbindung testen")}
         </PillButton>
         {result && <TestResult result={result} />}
       </div>

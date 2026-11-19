@@ -26,6 +26,7 @@ import { useUserStore } from "../shared/store/userStore";
 import { cn } from "../shared/utils/cn";
 import { isFullScreenPage } from "../shared/utils/isTabActive";
 import PillButton from "../components/ui/PillButton";
+import { useT } from "../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Оболонка застосунку. Вирішує, що показати:
@@ -36,6 +37,7 @@ import PillButton from "../components/ui/PillButton";
 //   інакше           → сайдбар / нижнє меню + сторінка (Outlet) + шторки
 // ─────────────────────────────────────────────────────────────
 const HomePage = () => {
+  const t = useT();
   const me = usePlanStore((s) => s.me); // хто я
   const startError = usePlanStore((s) => s.startError); // помилка старту
   const start = usePlanStore((s) => s.start); // GET /api/auth/me (+ решта даних)
@@ -75,10 +77,10 @@ const HomePage = () => {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-3 px-7 text-center">
         <TriangleAlert className="size-8 text-danger" />
-        <p className="text-subhead text-ink">ORBook ist gerade nicht erreichbar</p>
+        <p className="text-subhead text-ink">{t("ORBook ist gerade nicht erreichbar")}</p>
         <p className="text-label font-semibold text-muted">{startError.message}</p>
         <PillButton glass="filled" size="sm" onClick={start} className="rounded-full bg-accent px-5 py-3 text-body font-extrabold text-on-accent">
-          Erneut versuchen
+          {t("Erneut versuchen")}
         </PillButton>
       </div>
     );
@@ -101,7 +103,7 @@ const HomePage = () => {
 
         <main className={cn("min-w-0 flex-1 pt-6 pb-28 lg:pt-6.5 lg:pr-5 lg:pb-8", fullScreen && "flex min-h-dvh flex-col pb-7.5")}>
           {/* Демо-сервер: плашка, щоб не сплутати зі справжнім планом (на ПК — у сайдбарі) */}
-          {demo && <p className="mb-3 w-fit rounded-full bg-tint px-2.5 py-1 text-micro font-extrabold text-accent-ink uppercase lg:hidden">Demo · ausgedachte Daten</p>}
+          {demo && <p className="mb-3 w-fit rounded-full bg-tint px-2.5 py-1 text-micro font-extrabold text-accent-ink uppercase lg:hidden">{t("Demo · ausgedachte Daten")}</p>}
           {/* key: нова сторінка — новий блок, і анімація появи грає знову */}
           <div key={page.key} className={cn("flex flex-1 flex-col", page.className)}>
             <Outlet />

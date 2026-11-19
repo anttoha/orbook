@@ -5,13 +5,15 @@ import { useGlass } from "../../shared/hooks/useGlass";
 import { cn } from "../../shared/utils/cn";
 import { menuContentClass, menuIconClass, menuItemClass, menuSeparatorClass } from "../ui/menuStyles";
 import { codeActions } from "./codeActions";
+import { useT } from "../../shared/hooks/useT";
 
 // Кнопка «⋮» у рядку коду.
 // ПК: випадаюче меню (макет 45). Телефон (onOpenSheet): кнопка відкриває шторку (макет 43)
 // items — свої пункти (Zugangscodes, частина 14c); без них — пункти Editor-Code
 const CodeMenu = ({ code, onAction, onOpenSheet, items: ownItems }) => {
+  const t = useT();
   const button = (props) => (
-    <button type="button" aria-label={`Aktionen für ${code.label}`} className="grid size-8 shrink-0 place-items-center rounded-full text-ink outline-none hover:bg-sand focus-visible:ring-2 focus-visible:ring-accent/50 data-[state=open]:bg-sand" {...props}>
+    <button type="button" aria-label={t("Aktionen für {label}", { label: code.label })} className="grid size-8 shrink-0 place-items-center rounded-full text-ink outline-none hover:bg-sand focus-visible:ring-2 focus-visible:ring-accent/50 data-[state=open]:bg-sand" {...props}>
       <MoreVertical className="size-4.5" />
     </button>
   );
@@ -24,7 +26,7 @@ const CodeMenu = ({ code, onAction, onOpenSheet, items: ownItems }) => {
     return (
       <GlassMenu
         icon={<MoreVertical className="size-4.5" />}
-        aria-label={`Aktionen für ${code.label}`}
+        aria-label={t("Aktionen für {label}", { label: code.label })}
         size="sm"
         width={250}
         items={items.map((item) => ({ label: item.label, icon: <item.icon className="size-4.5" />, destructive: Boolean(item.danger), onSelect: () => onAction(item.kind, code) }))}

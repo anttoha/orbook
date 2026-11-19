@@ -5,6 +5,7 @@ import DayAppointmentPills from "../../appointments/DayAppointmentPills";
 import ChangedLine from "../ChangedLine";
 import { dayNumber, longDate, weekdayLong } from "../../../shared/utils/format";
 import RoundButton from "../../ui/RoundButton";
+import { useT } from "../../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Шапка дня в сітці тижня на ПК: «15 MO» (сьогодні — фіолетова «пігулка»).
@@ -14,6 +15,7 @@ import RoundButton from "../../ui/RoundButton";
 // as — чим рендерити саму шапку (Link або button), решта пропсів — їй же; style — місце в сітці
 // ─────────────────────────────────────────────────────────────
 const GridDayHeader = ({ as: Component = "button", day, isToday, className, style, ...props }) => {
+  const t = useT();
   const { openSheet } = useSheet();
   const hasNews = day.info.length > 0 || day.exams.length > 0; // є що подивитись
 
@@ -35,8 +37,8 @@ const GridDayHeader = ({ as: Component = "button", day, isToday, className, styl
 
       <RoundButton
         onClick={() => openSheet("info", { datum: day.date })}
-        aria-label={`Info zum Tag · ${weekdayLong(day.date)}`}
-        title="Info zum Tag"
+        aria-label={t("Info zum Tag · {1}", { "1": weekdayLong(day.date) })}
+        title={t("Info zum Tag")}
         style={{ "--lg-h": "1.75rem" }} // «Glas»: кнопка библиотеки того же размера 28px, что и наша, — не вылезает за плашку дня
         look={cn(
           "absolute top-6.5 right-1.5 -mt-3.5 grid size-7 place-items-center rounded-full outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent/50",

@@ -5,10 +5,12 @@ import Button from "../ui/Button";
 import TextField from "../ui/TextField";
 import { usePlanStore } from "../../shared/store/planStore";
 import { lockDuration, loginErrorText } from "../../shared/utils/authErrors";
+import { useT } from "../../shared/hooks/useT";
 
 // Форма входу: Zugangscode (ORB-A-…, частина 14c) або старий пароль класу — одне поле, сервер розбереться сам.
 // Після успіху HomePage сам покаже застосунок.
 const LoginForm = () => {
+  const t = useT();
   const login = usePlanStore((s) => s.login);
   const inputRef = useRef(null);
 
@@ -50,9 +52,9 @@ const LoginForm = () => {
         id="class-password"
         name="password"
         type="password"
-        label="Zugangscode oder Klassenpasswort"
+        label={t("Zugangscode oder Klassenpasswort")}
         placeholder="ORB-A-XXXX-XXXX"
-        hint="Vom Admin oder aus der Klassengruppe."
+        hint={t("Vom Admin oder aus der Klassengruppe.")}
         error={error}
         value={password}
         onChange={(event) => {
@@ -68,22 +70,22 @@ const LoginForm = () => {
 
       <Button type="submit" variant="primary" disabled={loading || locked} className="mt-4 w-full flex-none gap-1.5">
         {!loading && <ChevronRight className="size-4" />}
-        {loading ? "Wird geprüft…" : "Öffnen"}
+        {loading ? t("Wird geprüft…") : t("Öffnen")}
       </Button>
 
       <p className="mt-4 text-center text-label text-muted">
-        Lehrkraft?{" "}
+        {t("Lehrkraft?")}{" "}
         <Link to={{ search: "?zugang=lehrkraft" }} className="font-extrabold text-accent-ink">
-          Mit Lehrer-Code anmelden
+          {t("Mit Lehrer-Code anmelden")}
         </Link>
       </p>
 
       <div className="mt-4 flex items-center justify-between lg:mt-5">
         <Link to="/datenschutz" className="text-caption font-semibold text-muted lg:text-hint">
-          Datenschutz
+          {t("Datenschutz")}
         </Link>
-        <p className="text-caption text-faint lg:hidden">Keine offizielle App von Indiware</p>
-        <p className="hidden text-hint text-faint lg:block">Enter zum Öffnen</p>
+        <p className="text-caption text-faint lg:hidden">{t("Keine offizielle App von Indiware")}</p>
+        <p className="hidden text-hint text-faint lg:block">{t("Enter zum Öffnen")}</p>
       </div>
     </form>
   );

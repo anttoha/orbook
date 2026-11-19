@@ -22,6 +22,7 @@ import { cn } from "../shared/utils/cn";
 import { addHomeworkTarget } from "../shared/utils/examRules";
 import { subjectChips, toggleSubject } from "../shared/utils/exams";
 import { aufgabenList } from "../shared/utils/tasks";
+import { useT } from "../shared/hooks/useT";
 
 // Фильтр: чипы предметов и поиск на ПК (по тексту и предмету)
 function matches(row, subjects, query, names) {
@@ -36,6 +37,7 @@ function matches(row, subjects, query, names) {
 // Домашки класса (GET /api/homework, planStore) + свои задачи (tasksStore). Галочки — только на устройстве.
 // ─────────────────────────────────────────────────────────────
 const Aufgaben = () => {
+  const t = useT();
   const { today } = useNow();
   const me = usePlanStore((s) => s.me);
   const homework = usePlanStore((s) => s.homework);
@@ -66,19 +68,19 @@ const Aufgaben = () => {
   const rowProps = { today, overrides, subjectNames: names };
 
   const body = () => {
-    if (all.length === 0 && resource.status === "error") return <PlanError resource={resource} onRetry={loadHomework} title="Hausaufgaben konnten nicht geladen werden" />;
+    if (all.length === 0 && resource.status === "error") return <PlanError resource={resource} onRetry={loadHomework} title={t("Hausaufgaben konnten nicht geladen werden")} />;
     if (all.length === 0 && resource.status === "loading") return <ExamSkeleton />;
     if (list.open.length === 0 && !filterActive) {
       return (
         <>
-          <StateScreen icon={CheckIcon} title="Alles erledigt" text="Neue Hausaufgaben der Klasse erscheinen hier von selbst. Eigene Aufgaben: +" fill={done.length === 0} />
+          <StateScreen icon={CheckIcon} title={t("Alles erledigt")} text={t("Neue Hausaufgaben der Klasse erscheinen hier von selbst. Eigene Aufgaben: +")} fill={done.length === 0} />
           {done.length > 0 && <DoneSection rows={done} rowProps={rowProps} />}
         </>
       );
     }
     if (groups.length === 0 && done.length === 0) {
       return (
-        <StateScreen icon={FilterIcon} title="Nichts gefunden" text="Für diesen Filter gibt es keine Einträge." fill={false}>
+        <StateScreen icon={FilterIcon} title={t("Nichts gefunden")} text={t("Für diesen Filter gibt es keine Einträge.")} fill={false}>
           <Button
             onClick={() => {
               setFilter({ ...filter, subjects: [] });
@@ -86,7 +88,7 @@ const Aufgaben = () => {
             }}
             className="flex-none"
           >
-            Filter zurücksetzen
+            {t("Filter zurücksetzen")}
           </Button>
         </StateScreen>
       );
@@ -103,7 +105,7 @@ const Aufgaben = () => {
         ))}
         {done.length > 0 && <DoneSection rows={done} rowProps={rowProps} />}
         <p className="flex items-start gap-1.5 text-caption text-faint lg:hidden">
-          <LockIcon className="mt-0.5 size-3.25 shrink-0" /> Abhaken merkt sich nur dein Gerät — mit Sync-Code auch deine anderen. Die Klasse sieht davon nichts.
+          <LockIcon className="mt-0.5 size-3.25 shrink-0" /> {t("Abhaken merkt sich nur dein Gerät — mit Sync-Code auch deine anderen. Die Klasse sieht davon nichts.")}
         </p>
       </>
     );
@@ -114,10 +116,10 @@ const Aufgaben = () => {
       <header className="flex items-end justify-between gap-3">
         <div className="min-w-0 space-y-1">
           <p className="text-hint font-extrabold text-faint">{eyebrowText(list.open.length, list.done.length, isDesktop)}</p>
-          <h1 className="text-title text-ink lg:text-hero">Aufgaben</h1>
+          <h1 className="text-title text-ink lg:text-hero">{t("Aufgaben")}</h1>
         </div>
         {isDesktop ? (
-          <ExamsToolbar query={query} onQuery={setQuery} filter={null} placeholder="Aufgabe oder Fach suchen">
+          <ExamsToolbar query={query} onQuery={setQuery} filter={null} placeholder={t("Aufgabe oder Fach suchen")}>
             <AddTaskButton classTarget={classTarget} wide />
           </ExamsToolbar>
         ) : (
@@ -166,6 +168,7 @@ const OpenRow = (props) => {
 
 // «Erledigt · 3» внизу: на телефоне свёрнуто, по нажатию плавно раскрывается; на ПК сразу открыто
 const DoneSection = ({ rows, rowProps }) => {
+  const t = useT();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const [opened, setOpened] = useState(false);
   const open = isDesktop || opened;
@@ -187,10 +190,10 @@ const DoneSection = ({ rows, rowProps }) => {
             <CheckIcon className="size-3.5" />
           </span>
         )}
-        <span className={cn("flex-1 font-extrabold", open ? "text-hint text-faint" : "text-row text-ink")}>Erledigt · {rows.length}</span>
+        <span className={cn("flex-1 font-extrabold", open ? "text-hint text-faint" : "text-row text-ink")}>{t("Erledigt ·")} {rows.length}</span>
         {!isDesktop && (
           <>
-            <span className={cn("text-label", open ? "font-bold text-accent-ink" : "text-faint")}>{open ? "Zuklappen" : "anzeigen"}</span>
+            <span className={cn("text-label", open ? "font-bold text-accent-ink" : "text-faint")}>{open ? t("Zuklappen") : "anzeigen"}</span>
             <ChevronDown className={cn("size-4 text-faint2 transition-transform duration-300", open && "rotate-180")} />
           </>
         )}

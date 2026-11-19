@@ -12,6 +12,7 @@ import StateScreen from "../components/ui/StateScreen";
 import { useSyncAllowed } from "../shared/hooks/useNotesSync";
 import { useSyncStore } from "../shared/store/syncStore";
 import Liquid from "../components/ui/Liquid";
+import { useT } from "../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // «Synchronisieren» (макет 21 / PC 27; часть 25 — handy-07, pc-02): один Sync-Code для всего —
@@ -19,25 +20,26 @@ import Liquid from "../components/ui/Liquid";
 // Код создаёт только приложение: свой придумать нельзя.
 // ─────────────────────────────────────────────────────────────
 const NotesSync = () => {
+  const t = useT();
   const code = useSyncStore((s) => s.code);
   const allowed = useSyncAllowed();
   const from = useLocation().state?.from;
 
   return (
     <section className="flex flex-col gap-4.5">
-      <PageHeader backTo={from ?? "/mehr"} eyebrow="Einstellungen" title="Synchronisieren" panelTitle="Synchronisieren" />
+      <PageHeader backTo={from ?? "/mehr"} eyebrow={t("Einstellungen")} title={t("Synchronisieren")} panelTitle={t("Synchronisieren")} />
 
       {!allowed ? (
-        <StateScreen icon={SyncIcon} title="Ausgeschaltet" text="Deine Schule hat das Synchronisieren ausgeschaltet. Alles bleibt auf diesem Gerät." />
+        <StateScreen icon={SyncIcon} title={t("Ausgeschaltet")} text={t("Deine Schule hat das Synchronisieren ausgeschaltet. Alles bleibt auf diesem Gerät.")} />
       ) : (
         <div className="flex flex-col gap-4.5 lg:max-w-186">
-            <p className="text-body-sm leading-5.5 text-muted">Alles von diesem Gerät auch auf deinem anderen.</p>
+            <p className="text-body-sm leading-5.5 text-muted">{t("Alles von diesem Gerät auch auf deinem anderen.")}</p>
             {code ? <SyncCodeCard code={code} /> : <StartSync />}
             <SyncQrCard />
             <SyncParts />
             <p className="flex gap-2.5 rounded-field bg-tint px-3.25 py-3 text-label text-accent-ink">
               <WarningIcon className="mt-0.5 size-4 shrink-0" />
-              <span>Code weg = Daten weg. Schreib ihn dir irgendwo auf.</span>
+              <span>{t("Code weg = Daten weg. Schreib ihn dir irgendwo auf.")}</span>
             </p>
             <ConnectDevice />
             {code && <RenewCode />}
@@ -49,6 +51,7 @@ const NotesSync = () => {
 
 // Синхронизация ещё выключена: создать первый код
 const StartSync = () => {
+  const t = useT();
   const enable = useSyncStore((s) => s.enable);
   const [busy, setBusy] = useState(false);
 
@@ -60,10 +63,10 @@ const StartSync = () => {
 
   return (
     <Liquid as="div" refract press={false} className="flex flex-col gap-3.5 rounded-card bg-card px-4 py-4.5">
-      <p className="text-hint font-extrabold text-faint">Synchronisieren</p>
-      <p className="text-body-sm text-ink">Noch kein Sync-Code auf diesem Gerät. Erzeuge einen, um alles auf ein anderes Gerät zu holen.</p>
+      <p className="text-hint font-extrabold text-faint">{t("Synchronisieren")}</p>
+      <p className="text-body-sm text-ink">{t("Noch kein Sync-Code auf diesem Gerät. Erzeuge einen, um alles auf ein anderes Gerät zu holen.")}</p>
       <Button variant="primary" onClick={start} disabled={busy} className="flex-none">
-        <SyncIcon className="size-4" /> Code erzeugen
+        <SyncIcon className="size-4" /> {t("Code erzeugen")}
       </Button>
     </Liquid>
   );

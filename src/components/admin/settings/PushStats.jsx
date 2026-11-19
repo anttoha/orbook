@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { getAdminPush } from "../../../shared/api/push";
 import { lastSentLabel } from "../../../shared/utils/push";
+import { useT } from "../../../shared/hooks/useT";
 
 // Под «Mitteilungen» в админке: сколько устройств подписано (только число) и что недавно уходило.
 // Какие это устройства, админ не видит — сервер их и не называет
 const PushStats = () => {
+  const t = useT();
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -22,13 +24,13 @@ const PushStats = () => {
     <div className="border-t border-hair">
       <div className="flex min-h-16.75 items-center justify-between gap-3 py-2.5">
         <div>
-          <p className="text-row text-ink">Geräte mit Mitteilungen</p>
+          <p className="text-row text-ink">{t("Geräte mit Mitteilungen")}</p>
         </div>
         <p className="text-subhead font-black text-ink tabular-nums">{data.devices ?? "–"}</p>
       </div>
       {data.recent?.length > 0 && (
         <div className="border-t border-hair py-2.5">
-          <p className="mb-1.5 text-hint font-extrabold text-faint">Zuletzt gesendet</p>
+          <p className="mb-1.5 text-hint font-extrabold text-faint">{t("Zuletzt gesendet")}</p>
           <ul className="flex flex-col gap-2">
             {data.recent.slice(0, 5).map((item, index) => (
               <li key={index} className="flex items-baseline justify-between gap-3">
@@ -37,7 +39,7 @@ const PushStats = () => {
                   <span className="block text-caption text-faint">{lastSentLabel(item.sentAt).replace("Zuletzt: ", "")}</span>
                 </span>
                 <span className="shrink-0 text-caption text-muted">
-                  {item.devices} {item.devices === 1 ? "Gerät" : "Geräte"}
+                  {item.devices} {item.devices === 1 ? t("Gerät") : t("Geräte")}
                 </span>
               </li>
             ))}

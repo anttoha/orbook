@@ -7,6 +7,7 @@ import { weekCheckSource } from "../../shared/utils/lessons";
 import { agoText } from "../../shared/utils/liveText";
 import RefreshButton from "../week/RefreshButton";
 import LiveDot from "./LiveDot";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Строка под заголовком недели (часть 26, макет handy-07): «● Live · geprüft vor 20 Sek. ›» + «Neu laden».
@@ -14,6 +15,7 @@ import LiveDot from "./LiveDot";
 // days — дни недели: пока статуса нет, время проверки берём из них (как раньше «aktualisiert …»).
 // ─────────────────────────────────────────────────────────────
 const LiveLine = ({ days, monday }) => {
+  const t = useT();
   const { openSheet } = useSheet();
   const live = usePlanStore((s) => s.live) === "live";
   const status = usePlanStore((s) => s.status);
@@ -31,7 +33,7 @@ const LiveLine = ({ days, monday }) => {
       >
         <LiveDot on={live && !stale} />
         <span className="truncate text-faint">
-          <span className={cn("font-extrabold", stale ? "text-danger" : live ? "text-ok" : "text-muted")}>{stale ? "Veraltet" : live ? "Live" : "Nicht live"}</span>
+          <span className={cn("font-extrabold", stale ? "text-danger" : live ? "text-ok" : "text-muted")}>{stale ? t("Veraltet") : live ? t("Live") : t("Nicht live")}</span>
           {ago && ` · geprüft ${ago}`}
         </span>
         <ChevronRight className="size-3 shrink-0 text-faint2" />

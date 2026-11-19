@@ -15,9 +15,11 @@ import { Skeleton } from "../ui/PlanState";
 import Sheet from "../ui/Sheet";
 import TextField from "../ui/TextField";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // «Neuen Link teilen» прямо в шторке: форма записи остаётся открытой, новая ссылка сразу отмечена
 const NewLink = ({ subject, onSaved }) => {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ title: "", url: "" });
   const [errors, setErrors] = useState({});
@@ -27,8 +29,8 @@ const NewLink = ({ subject, onSaved }) => {
     return (
       <button type="button" onClick={() => setOpen(true)} className="flex w-full items-center gap-3 rounded-card border border-dashed border-rule px-4 py-3.5 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
         <Link2 className="size-4.5 text-accent-ink" />
-        <span className="flex-1 text-body font-extrabold text-accent-ink">Neuen Link teilen</span>
-        <span className="text-caption text-faint">Drive · OneDrive</span>
+        <span className="flex-1 text-body font-extrabold text-accent-ink">{t("Neuen Link teilen")}</span>
+        <span className="text-caption text-faint">{t("Drive · OneDrive")}</span>
       </button>
     );
   }
@@ -56,10 +58,10 @@ const NewLink = ({ subject, onSaved }) => {
 
   return (
     <Liquid as="div" refract press={false} className="flex flex-col gap-3 rounded-card bg-card p-3.5">
-      <TextField id="new-link-title" label="Titel" value={form.title} error={errors.title} autoComplete="off" onChange={(event) => setForm({ ...form, title: event.target.value })} />
-      <TextField id="new-link-url" label="Link" value={form.url} error={errors.url} placeholder="https://drive.google.com/…" autoComplete="off" onChange={(event) => setForm({ ...form, url: event.target.value })} />
+      <TextField id="new-link-title" label={t("Titel")} value={form.title} error={errors.title} autoComplete="off" onChange={(event) => setForm({ ...form, title: event.target.value })} />
+      <TextField id="new-link-url" label={t("Link")} value={form.url} error={errors.url} placeholder="https://drive.google.com/…" autoComplete="off" onChange={(event) => setForm({ ...form, url: event.target.value })} />
       <Button variant="primary" disabled={busy} onClick={share}>
-        Teilen
+        {t("Teilen")}
       </Button>
     </Liquid>
   );
@@ -70,6 +72,7 @@ const NewLink = ({ subject, onSaved }) => {
 // Ссылки других предметов уже отмеченные (при правке) тоже видны, чтобы их можно было снять.
 // ─────────────────────────────────────────────────────────────
 const MaterialPickSheet = ({ open, onClose, subject, selected, onDone }) => {
+  const t = useT();
   const items = useMaterials((s) => s.items);
   const status = useMaterials((s) => s.status);
   const ensure = useMaterials((s) => s.ensure);
@@ -95,11 +98,11 @@ const MaterialPickSheet = ({ open, onClose, subject, selected, onDone }) => {
       open={open}
       onClose={onClose}
       desktop="dialog"
-      eyebrow={`Materialien · ${subjectName(subject)}`}
-      title="Material anhängen"
+      eyebrow={t("Materialien · {1}", { "1": subjectName(subject) })}
+      title={t("Material anhängen")}
       footer={
         <Button variant="primary" className="basis-full" onClick={() => onDone(picked)}>
-          <CheckIcon className="size-4" /> {picked.length > 0 ? `${picked.length} anhängen` : "Fertig"}
+          <CheckIcon className="size-4" /> {picked.length > 0 ? `${picked.length} anhängen` : t("Fertig")}
         </Button>
       }
     >
@@ -126,13 +129,13 @@ const MaterialPickSheet = ({ open, onClose, subject, selected, onDone }) => {
           })}
         </Liquid>
       ) : (
-        <p className="text-body-sm text-muted">Für {subjectName(subject)} gibt es noch keine Links.</p>
+        <p className="text-body-sm text-muted">{t("Für")} {subjectName(subject)} {t("gibt es noch keine Links.")}</p>
       )}
 
-      {full && <p className="text-hint text-faint">Höchstens {MATERIALS_MAX} Materialien pro Eintrag.</p>}
+      {full && <p className="text-hint text-faint">{t("Höchstens")} {MATERIALS_MAX} {t("Materialien pro Eintrag.")}</p>}
 
       {canShareMaterials(me) && subject && <NewLink subject={subject} onSaved={added} />}
-      <p className="text-hint text-faint">Nur Links von Google Drive oder OneDrive — die Dateien bleiben dort, ORBook merkt sich nur den Link.</p>
+      <p className="text-hint text-faint">{t("Nur Links von Google Drive oder OneDrive — die Dateien bleiben dort, ORBook merkt sich nur den Link.")}</p>
     </Sheet>
   );
 };

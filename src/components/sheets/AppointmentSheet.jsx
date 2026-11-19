@@ -15,6 +15,7 @@ import { Skeleton } from "../ui/PlanState";
 import Sheet from "../ui/Sheet";
 import SubjectBadge from "../ui/SubjectBadge";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // «12 · Tage bis zum Ausflug / Montag, 29. September · 07:45–15:00» (як картка у вікні Klausur)
 const Countdown = ({ item, today }) => {
@@ -57,6 +58,7 @@ const saveIcs = (item) => {
 // «Bearbeiten» — лише автору (canEdit); видалення — у формі, як у Klausur.
 // ─────────────────────────────────────────────────────────────
 const AppointmentSheet = ({ open, onClose, sheet }) => {
+  const t = useT();
   const { item, status } = useAppointment(sheet.id);
   const { today } = useNow();
   const navigate = useNavigate();
@@ -64,8 +66,8 @@ const AppointmentSheet = ({ open, onClose, sheet }) => {
 
   if (!item) {
     return (
-      <Sheet open={open} onClose={onClose} panelLabel="Termin" title="Termin">
-        {status === "loading" ? <Skeleton className="h-19 rounded-card" /> : <p className="text-body-sm text-muted">Diesen Termin gibt es nicht (mehr).</p>}
+      <Sheet open={open} onClose={onClose} panelLabel={t("Termin")} title={t("Termin")}>
+        {status === "loading" ? <Skeleton className="h-19 rounded-card" /> : <p className="text-body-sm text-muted">{t("Diesen Termin gibt es nicht (mehr).")}</p>}
       </Sheet>
     );
   }
@@ -74,11 +76,11 @@ const AppointmentSheet = ({ open, onClose, sheet }) => {
     <Sheet
       open={open}
       onClose={onClose}
-      panelLabel="Termin"
+      panelLabel={t("Termin")}
       eyebrow={
         <span className="flex items-center gap-2">
           <AppointmentBadge item={item} />
-          <span className="truncate text-hint font-normal">{item.subject ? subjectName(item.subject) : "Ganze Klasse"}</span>
+          <span className="truncate text-hint font-normal">{item.subject ? subjectName(item.subject) : t("Ganze Klasse")}</span>
         </span>
       }
       title={item.title}
@@ -89,17 +91,17 @@ const AppointmentSheet = ({ open, onClose, sheet }) => {
         <div className="flex w-full flex-col gap-3.5">
           <div className="flex gap-2">
             <Button onClick={() => saveIcs(item)}>
-              <Calendar className="size-4" /> Kalender
+              <Calendar className="size-4" /> {t("Kalender")}
             </Button>
             {shareEnabled && (
               <Button onClick={() => shareText(appointmentText(item))}>
-                <Share className="size-4" /> Teilen
+                <Share className="size-4" /> {t("Teilen")}
               </Button>
             )}
           </div>
           {item.canEdit && (
             <Button variant="primary" className="flex-none" onClick={() => navigate(`/testen/termine/${item.id}/bearbeiten`)}>
-              <PencilIcon className="size-4" /> Bearbeiten
+              <PencilIcon className="size-4" /> {t("Bearbeiten")}
             </Button>
           )}
         </div>

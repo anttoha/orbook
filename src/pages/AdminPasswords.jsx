@@ -7,12 +7,14 @@ import ClassPasswordForm from "../components/admin/passwords/ClassPasswordForm";
 import { useNow } from "../shared/hooks/useNow";
 import { useAdminStore } from "../shared/store/adminStore";
 import { classPasswordText } from "../shared/utils/admin";
+import { useT } from "../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // «Passwörter» (частина 14b): пароль класу і пароль адміна в одному місці.
 // Із сервера потрібна тільки дата останньої зміни пароля класу (GET /admin/settings).
 // ─────────────────────────────────────────────────────────────
 const AdminPasswords = () => {
+  const t = useT();
   const { schoolClass } = useOutletContext() ?? {};
   const { today } = useNow();
   const settings = useAdminStore((s) => s.settings);
@@ -47,7 +49,7 @@ const AdminPasswords = () => {
 
   return (
     <section className="flex flex-col gap-5">
-      <AdminHeader title="Passwörter" backTo="/admin/einstellungen" />
+      <AdminHeader title={t("Passwörter")} backTo="/admin/einstellungen" />
       {renderBody()}
     </section>
   );

@@ -7,6 +7,7 @@ import { FilterIcon } from "../ui/icons";
 import Kbd from "../ui/Kbd";
 import ExamFilterFields from "./ExamFilterFields";
 import RoundButton from "../ui/RoundButton";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Кнопка фільтра + випадне вікно під нею (ПК, макет 16 «Klausuren · Filter»).
@@ -14,13 +15,14 @@ import RoundButton from "../ui/RoundButton";
 // active — у фільтрі щось вибрано: кнопка підсвічена
 // ─────────────────────────────────────────────────────────────
 const ExamFilterPopover = ({ open, onOpenChange, active }) => {
+  const t = useT();
   const { draft, change, setDraft, apply, count, pastLoading } = useExamFilterDraft(open);
 
   return (
     <Popover.Root open={open} onOpenChange={onOpenChange}>
       <Popover.Trigger asChild>
         <RoundButton
-          aria-label="Filter"
+          aria-label={t("Filter")}
           look={cn("grid size-9.5 shrink-0 place-items-center rounded-full transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent/50", active ? "bg-tint text-accent-ink" : "bg-card text-ink hover:bg-sand")}>
           <FilterIcon className="size-4.25" />
         </RoundButton>
@@ -33,12 +35,12 @@ const ExamFilterPopover = ({ open, onOpenChange, active }) => {
           className="z-50 flex max-h-[calc(100dvh-2rem)] w-filter flex-col gap-4 overflow-y-auto scroll-stable rounded-box bg-card p-4.5 shadow-sheet shadow-ink/15 outline-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
         >
           <header className="flex items-center justify-between">
-            <h2 className="text-number text-ink">Filter</h2>
+            <h2 className="text-number text-ink">{t("Filter")}</h2>
             <Kbd>F</Kbd>
           </header>
           <ExamFilterFields draft={draft} change={change} />
           <div className="flex gap-2.5">
-            <Button onClick={() => setDraft(EMPTY_FILTER)}>Zurücksetzen</Button>
+            <Button onClick={() => setDraft(EMPTY_FILTER)}>{t("Zurücksetzen")}</Button>
             <Button
               variant="primary"
               onClick={() => {
@@ -46,7 +48,7 @@ const ExamFilterPopover = ({ open, onOpenChange, active }) => {
                 onOpenChange(false);
               }}
             >
-              {pastLoading ? "Anzeigen" : `${count} anzeigen`}
+              {pastLoading ? t("Anzeigen") : `${count} anzeigen`}
             </Button>
           </div>
         </Popover.Content>

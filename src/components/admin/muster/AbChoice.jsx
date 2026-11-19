@@ -3,6 +3,7 @@ import { cn } from "../../../shared/utils/cn";
 import { kwStrip, weekForMode } from "../../../shared/utils/musterEditor";
 import { abLetter } from "../../../shared/utils/muster";
 import { CheckIcon } from "../../ui/icons";
+import { useT } from "../../../shared/hooks/useT";
 
 // Варіанти muster.abMode (сервер: school | swap | none)
 const MODES = [
@@ -16,9 +17,11 @@ const MODES = [
 //   mode — вибраний зараз, schoolWeek — як рахує школа (1/2/null), today — для номерів KW
 //   onCard — усередині білої картки (випадне вікно на ПК): плитки пісочні, а не білі
 // ─────────────────────────────────────────────────────────────
-const AbChoice = ({ mode, schoolWeek, today, busy, onCard = false, onChange }) => (
+const AbChoice = ({ mode, schoolWeek, today, busy, onCard = false, onChange }) => {
+  const t = useT();
+  return (
   <div className="flex flex-col gap-4">
-    <div role="radiogroup" aria-label="Wochen A und B" className={cn("flex flex-col rounded-card p-1", !onCard && "bg-card")}>
+    <div role="radiogroup" aria-label={t("Wochen A und B")} className={cn("flex flex-col rounded-card p-1", !onCard && "bg-card")}>
       {MODES.map(({ value, icon: Icon, title, hint }) => {
         const on = value === mode;
         return (
@@ -43,7 +46,7 @@ const AbChoice = ({ mode, schoolWeek, today, busy, onCard = false, onChange }) =
     </div>
     {mode !== "none" && (
       <div>
-        <p className="mb-2 text-hint font-extrabold text-faint">So zählt ORBook</p>
+        <p className="mb-2 text-hint font-extrabold text-faint">{t("So zählt ORBook")}</p>
         <ol className="grid grid-cols-5 gap-2">
           {kwStrip(today, weekForMode(mode, schoolWeek)).map(({ kw, letter }, i) => (
             <li key={kw} className={cn("flex flex-col items-center rounded-tile py-1.5", i === 0 ? "bg-accent text-on-accent" : cn("text-accent-ink", onCard ? "bg-sand" : "bg-card"))}>
@@ -52,10 +55,11 @@ const AbChoice = ({ mode, schoolWeek, today, busy, onCard = false, onChange }) =
             </li>
           ))}
         </ol>
-        <p className="mt-2 text-caption text-faint">Gilt überall: Buchstabe in Woche und Tag, Muster.</p>
+        <p className="mt-2 text-caption text-faint">{t("Gilt überall: Buchstabe in Woche und Tag, Muster.")}</p>
       </div>
     )}
   </div>
 );
+};
 
 export default AbChoice;

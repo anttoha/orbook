@@ -8,6 +8,7 @@ import Button from "../ui/Button";
 import { CopyIcon } from "../ui/icons";
 import QrCode from "../ui/QrCode";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Сегодня как «17.09.2026» — для строки «Ausgedruckt am …»
 const todayText = () => new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
@@ -18,6 +19,7 @@ const todayText = () => new Date().toLocaleDateString("de-DE", { day: "2-digit",
 // У Lehrer-Code ещё «Drucken» — личный лист A4 для учителя (a4-03). Код виден только сейчас
 // ─────────────────────────────────────────────────────────────
 const CodeQr = ({ code, kind, teacher, rights }) => {
+  const t = useT();
   const { print, area } = usePrint();
   const className = useAdminStore((s) => s.settings.data?.settings.school.className ?? null);
   // «?? []» — вне селектора: новый пустой массив в селекторе каждый раз «другой», и страница перерисовывается без конца
@@ -29,15 +31,15 @@ const CodeQr = ({ code, kind, teacher, rights }) => {
     <div className="flex flex-col gap-3">
       <Liquid as="div" refract press={false} className="flex flex-col items-center rounded-panel bg-card px-4 pt-5 pb-5 text-center">
         <QrCode value={url} label={kind === "teacher" ? "QR-Code mit dem Lehrer-Code" : "QR-Code mit dem Editor-Code"} className="size-44" />
-        <p className="mt-3 text-caption text-faint">Scannen = Code schon eingetragen</p>
+        <p className="mt-3 text-caption text-faint">{t("Scannen = Code schon eingetragen")}</p>
       </Liquid>
       <div className="flex gap-2">
         <Button onClick={() => copyText(code)} className="flex-1">
-          <CopyIcon className="size-4" /> Kopieren
+          <CopyIcon className="size-4" /> {t("Kopieren")}
         </Button>
         {kind === "teacher" && (
           <Button onClick={printSheet} className="flex-1">
-            <Printer className="size-4" /> Drucken
+            <Printer className="size-4" /> {t("Drucken")}
           </Button>
         )}
       </div>

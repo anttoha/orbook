@@ -7,6 +7,7 @@ import { cn } from "../../shared/utils/cn";
 import { lessonName } from "../../shared/utils/format";
 import { noteMeta, visibleNotes } from "../../shared/utils/notes";
 import { LockIcon, SyncIcon } from "../ui/icons";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // «Meine Notizen»: нотатки до уроків і на день (живуть тільки на пристрої, userStore).
@@ -16,6 +17,7 @@ import { LockIcon, SyncIcon } from "../ui/icons";
 // hideEmpty — без нотаток секції немає (день без плану на телефоні: у макеті там тільки стан дня)
 // ─────────────────────────────────────────────────────────────
 const NotesSection = ({ date, lessons = [], variant = "list", hideEmpty = false }) => {
+  const t = useT();
   const { openSheet } = useSheet(); // відкрити шторку нотатки
   const allNotes = useUserStore((s) => s.notes); // усі нотатки (фільтр нижче)
   const isCard = variant === "card"; // варіант для ПК?
@@ -45,16 +47,16 @@ const NotesSection = ({ date, lessons = [], variant = "list", hideEmpty = false 
   return (
     <section className={cn("flex flex-col", isCard ? "rounded-card bg-card p-4" : "mt-2 gap-2.5")}>
       <header className="flex items-center justify-between">
-        <h2 className={cn("font-extrabold text-faint", isCard ? "text-label" : "text-hint")}>Meine Notizen</h2>
+        <h2 className={cn("font-extrabold text-faint", isCard ? "text-label" : "text-hint")}>{t("Meine Notizen")}</h2>
         {/* нова нотатка на день */}
         <button type="button" onClick={() => openSheet("notiz", { datum: date })} className={cn("flex items-center gap-1 text-label", isCard ? "font-extrabold text-accent" : "font-bold text-accent-ink")}>
-          <Plus className="size-3.5" strokeWidth={3} /> Notiz
+          <Plus className="size-3.5" strokeWidth={3} /> {t("Notiz")}
         </button>
       </header>
 
-      {notes.length === 0 && <p className={cn("text-label text-faint", isCard ? "mt-2.5 font-bold" : "rounded-card bg-card px-3.5 py-3")}>Noch keine Notizen für diesen Tag.</p>}
+      {notes.length === 0 && <p className={cn("text-label text-faint", isCard ? "mt-2.5 font-bold" : "rounded-card bg-card px-3.5 py-3")}>{t("Noch keine Notizen für diesen Tag.")}</p>}
       {/* подсказка про записи на урок (макет 24 handy-07): на ПК — правый клик, на телефоне — долгое нажатие */}
-      {notes.length === 0 && !isCard && <p className="mt-2 text-label text-faint">Lange auf eine Stunde drücken: Hausaufgabe oder Test eintragen.</p>}
+      {notes.length === 0 && !isCard && <p className="mt-2 text-label text-faint">{t("Lange auf eine Stunde drücken: Hausaufgabe oder Test eintragen.")}</p>}
 
       {/* на ПК нотатки йдуть списком із лініями-розділювачами всередині картки */}
       <div className={cn("flex flex-col", isCard ? "mt-1 divide-y divide-hair" : "gap-2.5")}>

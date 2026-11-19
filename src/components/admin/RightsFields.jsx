@@ -2,6 +2,7 @@ import { LockIcon } from "../ui/icons";
 import Badge from "../ui/Badge";
 import Checkbox from "../ui/Checkbox";
 import Field from "../ui/Field";
+import { useT } from "../../shared/hooks/useT";
 
 // Часть 29: «Klasse verwalten» — Zugangscodes и приглашения своего класса (у Editor- и Lehrer-Code, по умолчанию выкл.)
 const MANAGE_CLASS = { key: "manageClass", label: "Klasse verwalten", isNew: true, hint: "Zugangscodes und Einladungen dieser Klasse" };
@@ -26,31 +27,37 @@ const TEACHER_RIGHTS = [
   MANAGE_CLASS,
 ];
 
-const RightLabel = ({ right }) => (
+const RightLabel = ({ right }) => {
+  const t = useT();
+  return (
   <span className="flex flex-col">
     <span className="flex items-center gap-2">
       {right.label}
-      {right.isNew && <Badge variant="changed">Neu</Badge>}
+      {right.isNew && <Badge variant="changed">{t("Neu")}</Badge>}
     </span>
     {right.hint && <span className="text-caption text-faint">{right.hint}</span>}
   </span>
 );
+};
 
 // Галочки «Rechte» (вікно нового коду і «Rechte ändern»). value — { create, editOwn, editAll, homework, editTeacher, materials }.
 // kind = "teacher" — права Lehrer-Code
-const RightsFields = ({ value, onChange, disabled, error, kind = "editor" }) => (
-  <Field label="Rechte" error={error}>
+const RightsFields = ({ value, onChange, disabled, error, kind = "editor" }) => {
+  const t = useT();
+  return (
+  <Field label={t("Rechte")} error={error}>
     <div className="-my-1.5">
       {(kind === "teacher" ? TEACHER_RIGHTS : EDITOR_RIGHTS).map((right) => (
         <Checkbox key={right.key} label={<RightLabel right={right} />} checked={Boolean(value[right.key])} disabled={disabled} onChange={(checked) => onChange({ ...value, [right.key]: checked })} />
       ))}
       {kind === "teacher" && (
         <p className="flex h-11 items-center gap-3.5 pl-0.5 text-row text-muted">
-          <LockIcon className="size-4" /> Ändern und löschen: nur eigene Einträge
+          <LockIcon className="size-4" /> {t("Ändern und löschen: nur eigene Einträge")}
         </p>
       )}
     </div>
   </Field>
 );
+};
 
 export default RightsFields;

@@ -26,7 +26,7 @@ const TestsBlock = ({ block, editing }) => {
   const exams = (mine ? all.filter((exam) => !exam.subject || mine.has(exam.subject.code)) : all).slice(0, block.opts.count ?? 2);
 
   const body = () => {
-    if (!exams.length) return status === "loading" ? <BlockSkeleton /> : <BlockEmpty text="Keine Tests geplant" />;
+    if (!exams.length) return status === "loading" ? <BlockSkeleton /> : <BlockEmpty text={t("Keine Tests geplant")} />;
     const [first, ...rest] = exams;
     return (
       <>

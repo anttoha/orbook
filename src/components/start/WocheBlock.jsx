@@ -49,8 +49,8 @@ const WocheBlock = ({ editing }) => {
   const rows = periodRows(days, lessonTimes ?? []);
 
   const body = () => {
-    if (!week.data) return week.status === "loading" ? <BlockSkeleton /> : <BlockEmpty text="Plan fehlt noch" />;
-    if (!rows.length) return <BlockEmpty text="Diese Woche kein Unterricht" />;
+    if (!week.data) return week.status === "loading" ? <BlockSkeleton /> : <BlockEmpty text={t("Plan fehlt noch")} />;
+    if (!rows.length) return <BlockEmpty text={t("Diese Woche kein Unterricht")} />;
     return (
       <div className="grid min-h-0 flex-1 grid-cols-5 gap-1 lg:gap-1.5" style={{ gridTemplateRows: `auto repeat(${rows.length}, minmax(0, 1fr))` }}>
         {days.map((day) => (

@@ -90,7 +90,7 @@ const Start = () => {
           {!editing && <ClassSwitcher />}
           <p className="truncate text-hint font-extrabold text-faint">{editing ? t("Start") : `${weekdayLong(today)} · ${longDate(today)}`}</p>
         </div>
-        <h1 className="truncate text-title text-ink lg:text-hero">{t(editing ? "Anpassen" : "Start")}</h1>
+        <h1 className="truncate text-title text-ink lg:text-hero">{t(editing ? t("Anpassen") : t("Start"))}</h1>
       </div>
       {isDesktop ? (
         <div className="flex shrink-0 gap-2.5">
@@ -152,7 +152,7 @@ const Start = () => {
             // «Anpassen»: то, что меняется, — внутри пунктирной рамки «Dein Start»
             <section className="min-w-0 lg:flex-1">
               <h2 className="mb-2.5 text-hint font-extrabold text-faint">
-                {t("Dein Start")} · {blocks.length} {t(blocks.length === 1 ? "Block" : "Blöcke")}
+                {t("Dein Start")} · {blocks.length} {t(blocks.length === 1 ? t("Block") : t("Blöcke"))}
               </h2>
               <div className="rounded-panel border-2 border-dashed border-accent/30 px-2.5 pt-5.5 pb-3 lg:px-4 lg:pt-6 lg:pb-4">{grid}</div>
             </section>

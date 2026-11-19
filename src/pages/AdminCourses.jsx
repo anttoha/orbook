@@ -13,23 +13,28 @@ import { useAdminLoad } from "../shared/hooks/useAdminLoad";
 import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useAdminStore } from "../shared/store/adminStore";
 import { coursesPatch, courseState, settingsPatch, subjectNamesPatch } from "../shared/utils/admin";
+import { useT } from "../shared/hooks/useT";
 
 // Підпис під заголовком блоку
 const Lead = ({ children }) => <p className="-mt-1 mb-1 text-caption text-faint">{children}</p>;
 
 // Поле дати «Zählen ab» у вигляді пігулки; порожнє — рахувати з першого плану
-const SinceField = ({ value, onChange }) => (
+const SinceField = ({ value, onChange }) => {
+  const t = useT();
+  return (
   <input
     type="date"
-    aria-label="Statistik zählen ab"
+    aria-label={t("Statistik zählen ab")}
     value={value ?? ""}
     onChange={(event) => onChange(event.target.value || null)}
     className="h-8.5 shrink-0 rounded-full border border-rule bg-card px-3 text-label font-extrabold text-ink outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
   />
 );
+};
 
 // Чернетка: Pflicht/Wahl, назви предметів, «Zählen ab». key на сторінці скидає її після збереження
 const CoursesForm = ({ data, settings, onSaved }) => {
+  const t = useT();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const [states, setStates] = useState(() => Object.fromEntries(data.courses.map((c) => [c.nr, courseState(c)])));
   const [edited, setEdited] = useState({}); // { [code]: текст } — лише поля, які змінили
@@ -60,26 +65,26 @@ const CoursesForm = ({ data, settings, onSaved }) => {
   const button = { busy, dirty, onSave: save };
   return (
     <section className="flex flex-col gap-4 lg:gap-5">
-      <AdminHeader title="Kurse und Fächer" backTo="/admin" actions={isDesktop && <SaveButton {...button} />} />
-      <p className="-mt-1.5 text-body text-muted lg:hidden">Gilt für die ganze Klasse, auf allen Geräten.</p>
+      <AdminHeader title={t("Kurse und Fächer")} backTo="/admin" actions={isDesktop && <SaveButton {...button} />} />
+      <p className="-mt-1.5 text-body text-muted lg:hidden">{t("Gilt für die ganze Klasse, auf allen Geräten.")}</p>
 
       <div className="flex flex-col gap-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4">
-        <SettingsCard title="Kurse">
-          <Lead>Wahl-Kurse wählt jeder Schüler in „Meine Kurse“ selbst.</Lead>
+        <SettingsCard title={t("Kurse")}>
+          <Lead>{t("Wahl-Kurse wählt jeder Schüler in „Meine Kurse“ selbst.")}</Lead>
           <CourseRows courses={data.courses} states={states} onChange={(nrs, value) => setStates({ ...states, ...Object.fromEntries(nrs.map((nr) => [nr, value])) })} />
           <p className="flex items-center gap-1.5 border-t border-hair py-3 text-caption text-faint">
-            <LockIcon className="size-3.5" /> Gruppen und parallele Kurse sind automatisch Wahl. Du kannst sie trotzdem auf Pflicht stellen.
+            <LockIcon className="size-3.5" /> {t("Gruppen und parallele Kurse sind automatisch Wahl. Du kannst sie trotzdem auf Pflicht stellen.")}
           </p>
         </SettingsCard>
 
         <div className="flex flex-col gap-5 lg:gap-4">
-          <SettingsCard title="Fächer">
+          <SettingsCard title={t("Fächer")}>
             <div className="py-3">
               <SubjectNames subjects={data.subjects} edited={edited} onChange={(code, text) => setEdited({ ...edited, [code]: text })} />
             </div>
           </SettingsCard>
-          <SettingsCard title="Statistik">
-            <OptionRow label="Zählen ab" hint="Leer = ab dem ersten Plan">
+          <SettingsCard title={t("Statistik")}>
+            <OptionRow label={t("Zählen ab")} hint={t("Leer = ab dem ersten Plan")}>
               <SinceField value={since} onChange={setSince} />
             </OptionRow>
           </SettingsCard>
@@ -96,6 +101,7 @@ const CoursesForm = ({ data, settings, onSaved }) => {
 // Курси й предмети — GET /api/admin/courses (без входу класу), зберігаємо в PATCH /admin/settings.
 // ─────────────────────────────────────────────────────────────
 const AdminCourses = () => {
+  const t = useT();
   const courses = useAdminLoad("courses", loadAdminCourses);
   const settings = useAdminStore((s) => s.settings);
   const reloadSettings = useAdminStore((s) => s.reloadSettings);
@@ -110,7 +116,7 @@ const AdminCourses = () => {
     const retry = () => (courses.status === "error" ? courses.reload() : reloadSettings());
     return (
       <section className="flex flex-col gap-4">
-        <AdminHeader title="Kurse und Fächer" backTo="/admin" />
+        <AdminHeader title={t("Kurse und Fächer")} backTo="/admin" />
         {failed ? <AdminError error={failed.error} onRetry={retry} /> : <AdminSkeleton rows={5} />}
       </section>
     );
@@ -118,8 +124,8 @@ const AdminCourses = () => {
   if (!courses.data.courses.length && !courses.data.subjects.length) {
     return (
       <section className="flex flex-col gap-4">
-        <AdminHeader title="Kurse und Fächer" backTo="/admin" />
-        <AdminEmpty text="Noch kein Plan geladen. Die Kurse erscheinen nach dem ersten Abruf." />
+        <AdminHeader title={t("Kurse und Fächer")} backTo="/admin" />
+        <AdminEmpty text={t("Noch kein Plan geladen. Die Kurse erscheinen nach dem ersten Abruf.")} />
       </section>
     );
   }

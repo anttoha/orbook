@@ -8,6 +8,7 @@ import MusterBadge from "../../muster/MusterBadge";
 import WeekLetter from "../../muster/WeekLetter";
 import RoundButton from "../../ui/RoundButton";
 import PillButton from "../../ui/PillButton";
+import { useT } from "../../../shared/hooks/useT";
 
 // Кругла біла кнопка 38×38 (як на макеті)
 const roundButton =
@@ -27,6 +28,7 @@ const VIEWS = [
 // letter — «A»/«B» (тиждень циклу школи), muster — весь тиждень із Muster (частина 19)
 // ─────────────────────────────────────────────────────────────
 const WeekHeaderDesktop = ({ monday, subtitle, title, letter, muster = false, view, onViewChange, onWeekChange, onToday }) => {
+  const t = useT();
   return (
     <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
       <div className="min-w-0">
@@ -41,13 +43,13 @@ const WeekHeaderDesktop = ({ monday, subtitle, title, letter, muster = false, vi
       <div className="flex items-center gap-6">
         {/* навігація по тижнях */}
         <div className="flex items-center gap-2">
-          <RoundButton aria-label="Vorige Woche" onClick={() => onWeekChange(addDays(monday, -7))}>
+          <RoundButton aria-label={t("Vorige Woche")} onClick={() => onWeekChange(addDays(monday, -7))}>
             <ChevronLeft className="size-4.25" />
           </RoundButton>
           <PillButton glass="glass" size="md" onClick={onToday} className="h-10 rounded-full bg-sand px-4.5 text-body font-bold text-ink transition-colors hover:bg-hair">
-            Heute
+            {t("Heute")}
           </PillButton>
-          <RoundButton aria-label="Nächste Woche" onClick={() => onWeekChange(addDays(monday, 7))}>
+          <RoundButton aria-label={t("Nächste Woche")} onClick={() => onWeekChange(addDays(monday, 7))}>
             <ChevronRight className="size-4.25" />
           </RoundButton>
           <WeekPickerPopover monday={monday} onPick={onWeekChange} buttonClassName={roundButton} />
@@ -56,7 +58,7 @@ const WeekHeaderDesktop = ({ monday, subtitle, title, letter, muster = false, vi
         {/* вигляд тижня + меню */}
         <div className="flex items-center gap-2">
           <AllCoursesButton variant="pill" />
-          <Segmented label="Ansicht" options={VIEWS} value={view} onChange={onViewChange} variant="accent" size="sm" className="shrink-0" />
+          <Segmented label={t("Ansicht")} options={VIEWS} value={view} onChange={onViewChange} variant="accent" size="sm" className="shrink-0" />
           <WeekMenu monday={monday} onToday={onToday} />
         </div>
       </div>

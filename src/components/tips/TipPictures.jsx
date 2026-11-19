@@ -4,6 +4,7 @@ import { cn } from "../../shared/utils/cn";
 import { fachClasses } from "../../shared/utils/lessons";
 import { CheckIcon, FlagIcon, SyncIcon } from "../ui/icons";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Картинки к «Kurz erklärt» (макеты 25 handy-13…15): не скриншоты, а простые схемы из тех же токенов
 
@@ -51,12 +52,13 @@ const MENU = [
 
 // 2 — урок и его меню
 export const MenuPicture = () => {
+  const t = useT();
   const overrides = useUserStore((s) => s.colorOverrides);
   return (
     <div className={cn(frame, "justify-start pt-5")}>
       <div className={cn("rounded-field px-3.5 py-2.5", fachClasses("Ma", overrides))}>
-        <p className="text-caption font-bold opacity-80">2. Stunde</p>
-        <p className="text-row font-extrabold">Mathe</p>
+        <p className="text-caption font-bold opacity-80">{t("2. Stunde")}</p>
+        <p className="text-row font-extrabold">{t("Mathe")}</p>
       </div>
       <Liquid as="ul" refract press={false} className="mt-2.5 ml-10 rounded-field bg-card p-1.5 shadow-menu">
         {MENU.map((item) => (
@@ -78,6 +80,7 @@ const TASKS = [
 
 // 3 — задачи с кружками и «per Sync-Code»
 export const TasksPicture = () => {
+  const t = useT();
   const overrides = useUserStore((s) => s.colorOverrides);
   return (
     <div className={cn(frame, "gap-2")}>
@@ -91,7 +94,7 @@ export const TasksPicture = () => {
         </Liquid>
       ))}
       <p className="mt-1 flex items-center justify-center gap-1.5 text-label font-bold text-accent-ink">
-        <Smartphone className="size-4" /> <SyncIcon className="size-4" /> <Monitor className="size-4" /> per Sync-Code
+        <Smartphone className="size-4" /> <SyncIcon className="size-4" /> <Monitor className="size-4" /> {t("per Sync-Code")}
       </p>
     </div>
   );

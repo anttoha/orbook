@@ -6,6 +6,7 @@ import { TimelineIcon } from "../../ui/icons";
 import Segmented from "../../ui/Segmented";
 import { AllCoursesButton } from "../../week/AllCourses";
 import RoundButton from "../../ui/RoundButton";
+import { useT } from "../../../shared/hooks/useT";
 
 
 // Варіанти вигляду дня
@@ -22,6 +23,7 @@ const VIEWS = [
 // day — день (ще може бути null, поки вантажиться); onInfo — відкрити «Info zum Tag» (решение власника)
 // ─────────────────────────────────────────────────────────────
 const DayHeaderDesktop = ({ date, today, day, view, onViewChange, onInfo, onShare }) => {
+  const t = useT();
   const holidays = usePlanStore((s) => s.meta?.holidays); // вільні дні пропускаємо
   const word = relativeDayWord(date, today); // heute / morgen / gestern
 
@@ -39,22 +41,22 @@ const DayHeaderDesktop = ({ date, today, day, view, onViewChange, onInfo, onShar
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2">
           <AllCoursesButton variant="pill" />
-          <Segmented label="Ansicht" options={VIEWS} value={view} onChange={onViewChange} variant="accent" size="sm" className="shrink-0" />
+          <Segmented label={t("Ansicht")} options={VIEWS} value={view} onChange={onViewChange} variant="accent" size="sm" className="shrink-0" />
         </div>
         <div className="flex items-center gap-2">
-          <RoundButton to={`/tag/${nextSchoolDay(date, holidays, -1)}`} aria-label="Vortag">
+          <RoundButton to={`/tag/${nextSchoolDay(date, holidays, -1)}`} aria-label={t("Vortag")}>
             <ChevronLeft className="size-4.25" />
           </RoundButton>
-          <RoundButton to={`/tag/${nextSchoolDay(date, holidays, 1)}`} aria-label="Nächster Tag">
+          <RoundButton to={`/tag/${nextSchoolDay(date, holidays, 1)}`} aria-label={t("Nächster Tag")}>
             <ChevronRight className="size-4.25" />
           </RoundButton>
           {day && (
-            <RoundButton aria-label="Info zum Tag" onClick={onInfo}>
+            <RoundButton aria-label={t("Info zum Tag")} onClick={onInfo}>
               <Info className="size-4.25" />
             </RoundButton>
           )}
           {onShare && (
-            <RoundButton aria-label="Tag teilen" onClick={onShare}>
+            <RoundButton aria-label={t("Tag teilen")} onClick={onShare}>
               <Share className="size-4.25" />
             </RoundButton>
           )}

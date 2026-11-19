@@ -11,6 +11,7 @@ import VersionView from "../history/VersionView";
 import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
 import RoundButton from "../ui/RoundButton";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Шторка «Verlauf des Tages» (часть 26). Адреса:
@@ -18,6 +19,7 @@ import RoundButton from "../ui/RoundButton";
 //   ?sheet=verlauf&datum=2026-09-17&id=790 — одна старая Fassung, «Ältere / Neuere» листают
 // ─────────────────────────────────────────────────────────────
 const DayHistorySheet = ({ open, onClose, sheet }) => {
+  const t = useT();
   const { today } = useNow();
   const { openSheet } = useSheet();
   const visible = useVisibleLesson();
@@ -34,7 +36,7 @@ const DayHistorySheet = ({ open, onClose, sheet }) => {
 
   if (!version) {
     return (
-      <Sheet open={open} onClose={onClose} panelLabel="Verlauf des Tages" eyebrow={dayText} title="Verlauf des Tages">
+      <Sheet open={open} onClose={onClose} panelLabel={t("Verlauf des Tages")} eyebrow={dayText} title={t("Verlauf des Tages")}>
         <DayHistory date={date} />
       </Sheet>
     );
@@ -46,22 +48,22 @@ const DayHistorySheet = ({ open, onClose, sheet }) => {
     <Sheet
       open={open}
       onClose={onClose}
-      panelLabel="Verlauf des Tages"
-      eyebrow={`Fassung ${versions.length - index} von ${versions.length} · ${weekdayShort(date)}, ${numericDate(date)}`}
+      panelLabel={t("Verlauf des Tages")}
+      eyebrow={t("Fassung {1} von {length} · {3}, {4}", { "1": versions.length - index, length: versions.length, "3": weekdayShort(date), "4": numericDate(date) })}
       title={versionLabel(version.fetchedAt, today)}
       icon={
-        <RoundButton onClick={back} aria-label="Zurück zum Verlauf" look="mt-1 grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink hover:bg-sand">
+        <RoundButton onClick={back} aria-label={t("Zurück zum Verlauf")} look="mt-1 grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink hover:bg-sand">
           <ChevronLeft className="size-4.25" />
         </RoundButton>
       }
       footer={
         <>
           <Button disabled={!older} onClick={() => older && show(older.id)}>
-            <ChevronLeft className="size-4" /> Ältere
+            <ChevronLeft className="size-4" /> {t("Ältere")}
           </Button>
           {/* следующая за самой новой старой Fassung — это сегодняшний план: возвращаемся к ленте */}
           <Button disabled={!newer} onClick={() => (index === 1 ? back() : newer && show(newer.id))}>
-            Neuere <ChevronRight className="size-4" />
+            {t("Neuere")} <ChevronRight className="size-4" />
           </Button>
         </>
       }

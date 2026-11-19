@@ -11,6 +11,7 @@ import { usePlanView } from "../shared/hooks/usePlanView";
 import { useUserStore } from "../shared/store/userStore";
 import { changedFormatLabel } from "../shared/utils/planView";
 import { CalendarClock } from "lucide-react";
+import { useT } from "../shared/hooks/useT";
 
 const LABELS = [
   { value: "kuerzel", label: "Kürzel" },
@@ -36,6 +37,7 @@ const DAY_VIEWS = [
 // «Wochenende», «Kompakte Woche», «Anzeigen als» і «Änderung unter dem Tag» — старі поля userStore, тут лише нове місце.
 // ─────────────────────────────────────────────────────────────
 const PlanSettings = () => {
+  const t = useT();
   const plan = usePlanView();
   const user = useUserStore();
   const [formatOpen, setFormatOpen] = useState(false); // шторка «Änderung unter dem Tag»
@@ -49,44 +51,44 @@ const PlanSettings = () => {
 
   return (
     <section className="flex flex-col gap-4.5 lg:max-w-186">
-      <PageHeader backTo="/mehr/darstellung" eyebrow="Darstellung" title="Stundenplan" subpage />
+      <PageHeader backTo="/mehr/darstellung" eyebrow={t("Darstellung")} title={t("Stundenplan")} subpage />
 
       <PlanPreview plan={plan} />
 
-      <ListCard title="In der Stunde">
-        <SettingRow label="Fach">
-          <Segmented label="Fach" size="form" className="w-fit" options={LABELS} value={plan.lessonLabel} onChange={(v) => user.setPlan("lessonLabel", v)} />
+      <ListCard title={t("In der Stunde")}>
+        <SettingRow label={t("Fach")}>
+          <Segmented label={t("Fach")} size="form" className="w-fit" options={LABELS} value={plan.lessonLabel} onChange={(v) => user.setPlan("lessonLabel", v)} />
         </SettingRow>
-        {toggle("Raum", "showRoom")}
-        {toggle("Lehrkraft", "showTeacher")}
-        {toggle("Uhrzeit links", "showTimes")}
+        {toggle(t("Raum"), "showRoom")}
+        {toggle(t("Lehrkraft"), "showTeacher")}
+        {toggle(t("Uhrzeit links"), "showTimes")}
       </ListCard>
 
-      <ListCard title="Farben">
-        <SettingRow label="Fachfarbe">
-          <Segmented label="Fachfarbe" size="form" className="w-fit" options={STYLES} value={plan.subjectStyle} onChange={(v) => user.setPlan("subjectStyle", v)} />
-        </SettingRow>
-      </ListCard>
-
-      <ListCard title="Woche">
-        <SettingRow label="Wochenende zeigen">
-          <Switch label="Wochenende zeigen" checked={user.showWeekend} onChange={user.toggleWeekend} />
-        </SettingRow>
-        <SettingRow label="Kompakte Woche">
-          <Switch label="Kompakte Woche" checked={user.compactWeek} onChange={user.setCompactWeek} />
-        </SettingRow>
-        {toggle("Freie Stunden zeigen", "showFree")}
-        <SettingRow label="Ausfall">
-          <Segmented label="Ausfall" size="form" className="w-fit" options={CANCELLED} value={plan.cancelled} onChange={(v) => user.setPlan("cancelled", v)} />
+      <ListCard title={t("Farben")}>
+        <SettingRow label={t("Fachfarbe")}>
+          <Segmented label={t("Fachfarbe")} size="form" className="w-fit" options={STYLES} value={plan.subjectStyle} onChange={(v) => user.setPlan("subjectStyle", v)} />
         </SettingRow>
       </ListCard>
 
-      <ListCard title="Tag">
-        <SettingRow label="Anzeigen als">
-          <Segmented label="Anzeigen als" size="form" className="w-fit" options={DAY_VIEWS} value={user.dayView} onChange={user.setDayView} />
+      <ListCard title={t("Woche")}>
+        <SettingRow label={t("Wochenende zeigen")}>
+          <Switch label={t("Wochenende zeigen")} checked={user.showWeekend} onChange={user.toggleWeekend} />
         </SettingRow>
-        {toggle("Pausen zeigen", "showBreaks")}
-        <MenuRow onClick={() => setFormatOpen(true)} icon={CalendarClock} label="Änderung unter dem Tag" value={changedFormatLabel(user.changedFormat)} />
+        <SettingRow label={t("Kompakte Woche")}>
+          <Switch label={t("Kompakte Woche")} checked={user.compactWeek} onChange={user.setCompactWeek} />
+        </SettingRow>
+        {toggle(t("Freie Stunden zeigen"), "showFree")}
+        <SettingRow label={t("Ausfall")}>
+          <Segmented label={t("Ausfall")} size="form" className="w-fit" options={CANCELLED} value={plan.cancelled} onChange={(v) => user.setPlan("cancelled", v)} />
+        </SettingRow>
+      </ListCard>
+
+      <ListCard title={t("Tag")}>
+        <SettingRow label={t("Anzeigen als")}>
+          <Segmented label={t("Anzeigen als")} size="form" className="w-fit" options={DAY_VIEWS} value={user.dayView} onChange={user.setDayView} />
+        </SettingRow>
+        {toggle(t("Pausen zeigen"), "showBreaks")}
+        <MenuRow onClick={() => setFormatOpen(true)} icon={CalendarClock} label={t("Änderung unter dem Tag")} value={changedFormatLabel(user.changedFormat)} />
       </ListCard>
 
       <ChangedFormatSheet open={formatOpen} onClose={() => setFormatOpen(false)} />

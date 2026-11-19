@@ -7,6 +7,7 @@ import CodeMenu from "../CodeMenu";
 import { accessActions, passwordActions } from "./accessActions";
 import { FullChip, LinkChip, StatusChip } from "./AccessChips";
 import ClassTag from "../schools/ClassTag";
+import { useT } from "../../../shared/hooks/useT";
 
 const th = "pb-3 text-left text-hint font-extrabold text-faint";
 const HEAD = ["Bezeichnung", "Für", "Code", "Geräte", "Gültig bis", "Zuletzt", "Status"];
@@ -33,7 +34,9 @@ const Row = ({ cells, active, status, switchProps, menu }) => (
 );
 
 // Таблиця Zugangscodes на ПК (макет 14c pc-01); останній рядок — Klassenpasswort
-const AccessTable = ({ codes, password, today, onToggle, onAction, onPasswordToggle }) => (
+const AccessTable = ({ codes, password, today, onToggle, onAction, onPasswordToggle }) => {
+  const t = useT();
+  return (
   <table className="w-full border-collapse">
     <thead className="border-b border-hair">
       <tr>
@@ -43,7 +46,7 @@ const AccessTable = ({ codes, password, today, onToggle, onAction, onPasswordTog
           </th>
         ))}
         <th className={th}>
-          <span className="sr-only">Aktionen</span>
+          <span className="sr-only">{t("Aktionen")}</span>
         </th>
       </tr>
     </thead>
@@ -72,13 +75,14 @@ const AccessTable = ({ codes, password, today, onToggle, onAction, onPasswordTog
         <Row
           active={password.enabled}
           cells={["Klassenpasswort", "alle (alt)", "••••••••", devicesShort(password.devices, null), "ohne Ablauf", lastUsedDay(password.lastUsedAt, today)]}
-          status={<Badge variant={password.enabled ? "ok" : "off"}>{password.enabled ? "Aktiv" : "Aus"}</Badge>}
-          switchProps={{ checked: password.enabled, onChange: onPasswordToggle, label: password.enabled ? "Klassenpasswort ausschalten" : "Klassenpasswort einschalten" }}
-          menu={<CodeMenu code={{ label: "Klassenpasswort" }} items={passwordActions(password)} onAction={(kind) => onAction(kind, null)} />}
+          status={<Badge variant={password.enabled ? "ok" : "off"}>{password.enabled ? t("Aktiv") : t("Aus")}</Badge>}
+          switchProps={{ checked: password.enabled, onChange: onPasswordToggle, label: password.enabled ? t("Klassenpasswort ausschalten") : t("Klassenpasswort einschalten") }}
+          menu={<CodeMenu code={{ label: t("Klassenpasswort") }} items={passwordActions(password)} onAction={(kind) => onAction(kind, null)} />}
         />
       )}
     </tbody>
   </table>
 );
+};
 
 export default AccessTable;

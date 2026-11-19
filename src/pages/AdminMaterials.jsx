@@ -9,6 +9,7 @@ import { deleteAdminMaterial, loadAdminMaterials } from "../shared/api/materials
 import { useAdminLoad } from "../shared/hooks/useAdminLoad";
 import { groupMaterials } from "../shared/utils/materials";
 import RoundButton from "../components/ui/RoundButton";
+import { useT } from "../shared/hooks/useT";
 
 // Рядок адмінки: той самий рядок посилання + кошик праворуч і мітка коду («Code B»), хто додав
 const AdminRow = ({ item, onDelete }) => (
@@ -27,6 +28,7 @@ const AdminRow = ({ item, onDelete }) => (
 // Вигляд — як список учня (макети handy-01, pc-01), дія одна — «Löschen».
 // ─────────────────────────────────────────────────────────────
 const AdminMaterials = () => {
+  const t = useT();
   const list = useAdminLoad("materials", () => loadAdminMaterials().then((data) => data.materials));
   const [pending, setPending] = useState(null); // посилання в питанні «Link löschen?»
   const [busy, setBusy] = useState(false);
@@ -49,7 +51,7 @@ const AdminMaterials = () => {
   const renderList = () => {
     if (list.status === "loading") return <AdminSkeleton />;
     if (list.status === "error") return <AdminError error={list.error} onRetry={list.reload} />;
-    if (!items.length) return <AdminEmpty text="Noch keine Materialien" />;
+    if (!items.length) return <AdminEmpty text={t("Noch keine Materialien")} />;
     return (
       <div className="gap-4 lg:columns-2">
         {groupMaterials(items).map((group) => (
@@ -68,7 +70,7 @@ const AdminMaterials = () => {
 
   return (
     <section className="flex flex-col gap-4 lg:gap-5">
-      <AdminHeader title="Materialien" backTo="/admin" />
+      <AdminHeader title={t("Materialien")} backTo="/admin" />
       {renderList()}
       {pending && <DeleteMaterialDialog item={pending} actions={{ confirm: true, closeConfirm: () => setPending(null), remove, busy }} />}
     </section>

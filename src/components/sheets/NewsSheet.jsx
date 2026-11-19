@@ -8,6 +8,7 @@ import ChangeGroups from "../changelog/ChangeGroups";
 import NewsPicture from "../changelog/NewsPicture";
 import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
+import { useT } from "../../shared/hooks/useT";
 
 // «Was ist neu» (часть 22b): открывается один раз после новой версии (?sheet=news).
 // Пропустил несколько версий — показываем все, которых не видел (sheet.id — последняя увиденная).
@@ -15,6 +16,7 @@ import Sheet from "../ui/Sheet";
 // Запись с action ({ label, startView }, часть 30c) предлагает сразу открыть новую страницу:
 // строка «Startansicht» и кнопки «Später» / «Mit Start öffnen» (макет 30 handy-14)
 const NewsSheet = ({ open, onClose, sheet }) => {
+  const t = useT();
   const navigate = useNavigate();
   const startView = useUserStore((s) => s.startView);
   const answerStartOffer = useUserStore((s) => s.answerStartOffer);
@@ -29,7 +31,7 @@ const NewsSheet = ({ open, onClose, sheet }) => {
   };
   const footer = action ? (
     <>
-      <Button onClick={onClose}>Später</Button>
+      <Button onClick={onClose}>{t("Später")}</Button>
       <Button variant="primary" onClick={takeAction}>
         <House className="size-4" />
         {action.label}
@@ -37,10 +39,10 @@ const NewsSheet = ({ open, onClose, sheet }) => {
     </>
   ) : (
     <>
-      <Button onClick={() => navigate("/mehr/neuigkeiten")}>Alle ansehen</Button>
+      <Button onClick={() => navigate("/mehr/neuigkeiten")}>{t("Alle ansehen")}</Button>
       <Button variant="primary" onClick={onClose}>
         <Check className="size-4" />
-        Verstanden
+        {t("Verstanden")}
       </Button>
     </>
   );
@@ -50,8 +52,8 @@ const NewsSheet = ({ open, onClose, sheet }) => {
       open={open}
       onClose={onClose}
       desktop="dialog"
-      eyebrow={`Version ${latest.version} · ${newsDate(latest.date)}`}
-      title="Was ist neu"
+      eyebrow={t("Version {version} · {2}", { version: latest.version, "2": newsDate(latest.date) })}
+      title={t("Was ist neu")}
       footer={footer}
     >
       <div className="flex flex-col gap-6">
@@ -59,7 +61,7 @@ const NewsSheet = ({ open, onClose, sheet }) => {
           <section key={entry.version} className="flex flex-col gap-3">
             {entries.length > 1 && (
               <p className="text-hint font-extrabold text-faint">
-                Version {entry.version} · {newsDate(entry.date)}
+                {t("Version")} {entry.version} · {newsDate(entry.date)}
               </p>
             )}
             <NewsPicture name={entry.picture} />
@@ -68,7 +70,7 @@ const NewsSheet = ({ open, onClose, sheet }) => {
         ))}
         {action && (
           <ul className="rounded-card bg-card px-3.5">
-            <MenuRow to="/mehr/darstellung" icon={SlidersHorizontal} label="Startansicht" value={{ heute: "Heute" }[startView] ?? "Woche"} />
+            <MenuRow to="/mehr/darstellung" icon={SlidersHorizontal} label={t("Startansicht")} value={{ heute: "Heute" }[startView] ?? "Woche"} />
           </ul>
         )}
       </div>

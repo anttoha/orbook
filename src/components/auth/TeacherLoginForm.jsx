@@ -9,6 +9,7 @@ import { linkCodeOf, useLinkCode } from "../../shared/store/linkCodeStore";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { lockDuration, teacherLoginErrorText } from "../../shared/utils/authErrors";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Вхід учителя Lehrer-Code (макети handy-02/03, pc-01): POST /api/auth/teacher.
@@ -16,6 +17,7 @@ import { lockDuration, teacherLoginErrorText } from "../../shared/utils/authErro
 // Звертаємось на «Sie».
 // ─────────────────────────────────────────────────────────────
 const TeacherLoginForm = ({ schoolClass }) => {
+  const t = useT();
   const loginTeacher = usePlanStore((s) => s.loginTeacher);
   const navigate = useNavigate();
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // на ПК підказка під полем, на телефоні — плашка внизу
@@ -57,11 +59,11 @@ const TeacherLoginForm = ({ schoolClass }) => {
 
   return (
     <form onSubmit={submit} className="flex flex-1 flex-col">
-      <p className="mt-5 text-row text-muted lg:hidden">Mit Ihrem Lehrer-Code sehen Sie den Plan {classText} und tragen Tests und Hausaufgaben für die Klasse ein.</p>
+      <p className="mt-5 text-row text-muted lg:hidden">{t("Mit Ihrem Lehrer-Code sehen Sie den Plan")} {classText} {t("und tragen Tests und Hausaufgaben für die Klasse ein.")}</p>
       <TextField
         ref={inputRef}
         id="teacher-code"
-        label="Lehrer-Code"
+        label={t("Lehrer-Code")}
         className="mt-4.5 lg:mt-0"
         value={code}
         onChange={(event) => {
@@ -69,7 +71,7 @@ const TeacherLoginForm = ({ schoolClass }) => {
           if (!locked) setError(null);
         }}
         error={error}
-        hint={isDesktop ? "Den Code bekommen Sie vom Admin der Klasse." : null}
+        hint={isDesktop ? t("Den Code bekommen Sie vom Admin der Klasse.") : null}
         placeholder="ORB-L-XXXX-XX"
         maxLength={40}
         readOnly={busy}
@@ -80,20 +82,20 @@ const TeacherLoginForm = ({ schoolClass }) => {
         inputClassName="h-13.5 text-brand tracking-code"
       />
       <Button type="submit" variant="primary" disabled={busy || locked} className="mt-4.5 flex-none">
-        <KeyIcon className="size-4" /> {busy ? "Wird geprüft…" : "Anmelden"}
+        <KeyIcon className="size-4" /> {busy ? t("Wird geprüft…") : t("Anmelden")}
       </Button>
 
       <div className="mt-4 hidden items-center justify-between lg:flex">
         <Link to="/datenschutz" className="text-hint font-semibold text-muted">
-          Datenschutz
+          {t("Datenschutz")}
         </Link>
-        <p className="text-hint text-faint">Enter zum Anmelden</p>
+        <p className="text-hint text-faint">{t("Enter zum Anmelden")}</p>
       </div>
 
       {/* телефон: плашка внизу екрана */}
       <div className="mt-auto flex gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-muted lg:hidden">
         <Lock className="size-4 shrink-0" />
-        <p>Den Code bekommen Sie vom Admin der Klasse.</p>
+        <p>{t("Den Code bekommen Sie vom Admin der Klasse.")}</p>
       </div>
     </form>
   );

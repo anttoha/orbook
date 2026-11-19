@@ -12,12 +12,14 @@ import DayHistoryCard from "../history/DayHistoryCard";
 import LiveDot from "../live/LiveDot";
 import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Шторка «Info zum Tag». Адреса: ?sheet=info&datum=2026-10-07
 // Текст школи (day.info) — для ВСІЄЇ школи, показуємо як є.
 // ─────────────────────────────────────────────────────────────
 const DayInfoSheet = ({ open, onClose, sheet }) => {
+  const t = useT();
   const { openSheet } = useSheet(); // «Teilen» відкриває шторку Teilen
   const { day } = useDay(sheet.datum); // день із тижня
   const shareEnabled = usePlanStore((s) => s.me?.features?.share !== false); // адмін міг вимкнути «Teilen»
@@ -30,14 +32,14 @@ const DayInfoSheet = ({ open, onClose, sheet }) => {
     <Sheet
       open={open}
       onClose={onClose}
-      panelLabel="Info zum Tag"
+      panelLabel={t("Info zum Tag")}
       eyebrow={`${weekdayLong(day.date)}, ${longDate(day.date)}`}
-      title="Info zum Tag"
+      title={t("Info zum Tag")}
       footer={
         shareEnabled && (
           // replace — «Назад» із Teilen не повертає сюди
           <Button onClick={() => openSheet("teilen", { bereich: "heute", datum: day.date }, { replace: true })}>
-            <Share className="size-4.5" /> Teilen
+            <Share className="size-4.5" /> {t("Teilen")}
           </Button>
         )
       }
@@ -54,7 +56,7 @@ const DayInfoSheet = ({ open, onClose, sheet }) => {
       )}
       {/* звідки інформація: «Stand 11:26» — коли школа опублікувала план */}
       <p className="flex items-center gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-muted">
-        <Info className="size-4 shrink-0" /> Aus dem Vertretungsplan der Schule{day.publishedAt && `, Stand ${day.publishedAt.slice(11, 16)}`}.
+        <Info className="size-4 shrink-0" /> {t("Aus dem Vertretungsplan der Schule")}{day.publishedAt && t(", Stand {1}", { "1": day.publishedAt.slice(11, 16) })}.
       </p>
       {isDesktop && day.status === "ok" ? <InlineHistory day={day} /> : <DayHistoryCard day={day} />}
     </Sheet>
@@ -63,16 +65,17 @@ const DayInfoSheet = ({ open, onClose, sheet }) => {
 
 // ПК: заголовок «Verlauf des Tages» с «● Live · geprüft vor 20 Sek.» и лента под ним
 const InlineHistory = ({ day }) => {
+  const t = useT();
   const now = useTicker();
   const live = usePlanStore((s) => s.live) === "live";
   const ago = agoText(day.checkedAt ?? day.fetchedAt, now);
   return (
     <section className="flex flex-col gap-2.5">
       <div className="flex items-center gap-2">
-        <h3 className="flex-1 text-label font-extrabold text-faint">Verlauf des Tages</h3>
+        <h3 className="flex-1 text-label font-extrabold text-faint">{t("Verlauf des Tages")}</h3>
         <LiveDot on={live && !day.stale} />
         <span className="text-caption text-faint">
-          <span className={live ? "font-extrabold text-ok" : "font-extrabold text-muted"}>{live ? "Live" : "Nicht live"}</span>
+          <span className={live ? "font-extrabold text-ok" : "font-extrabold text-muted"}>{live ? t("Live") : t("Nicht live")}</span>
           {ago && ` · geprüft ${ago}`}
         </span>
       </div>

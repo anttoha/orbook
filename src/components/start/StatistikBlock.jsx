@@ -15,7 +15,7 @@ const StatistikBlock = ({ editing }) => {
 
   const body = () => {
     if (stats.status === "loading") return <BlockSkeleton />;
-    if (!totals) return <BlockEmpty text="Gerade keine Zahlen" />;
+    if (!totals) return <BlockEmpty text={t("Gerade keine Zahlen")} />;
     return (
       <>
         <p className="flex items-baseline gap-1.5">

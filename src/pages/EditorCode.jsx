@@ -11,12 +11,14 @@ import { usePlanStore } from "../shared/store/planStore";
 import { fullDate } from "../shared/utils/examRules";
 import { useClassEyebrow } from "../shared/hooks/useClassEyebrow";
 import Liquid from "../components/ui/Liquid";
+import { useT } from "../shared/hooks/useT";
 
 // Куди після коду (?weiter=…): лише наші адреси, не з параметра
 const NEXT = { neu: "/testen/neu", hausaufgabe: "/testen/hausaufgaben/neu", material: "/materialien/neu", termin: "/testen/termine/neu" };
 
 // Коду ще немає: поле вводу. ?weiter=neu — після коду одразу до форми запису
 const UnlockForm = ({ backTo }) => {
+  const t = useT();
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const next = NEXT[params.get("weiter")] ?? backTo;
@@ -24,10 +26,10 @@ const UnlockForm = ({ backTo }) => {
 
   return (
     <form onSubmit={submit} className="mt-5 flex flex-1 flex-col gap-4.5">
-      <p className="text-row text-muted">Mit einem Editor-Code kannst du Tests für die ganze Klasse eintragen. Den Code bekommst du vom Admin.</p>
+      <p className="text-row text-muted">{t("Mit einem Editor-Code kannst du Tests für die ganze Klasse eintragen. Den Code bekommst du vom Admin.")}</p>
       <EditorCodeField code={code} onChange={setCode} error={error} />
       <Button variant="primary" type="submit" disabled={busy} className="flex-none">
-        <KeyIcon className="size-4" /> Freischalten
+        <KeyIcon className="size-4" /> {t("Freischalten")}
       </Button>
       <DemoEditorCode onUnlocked={() => navigate(next, { replace: true })} className="mt-2" />
       <EditorCodeNote className="mt-auto" />
@@ -37,6 +39,7 @@ const UnlockForm = ({ backTo }) => {
 
 // Код уже є: що він дає і кнопка прибрати
 const ActiveCode = ({ editor }) => {
+  const t = useT();
   const lockEditor = usePlanStore((s) => s.lockEditor);
   const [busy, setBusy] = useState(false);
 
@@ -56,10 +59,10 @@ const ActiveCode = ({ editor }) => {
     <div className="mt-5 flex flex-1 flex-col gap-4.5">
       <Liquid as="div" refract press={false} className="rounded-card bg-card px-4 py-3.5">
         <p className="text-body font-bold text-ink">{editor.label}</p>
-        {editor.validUntil && <p className="mt-0.5 text-hint text-muted">gültig bis {fullDate(editor.validUntil)}</p>}
+        {editor.validUntil && <p className="mt-0.5 text-hint text-muted">{t("gültig bis")} {fullDate(editor.validUntil)}</p>}
       </Liquid>
       <Button variant="danger" onClick={remove} disabled={busy} className="flex-none">
-        <TrashIcon className="size-4" /> Code entfernen
+        <TrashIcon className="size-4" /> {t("Code entfernen")}
       </Button>
       <EditorCodeNote className="mt-auto" />
     </div>
@@ -71,6 +74,7 @@ const ActiveCode = ({ editor }) => {
 // POST /api/editor/unlock і /editor/lock, стан — me.editor.
 // ─────────────────────────────────────────────────────────────
 const EditorCode = () => {
+  const t = useT();
   const eyebrow = useClassEyebrow("Bearbeiten"); // Editor-Code действует в одном классе (часть 29)
   const editor = usePlanStore((s) => s.me?.editor);
   const location = useLocation();
@@ -79,7 +83,7 @@ const EditorCode = () => {
 
   return (
     <section className="flex flex-1 flex-col lg:max-w-186">
-      <PageHeader backTo={backTo} eyebrow={eyebrow} title="Editor-Code" />
+      <PageHeader backTo={backTo} eyebrow={eyebrow} title={t("Editor-Code")} />
       {editor ? <ActiveCode editor={editor} /> : <UnlockForm backTo={backTo} />}
     </section>
   );

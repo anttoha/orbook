@@ -22,58 +22,64 @@ import { hostOf, storageText } from "../shared/utils/admin";
 import { cn } from "../shared/utils/cn";
 import RoundButton from "../components/ui/RoundButton";
 import Liquid from "../components/ui/Liquid";
+import { useT } from "../shared/hooks/useT";
 
 // Кнопки в шапці ПК: «Plan neu laden», «Neuer Editor-Code»
 const DesktopActions = () => {
+  const t = useT();
   const navigate = useNavigate();
   const refresh = usePlanRefresh();
   return (
     <div className="hidden gap-2.5 lg:flex">
       <Button className="flex-none px-5" disabled={refresh.busy} onClick={refresh.run}>
-        <RenewIcon className={cn("size-4", refresh.busy && "animate-spin")} /> Plan neu laden
+        <RenewIcon className={cn("size-4", refresh.busy && "animate-spin")} /> {t("Plan neu laden")}
       </Button>
       <Button variant="primary" className="flex-none px-5" onClick={() => navigate("/admin/codes?neu=1")}>
-        <Plus className="size-4.5" /> Neuer Editor-Code
+        <Plus className="size-4.5" /> {t("Neuer Editor-Code")}
       </Button>
     </div>
   );
 };
 
 // «Schnell» на телефоні: Protokoll, Zugangscodes (частина 14c), сервер, Kurse & Fächer, Materialien
-const QuickLinks = ({ baseUrl }) => (
-  <ListCard title="Schnell" className="lg:hidden">
-    <MenuRow to="/admin/protokoll" icon={FileText} label="Protokoll" />
-    <MenuRow to="/admin/zugang" icon={LockIcon} label="Zugangscodes" value="verwalten" />
-    <MenuRow to="/admin/einstellungen" icon={Server} label="Schule & Plan" value={hostOf(baseUrl)} />
-    <MenuRow to="/admin/kurse" icon={Table2} label="Kurse & Fächer" />
-    <MenuRow to="/admin/muster" icon={Layers} label="Muster" />
-    <MenuRow to="/admin/materialien" icon={Folder} label="Materialien" />
-    <MenuRow to="/admin/termine" icon={CalendarDays} label="Termine" />
-    <MenuRow to="/admin/kanaele" icon={Megaphone} label="Kanäle" value="Telegram" />
+const QuickLinks = ({ baseUrl }) => {
+  const t = useT();
+  return (
+  <ListCard title={t("Schnell")} className="lg:hidden">
+    <MenuRow to="/admin/protokoll" icon={FileText} label={t("Protokoll")} />
+    <MenuRow to="/admin/zugang" icon={LockIcon} label={t("Zugangscodes")} value="verwalten" />
+    <MenuRow to="/admin/einstellungen" icon={Server} label={t("Schule & Plan")} value={hostOf(baseUrl)} />
+    <MenuRow to="/admin/kurse" icon={Table2} label={t("Kurse & Fächer")} />
+    <MenuRow to="/admin/muster" icon={Layers} label={t("Muster")} />
+    <MenuRow to="/admin/materialien" icon={Folder} label={t("Materialien")} />
+    <MenuRow to="/admin/termine" icon={CalendarDays} label={t("Termine")} />
+    <MenuRow to="/admin/kanaele" icon={Megaphone} label={t("Kanäle")} value="Telegram" />
   </ListCard>
 );
+};
 
 // Один і той самий порожній список: новий [] у селекторі Zustand щоразу — нескінченний перерендер
 const NO_CODES = [];
 
 // Таблиця кодів на ПК (ті самі дії, що на сторінці Editor-Codes)
 const CodesPanel = ({ today }) => {
+  const t = useT();
   const codes = useAdminStore((s) => s.codes.data?.codes ?? NO_CODES);
   const { toggle } = useCodeActions();
   const [action, setAction] = useState(null);
   return (
     <section className="hidden lg:block">
       <div className="mb-2.5 flex items-center justify-between">
-        <h2 className="text-hint font-extrabold text-faint">Editor-Codes</h2>
+        <h2 className="text-hint font-extrabold text-faint">{t("Editor-Codes")}</h2>
         <Link to="/admin/codes" className="text-label font-extrabold text-accent-ink">
-          Alle
+          {t("Alle")}
         </Link>
       </div>
       <Liquid as="div" refract press={false} className="rounded-card bg-card px-5 pt-4.5 pb-1">
         {codes.length ? (
           <CodeTable compact codes={codes} today={today} onToggle={toggle} onAction={(kind, code) => (kind === "lock" ? toggle(code) : setAction({ kind, code }))} />
         ) : (
-          <p className="pb-4 text-body-sm text-muted">Noch keine Editor-Codes.</p>
+          <p className="pb-4 text-body-sm text-muted">{t("Noch keine Editor-Codes.")}</p>
         )}
       </Liquid>
       <CodeDialogs action={action} onChange={setAction} />
@@ -85,6 +91,7 @@ const CodesPanel = ({ today }) => {
 // «Übersicht» (макети 40 телефон, 42 ПК): чи працює опит плану, числа, швидкі посилання, останні події.
 // ─────────────────────────────────────────────────────────────
 const AdminOverview = () => {
+  const t = useT();
   const { today } = useNow();
   const overview = useAdminStore((s) => s.overview);
   const reloadOverview = useAdminStore((s) => s.reloadOverview);
@@ -99,7 +106,7 @@ const AdminOverview = () => {
   }, [ensureSettings]);
 
   const logoutButton = (
-    <RoundButton aria-label="Abmelden" onClick={logout} look="grid size-9.5 place-items-center rounded-full bg-card text-ink lg:hidden">
+    <RoundButton aria-label={t("Abmelden")} onClick={logout} look="grid size-9.5 place-items-center rounded-full bg-card text-ink lg:hidden">
       <LogOut className="size-4.25" />
     </RoundButton>
   );
@@ -118,14 +125,14 @@ const AdminOverview = () => {
         </div>
         {data.storage && (
           <p className={cn("text-label", data.storage.diskLow ? "font-bold text-danger" : "text-faint")}>
-            Speicher · {storageText(data.storage)}
+            {t("Speicher ·")} {storageText(data.storage)}
             {data.storage.diskLow && " · Speicher wird knapp"}
           </p>
         )}
         <QuickLinks baseUrl={baseUrl} />
         <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[1.35fr_1fr] lg:items-start lg:gap-6">
           <CodesPanel today={today} />
-          <RecentEvents events={data.events ?? []} today={today} linkLabel={<><span className="lg:hidden">Alle</span><span className="hidden lg:inline">Protokoll</span></>} />
+          <RecentEvents events={data.events ?? []} today={today} linkLabel={<><span className="lg:hidden">{t("Alle")}</span><span className="hidden lg:inline">{t("Protokoll")}</span></>} />
         </div>
       </>
     );
@@ -133,7 +140,7 @@ const AdminOverview = () => {
 
   return (
     <section className="flex flex-col gap-4 lg:gap-5">
-      <AdminHeader title="Übersicht" accent actions={[<DesktopActions key="desk" />, <span key="out">{logoutButton}</span>]} />
+      <AdminHeader title={t("Übersicht")} accent actions={[<DesktopActions key="desk" />, <span key="out">{logoutButton}</span>]} />
       {renderBody()}
     </section>
   );

@@ -2,6 +2,7 @@ import { cn } from "../../shared/utils/cn";
 import { shortUrl } from "../../shared/utils/invite";
 import QrCode from "../ui/QrCode";
 import { PrintFoot, PrintHead, PrintLogo, StepDot } from "./PrintBits";
+import { useT } from "../../shared/hooks/useT";
 
 const STEPS = [
   { title: "Kamera öffnen und QR scannen", text: "Oder den Link oben eintippen." },
@@ -15,16 +16,18 @@ const STEPS = [
 // ─────────────────────────────────────────────────────────────
 const ClassSheet = ({ kind, url, className, steps }) => (kind === "kaertchen" ? <Cards url={url} className={className} /> : <Poster url={url} className={className} steps={steps} />);
 
-const Poster = ({ url, className, steps }) => (
+const Poster = ({ url, className, steps }) => {
+  const t = useT();
+  return (
   <article className="flex h-a4h w-a4w flex-col bg-white px-16 pt-14 pb-12 text-qr-ink">
-    <PrintHead right={className ? `Klasse ${className}` : null} />
+    <PrintHead right={className ? t("Klasse {className}", { className }) : null} />
     <h1 className="mt-12 text-display">
-      Unser Stundenplan
-      <span className="block text-qr-eye">aufs Handy</span>
+      {t("Unser Stundenplan")}
+      <span className="block text-qr-eye">{t("aufs Handy")}</span>
     </h1>
-    <p className="mt-4 text-input text-qr-ink/70">Vertretungen, Tests und Hausaufgaben{className ? ` der ${className}` : ""} — immer aktuell.</p>
+    <p className="mt-4 text-input text-qr-ink/70">{t("Vertretungen, Tests und Hausaufgaben")}{className ? ` der ${className}` : ""} {t("— immer aktuell.")}</p>
     <div className="mt-8 grid place-items-center rounded-panel bg-qr-ink/5 py-6">
-      <QrCode value={url} className="size-90" label="QR-Code zum Einladungslink" />
+      <QrCode value={url} className="size-90" label={t("QR-Code zum Einladungslink")} />
     </div>
     <p className="mt-6 text-center text-heading font-black text-qr-eye">{shortUrl(url)}</p>
     {steps && (
@@ -41,19 +44,22 @@ const Poster = ({ url, className, steps }) => (
     <PrintFoot lines={["Fragen? Admin der Klasse."]} />
   </article>
 );
+};
 
 // 2 × 4 карточки, между ними пунктир для ножниц
-const Cards = ({ url, className }) => (
+const Cards = ({ url, className }) => {
+  const t = useT();
+  return (
   <article className="grid h-a4h w-a4w grid-cols-2 grid-rows-4 bg-white text-qr-ink">
     {Array.from({ length: 8 }, (_, i) => (
       <div key={i} className={cn("flex items-center gap-5 border-dashed border-qr-ink/25 px-7", i % 2 === 0 && "border-r", i < 6 && "border-b")}>
-        <QrCode value={url} className="size-44 shrink-0" label="QR-Code zum Einladungslink" />
+        <QrCode value={url} className="size-44 shrink-0" label={t("QR-Code zum Einladungslink")} />
         <div className="min-w-0">
           <p className="flex items-center gap-1.5 text-row font-black">
             <PrintLogo className="size-6" /> ORBook
           </p>
-          <p className="mt-2 text-heading font-black">{className ? `Klasse ${className}` : "Unsere Klasse"}</p>
-          <p className="text-label text-qr-ink/70">Plan, Tests, Aufgaben</p>
+          <p className="mt-2 text-heading font-black">{className ? t("Klasse {className}", { className }) : t("Unsere Klasse")}</p>
+          <p className="text-label text-qr-ink/70">{t("Plan, Tests, Aufgaben")}</p>
           <ol className="mt-3 space-y-0.5 text-label font-bold">
             {["Scannen", "Kurse antippen", "Fertig"].map((text, n) => (
               <li key={text}>
@@ -67,5 +73,6 @@ const Cards = ({ url, className }) => (
     ))}
   </article>
 );
+};
 
 export default ClassSheet;

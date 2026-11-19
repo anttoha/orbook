@@ -70,14 +70,14 @@ const ClassSettings = ({ item, onClose }) => {
       </Liquid>
 
       <Liquid as="ul" refract press={false} className="rounded-card bg-card px-3.5 py-0.5">
-        <MenuRow onClick={() => go("/mehr/kurse")} icon={Table2} label="Meine Kurse" value={values.courses} />
-        <MenuRow onClick={() => go("/mehr/mitteilungen")} icon={Bell} label="Mitteilungen" value={values.push} />
-        <MenuRow onClick={() => go("/mehr/editor-code")} icon={KeyIcon} label="Tests eintragen" value={item.canEdit ? "aktiv" : "Editor-Code"} />
+        <MenuRow onClick={() => go("/mehr/kurse")} icon={Table2} label={t("Meine Kurse")} value={values.courses} />
+        <MenuRow onClick={() => go("/mehr/mitteilungen")} icon={Bell} label={t("Mitteilungen")} value={values.push} />
+        <MenuRow onClick={() => go("/mehr/editor-code")} icon={KeyIcon} label={t("Tests eintragen")} value={item.canEdit ? "aktiv" : "Editor-Code"} />
       </Liquid>
 
       <Liquid as="ul" refract press={false} className="rounded-card bg-card px-3.5">
-        <SettingRow label="Beim Start öffnen" hint="Gleich diese Klasse statt „Meine Klassen“">
-          <Switch checked={Boolean(item.startOpen)} onChange={(on) => setStartOpen(item.id, on)} label="Beim Start öffnen" />
+        <SettingRow label={t("Beim Start öffnen")} hint={t("Gleich diese Klasse statt „Meine Klassen“")}>
+          <Switch checked={Boolean(item.startOpen)} onChange={(on) => setStartOpen(item.id, on)} label={t("Beim Start öffnen")} />
         </SettingRow>
       </Liquid>
 

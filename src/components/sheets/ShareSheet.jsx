@@ -8,6 +8,7 @@ import Button from "../ui/Button";
 import Segmented from "../ui/Segmented";
 import Sheet from "../ui/Sheet";
 import PillButton from "../ui/PillButton";
+import { useT } from "../../shared/hooks/useT";
 
 // Варіанти перемикача: значення в адресі → range для сервера
 const RANGES = [
@@ -22,13 +23,14 @@ const RANGES = [
 // Текст можна поправити і надіслати в WhatsApp або скопіювати.
 // ─────────────────────────────────────────────────────────────
 const ShareSheet = ({ open, onClose, sheet }) => {
+  const t = useT();
   return (
     <Sheet
       open={open}
       onClose={onClose}
       desktop="dialog"
-      eyebrow="Nachricht auf Deutsch"
-      title="Teilen"
+      eyebrow={t("Nachricht auf Deutsch")}
+      title={t("Teilen")}
     >
       {/* key — при новому відкритті з іншими параметрами налаштування починаються заново */}
       <ShareOptions
@@ -41,6 +43,7 @@ const ShareSheet = ({ open, onClose, sheet }) => {
 
 // Перемикач + галочки + текст
 const ShareOptions = ({ sheet }) => {
+  const t = useT();
   const [range, setRange] = useState(
     RANGES.some((r) => r.value === sheet.bereich) ? sheet.bereich : "heute",
   ); // період
@@ -98,7 +101,7 @@ const ShareOptions = ({ sheet }) => {
   return (
     <>
       <Segmented
-        label="Zeitraum"
+        label={t("Zeitraum")}
         size="form"
         options={RANGES}
         value={range}
@@ -108,17 +111,17 @@ const ShareOptions = ({ sheet }) => {
       {/* галочки */}
       <div className="grid grid-cols-2 gap-2">
         <Checkbox
-          label="Vertretungen"
+          label={t("Vertretungen")}
           checked={includeChanges}
           onChange={change(setIncludeChanges)}
         />
         <Checkbox
-          label="Tests"
+          label={t("Tests")}
           checked={includeExams}
           onChange={change(setIncludeExams)}
         />
         <Checkbox
-          label="Aufgaben"
+          label={t("Aufgaben")}
           checked={includeHomework}
           onChange={change(setIncludeHomework)}
         />
@@ -126,21 +129,21 @@ const ShareOptions = ({ sheet }) => {
 
       {nothing && (
         <p className="rounded-field bg-sand px-3.5 py-3 text-label font-bold text-muted">
-          Wähle mindestens eins aus.
+          {t("Wähle mindestens eins aus.")}
         </p>
       )}
       {/* поки йде новий текст — той самий блок, тільки скелет замість тексту: вікно не стрибає по висоті */}
       {!nothing && result.status === "loading" && <Composer loading />}
       {!nothing && result.status === "error" && (
         <div className="flex flex-col items-start gap-2 rounded-field bg-danger-tint px-3.5 py-3 text-label font-bold text-ink">
-          <p>Text konnte nicht geladen werden. {result.error.message}</p>
+          <p>{t("Text konnte nicht geladen werden.")} {result.error.message}</p>
           <PillButton glass="glass" size="sm"
            
             onClick={() => {
               setResult((r) => ({ ...r, status: "loading" }));
               setAttempt((a) => a + 1);
             }} className="flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 font-extrabold">
-            <RefreshCw className="size-3.5" /> Erneut versuchen
+            <RefreshCw className="size-3.5" /> {t("Erneut versuchen")}
           </PillButton>
         </div>
       )}
@@ -177,6 +180,7 @@ const Checkbox = ({ label, checked, onChange }) => (
 // Поле з текстом (можна правити) + кнопки надсилання.
 // loading — текст ще вантажиться: на місці поля скелет такої самої висоти, кнопки неактивні
 export const Composer = ({ initialText = "", loading = false }) => {
+  const t = useT();
   const [text, setText] = useState(initialText); // текст, який надішлемо
 
   return (
@@ -188,17 +192,17 @@ export const Composer = ({ initialText = "", loading = false }) => {
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={5}
-          aria-label="Nachricht"
+          aria-label={t("Nachricht")}
           className="h-36 w-full resize-none rounded-cell bg-ok-tint px-3.5 py-3 text-body-sm leading-5.25 text-ink outline-none motion-safe:animate-fade-in focus:ring-2 focus:ring-ok/40"
         />
       )}
       <p className="text-caption text-faint">
-        Du kannst den Text vor dem Senden noch ändern.
+        {t("Du kannst den Text vor dem Senden noch ändern.")}
       </p>
 
       <div className="-mt-1 flex gap-2">
         <Button onClick={() => copyText(text)} disabled={loading}>
-          <Copy className="size-4" /> Kopieren
+          <Copy className="size-4" /> {t("Kopieren")}
         </Button>
         {/* звичайне посилання в новій вкладці: відкриє WhatsApp (застосунок або web) */}
         <Button
@@ -210,7 +214,7 @@ export const Composer = ({ initialText = "", loading = false }) => {
         >
           {/* на ПК відкриється WhatsApp Web, тому й підпис такий (як на макеті) */}
           <WhatsappIcon className="size-4" /> WhatsApp
-          <span className="hidden lg:inline"> Web</span>
+          <span className="hidden lg:inline"> {t("Web")}</span>
         </Button>
       </div>
     </>

@@ -8,28 +8,34 @@ import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { addAppointmentTarget, appointmentSubjects, canCreateAppointments } from "../shared/utils/appointments";
 import { formEyebrow, formSubjects } from "../shared/utils/examRules";
+import { useT } from "../shared/hooks/useT";
 
 const BACK = "/testen?liste=termine";
 
-const Placeholder = ({ text }) => (
+const Placeholder = ({ text }) => {
+  const t = useT();
+  return (
   <section className="flex flex-col gap-5 lg:max-w-186">
-    <PageHeader backTo={BACK} eyebrow="Termine" title="Termin ändern" />
+    <PageHeader backTo={BACK} eyebrow={t("Termine")} title={t("Termin ändern")} />
     {text ? <p className="text-body-sm text-muted">{text}</p> : <Skeleton className="h-40 rounded-card" />}
   </section>
 );
+};
 
 // Форма з правильними предметами і підписом «хто записує»
 const Form = ({ item }) => {
+  const t = useT();
   const me = usePlanStore((s) => s.me);
   const meta = usePlanStore((s) => s.meta);
   const courses = usePlanStore((s) => s.courses);
   const picked = useUserStore((s) => s.picked);
   const subjects = appointmentSubjects(me, formSubjects(courses, picked, meta?.subjects, item?.subject));
-  return <AppointmentForm key={item?.id ?? "neu"} item={item} subjects={subjects} eyebrow={formEyebrow(me, "Termine")} authorShort={me?.teacher?.short ?? null} />;
+  return <AppointmentForm key={item?.id ?? "neu"} item={item} subjects={subjects} eyebrow={formEyebrow(me, t("Termine"))} authorShort={me?.teacher?.short ?? null} />;
 };
 
 // Правка: /testen/termine/4/bearbeiten. Термін — зі списку (вантажимо, якщо адресу відкрили напряму)
 const EditExisting = ({ id }) => {
+  const t = useT();
   const item = useAppointmentStore((s) => s.items.find((x) => String(x.id) === id)) ?? null;
   const status = useAppointmentStore((s) => s.status);
   const ensure = useAppointmentStore((s) => s.ensure);
@@ -38,8 +44,8 @@ const EditExisting = ({ id }) => {
   }, [ensure]);
 
   if (!item && (status === "idle" || status === "loading")) return <Placeholder />;
-  if (!item) return <Placeholder text="Diesen Termin gibt es nicht (mehr)." />;
-  if (!item.canEdit) return <Placeholder text="Diesen Termin kannst du nicht ändern." />;
+  if (!item) return <Placeholder text={t("Diesen Termin gibt es nicht (mehr).")} />;
+  if (!item.canEdit) return <Placeholder text={t("Diesen Termin kannst du nicht ändern.")} />;
   return <Form item={item} />;
 };
 

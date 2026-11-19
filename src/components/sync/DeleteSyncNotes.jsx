@@ -7,10 +7,12 @@ import { syncErrorText } from "../../shared/utils/notes";
 import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import { TrashIcon } from "../ui/icons";
+import { useT } from "../../shared/hooks/useT";
 
 // «Meine Sync-Daten löschen» (Datenschutz, макет 27): DELETE /api/sync і забути код.
 // Нотатки на цьому пристрої лишаються. Видно тільки після входу і коли код є.
 const DeleteSyncNotes = () => {
+  const t = useT();
   const code = useSyncStore((s) => s.code);
   const forget = useSyncStore((s) => s.forget);
   const loggedIn = usePlanStore((s) => Boolean(s.me));
@@ -36,18 +38,18 @@ const DeleteSyncNotes = () => {
   return (
     <>
       <Button variant="danger" onClick={() => setOpen(true)} className="mt-6 w-full flex-none">
-        <TrashIcon className="size-4" /> Meine Sync-Daten löschen
+        <TrashIcon className="size-4" /> {t("Meine Sync-Daten löschen")}
       </Button>
       <ConfirmDialog
         open={open}
         onClose={() => setOpen(false)}
         icon={<TrashIcon className="size-6.5 text-danger" />}
-        title="Sync-Daten löschen?"
-        text="Die verschlüsselten Daten werden vom Server gelöscht und der Code von diesem Gerät entfernt. Alles auf diesem Gerät bleibt."
+        title={t("Sync-Daten löschen?")}
+        text={t("Die verschlüsselten Daten werden vom Server gelöscht und der Code von diesem Gerät entfernt. Alles auf diesem Gerät bleibt.")}
       >
-        <Button onClick={() => setOpen(false)}>Abbrechen</Button>
+        <Button onClick={() => setOpen(false)}>{t("Abbrechen")}</Button>
         <Button variant="danger" onClick={remove} disabled={busy}>
-          <TrashIcon className="size-4" /> Löschen
+          <TrashIcon className="size-4" /> {t("Löschen")}
         </Button>
       </ConfirmDialog>
     </>

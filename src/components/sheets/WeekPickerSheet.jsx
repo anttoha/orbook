@@ -1,16 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import Sheet from "../ui/Sheet";
 import WeekPicker from "../week/WeekPicker";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Шторка «Woche wählen» (телефон). Адреса: ?sheet=kalender&kw=2026-10-05
 // На ПК календар відкривається випадаючим вікном біля кнопки 📅 (WeekPickerPopover).
 // ─────────────────────────────────────────────────────────────
 const WeekPickerSheet = ({ open, onClose, sheet }) => {
+  const t = useT();
   const navigate = useNavigate(); // перехід на тиждень
 
   return (
-    <Sheet open={open} onClose={onClose} desktop="dialog" title="Woche wählen">
+    <Sheet open={open} onClose={onClose} desktop="dialog" title={t("Woche wählen")}>
       {/* key — при новому відкритті календар починається з переданого тижня */}
       <WeekPicker
         key={sheet.kw}

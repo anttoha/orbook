@@ -4,10 +4,13 @@ import Switch from "../ui/Switch";
 import CodeChip from "./CodeChip";
 import CodeMenu from "./CodeMenu";
 import ClassTag from "./schools/ClassTag";
+import { useT } from "../../shared/hooks/useT";
 
 // Картка коду на телефоні (макет 41): назва + чип + «⋮», хвіст коду і права, «zuletzt … · N Einträge» і перемикач.
 // subjects — предмети вчителя «Mathe, Physik» поруч із чипом (Lehrer-Code, макет handy-10)
-const CodeCard = ({ code, today, onToggle, onOpenSheet, subjects }) => (
+const CodeCard = ({ code, today, onToggle, onOpenSheet, subjects }) => {
+  const t = useT();
+  return (
   <li className={cn("rounded-card bg-card px-3.5 pt-3 pb-3.5", !code.active && "opacity-60")}>
     <div className="flex items-center gap-2">
       <p className="min-w-0 truncate text-subhead font-extrabold text-ink">{code.label}</p>
@@ -24,11 +27,12 @@ const CodeCard = ({ code, today, onToggle, onOpenSheet, subjects }) => (
     </p>
     <div className="mt-1 flex items-center justify-between gap-3">
       <p className="text-caption text-faint">
-        {lastUsedText(code.lastUsedAt, today)} · {entriesCount(code)} Einträge
+        {lastUsedText(code.lastUsedAt, today)} · {entriesCount(code)} {t("Einträge")}
       </p>
       <Switch checked={code.active} onChange={() => onToggle(code)} label={code.active ? `${code.label} sperren` : `${code.label} entsperren`} />
     </div>
   </li>
 );
+};
 
 export default CodeCard;

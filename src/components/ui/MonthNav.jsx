@@ -3,6 +3,7 @@ import { cn } from "../../shared/utils/cn";
 import { monthLong } from "../../shared/utils/format";
 import { shiftMonth } from "../../shared/utils/calendar";
 import RoundButton from "./RoundButton";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // «‹  September 2026  ›» над сіткою місяця.
@@ -10,18 +11,21 @@ import RoundButton from "./RoundButton";
 // titleClassName — розмір назви (у «Woche wählen» менший, ніж у календарі Klausuren)
 // ─────────────────────────────────────────────────────────────
 
-const MonthNav = ({ month, onChange, canGoNext = true, titleClassName = "text-subhead" }) => (
+const MonthNav = ({ month, onChange, canGoNext = true, titleClassName = "text-subhead" }) => {
+  const t = useT();
+  return (
   <div className="flex items-center justify-between">
-    <RoundButton aria-label="Vorheriger Monat" onClick={() => onChange(shiftMonth(month, -1))}>
+    <RoundButton aria-label={t("Vorheriger Monat")} onClick={() => onChange(shiftMonth(month, -1))}>
       <ChevronLeft className="size-4.5" />
     </RoundButton>
     <p className={cn("text-ink", titleClassName)}>
       {monthLong(month)} {month.slice(0, 4)}
     </p>
-    <RoundButton aria-label="Nächster Monat" disabled={!canGoNext} onClick={() => onChange(shiftMonth(month, 1))}>
+    <RoundButton aria-label={t("Nächster Monat")} disabled={!canGoNext} onClick={() => onChange(shiftMonth(month, 1))}>
       <ChevronRight className="size-4.5" />
     </RoundButton>
   </div>
 );
+};
 
 export default MonthNav;

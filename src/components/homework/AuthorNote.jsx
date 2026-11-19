@@ -1,6 +1,7 @@
 import { UserRound } from "lucide-react";
 import { usePlanStore } from "../../shared/store/planStore";
 import { authorLine, editRightsText } from "../../shared/utils/homework";
+import { useT } from "../../shared/hooks/useT";
 
 const box = "flex gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-muted";
 
@@ -11,6 +12,7 @@ const box = "flex gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-mut
 // Запись ученика — без автора: тогда плашки нет (владелец 14.11: без «ohne Namen»)
 // ─────────────────────────────────────────────────────────────
 const AuthorNote = ({ entry }) => {
+  const t = useT();
   const me = usePlanStore((s) => s.me);
   const line = authorLine(entry, me);
   if (!line) return null;
@@ -19,7 +21,7 @@ const AuthorNote = ({ entry }) => {
     <div className={box}>
       <UserRound className="size-4 shrink-0" />
       <p>
-        Eingetragen von <b className="font-extrabold text-ink">{line.name}</b>
+        {t("Eingetragen von")} <b className="font-extrabold text-ink">{line.name}</b>
         {line.role && ` · ${line.role}`}
         {line.changedByStudent && " · geändert von Schüler"}
         <br />

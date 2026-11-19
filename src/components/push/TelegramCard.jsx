@@ -7,10 +7,12 @@ import { botUrl, telegramState } from "../../shared/utils/telegram";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Карточка «Telegram» в Mitteilungen (макет 27b handy-01/03):
 // не подключено — «Mit Telegram verbinden» (шторка ?sheet=telegram), подключено — «Bot öffnen» и «Trennen».
 const TelegramCard = () => {
+  const t = useT();
   const status = useTelegramStore((s) => s.status);
   const load = useTelegramStore((s) => s.load);
   const disconnect = useTelegramStore((s) => s.disconnect);
@@ -39,7 +41,7 @@ const TelegramCard = () => {
   return (
     <section className="flex flex-col gap-2.5">
       <h2 className="flex items-center gap-2 text-hint font-extrabold text-faint">
-        Telegram <Badge>Neu</Badge>
+        Telegram <Badge>{t("Neu")}</Badge>
       </h2>
       <Liquid as="div" refract press={false} className="flex flex-col gap-3 rounded-card bg-card p-2">
         {state === "on" ? (
@@ -48,8 +50,8 @@ const TelegramCard = () => {
               <Send className="size-4.5 text-ok" aria-hidden="true" />
             </span>
             <div className="min-w-0">
-              <p className="text-row font-extrabold text-ok">Telegram · verbunden</p>
-              <p className="text-caption text-muted">Was kommt, stellst du im Bot ein.</p>
+              <p className="text-row font-extrabold text-ok">{t("Telegram · verbunden")}</p>
+              <p className="text-caption text-muted">{t("Was kommt, stellst du im Bot ein.")}</p>
             </div>
           </div>
         ) : (
@@ -58,8 +60,8 @@ const TelegramCard = () => {
               <Send className="size-4.5 text-accent-ink" aria-hidden="true" />
             </span>
             <div className="min-w-0">
-              <p className="text-row font-extrabold text-ink">Lieber per Telegram?</p>
-              <p className="text-caption text-muted">Dasselbe als Nachricht vom ORBook-Bot.</p>
+              <p className="text-row font-extrabold text-ink">{t("Lieber per Telegram?")}</p>
+              <p className="text-caption text-muted">{t("Dasselbe als Nachricht vom ORBook-Bot.")}</p>
             </div>
           </div>
         )}
@@ -67,15 +69,15 @@ const TelegramCard = () => {
           {state === "on" ? (
             <>
               <Button href={botUrl(status?.botUsername)} target="_blank" rel="noreferrer" className="flex-1">
-                <Send className="size-4" /> Bot öffnen
+                <Send className="size-4" /> {t("Bot öffnen")}
               </Button>
               <Button onClick={unlink} disabled={busy} className="flex-1 text-danger">
-                Trennen
+                {t("Trennen")}
               </Button>
             </>
           ) : (
             <Button variant="primary" onClick={() => openSheet("telegram")} className="flex-1">
-              <Send className="size-4" /> Mit Telegram verbinden
+              <Send className="size-4" /> {t("Mit Telegram verbinden")}
             </Button>
           )}
         </div>

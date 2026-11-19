@@ -6,6 +6,7 @@ import { abLetter } from "../../../shared/utils/muster";
 import WeekLetter from "../../muster/WeekLetter";
 import Sheet from "../../ui/Sheet";
 import Liquid from "../../ui/Liquid";
+import { useT } from "../../../shared/hooks/useT";
 
 // Як зараз рахуються тижні (muster.abMode) — підпис під «Diese Woche · KW 45»
 const MODE_TEXT = { school: "Laut Plan der Schule", swap: "A und B getauscht", none: "Keine Wochen A und B" };
@@ -16,13 +17,14 @@ const MODE_TEXT = { school: "Laut Plan der Schule", swap: "A und B getauscht", n
 // children — сам вибір (AbChoice)
 // ─────────────────────────────────────────────────────────────
 const AbSwitch = ({ kw, data, children }) => {
+  const t = useT();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const [open, setOpen] = useState(false);
   const letter = abLetter(data.abWeek);
   const summary = (
     <span className="min-w-0 flex-1">
       <span className="flex items-center gap-2 text-row text-ink">
-        Diese Woche · KW {kw} <WeekLetter letter={letter} />
+        {t("Diese Woche · KW")} {kw} <WeekLetter letter={letter} />
       </span>
       <span className="block text-caption text-faint">{MODE_TEXT[data.abMode]}</span>
     </span>
@@ -35,7 +37,7 @@ const AbSwitch = ({ kw, data, children }) => {
           {summary}
           <ChevronRight className="size-4 shrink-0 text-faint2" />
         </Liquid>
-        <Sheet open={open} onClose={() => setOpen(false)} eyebrow="Muster · Woche A und B" title="Woche A oder B?">
+        <Sheet open={open} onClose={() => setOpen(false)} eyebrow={t("Muster · Woche A und B")} title={t("Woche A oder B?")}>
           {children}
         </Sheet>
       </>
@@ -44,12 +46,12 @@ const AbSwitch = ({ kw, data, children }) => {
 
   return (
     <Liquid as="div" refract press={false} className="rounded-card bg-card px-5 py-4.5">
-      <p className="mb-2 text-hint font-extrabold text-faint">Wochen A und B</p>
+      <p className="mb-2 text-hint font-extrabold text-faint">{t("Wochen A und B")}</p>
       <div className="flex items-center gap-3">
         {summary}
         <Popover.Root open={open} onOpenChange={setOpen}>
           <Popover.Trigger className="flex h-8 items-center gap-1.5 rounded-full border border-rule px-3.5 text-label font-extrabold text-ink outline-none hover:bg-paper focus-visible:ring-2 focus-visible:ring-accent/50">
-            Ändern <ChevronDown className="size-3.5 text-faint" />
+            {t("Ändern")} <ChevronDown className="size-3.5 text-faint" />
           </Popover.Trigger>
           <Popover.Portal>
             <Popover.Content align="end" sideOffset={6} collisionPadding={16} className="z-50 w-filter rounded-card bg-card p-3 shadow-sheet outline-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in">

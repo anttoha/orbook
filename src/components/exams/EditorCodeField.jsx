@@ -1,11 +1,14 @@
 import { Lock } from "lucide-react";
 import TextField from "../ui/TextField";
+import { useT } from "../../shared/hooks/useT";
 
 // Поле коду: регістр і дефіси сервер прощає сам, тому нічого не форматуємо
-export const EditorCodeField = ({ code, onChange, error }) => (
+export const EditorCodeField = ({ code, onChange, error }) => {
+  const t = useT();
+  return (
   <TextField
     id="editor-code"
-    label="Code"
+    label={t("Code")}
     value={code}
     onChange={(event) => onChange(event.target.value)}
     error={error}
@@ -17,6 +20,7 @@ export const EditorCodeField = ({ code, onChange, error }) => (
     inputClassName="h-13.5 text-brand tracking-code"
   />
 );
+};
 
 // Плашка внизу
 export const EditorCodeNote = ({ className }) => (

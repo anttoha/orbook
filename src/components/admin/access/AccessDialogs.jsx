@@ -19,6 +19,7 @@ import DevicesField from "./DevicesField";
 import InviteSheet from "./InviteSheet";
 import ShowCodeSheet from "./ShowCodeSheet";
 import Liquid from "../../ui/Liquid";
+import { useT } from "../../../shared/hooks/useT";
 
 // Значення праворуч у шторці: «30», «Schuljahresende», «9 angemeldet»
 const hintOf = (item, code) =>
@@ -26,6 +27,7 @@ const hintOf = (item, code) =>
 
 // Шторка дій на телефоні (макет 14c handy-04)
 const ActionsSheet = ({ code, onAction, onClose }) => {
+  const t = useT();
   const { today } = useNow();
   return (
     <Sheet open onClose={onClose} desktop="dialog" eyebrow={`${code.masked} · ${code.active ? "aktiv" : "gesperrt"} · ${audienceChip(code.audience)}`} title={code.label}>
@@ -45,7 +47,7 @@ const ActionsSheet = ({ code, onAction, onClose }) => {
         ))}
       </Liquid>
       <p className="flex gap-2.5 rounded-card bg-sand px-3.5 py-3 text-label text-muted">
-        <Info className="mt-0.5 size-4 shrink-0" /> Sperren, Löschen, Abmelden: die Geräte müssen sich sofort neu anmelden. Andere Codes bleiben.
+        <Info className="mt-0.5 size-4 shrink-0" /> {t("Sperren, Löschen, Abmelden: die Geräte müssen sich sofort neu anmelden. Andere Codes bleiben.")}
       </p>
     </Sheet>
   );
@@ -53,11 +55,12 @@ const ActionsSheet = ({ code, onAction, onClose }) => {
 
 // Шторка дій для рядка «Klassenpasswort» на телефоні
 const PasswordSheet = ({ password, onAction, onClose }) => {
+  const t = useT();
   const { today } = useNow();
   return (
-    <Sheet open onClose={onClose} desktop="dialog" eyebrow={`Gemeinsames Passwort · ${password.enabled ? "aktiv" : "aus"}`} title="Klassenpasswort">
+    <Sheet open onClose={onClose} desktop="dialog" eyebrow={t("Gemeinsames Passwort · {1}", { "1": password.enabled ? "aktiv" : "aus" })} title={t("Klassenpasswort")}>
       <p className="-mt-2 text-body-sm text-muted">
-        {password.devices} {password.devices === 1 ? "Gerät" : "Geräte"} · {lastUsedText(password.lastUsedAt, today)}
+        {password.devices} {password.devices === 1 ? t("Gerät") : t("Geräte")} · {lastUsedText(password.lastUsedAt, today)}
       </p>
       <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
         {passwordActions(password).map((item) => (
@@ -76,6 +79,7 @@ const PasswordSheet = ({ password, onAction, onClose }) => {
 
 // Маленьке вікно з однією формою і «Speichern»
 const FormSheet = ({ code, title, onClose, onSave, children }) => {
+  const t = useT();
   const [busy, setBusy] = useState(false);
   const submit = async (event) => {
     event.preventDefault();
@@ -85,11 +89,11 @@ const FormSheet = ({ code, title, onClose, onSave, children }) => {
     if (ok) onClose();
   };
   return (
-    <Sheet open onClose={onClose} desktop="dialog" eyebrow={`Zugangscode · ${code.label}`} title={title}>
+    <Sheet open onClose={onClose} desktop="dialog" eyebrow={t("Zugangscode · {label}", { label: code.label })} title={title}>
       <form onSubmit={submit} noValidate className="flex flex-col gap-4">
         {children}
         <Button type="submit" variant="primary" disabled={busy} className="flex-none">
-          <CheckIcon className="size-4" /> Speichern
+          <CheckIcon className="size-4" /> {t("Speichern")}
         </Button>
       </form>
     </Sheet>
@@ -97,6 +101,7 @@ const FormSheet = ({ code, title, onClose, onSave, children }) => {
 };
 
 const RenameSheet = ({ code, actions, onClose }) => {
+  const t = useT();
   const [label, setLabel] = useState(code.label);
   const [error, setError] = useState(null);
   const save = () => {
@@ -105,13 +110,14 @@ const RenameSheet = ({ code, actions, onClose }) => {
     return found ? false : actions.rename(code, label);
   };
   return (
-    <FormSheet code={code} title="Umbenennen" onClose={onClose} onSave={save}>
-      <TextField id="access-rename" label="Bezeichnung" value={label} maxLength={40} error={error} onChange={(event) => setLabel(event.target.value)} autoComplete="off" />
+    <FormSheet code={code} title={t("Umbenennen")} onClose={onClose} onSave={save}>
+      <TextField id="access-rename" label={t("Bezeichnung")} value={label} maxLength={40} error={error} onChange={(event) => setLabel(event.target.value)} autoComplete="off" />
     </FormSheet>
   );
 };
 
 const LimitSheet = ({ code, actions, onClose }) => {
+  const t = useT();
   const choice = choiceFromDevices(code.maxDevices);
   const [value, setValue] = useState({ choice, custom: choice === "custom" ? String(code.maxDevices) : "" });
   const [error, setError] = useState(null);
@@ -121,22 +127,23 @@ const LimitSheet = ({ code, actions, onClose }) => {
     return found ? false : actions.setLimit(code, devicesFromChoice(value.choice, value.custom));
   };
   return (
-    <FormSheet code={code} title="Geräte-Limit" onClose={onClose} onSave={save}>
-      <DevicesField value={value} onChange={setValue} error={error} hint={`Jetzt angemeldet: ${code.devices ?? 0}. Wer schon drin ist, bleibt drin.`} />
+    <FormSheet code={code} title={t("Geräte-Limit")} onClose={onClose} onSave={save}>
+      <DevicesField value={value} onChange={setValue} error={error} hint={t("Jetzt angemeldet: {1}. Wer schon drin ist, bleibt drin.", { "1": code.devices ?? 0 })} />
     </FormSheet>
   );
 };
 
 const ValiditySheet = ({ code, actions, onClose }) => {
+  const t = useT();
   const { today } = useNow();
   const { yearEnd } = useAccessScope();
   const [choice, setChoice] = useState(yearEnd ? "schuljahresende" : "halbjahr");
   const save = () => actions.setValidUntil(code, accessValidUntil(choice, today, yearEnd));
   return (
-    <FormSheet code={code} title="Gültigkeit" onClose={onClose} onSave={save}>
-      <Field label="Gültig bis">
-        <Segmented label="Gültig bis" size="form" options={accessValidChoices(yearEnd)} value={choice} onChange={setChoice} />
-        <p className="mt-1.5 text-caption text-faint">Jetzt: {validText(code)}</p>
+    <FormSheet code={code} title={t("Gültigkeit")} onClose={onClose} onSave={save}>
+      <Field label={t("Gültig bis")}>
+        <Segmented label={t("Gültig bis")} size="form" options={accessValidChoices(yearEnd)} value={choice} onChange={setChoice} />
+        <p className="mt-1.5 text-caption text-faint">{t("Jetzt:")} {validText(code)}</p>
       </Field>
     </FormSheet>
   );
@@ -144,6 +151,7 @@ const ValiditySheet = ({ code, actions, onClose }) => {
 
 // Підтвердження з двома кнопками; busy — поки йде запит
 const Confirm = ({ icon, title, text, button, variant = "danger", onClose, onConfirm }) => {
+  const t = useT();
   const [busy, setBusy] = useState(false);
   const confirm = async () => {
     setBusy(true);
@@ -153,7 +161,7 @@ const Confirm = ({ icon, title, text, button, variant = "danger", onClose, onCon
   };
   return (
     <ConfirmDialog open onClose={() => onClose()} icon={icon} title={title} text={text}>
-      <Button onClick={() => onClose()}>Abbrechen</Button>
+      <Button onClick={() => onClose()}>{t("Abbrechen")}</Button>
       <Button variant={variant} disabled={busy} onClick={confirm}>
         {button}
       </Button>
@@ -230,6 +238,7 @@ const PASSWORD_CONFIRMS = {
 //   password-menu, password-off, password-signout (Klassenpasswort; «Passwort ändern» відкриває сторінка сама)
 // ─────────────────────────────────────────────────────────────
 const AccessDialogs = ({ action, password, onChange, onPasswordAction }) => {
+  const t = useT();
   const actions = useAccessActions();
   if (!action) return null;
   const { kind, code } = action;
@@ -258,10 +267,10 @@ const AccessDialogs = ({ action, password, onChange, onPasswordAction }) => {
   if (kind === "validity") return <ValiditySheet code={code} actions={actions} onClose={close} />;
   if (kind === "reveal") {
     return (
-      <Sheet open onClose={close} desktop="dialog" eyebrow={`Zugangscode · ${code.label}`} title="Neuer Code">
-        <CodeReveal code={action.result.code} masked={action.result.item.masked} title="Neuer Zugangscode" note="Du siehst ihn später wieder: ⋮ → »Code anzeigen«." />
+      <Sheet open onClose={close} desktop="dialog" eyebrow={t("Zugangscode · {label}", { label: code.label })} title={t("Neuer Code")}>
+        <CodeReveal code={action.result.code} masked={action.result.item.masked} title={t("Neuer Zugangscode")} note={t("Du siehst ihn später wieder: ⋮ → »Code anzeigen«.")} />
         <Button variant="primary" className="flex-none" onClick={close}>
-          <CheckIcon className="size-4" /> Fertig
+          <CheckIcon className="size-4" /> {t("Fertig")}
         </Button>
       </Sheet>
     );

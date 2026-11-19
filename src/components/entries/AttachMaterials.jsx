@@ -8,12 +8,14 @@ import Field from "../ui/Field";
 import MaterialPickSheet from "./MaterialPickSheet";
 import RoundButton from "../ui/RoundButton";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // «Materialien · optional» в форме Test / Hausaufgabe (часть 21 внутри 24, макеты handy-04, 06).
 // value — id ссылок; known — ссылки, которые уже пришли с записью (их может не быть в общем списке).
 // ─────────────────────────────────────────────────────────────
 const AttachMaterials = ({ subject, value, known = [], error, onChange }) => {
+  const t = useT();
   const items = useMaterials((s) => s.items);
   const overrides = useUserStore((s) => s.colorOverrides);
   const [open, setOpen] = useState(false);
@@ -34,7 +36,7 @@ const AttachMaterials = ({ subject, value, known = [], error, onChange }) => {
   };
 
   return (
-    <Field label="Materialien · optional" error={error}>
+    <Field label={t("Materialien · optional")} error={error}>
       <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
         {attached.map((item) => (
           <li key={item.id} className="flex items-center gap-3 py-2.5">
@@ -57,7 +59,7 @@ const AttachMaterials = ({ subject, value, known = [], error, onChange }) => {
             onClick={() => setOpen(true)}
             className="flex w-full items-center gap-3 py-3.5 text-left text-body font-extrabold text-accent-ink outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:text-faint"
           >
-            <Plus className="size-4.5" /> Material anhängen
+            <Plus className="size-4.5" /> {t("Material anhängen")}
           </button>
         </li>
       </Liquid>

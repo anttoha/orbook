@@ -12,6 +12,7 @@ import { useUserStore } from "../shared/store/userStore";
 import { cn } from "../shared/utils/cn";
 import { visibleSubjects } from "../shared/utils/courses";
 import { fachDotClass, paletteOf } from "../shared/utils/lessons";
+import { useT } from "../shared/hooks/useT";
 
 // Рядок предмета: натискання вибирає його, і палітра зверху змінює саме його колір.
 // Вибраний виділено фоном, жирною назвою і галочкою — щоб було видно, що зараз фарбуємо
@@ -43,6 +44,7 @@ const SubjectRow = ({ subject, overrides, selected, onSelect }) => (
 // У списку предмети видимих курсів: їх у школи більше, ніж 8 на макеті.
 // ─────────────────────────────────────────────────────────────
 const SubjectColors = () => {
+  const t = useT();
   const courses = usePlanStore((s) => s.courses);
   const metaSubjects = usePlanStore((s) => s.meta?.subjects);
   const picked = useUserStore((s) => s.picked);
@@ -64,9 +66,9 @@ const SubjectColors = () => {
   return (
     <section className="flex flex-col gap-4.5 lg:max-w-186">
       <div className="flex items-end justify-between gap-2">
-        <PageHeader backTo="/mehr" eyebrow="Mehr" title="Fachfarben" />
+        <PageHeader backTo="/mehr" eyebrow={t("Mehr")} title={t("Fachfarben")} />
         <button type="button" onClick={resetAll} className="shrink-0 pb-1 text-label font-bold text-accent-ink">
-          Standard
+          {t("Standard")}
         </button>
       </div>
 

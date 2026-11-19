@@ -8,6 +8,7 @@ import Button from "../../ui/Button";
 import { KeyIcon } from "../../ui/icons";
 import PasswordField from "../../ui/PasswordField";
 import PasswordSection from "./PasswordSection";
+import { useT } from "../../../shared/hooks/useT";
 
 // Помилку сервера ставимо під потрібне поле: неправильний поточний пароль — під «Aktuelles Passwort»,
 // закороткий новий (422) — під «Neues Passwort»
@@ -21,6 +22,7 @@ function errorsFrom(error) {
 // цей пристрій лишається в адмінці, виходять лише інші. Помилки рахуються в ліміт входу адміна.
 // ─────────────────────────────────────────────────────────────
 const AdminPasswordForm = () => {
+  const t = useT();
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [errors, setErrors] = useState({});
@@ -47,26 +49,26 @@ const AdminPasswordForm = () => {
   };
 
   return (
-    <PasswordSection title="Admin-Passwort">
+    <PasswordSection title={t("Admin-Passwort")}>
       <form onSubmit={submit} noValidate>
         <div className="flex flex-col gap-3.5 lg:grid lg:grid-cols-2 lg:gap-3">
-          <PasswordField id="admin-password-current" label="Aktuelles Passwort" autoComplete="current-password" error={errors.current} value={current} onChange={(event) => setCurrent(event.target.value)} />
+          <PasswordField id="admin-password-current" label={t("Aktuelles Passwort")} autoComplete="current-password" error={errors.current} value={current} onChange={(event) => setCurrent(event.target.value)} />
           <PasswordField
             id="admin-password-new"
-            label="Neues Passwort"
+            label={t("Neues Passwort")}
             autoComplete="new-password"
-            placeholder={`mindestens ${ADMIN_PASSWORD_MIN} Zeichen`}
+            placeholder={t("mindestens {ADMIN_PASSWORD_MIN} Zeichen", { ADMIN_PASSWORD_MIN })}
             error={errors.next}
             value={next}
             onChange={(event) => setNext(event.target.value)}
           />
         </div>
-        <p className="mt-1.5 text-caption text-faint">Andere Admin-Geräte werden abgemeldet, dieses nicht.</p>
+        <p className="mt-1.5 text-caption text-faint">{t("Andere Admin-Geräte werden abgemeldet, dieses nicht.")}</p>
         <Button type="submit" variant="primary" disabled={busy || locked} className="mt-3.5 w-full lg:w-fit lg:flex-none lg:px-5">
-          <KeyIcon className="size-4" /> Admin-Passwort ändern
+          <KeyIcon className="size-4" /> {t("Admin-Passwort ändern")}
         </Button>
         <p className="mt-3.5 text-caption text-faint lg:mt-4 lg:border-t lg:border-hair lg:pt-3.5">
-          Vergessen? Neu setzen geht nur auf dem Server.
+          {t("Vergessen? Neu setzen geht nur auf dem Server.")}
           {/* команду бачить лише ПК: на телефоні вона некрасиво переноситься, а на сервер там однаково не зайти */}
           <span className="hidden font-bold text-muted lg:block">orbook set-admin-password</span>
         </p>

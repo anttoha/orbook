@@ -16,6 +16,7 @@ import { usePlanStore } from "../shared/store/planStore";
 import { subjectName } from "../shared/utils/format";
 import { addMaterialTarget, materialChips } from "../shared/utils/materials";
 import RoundButton from "../components/ui/RoundButton";
+import { useT } from "../shared/hooks/useT";
 
 // Пошук на ПК: у назві, предметі й Kürzel
 const matches = (item, query) => {
@@ -27,23 +28,27 @@ const matches = (item, query) => {
 const linksText = (n) => (n === 1 ? "1 Link" : `${n} Links`);
 
 // «+» на телефоні праворуч від заголовка
-const AddButton = ({ to }) => (
-  <RoundButton to={to} aria-label="Link teilen" look="grid size-9.5 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
+const AddButton = ({ to }) => {
+  const t = useT();
+  return (
+  <RoundButton to={to} aria-label={t("Link teilen")} look="grid size-9.5 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
     <Plus className="size-4.25" />
   </RoundButton>
 );
+};
 
 // Порожньо (макет handy-07): що тут буде і хто може додавати
 const Empty = ({ addTarget }) => {
+  const t = useT();
   const navigate = useNavigate();
   return (
-    <StateScreen icon={Folder} title="Noch keine Materialien" text="Hier landen Links zu Arbeitsblättern, Lösungen und Ordnern – aus Google Drive oder OneDrive, sortiert nach Fach.">
+    <StateScreen icon={Folder} title={t("Noch keine Materialien")} text={t("Hier landen Links zu Arbeitsblättern, Lösungen und Ordnern – aus Google Drive oder OneDrive, sortiert nach Fach.")}>
       {addTarget && (
         <Button onClick={() => navigate(addTarget)} className="flex-none">
-          <Plus className="size-4" /> Link teilen
+          <Plus className="size-4" /> {t("Link teilen")}
         </Button>
       )}
-      <p className="text-caption text-faint">Teilen dürfen Lehrkräfte und Codes mit dem Recht „Materialien teilen“.</p>
+      <p className="text-caption text-faint">{t("Teilen dürfen Lehrkräfte und Codes mit dem Recht „Materialien teilen“.")}</p>
     </StateScreen>
   );
 };
@@ -54,6 +59,7 @@ const Empty = ({ addTarget }) => {
 // (не «fach»: цей параметр належить шторкам). Дані — materialsStore (GET /api/materials).
 // ─────────────────────────────────────────────────────────────
 const Materials = () => {
+  const t = useT();
   const me = usePlanStore((s) => s.me);
   const { items, status, savedAt, error, load, freshId, markFresh } = useMaterials();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
@@ -83,12 +89,12 @@ const Materials = () => {
   const resource = { status, savedAt, error };
 
   const body = () => {
-    if (status === "error") return <PlanError resource={resource} onRetry={load} title="Materialien konnten nicht geladen werden" />;
+    if (status === "error") return <PlanError resource={resource} onRetry={load} title={t("Materialien konnten nicht geladen werden")} />;
     if (items.length === 0 && (status === "loading" || status === "idle")) return <ExamSkeleton />;
     if (items.length === 0) return <Empty addTarget={addTarget} />;
     if (shown.length === 0) {
       return (
-        <StateScreen icon={FilterIcon} title="Nichts gefunden" text="Für diesen Filter gibt es keine Links." fill={false}>
+        <StateScreen icon={FilterIcon} title={t("Nichts gefunden")} text={t("Für diesen Filter gibt es keine Links.")} fill={false}>
           <Button
             onClick={() => {
               setFilter(null);
@@ -96,7 +102,7 @@ const Materials = () => {
             }}
             className="flex-none"
           >
-            Filter zurücksetzen
+            {t("Filter zurücksetzen")}
           </Button>
         </StateScreen>
       );
@@ -105,7 +111,7 @@ const Materials = () => {
       <>
         <MaterialGroups items={shown} freshId={freshId} />
         <p className="flex items-center gap-1.5 text-caption text-faint">
-          <Lock className="size-3.5 shrink-0" /> Links öffnen sich in Google Drive oder OneDrive. ORBook speichert nur den Link, keine Dateien.
+          <Lock className="size-3.5 shrink-0" /> {t("Links öffnen sich in Google Drive oder OneDrive. ORBook speichert nur den Link, keine Dateien.")}
         </p>
       </>
     );
@@ -118,13 +124,13 @@ const Materials = () => {
       {isDesktop ? (
         <header className="flex items-end justify-between gap-3">
           <div className="min-w-0 space-y-1">
-            <p className="text-hint font-extrabold text-faint">{count ? `${count} · Google Drive und OneDrive` : "Google Drive und OneDrive"}</p>
-            <h1 className="text-hero text-ink">Materialien</h1>
+            <p className="text-hint font-extrabold text-faint">{count ? t("{count} · Google Drive und OneDrive", { count }) : t("Google Drive und OneDrive")}</p>
+            <h1 className="text-hero text-ink">{t("Materialien")}</h1>
           </div>
-          <ExamsToolbar query={query} onQuery={setQuery} filter={null} addTarget={addTarget} placeholder="Titel oder Fach" addLabel="Link teilen" />
+          <ExamsToolbar query={query} onQuery={setQuery} filter={null} addTarget={addTarget} placeholder={t("Titel oder Fach")} addLabel={t("Link teilen")} />
         </header>
       ) : (
-        <PageHeader backTo="/mehr" eyebrow={count ? `Mehr · ${count}` : "Mehr"} title="Materialien" aside={addTarget && <AddButton to={addTarget} />} />
+        <PageHeader backTo="/mehr" eyebrow={count ? t("Mehr · {count}", { count }) : t("Mehr")} title={t("Materialien")} aside={addTarget && <AddButton to={addTarget} />} />
       )}
 
       {items.length > 0 && (

@@ -16,6 +16,7 @@ import { usePushStore } from "../../shared/store/pushStore";
 import { prefsSummary } from "../../shared/utils/push";
 import { appearanceHint, coursesHint, editorHint, sectionVisible, subjectsHint, syncHint } from "../../shared/utils/settings";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Вміст плитки: кругла іконка, назва, підпис, стрілка
 const TileBody = ({ icon: Icon, label, hint, badge }) => (
@@ -77,6 +78,7 @@ const GroupTitle = ({ group }) => (
 // «Seiten» (Statistik, Datenschutz, вікна «Klasse einladen» і «Tastenkürzel») і «Einstellungen».
 // ─────────────────────────────────────────────────────────────
 const SettingsTiles = () => {
+  const t = useT();
   const hints = useHints();
   const syncAllowed = useSyncAllowed();
   const me = usePlanStore((s) => s.me);
@@ -103,17 +105,17 @@ const SettingsTiles = () => {
               <>
                 <li>
                   <Liquid as="button" refract type="button" onClick={() => openSheet("einladen")} className={`${tile} w-full`}>
-                    <TileBody icon={UserPlus} label="Klasse einladen" hint="Link und QR für Mitschüler" />
+                    <TileBody icon={UserPlus} label={t("Klasse einladen")} hint={t("Link und QR für Mitschüler")} />
                   </Liquid>
                 </li>
                 <li>
                   <Liquid as="button" refract type="button" onClick={() => openSheet("tipps")} className={`${tile} w-full`}>
-                    <TileBody icon={Info} label="Kurz erklärt" hint="3 Tipps für den Anfang" />
+                    <TileBody icon={Info} label={t("Kurz erklärt")} hint={t("3 Tipps für den Anfang")} />
                   </Liquid>
                 </li>
                 <li>
                   <Liquid as="button" refract type="button" onClick={() => openSheet("tasten")} className={`${tile} w-full`}>
-                    <TileBody icon={Keyboard} label="Tastenkürzel" hint="⌘K, T, ←, →, N …" />
+                    <TileBody icon={Keyboard} label={t("Tastenkürzel")} hint="⌘K, T, ←, →, N …" />
                   </Liquid>
                 </li>
               </>

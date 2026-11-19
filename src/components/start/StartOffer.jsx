@@ -17,7 +17,7 @@ const StartOffer = () => {
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-body font-extrabold text-ink">{t("Mit Start öffnen?")}</p>
-        <p className="truncate text-caption text-muted">{t(startView === "heute" ? "Statt Heute beim Öffnen der App" : "Statt Woche beim Öffnen der App")}</p>
+        <p className="truncate text-caption text-muted">{t(startView === "heute" ? t("Statt Heute beim Öffnen der App") : t("Statt Woche beim Öffnen der App"))}</p>
       </div>
       <button type="button" onClick={() => answer(true)} className="h-9 shrink-0 rounded-full bg-accent px-5 text-body-sm font-extrabold text-on-accent transition-opacity active:opacity-80">
         {t("Ja")}

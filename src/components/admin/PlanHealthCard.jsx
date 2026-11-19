@@ -5,27 +5,32 @@ import Badge from "../ui/Badge";
 import { RenewIcon } from "../ui/icons";
 import PillButton from "../ui/PillButton";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 const BAR = { ok: "bg-ok", error: "bg-danger" }; // null (опиту не було) — сірий
 const CHIP = { ok: "ok", warn: "changed", error: "danger" };
 
 // 24 стовпчики «Letzte 24 Stunden» (найстаріша година ліворуч)
-const HoursStrip = ({ hours }) => (
+const HoursStrip = ({ hours }) => {
+  const t = useT();
+  return (
   <div>
-    <div className="flex h-3 gap-0.75" role="img" aria-label="Plan-Abruf in den letzten 24 Stunden">
+    <div className="flex h-3 gap-0.75" role="img" aria-label={t("Plan-Abruf in den letzten 24 Stunden")}>
       {hoursStrip(hours).map((h, i) => (
         <span key={i} title={`${h.hour} Uhr`} className={cn("flex-1 rounded-tick", BAR[h.status] ?? "bg-rule", h.status === "error" && "-mt-1 h-4")} />
       ))}
     </div>
-    <p className="mt-2 text-small text-faint">Letzte 24 Stunden · jede Säule = 1 Stunde</p>
+    <p className="mt-2 text-small text-faint">{t("Letzte 24 Stunden · jede Säule = 1 Stunde")}</p>
   </div>
 );
+};
 
 // ─────────────────────────────────────────────────────────────
 // Картка «Vertretungsplan läuft» (макети 40 і 42): стан, час, сервер, 24 години.
 // withButton — кнопка «Plan jetzt neu laden» усередині (телефон; на ПК вона в шапці)
 // ─────────────────────────────────────────────────────────────
 const PlanHealthCard = ({ overview, baseUrl, classCount, withButton }) => {
+  const t = useT();
   const { plan } = overview;
   const state = planHealth(plan);
   const health = HEALTH[state];
@@ -47,7 +52,7 @@ const PlanHealthCard = ({ overview, baseUrl, classCount, withButton }) => {
       </div>
       {withButton && (
         <PillButton glass="glass" size="md" disabled={refresh.busy} onClick={refresh.run} className="mt-3.5 flex h-10.5 w-full items-center justify-center gap-2 rounded-full bg-sand lg:hidden text-row font-extrabold text-ink disabled:opacity-50">
-          <RenewIcon className={cn("size-4", refresh.busy && "animate-spin")} /> Plan jetzt neu laden
+          <RenewIcon className={cn("size-4", refresh.busy && "animate-spin")} /> {t("Plan jetzt neu laden")}
         </PillButton>
       )}
     </Liquid>

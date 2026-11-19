@@ -5,6 +5,7 @@ import Button from "../../ui/Button";
 import { CheckIcon, RenewIcon } from "../../ui/icons";
 import Sheet from "../../ui/Sheet";
 import CodeReveal from "../CodeReveal";
+import { useT } from "../../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // «Code anzeigen» (власник 07.11): повний Zugangscode ще раз. Сервер зберігає його зашифрованим;
@@ -12,6 +13,7 @@ import CodeReveal from "../CodeReveal";
 // Часть 29d (владелец 14.11): то же окно для Editor- и Lehrer-Code — source="editor", eyebrow и extra (QR под кодом)
 // ─────────────────────────────────────────────────────────────
 const ShowCodeSheet = ({ code, onClose, onRegenerate, source = "access", eyebrow, extra }) => {
+  const t = useT();
   const [state, setState] = useState({ status: "loading" }); // loading | ready | hidden | error
   const { api } = useAccessScope();
 
@@ -26,22 +28,22 @@ const ShowCodeSheet = ({ code, onClose, onRegenerate, source = "access", eyebrow
   }, [api, source, code.id, code.classId]);
 
   return (
-    <Sheet open onClose={onClose} desktop="dialog" eyebrow={eyebrow ?? `Zugangscode · ${code.label}`} title="Code anzeigen">
+    <Sheet open onClose={onClose} desktop="dialog" eyebrow={eyebrow ?? t("Zugangscode · {label}", { label: code.label })} title={t("Code anzeigen")}>
       {state.status === "loading" && <div className="h-28 animate-pulse rounded-card bg-skeleton" />}
-      {state.status === "ready" && <CodeReveal code={state.full} masked={code.masked} title={code.label} note="Gib ihn nur an die Person oder Gruppe weiter, für die er ist." />}
+      {state.status === "ready" && <CodeReveal code={state.full} masked={code.masked} title={code.label} note={t("Gib ihn nur an die Person oder Gruppe weiter, für die er ist.")} />}
       {state.status === "ready" && extra?.(state.full)}
       {state.status === "hidden" && (
         <>
-          <p className="text-body-sm text-muted">Dieser Code ist älter und lässt sich nicht anzeigen. »Neu erzeugen« macht einen neuen – die Geräte dieses Codes melden sich dann neu an.</p>
+          <p className="text-body-sm text-muted">{t("Dieser Code ist älter und lässt sich nicht anzeigen. »Neu erzeugen« macht einen neuen – die Geräte dieses Codes melden sich dann neu an.")}</p>
           <Button variant="primary" className="flex-none" onClick={onRegenerate}>
-            <RenewIcon className="size-4" /> Neu erzeugen
+            <RenewIcon className="size-4" /> {t("Neu erzeugen")}
           </Button>
         </>
       )}
       {state.status === "error" && <p className="rounded-card bg-danger-tint p-4 text-body-sm text-danger">{state.error.message}</p>}
       {state.status !== "hidden" && (
         <Button className="flex-none" onClick={onClose}>
-          <CheckIcon className="size-4" /> Fertig
+          <CheckIcon className="size-4" /> {t("Fertig")}
         </Button>
       )}
     </Sheet>

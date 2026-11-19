@@ -6,16 +6,21 @@ import { Skeleton } from "../components/ui/PlanState";
 import { useMaterials } from "../shared/store/materialsStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { addMaterialTarget, canShareMaterials } from "../shared/utils/materials";
+import { useT } from "../shared/hooks/useT";
 
-const Placeholder = ({ text }) => (
+const Placeholder = ({ text }) => {
+  const t = useT();
+  return (
   <section className="flex flex-col gap-5 lg:max-w-186">
-    <PageHeader backTo="/materialien" eyebrow="Materialien" title="Link ändern" />
+    <PageHeader backTo="/materialien" eyebrow={t("Materialien")} title={t("Link ändern")} />
     {text ? <p className="text-body-sm text-muted">{text}</p> : <Skeleton className="h-40 rounded-card" />}
   </section>
 );
+};
 
 // Правка: /materialien/3/bearbeiten. Посилання — зі списку (його вантажимо, якщо адресу відкрили напряму)
 const EditExisting = ({ id }) => {
+  const t = useT();
   const item = useMaterials((s) => s.items.find((material) => String(material.id) === id)) ?? null;
   const status = useMaterials((s) => s.status);
   const ensure = useMaterials((s) => s.ensure);
@@ -24,8 +29,8 @@ const EditExisting = ({ id }) => {
   }, [ensure]);
 
   if (!item && (status === "idle" || status === "loading")) return <Placeholder />;
-  if (!item) return <Placeholder text="Diesen Link gibt es nicht (mehr)." />;
-  if (!item.canEdit) return <Placeholder text="Diesen Link kannst du nicht ändern." />;
+  if (!item) return <Placeholder text={t("Diesen Link gibt es nicht (mehr).")} />;
+  if (!item.canEdit) return <Placeholder text={t("Diesen Link kannst du nicht ändern.")} />;
   return <MaterialForm key={item.id} item={item} />;
 };
 

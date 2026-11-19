@@ -11,6 +11,7 @@ import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useNow } from "../shared/hooks/useNow";
 import { useAdminStore } from "../shared/store/adminStore";
 import PillButton from "../components/ui/PillButton";
+import { useT } from "../shared/hooks/useT";
 
 const FILTERS = [
   { value: "all", label: "Alles" },
@@ -23,6 +24,7 @@ const FILTERS = [
 // «Protokoll» (макети 46 телефон, 49 ПК). Нові згори, по 50; «Mehr laden» — наступна сторінка (before).
 // ─────────────────────────────────────────────────────────────
 const AdminLog = () => {
+  const t = useT();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const { today } = useNow();
   const ensureSettings = useAdminStore((s) => s.ensureSettings);
@@ -55,20 +57,20 @@ const AdminLog = () => {
   const renderList = () => {
     if (first.status === "loading") return <AdminSkeleton rows={6} />;
     if (first.status === "error") return <AdminError error={first.error} onRetry={first.reload} />;
-    if (!events.length) return <AdminEmpty text="Keine Einträge" />;
+    if (!events.length) return <AdminEmpty text={t("Keine Einträge")} />;
     return <EventList isDesktop={isDesktop} events={events} today={today} />;
   };
 
-  const filters = <Segmented label="Filter" size="form" className="lg:w-auto" value={kind} onChange={setKind} options={FILTERS} />;
+  const filters = <Segmented label={t("Filter")} size="form" className="lg:w-auto" value={kind} onChange={setKind} options={FILTERS} />;
 
   return (
     <section className="flex flex-col gap-4 lg:gap-5">
-      <AdminHeader title="Protokoll" backTo="/admin" actions={isDesktop && [<span key="f">{filters}</span>, <SearchField key="s" value={query} onChange={setQuery} className="w-50" />]} />
+      <AdminHeader title={t("Protokoll")} backTo="/admin" actions={isDesktop && [<span key="f">{filters}</span>, <SearchField key="s" value={query} onChange={setQuery} className="w-50" />]} />
       {!isDesktop && filters}
       <div>{renderList()}</div>
       {extra.nextBefore && first.status === "ready" && (
         <PillButton glass="glass" size="md" disabled={extra.busy} onClick={loadMore} className="mx-auto h-10.5 rounded-full bg-sand px-5 text-label font-extrabold text-ink disabled:opacity-50">
-          {extra.busy ? "Wird geladen…" : "Mehr laden"}
+          {extra.busy ? t("Wird geladen…") : t("Mehr laden")}
         </PillButton>
       )}
     </section>

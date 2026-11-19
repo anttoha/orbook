@@ -10,6 +10,7 @@ import { useTasksStore } from "../../shared/store/tasksStore";
 import { aufgabenList } from "../../shared/utils/tasks";
 import { cn } from "../../shared/utils/cn";
 import Segmented from "../ui/Segmented";
+import { useT } from "../../shared/hooks/useT";
 
 // Який список був відкритий востаннє. Два списки — різні сторінки, тож перемикач створюється заново,
 // і «пігулка» з'явилась би одразу на місці. Тому спершу малюємо її там, де вона була, а в наступному кадрі
@@ -28,6 +29,7 @@ const useOpenCount = () => {
 // «Tests · 5 | Aufgaben · 4 | Termine · 5» (макети handy-04, частина 18). Режим живе в адресі.
 // На телефоні три частини без чисел (макет 18 handy-01): з числами не влазять
 const ListSwitch = ({ className }) => {
+  const t = useT();
   const mode = useListMode();
   const [shown, setShown] = useState(lastMode ?? mode);
   useEffect(() => {
@@ -46,13 +48,13 @@ const ListSwitch = ({ className }) => {
 
   return (
     <Segmented
-      label="Liste"
+      label={t("Liste")}
       className={cn("shrink-0", className)}
       value={shown}
       options={[
-        { value: "exams", label: label("Tests", examCount) },
-        { value: "homework", label: label("Aufgaben", homeworkCount) },
-        { value: "appointments", label: label("Termine", appointmentCount) },
+        { value: "exams", label: label(t("Tests"), examCount) },
+        { value: "homework", label: label(t("Aufgaben"), homeworkCount) },
+        { value: "appointments", label: label(t("Termine"), appointmentCount) },
       ]}
       onChange={(value) => setParams(LIST_PARAM[value] ? { liste: LIST_PARAM[value] } : {}, { replace: true })}
     />

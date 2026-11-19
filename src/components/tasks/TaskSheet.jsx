@@ -14,6 +14,7 @@ import ListPicker from "../ui/ListPicker";
 import Sheet from "../ui/Sheet";
 import TextField from "../ui/TextField";
 import DueChips from "./DueChips";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Шторка «Eigene Aufgabe» (макет 25 handy-03). Своя задача живёт только на устройстве (tasksStore).
@@ -21,10 +22,11 @@ import DueChips from "./DueChips";
 //   ?sheet=aufgabe&id=t-… — изменить или удалить
 // ─────────────────────────────────────────────────────────────
 const TaskSheet = ({ open, onClose, sheet }) => {
+  const t = useT();
   const task = useTasksStore((s) => (sheet.id ? s.tasks.find((t) => t.id === sheet.id && !t.deleted) : null)) ?? null;
 
   return (
-    <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow="Aufgaben" title="Eigene Aufgabe">
+    <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow={t("Aufgaben")} title={t("Eigene Aufgabe")}>
       {/* key — при смене задачи форма создаётся заново с её полями */}
       <TaskForm key={task?.id ?? "neu"} task={task} onDone={onClose} />
     </Sheet>
@@ -32,6 +34,7 @@ const TaskSheet = ({ open, onClose, sheet }) => {
 };
 
 const TaskForm = ({ task, onDone }) => {
+  const t = useT();
   const { today } = useNow();
   const [text, setText] = useState(task?.text ?? "");
   const [due, setDue] = useState(task ? task.due : dueChoices(today)[0].value); // новая — «Morgen»
@@ -68,33 +71,33 @@ const TaskForm = ({ task, onDone }) => {
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <TextField
         id="task-text"
-        label="Was ist zu tun?"
+        label={t("Was ist zu tun?")}
         value={text}
         onChange={(e) => {
           setText(e.target.value);
           setError(null);
         }}
-        placeholder="z. B. Referat-Thema aussuchen"
+        placeholder={t("z. B. Referat-Thema aussuchen")}
         maxLength={TASK_MAX}
         error={error}
         autoFocus
       />
-      <Field label="Bis wann?">
+      <Field label={t("Bis wann?")}>
         <DueChips value={due} today={today} onChange={setDue} />
       </Field>
-      <Field label="Fach · optional">
-        <ListPicker id="task-subject" label="Fach" inline clearable clearLabel="Ohne Fach" items={subjectItems(subjects, mySubjectCodes(courses, picked))} value={subject} onChange={setSubject} />
+      <Field label={t("Fach · optional")}>
+        <ListPicker id="task-subject" label={t("Fach")} inline clearable clearLabel={t("Ohne Fach")} items={subjectItems(subjects, mySubjectCodes(courses, picked))} value={subject} onChange={setSubject} />
       </Field>
 
       <div className="flex flex-col gap-3.5">
         <div className="flex gap-2">
           {task && (
             <Button variant="danger" onClick={handleDelete} className="flex-none px-4.5">
-              <TrashIcon className="size-4" /> Löschen
+              <TrashIcon className="size-4" /> {t("Löschen")}
             </Button>
           )}
           <Button type="submit" variant="primary" disabled={!text.trim()}>
-            <CheckIcon className="size-4" /> Speichern
+            <CheckIcon className="size-4" /> {t("Speichern")}
           </Button>
         </div>
       </div>

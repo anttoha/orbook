@@ -4,6 +4,7 @@ import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { SettingsPanelContext } from "../shared/hooks/useSettingsPanel";
 import { usePlanStore } from "../shared/store/planStore";
 import { cn } from "../shared/utils/cn";
+import { useT } from "../shared/hooks/useT";
 
 const isOverview = (pathname) => pathname.replace(/\/$/, "") === "/mehr";
 
@@ -13,6 +14,7 @@ const isOverview = (pathname) => pathname.replace(/\/$/, "") === "/mehr";
 // ПК: загальний заголовок «Mehr», меню розділів зліва (групи «Seiten» і «Einstellungen»), вибраний розділ праворуч.
 // ─────────────────────────────────────────────────────────────
 const SettingsLayout = () => {
+  const t = useT();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const me = usePlanStore((s) => s.me);
   const { pathname } = useLocation();
@@ -25,7 +27,7 @@ const SettingsLayout = () => {
     <section>
       <header className="space-y-1">
         <p className="min-h-4 text-hint font-extrabold text-faint">{school}</p>
-        <h1 className="text-hero text-ink">Mehr</h1>
+        <h1 className="text-hero text-ink">{t("Mehr")}</h1>
       </header>
 
       <div className="mt-5.5 flex items-start gap-11">

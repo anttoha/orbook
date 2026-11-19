@@ -5,7 +5,7 @@ export const DemoCard = ({ className, children }) => {
   const t = useT();
   return (
     <div className={`rounded-card bg-card px-4 pt-4 pb-1.5 ${className ?? ""}`}>
-      <p className="w-fit rounded-full bg-tint px-2.5 py-1 text-micro leading-none font-extrabold text-accent-ink uppercase">Demo · {t("ausgedachte Daten")}</p>
+      <p className="w-fit rounded-full bg-tint px-2.5 py-1 text-micro leading-none font-extrabold text-accent-ink uppercase">{t("Demo ·")} {t("ausgedachte Daten")}</p>
       <div className="mt-1 divide-y divide-hair">{children}</div>
     </div>
   );

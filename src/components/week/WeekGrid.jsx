@@ -13,6 +13,7 @@ import DayAppointmentPills from "../appointments/DayAppointmentPills";
 import DayHeader from "./DayHeader";
 import LessonCell from "./LessonCell";
 import NowLine from "./NowLine";
+import { useT } from "../../shared/hooks/useT";
 
 // Де зараз лінія часу: { index — рядок, progress — 0…1 } або null (до/після уроків)
 const nowPosition = (rows, minutes) => {
@@ -31,6 +32,7 @@ const nowPosition = (rows, minutes) => {
 // days — дні тижня з сервера (week.days, + Sa/So), onLessonClick(day, lesson) — клік по уроку
 // ─────────────────────────────────────────────────────────────
 const WeekGrid = ({ days, onLessonClick }) => {
+  const t = useT();
   const { now, today } = useNow(); // час школи
   const filter = useLessonFilter(); // «Meine Kurse»
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
@@ -91,7 +93,7 @@ const WeekGrid = ({ days, onLessonClick }) => {
             <div key={`${day.date}-${row.period}`} style={style} className={cn("flex flex-col gap-0.5", cellHeight)}>
               {lessons.map((lesson) => (
                 <LessonContextMenu key={lessonKey(lesson)} lesson={lesson} date={day.date}>
-                  <LessonCell lesson={lesson} isPast={isLessonPast(lesson, day.date, now)} overrides={overrides} plan={plan} examShort={lesson.examId ? typeShort(lessonExam(day, lesson)?.type ?? "Test", typeList(meta)) : null} onClick={() => onLessonClick(day, lesson)} />
+                  <LessonCell lesson={lesson} isPast={isLessonPast(lesson, day.date, now)} overrides={overrides} plan={plan} examShort={lesson.examId ? typeShort(lessonExam(day, lesson)?.type ?? t("Test"), typeList(meta)) : null} onClick={() => onLessonClick(day, lesson)} />
                 </LessonContextMenu>
               ))}
             </div>

@@ -15,7 +15,7 @@ const SchoolHead = ({ school, count }) => {
       </span>
       <span className="min-w-0 flex-1 truncate">
         <span className="text-row font-extrabold text-ink">{school?.name ?? t("Schule")}</span>
-        <span className="text-label text-faint"> · {count} {t(count === 1 ? "Klasse" : "Klassen")}</span>
+        <span className="text-label text-faint"> · {count} {t(count === 1 ? t("Klasse") : t("Klassen"))}</span>
       </span>
     </>
   );

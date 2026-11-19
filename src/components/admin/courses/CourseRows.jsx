@@ -5,6 +5,7 @@ import { fachDotClass } from "../../../shared/utils/lessons";
 import { useUserStore } from "../../../shared/store/userStore";
 import { cn } from "../../../shared/utils/cn";
 import Segmented from "../../ui/Segmented";
+import { useT } from "../../../shared/hooks/useT";
 
 const CHOICES = [
   { value: "pflicht", label: "Pflicht" },
@@ -19,6 +20,7 @@ const CHOICES = [
 // Той самий курс під кількома номерами (у різні дні) — один рядок; onChange(nrs, value) міняє всі номери
 // ─────────────────────────────────────────────────────────────
 const CourseRows = ({ courses, states, onChange }) => {
+  const t = useT();
   const overrides = useUserStore((s) => s.colorOverrides);
 
   return (
@@ -54,7 +56,7 @@ const CourseRows = ({ courses, states, onChange }) => {
               )}
             </div>
             <Segmented
-              label={`${course.label}: Pflicht oder Wahl`}
+              label={t("{label}: Pflicht oder Wahl", { label: course.label })}
               size="sm"
               className="shrink-0"
               value={value}

@@ -28,11 +28,11 @@ const Schule = () => {
     <section className="flex flex-1 flex-col gap-3.5 pb-6">
       <PageHeader backTo="/klassen" eyebrow={`${t("Meine Klassen")} · ${t("Schule")}`} title={school.name} />
       <p className="-mt-1.5 text-label text-muted">
-        {items.length} {t(items.length === 1 ? "Klasse auf diesem Gerät" : "Klassen auf diesem Gerät")}
+        {items.length} {t(items.length === 1 ? t("Klasse auf diesem Gerät") : t("Klassen auf diesem Gerät"))}
       </p>
       <SchoolGroup group={{ key: school.id, school, items }} today={berlinParts(now).date} wide={isDesktop} head={false} />
       <div className="motion-safe:animate-rise-in" style={{ animationDelay: `${Math.min(items.length, 6) * 50}ms` }}>
-        <AddClassTile schoolId={school.id} hint="Zugangscode einer Klasse dieser Schule" />
+        <AddClassTile schoolId={school.id} hint={t("Zugangscode einer Klasse dieser Schule")} />
       </div>
     </section>
   );

@@ -5,11 +5,13 @@ import { useTicker } from "../../shared/hooks/useTicker";
 import { usePlanStore } from "../../shared/store/planStore";
 import { agoText } from "../../shared/utils/liveText";
 import { changeText } from "../../shared/utils/planDiff";
+import { useT } from "../../shared/hooks/useT";
 
 // Плашка «Neuer Plan · gerade eben / Morgen: 4. Std Geschichte → Vertretung · Ansehen».
 // Перша зміна серед курсів учня: про чужий курс писати немає сенсу. Таких немає — просто «Neuer Plan da».
 // Часть 26: приходит сама (поток Live) — въезжает сверху, колокольчик качнётся один раз.
 const NewPlanBanner = () => {
+  const t = useT();
   const newPlan = usePlanStore((s) => s.newPlan);
   const seeNewPlan = usePlanStore((s) => s.seeNewPlan);
   const filter = useLessonFilter({ mine: true }); // банер — лише про мої курси
@@ -25,13 +27,13 @@ const NewPlanBanner = () => {
       <Bell className="size-4 shrink-0 origin-top motion-safe:animate-bell-ring" />
       <div className="min-w-0 flex-1">
         <p>
-          <span className="font-bold">{change ? "Neuer Plan" : "Neuer Plan da"}</span>
+          <span className="font-bold">{change ? t("Neuer Plan") : t("Neuer Plan da")}</span>
           {ago && <span className="text-muted"> · {ago}</span>}
         </p>
         {change && <p className="text-ink">{changeText(change, today)}</p>}
       </div>
       <button type="button" onClick={seeNewPlan} className="shrink-0 font-bold">
-        Ansehen
+        {t("Ansehen")}
       </button>
     </div>
   );

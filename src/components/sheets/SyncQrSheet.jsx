@@ -5,27 +5,29 @@ import Button from "../ui/Button";
 import QrCode from "../ui/QrCode";
 import Sheet from "../ui/Sheet";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // «Sync-Code als QR» (макет 25 handy-08): второй телефон сканирует обычной камерой,
 // открывается ORBook и спрашивает «Gerät verbinden?». Адрес: ?sheet=syncqr
 // ─────────────────────────────────────────────────────────────
 const SyncQrSheet = ({ open, onClose }) => {
+  const t = useT();
   const code = useSyncStore((s) => s.code);
   return (
-    <Sheet open={open} onClose={onClose} desktop="qr" eyebrow="Nur für deine Geräte" title="Sync-Code als QR">
+    <Sheet open={open} onClose={onClose} desktop="qr" eyebrow={t("Nur für deine Geräte")} title={t("Sync-Code als QR")}>
       {code ? (
         <Liquid as="div" refract press={false} className="flex flex-col items-center rounded-panel bg-card px-4 pt-5.5 pb-6 text-center">
-          <QrCode value={codeLink("sync", code, window.location.origin)} label="QR-Code mit deinem Sync-Code" className="size-52 motion-safe:animate-pop-in" />
+          <QrCode value={codeLink("sync", code, window.location.origin)} label={t("QR-Code mit deinem Sync-Code")} className="size-52 motion-safe:animate-pop-in" />
           <p className="mt-6 text-row font-black tracking-code text-ink">{code}</p>
-          <p className="mt-2 text-label text-faint">Mit der Kamera des anderen Handys scannen</p>
+          <p className="mt-2 text-label text-faint">{t("Mit der Kamera des anderen Handys scannen")}</p>
         </Liquid>
       ) : (
-        <p className="text-body-sm text-muted">Noch kein Sync-Code auf diesem Gerät.</p>
+        <p className="text-body-sm text-muted">{t("Noch kein Sync-Code auf diesem Gerät.")}</p>
       )}
       <OwnDevicesOnly className="flex gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-muted" />
       <Button onClick={onClose} className="flex-none">
-        Fertig
+        {t("Fertig")}
       </Button>
     </Sheet>
   );

@@ -4,9 +4,11 @@ import { pushErrorText, usePushStore } from "../../shared/store/pushStore";
 import { cn } from "../../shared/utils/cn";
 import Switch from "../ui/Switch";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // «Ruhe»: переключатель Ruhezeit; нажатие на текст открывает шторку со временем (?sheet=ruhezeit)
 const QuietCard = ({ disabled = false }) => {
+  const t = useT();
   const quiet = usePushStore((s) => s.quiet);
   const update = usePushStore((s) => s.update);
   const { openSheet } = useSheet();
@@ -15,21 +17,21 @@ const QuietCard = ({ disabled = false }) => {
 
   return (
     <section className={cn("flex flex-col gap-2.5", disabled && "pointer-events-none opacity-55")} aria-disabled={disabled || undefined}>
-      <h2 className="text-hint font-extrabold text-faint">Ruhe</h2>
+      <h2 className="text-hint font-extrabold text-faint">{t("Ruhe")}</h2>
       <Liquid as="div" refract press={false} className="flex items-center gap-3 rounded-card bg-card px-3.5 py-3">
         <button type="button" onClick={() => openSheet("ruhezeit")} className="min-h-12 min-w-0 flex-1 text-left">
-          <span className="block text-row text-ink">Ruhezeit</span>
+          <span className="block text-row text-ink">{t("Ruhezeit")}</span>
           <span className="block text-caption text-faint">
             {quiet.on ? (
               <>
-                Zwischen <b className="font-bold text-accent-ink">{quiet.start}</b> und <b className="font-bold text-accent-ink">{quiet.end}</b> still
+                {t("Zwischen")} <b className="font-bold text-accent-ink">{quiet.start}</b> und <b className="font-bold text-accent-ink">{quiet.end}</b> still
               </>
             ) : (
-              "Aus – Mitteilungen kommen immer"
+              t("Aus – Mitteilungen kommen immer")
             )}
           </span>
         </button>
-        <Switch checked={quiet.on && !disabled} onChange={toggle} label="Ruhezeit" />
+        <Switch checked={quiet.on && !disabled} onChange={toggle} label={t("Ruhezeit")} />
       </Liquid>
     </section>
   );

@@ -2,18 +2,20 @@ import { useState } from "react";
 import * as Popover from "@radix-ui/react-popover";
 import { Calendar } from "lucide-react";
 import WeekPicker from "../WeekPicker";
+import { useT } from "../../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Кнопка 📅 + випадаючий календар «Woche wählen» (ПК, макет «Woche wählen (Dropdown)»).
 // monday — показаний тиждень; onPick(понеділок) — вибрали тиждень
 // ─────────────────────────────────────────────────────────────
 const WeekPickerPopover = ({ monday, onPick, buttonClassName }) => {
+  const t = useT();
   const [open, setOpen] = useState(false); // чи відкритий календар
 
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
       <Popover.Trigger asChild>
-        <button type="button" aria-label="Woche wählen" className={buttonClassName}>
+        <button type="button" aria-label={t("Woche wählen")} className={buttonClassName}>
           <Calendar className="size-4.25" />
         </button>
       </Popover.Trigger>

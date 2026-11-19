@@ -2,6 +2,7 @@ import { RefreshCw, TriangleAlert } from "lucide-react";
 import { Skeleton } from "../ui/PlanState";
 import PillButton from "../ui/PillButton";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Лента ещё грузится (макет handy-05): три строки-заглушки
 export const HistorySkeleton = () => (
@@ -22,19 +23,22 @@ export const HistorySkeleton = () => (
 );
 
 // Лента не пришла (макет handy-06): план дня на месте, ленты без сети нет
-export const HistoryError = ({ onRetry }) => (
+export const HistoryError = ({ onRetry }) => {
+  const t = useT();
+  return (
   <div className="flex flex-col gap-3">
     <p className="flex items-start gap-2.5 rounded-field bg-sand px-3.25 py-3 text-label text-muted">
       <TriangleAlert className="mt-px size-4 shrink-0" />
       <span>
-        Der Verlauf kommt gerade nicht an.
+        {t("Der Verlauf kommt gerade nicht an.")}
         <br />
-        Der Plan selbst ist gespeichert und stimmt.
+        {t("Der Plan selbst ist gespeichert und stimmt.")}
       </span>
     </p>
     <PillButton glass="glass" size="lg" onClick={onRetry} className="flex h-12 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink active:opacity-80">
-      <RefreshCw className="size-4" /> Nochmal versuchen
+      <RefreshCw className="size-4" /> {t("Nochmal versuchen")}
     </PillButton>
-    <p className="text-center text-caption text-faint">Den Verlauf gibt es nur mit Internet.</p>
+    <p className="text-center text-caption text-faint">{t("Den Verlauf gibt es nur mit Internet.")}</p>
   </div>
 );
+};

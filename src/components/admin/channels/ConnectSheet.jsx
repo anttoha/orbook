@@ -5,16 +5,21 @@ import { groupLine } from "../../../shared/utils/channels";
 import { cn } from "../../../shared/utils/cn";
 import Button from "../../ui/Button";
 import Sheet from "../../ui/Sheet";
+import { useT } from "../../../shared/hooks/useT";
 
 // «Telegram verbinden» (макет 27 handy-03/04): ссылка t.me/…?startgroup=код → выбрать группу →
 // сервер видит код и подключается сам. Пока шторка открыта, спрашиваем статус раз в 3 секунды
-const ConnectSheet = ({ open, onClose, onConnected }) => (
-  <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow="Kanäle" title="Telegram verbinden">
+const ConnectSheet = ({ open, onClose, onConnected }) => {
+  const t = useT();
+  return (
+  <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow={t("Kanäle")} title={t("Telegram verbinden")}>
     {open && <ConnectBody onClose={onClose} onConnected={onConnected} />}
   </Sheet>
 );
+};
 
 const ConnectBody = ({ onClose, onConnected }) => {
+  const t = useT();
   const [link, setLink] = useState({ status: "loading", url: null, bot: null, error: null });
   const [group, setGroup] = useState(null); // подключилась — показываем «Fertig»
 
@@ -52,7 +57,7 @@ const ConnectBody = ({ onClose, onConnected }) => {
     const missing = link.error?.code === "telegram_missing";
     return (
       <p className="rounded-field bg-danger-tint px-3.5 py-3 text-label font-bold text-ink">
-        {missing ? "Der Telegram-Bot ist auf dem Server noch nicht eingerichtet." : link.error?.message}
+        {missing ? t("Der Telegram-Bot ist auf dem Server noch nicht eingerichtet.") : link.error?.message}
       </p>
     );
   }
@@ -60,31 +65,31 @@ const ConnectBody = ({ onClose, onConnected }) => {
   const done = Boolean(group);
   return (
     <>
-      <Step n={1} done={done} title="Telegram öffnen" text={link.bot ? `Der Bot @${link.bot}` : "…"}>
+      <Step n={1} done={done} title={t("Telegram öffnen")} text={link.bot ? `Der Bot @${link.bot}` : "…"}>
         {!done && (
           <Button variant="primary" className="flex-none" href={link.url ?? undefined} target="_blank" rel="noreferrer" disabled={!link.url}>
-            <Send className="size-4" /> In Telegram öffnen
+            <Send className="size-4" /> {t("In Telegram öffnen")}
           </Button>
         )}
       </Step>
-      <Step n={2} done={done} title="Gruppe der Klasse wählen" text="Telegram fügt den Bot hinzu" />
-      <Step n={3} done={done} title="Fertig" text="ORBook verbindet sich selbst">
+      <Step n={2} done={done} title={t("Gruppe der Klasse wählen")} text={t("Telegram fügt den Bot hinzu")} />
+      <Step n={3} done={done} title={t("Fertig")} text={t("ORBook verbindet sich selbst")}>
         {done ? (
           <p className="flex items-center gap-3 rounded-field bg-ok-tint px-3.5 py-3 text-row font-extrabold text-ink motion-safe:animate-fade-in">
             <Check className="size-4.5 text-ok" /> {groupLine(group)}
           </p>
         ) : (
           <p className="flex items-center gap-3 rounded-field bg-sand px-3.5 py-3 text-label font-bold text-muted">
-            <LoaderCircle className="size-4.5 animate-spin text-accent-ink" /> Warte auf Telegram …
+            <LoaderCircle className="size-4.5 animate-spin text-accent-ink" /> {t("Warte auf Telegram …")}
           </p>
         )}
       </Step>
       {done ? (
         <Button variant="primary" className="flex-none" onClick={onClose}>
-          Fertig
+          {t("Fertig")}
         </Button>
       ) : (
-        <p className="text-center text-caption text-faint">Der Link gilt 15 Minuten.</p>
+        <p className="text-center text-caption text-faint">{t("Der Link gilt 15 Minuten.")}</p>
       )}
     </>
   );

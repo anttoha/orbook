@@ -3,12 +3,14 @@ import { useUserStore } from "../../shared/store/userStore";
 import { materialMeta } from "../../shared/utils/materials";
 import MaterialTile from "../materials/MaterialTile";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // В окне записи (макет 24 handy-09): «Was lernen, was mitbringen» и «Materialien».
 // Пустое описание (null) и пустой список — блоков нет. Ссылка открывается в новой вкладке.
 // ─────────────────────────────────────────────────────────────
 const EntryExtras = ({ entry, detailsTitle = "Was lernen, was mitbringen" }) => {
+  const t = useT();
   const overrides = useUserStore((s) => s.colorOverrides);
   const materials = entry?.materials ?? [];
 
@@ -22,7 +24,7 @@ const EntryExtras = ({ entry, detailsTitle = "Was lernen, was mitbringen" }) => 
       )}
       {materials.length > 0 && (
         <section className="flex flex-col gap-2.5">
-          <h3 className="text-hint font-extrabold text-faint">Materialien</h3>
+          <h3 className="text-hint font-extrabold text-faint">{t("Materialien")}</h3>
           <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
             {materials.map((item) => (
               <li key={item.id}>

@@ -62,7 +62,7 @@ const Klassen = () => {
       </header>
 
       {/* второй класс есть — можно смотреть их рядом */}
-      {!isDesktop && list.length > 1 && <Segmented label="Ansicht" options={VIEWS} value={side ? "nebeneinander" : "karten"} onChange={(view) => setParams(view === "nebeneinander" ? { ansicht: view } : {}, { replace: true })} />}
+      {!isDesktop && list.length > 1 && <Segmented label={t("Ansicht")} options={VIEWS} value={side ? "nebeneinander" : "karten"} onChange={(view) => setParams(view === "nebeneinander" ? { ansicht: view } : {}, { replace: true })} />}
 
       {side ? (
         <SideBySide date={date} monday={mondayOf(date)} today={today} onPickDate={setPicked} />

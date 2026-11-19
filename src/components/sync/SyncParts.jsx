@@ -36,7 +36,7 @@ const SyncParts = () => {
 
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="text-hint font-extrabold text-faint">Was wird synchronisiert</h2>
+      <h2 className="text-hint font-extrabold text-faint">{t("Was wird synchronisiert")}</h2>
       <Liquid as="ul" refract press={false} className="overflow-hidden rounded-card bg-card">
         {rows.map((row) => (
           <li key={row.key} className="border-b border-hair last:border-0">

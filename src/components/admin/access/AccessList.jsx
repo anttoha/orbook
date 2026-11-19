@@ -4,19 +4,21 @@ import { shortDate } from "../../../shared/utils/format";
 import Badge from "../../ui/Badge";
 import AccessCard from "./AccessCard";
 import { CodeChips } from "./AccessChips";
+import { useT } from "../../../shared/hooks/useT";
 
 // Рядок «Klassenpasswort · ALT» — старий спільний пароль, завжди останній (макет handy-01)
 export const PasswordCard = ({ password, today, onToggle, onMenu }) => {
+  const t = useT();
   const since = classPasswordText(password.changedAt, today)?.since?.replace("Seit", "seit"); // дата невідома — без неї
   return (
     <AccessCard
-      title="Klassenpasswort"
-      chips={<Badge variant="soft">Alt</Badge>}
+      title={t("Klassenpasswort")}
+      chips={<Badge variant="soft">{t("Alt")}</Badge>}
       mask="••••••"
-      detail={since ? `gemeinsames Passwort · ${since}` : "gemeinsames Passwort"}
-      footer={`${lastUsedText(password.lastUsedAt, today)} · ohne Ablauf`}
+      detail={since ? t("gemeinsames Passwort · {since}", { since }) : "gemeinsames Passwort"}
+      footer={t("{1} · ohne Ablauf", { "1": lastUsedText(password.lastUsedAt, today) })}
       active={password.enabled}
-      switchLabel={password.enabled ? "Klassenpasswort ausschalten" : "Klassenpasswort einschalten"}
+      switchLabel={password.enabled ? t("Klassenpasswort ausschalten") : t("Klassenpasswort einschalten")}
       onToggle={onToggle}
       onMenu={onMenu}
     />

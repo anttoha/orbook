@@ -49,7 +49,7 @@ const AenderungenBlock = ({ editing }) => {
 
   const body = () => {
     if (!day) return <BlockSkeleton />;
-    if (!changes.length) return <BlockEmpty text="Keine Änderungen" />;
+    if (!changes.length) return <BlockEmpty text={t("Keine Änderungen")} />;
     return (
       <ul className="flex flex-col gap-1.5 leading-tight">
         {changes.map((change) => (

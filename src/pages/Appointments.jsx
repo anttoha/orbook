@@ -17,6 +17,7 @@ import { usePlanStore } from "../shared/store/planStore";
 import { addAppointmentTarget, groupAppointments, kindInfo, upcomingAppointments } from "../shared/utils/appointments";
 import { subjectName } from "../shared/utils/format";
 import RoundButton from "../components/ui/RoundButton";
+import { useT } from "../shared/hooks/useT";
 
 // Пошук на ПК: у назві, місці, виді, предметі й Kürzel
 const matches = (item, query) => {
@@ -30,6 +31,7 @@ const matches = (item, query) => {
 // Дані: GET /api/appointments (appointmentsStore); курсові терміни — лише з предметами учня.
 // ─────────────────────────────────────────────────────────────
 const Appointments = () => {
+  const t = useT();
   const { today } = useNow();
   const { openSheet } = useSheet();
   const me = usePlanStore((s) => s.me);
@@ -50,10 +52,10 @@ const Appointments = () => {
   const addTarget = addAppointmentTarget(me);
 
   const body = () => {
-    if (resource.status === "error") return <PlanError resource={resource} onRetry={load} title="Termine konnten nicht geladen werden" />;
+    if (resource.status === "error") return <PlanError resource={resource} onRetry={load} title={t("Termine konnten nicht geladen werden")} />;
     if (items.length === 0 && (resource.status === "loading" || resource.status === "idle")) return <ExamSkeleton />;
-    if (items.length === 0) return <StateScreen icon={CalendarDays} title="Keine Termine" text="Ausflüge, Elternabende und freie Tage stehen hier, sobald die Schule oder eine Lehrkraft sie einträgt." />;
-    if (shown.length === 0) return <StateScreen icon={CalendarDays} title="Nichts gefunden" text="Kein Termin passt zur Suche." fill={false} />;
+    if (items.length === 0) return <StateScreen icon={CalendarDays} title={t("Keine Termine")} text={t("Ausflüge, Elternabende und freie Tage stehen hier, sobald die Schule oder eine Lehrkraft sie einträgt.")} />;
+    if (shown.length === 0) return <StateScreen icon={CalendarDays} title={t("Nichts gefunden")} text={t("Kein Termin passt zur Suche.")} fill={false} />;
     return (
       <>
         {groupAppointments(shown, today).map((group) => (
@@ -65,7 +67,7 @@ const Appointments = () => {
           </section>
         ))}
         <p className="flex items-center gap-1.5 text-caption text-faint">
-          <TrashIcon className="size-3.5" /> Vergangene Termine verschwinden nach einiger Zeit automatisch.
+          <TrashIcon className="size-3.5" /> {t("Vergangene Termine verschwinden nach einiger Zeit automatisch.")}
         </p>
       </>
     );
@@ -75,14 +77,14 @@ const Appointments = () => {
     <section className="flex flex-col gap-5.5">
       <header className="flex items-end justify-between gap-3">
         <div className="min-w-0 space-y-1">
-          <p className="text-hint font-extrabold text-faint">{items.length > 0 ? `Ab heute · ${items.length} ${items.length === 1 ? "Termin" : "Termine"}` : "Ab heute · nichts geplant"}</p>
-          <h1 className="text-title text-ink lg:text-hero">Termine</h1>
+          <p className="text-hint font-extrabold text-faint">{items.length > 0 ? `Ab heute · ${items.length} ${items.length === 1 ? t("Termin") : t("Termine")}` : t("Ab heute · nichts geplant")}</p>
+          <h1 className="text-title text-ink lg:text-hero">{t("Termine")}</h1>
         </div>
         {isDesktop ? (
-          <ExamsToolbar query={query} onQuery={setQuery} filter={null} addTarget={addTarget} placeholder="Titel oder Ort" addLabel="Termin eintragen" />
+          <ExamsToolbar query={query} onQuery={setQuery} filter={null} addTarget={addTarget} placeholder={t("Titel oder Ort")} addLabel={t("Termin eintragen")} />
         ) : (
           addTarget && (
-            <RoundButton to={addTarget} aria-label="Termin eintragen" look="grid size-9.5 shrink-0 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
+            <RoundButton to={addTarget} aria-label={t("Termin eintragen")} look="grid size-9.5 shrink-0 place-items-center rounded-full bg-accent text-on-accent outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
               <Plus className="size-4.25" />
             </RoundButton>
           )

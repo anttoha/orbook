@@ -1,8 +1,11 @@
 import { Skeleton } from "../ui/PlanState";
+import { useT } from "../../shared/hooks/useT";
 
 // Заглушка, поки статистика йде: три картки, блок стовпчиків, рядки списку
-const StatsSkeleton = () => (
-  <div aria-busy="true" aria-label="Statistik lädt" className="flex flex-col gap-5">
+const StatsSkeleton = () => {
+  const t = useT();
+  return (
+  <div aria-busy="true" aria-label={t("Statistik lädt")} className="flex flex-col gap-5">
     <div className="grid grid-cols-3 gap-2">
       <Skeleton className="h-28 rounded-card" />
       <Skeleton className="h-28 rounded-card" />
@@ -17,5 +20,6 @@ const StatsSkeleton = () => (
     </div>
   </div>
 );
+};
 
 export default StatsSkeleton;

@@ -16,13 +16,17 @@ import { PencilIcon } from "../ui/icons";
 import { Skeleton } from "../ui/PlanState";
 import Sheet from "../ui/Sheet";
 import SubjectBadge from "../ui/SubjectBadge";
+import { useT } from "../../shared/hooks/useT";
 
 // Вікно без запису: вантажиться, не знайдена або помилка
-const Placeholder = ({ open, onClose, status, error }) => (
-  <Sheet open={open} onClose={onClose} panelLabel="Hausaufgabe" title="Hausaufgabe">
-    {status === "loading" ? <Skeleton className="h-19 rounded-card" /> : <p className="text-body-sm text-muted">{status === "missing" ? "Diese Hausaufgabe gibt es nicht (mehr)." : error?.message}</p>}
+const Placeholder = ({ open, onClose, status, error }) => {
+  const t = useT();
+  return (
+  <Sheet open={open} onClose={onClose} panelLabel={t("Hausaufgabe")} title={t("Hausaufgabe")}>
+    {status === "loading" ? <Skeleton className="h-19 rounded-card" /> : <p className="text-body-sm text-muted">{status === "missing" ? t("Diese Hausaufgabe gibt es nicht (mehr).") : error?.message}</p>}
   </Sheet>
 );
+};
 
 // ─────────────────────────────────────────────────────────────
 // Вікно Hausaufgabe (макети handy-05, handy-15, pc-02). Адреса: ?sheet=hausaufgabe&id=4.
@@ -30,6 +34,7 @@ const Placeholder = ({ open, onClose, status, error }) => (
 // «Bearbeiten» — лише коли ця сесія може міняти запис (canEdit).
 // ─────────────────────────────────────────────────────────────
 const HomeworkSheet = ({ open, onClose, sheet }) => {
+  const t = useT();
   const { item, status, error } = useHomeworkItem(sheet.id);
   const { today } = useNow();
   const navigate = useNavigate();
@@ -41,10 +46,10 @@ const HomeworkSheet = ({ open, onClose, sheet }) => {
     <Sheet
       open={open}
       onClose={onClose}
-      panelLabel="Hausaufgabe"
+      panelLabel={t("Hausaufgabe")}
       eyebrow={
         <span className="flex items-center gap-2">
-          <Badge variant="soft">Hausaufgabe</Badge>
+          <Badge variant="soft">{t("Hausaufgabe")}</Badge>
           <span className="truncate text-hint font-normal">{subjectName(item.subject)}</span>
         </span>
       }
@@ -57,13 +62,13 @@ const HomeworkSheet = ({ open, onClose, sheet }) => {
           {shareEnabled && (
             <div className="flex gap-2">
               <Button onClick={() => shareText(homeworkText(item))}>
-                <Share className="size-4" /> Teilen
+                <Share className="size-4" /> {t("Teilen")}
               </Button>
             </div>
           )}
           {item.canEdit && (
             <Button variant="primary" className="flex-none" onClick={() => navigate(`/testen/hausaufgaben/${item.id}/bearbeiten`)}>
-              <PencilIcon className="size-4" /> Bearbeiten
+              <PencilIcon className="size-4" /> {t("Bearbeiten")}
             </Button>
           )}
         </div>
@@ -73,7 +78,7 @@ const HomeworkSheet = ({ open, onClose, sheet }) => {
       <MovedNote entry={item} />
       <EntryExtras entry={item} />
       <AuthorNote entry={item} />
-      <HistoryList kind="homework" entry={item} noun="Hausaufgabe" />
+      <HistoryList kind="homework" entry={item} noun={t("Hausaufgabe")} />
     </Sheet>
   );
 };

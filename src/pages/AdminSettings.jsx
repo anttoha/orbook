@@ -18,6 +18,7 @@ import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useSettingsForm } from "../shared/hooks/useSettingsForm";
 import { useAdminStore } from "../shared/store/adminStore";
 import { usePlanStore } from "../shared/store/planStore";
+import { useT } from "../shared/hooks/useT";
 
 // Колонки ПК: ліва (пароль, школа, контакт) і права (оновлення, функції, безпека).
 // На телефоні колонок немає (max-lg:contents), і блоки стають в один ряд у порядку order-* з макета 45
@@ -25,6 +26,7 @@ const column = "flex flex-col gap-4 max-lg:contents";
 
 // Форма. Сторінка створює її заново (key), коли приходять свіжі налаштування
 const SettingsForm = ({ data }) => {
+  const t = useT();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const demo = useAdminStore((s) => s.overview.data?.demo ?? false);
   const reloadOverview = useAdminStore((s) => s.reloadOverview);
@@ -49,7 +51,7 @@ const SettingsForm = ({ data }) => {
 
   return (
     <section className="flex flex-col gap-4 lg:gap-5">
-      <AdminHeader title="Einstellungen" actions={isDesktop && <SaveButton {...draft} onSave={draft.save} />} />
+      <AdminHeader title={t("Einstellungen")} actions={isDesktop && <SaveButton {...draft} onSave={draft.save} />} />
       <div className="flex flex-col gap-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4">
         <div className={column}>
           <ClassesCard className="order-1" {...rows} />
@@ -93,6 +95,7 @@ const SettingsForm = ({ data }) => {
 // «Einstellungen» адмінки (макети 45 телефон, 47 ПК)
 // ─────────────────────────────────────────────────────────────
 const AdminSettings = () => {
+  const t = useT();
   const settings = useAdminStore((s) => s.settings);
   const reloadSettings = useAdminStore((s) => s.reloadSettings);
 
@@ -104,7 +107,7 @@ const AdminSettings = () => {
   if (settings.status === "loading" || settings.status === "error") {
     return (
       <section className="flex flex-col gap-4">
-        <AdminHeader title="Einstellungen" />
+        <AdminHeader title={t("Einstellungen")} />
         {settings.status === "loading" ? <AdminSkeleton rows={5} /> : <AdminError error={settings.error} onRetry={reloadSettings} />}
       </section>
     );

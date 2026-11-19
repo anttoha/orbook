@@ -23,6 +23,7 @@ import TextField from "../ui/TextField";
 import ListPicker from "../ui/ListPicker";
 import { mySubjectCodes, subjectItems } from "../../shared/utils/picker";
 import ChipButton from "../ui/ChipButton";
+import { useT } from "../../shared/hooks/useT";
 
 // Поки meta не прийшла: значення за замовчуванням із docs/API.md
 const DEFAULT_LESSONS = [1, 2, 3, 4, 5, 6];
@@ -38,6 +39,7 @@ const LessonButton = ({ lesson, selected, onClick }) => (
 
 // Діалоги поверх форми: видалити, такий запис уже є, запис уже змінили
 const ExamDialogs = ({ flow, exam, form }) => {
+  const t = useT();
   const navigate = useNavigate();
   const { dialog, setDialog } = flow;
   const close = () => setDialog(null);
@@ -45,26 +47,26 @@ const ExamDialogs = ({ flow, exam, form }) => {
 
   return (
     <>
-      <ConfirmDialog open={dialog?.kind === "delete"} onClose={close} icon={trash} title="Test löschen?" text={exam ? `»${examLabel(exam)}« verschwindet für die ganze Klasse.` : ""}>
-        <Button onClick={close}>Abbrechen</Button>
+      <ConfirmDialog open={dialog?.kind === "delete"} onClose={close} icon={trash} title={t("Test löschen?")} text={exam ? t("»{1}« verschwindet für die ganze Klasse.", { "1": examLabel(exam) }) : ""}>
+        <Button onClick={close}>{t("Abbrechen")}</Button>
         <Button variant="danger" onClick={flow.remove}>
-          <TrashIcon className="size-4" /> Löschen
+          <TrashIcon className="size-4" /> {t("Löschen")}
         </Button>
       </ConfirmDialog>
 
-      <ConfirmDialog open={dialog?.kind === "duplicate"} onClose={close} title="Es gibt schon einen Eintrag" text={dialog?.exam ? `»${examLabel(dialog.exam)}«${dialog.exam.topic ? ` · ${dialog.exam.topic}` : ""}` : ""}>
-        <Button onClick={() => navigate(`/testen?sheet=klausur&id=${dialog.exam.id}`)}>Ansehen</Button>
+      <ConfirmDialog open={dialog?.kind === "duplicate"} onClose={close} title={t("Es gibt schon einen Eintrag")} text={dialog?.exam ? `»${examLabel(dialog.exam)}«${dialog.exam.topic ? ` · ${dialog.exam.topic}` : ""}` : ""}>
+        <Button onClick={() => navigate(`/testen?sheet=klausur&id=${dialog.exam.id}`)}>{t("Ansehen")}</Button>
         <Button variant="primary" onClick={() => flow.save(form, { force: true })}>
-          Trotzdem eintragen
+          {t("Trotzdem eintragen")}
         </Button>
       </ConfirmDialog>
 
-      <ConfirmDialog open={dialog?.kind === "conflict"} onClose={close} title="Der Test wurde inzwischen geändert." text={dialog?.exam ? `Jetzt: »${examLabel(dialog.exam)}«${dialog.exam.topic ? ` · ${dialog.exam.topic}` : ""}` : ""}>
+      <ConfirmDialog open={dialog?.kind === "conflict"} onClose={close} title={t("Der Test wurde inzwischen geändert.")} text={dialog?.exam ? t("Jetzt: »{1}«{2}", { "1": examLabel(dialog.exam), "2": dialog.exam.topic ? ` · ${dialog.exam.topic}` : "" }) : ""}>
         <Button variant="primary" className="flex-none basis-full" onClick={() => flow.overwrite(form)}>
-          Meine Änderung trotzdem speichern
+          {t("Meine Änderung trotzdem speichern")}
         </Button>
         <Button className="flex-none basis-full" onClick={flow.discard}>
-          Verwerfen
+          {t("Verwerfen")}
         </Button>
       </ConfirmDialog>
     </>
@@ -81,6 +83,7 @@ const presetFields = (preset) => Object.fromEntries(Object.entries(preset ?? {})
 const fromLesson = (preset) => Boolean(preset?.date && preset?.lesson != null && preset?.subject);
 
 const ExamForm = ({ exam, preset = null }) => {
+  const t = useT();
   const { today } = useNow();
   const me = usePlanStore((s) => s.me);
   const teacher = isTeacher(me);
@@ -130,26 +133,26 @@ const ExamForm = ({ exam, preset = null }) => {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-1 flex-col lg:max-w-186">
-      <PageHeader backTo="/testen" eyebrow={formEyebrow(me, "Tests")} eyebrowClassName="text-accent-ink" title={exam ? "Test ändern" : "Test eintragen"} />
+      <PageHeader backTo="/testen" eyebrow={formEyebrow(me, t("Tests"))} eyebrowClassName="text-accent-ink" title={exam ? t("Test ändern") : t("Test eintragen")} />
 
       <div className="mt-5 flex flex-col gap-5">
         {/* из меню урока: урок уже выбран (макет 24 handy-04); «Ändern» — обычные поля */}
-        {!showFields && <LessonCard title="Für die Stunde" subject={subject} date={fields.date} lesson={fields.lesson} time={lessonStart} onChange={() => setShowFields(true)} />}
+        {!showFields && <LessonCard title={t("Für die Stunde")} subject={subject} date={fields.date} lesson={fields.lesson} time={lessonStart} onChange={() => setShowFields(true)} />}
 
-        <Field label="Art" error={errors.type}>
+        <Field label={t("Art")} error={errors.type}>
           <TypeChips types={types} value={form.type} onChange={(type) => change({ type })} />
         </Field>
 
         {showFields && (
           <>
-            <Field label="Fach" error={errors.subject}>
+            <Field label={t("Fach")} error={errors.subject}>
               {/* одне поле зі списком і пошуком (design/neu/19c): свої предмети зверху */}
-              <ListPicker id="exam-subject" label="Fach" items={subjectItems(subjects, mySubjectCodes(courses, picked), courses)} value={fields.subject} error={Boolean(errors.subject)} onChange={(subject) => change({ subject })} />
+              <ListPicker id="exam-subject" label={t("Fach")} items={subjectItems(subjects, mySubjectCodes(courses, picked), courses)} value={fields.subject} error={Boolean(errors.subject)} onChange={(subject) => change({ subject })} />
             </Field>
 
-            <TextField id="exam-date" label="Datum" type="date" value={fields.date} error={errors.date} onChange={(event) => change({ date: event.target.value })} />
+            <TextField id="exam-date" label={t("Datum")} type="date" value={fields.date} error={errors.date} onChange={(event) => change({ date: event.target.value })} />
 
-            <Field label="Stunde · optional" error={errors.lesson}>
+            <Field label={t("Stunde · optional")} error={errors.lesson}>
               <div className="flex flex-wrap gap-1.75">
                 {lessons.map((lesson) => (
                   // повторне натискання знімає урок: він необов'язковий
@@ -171,10 +174,10 @@ const ExamForm = ({ exam, preset = null }) => {
 
         <TextField
           id="exam-topic"
-          label="Thema"
+          label={t("Thema")}
           value={fields.topic}
           error={errors.topic}
-          hint={`${fields.topic.length} von ${TOPIC_MAX} Zeichen`}
+          hint={t("{length} von {TOPIC_MAX} Zeichen", { length: fields.topic.length, TOPIC_MAX })}
           maxLength={TOPIC_MAX}
           autoComplete="off"
           onChange={(event) => change({ topic: event.target.value })}
@@ -182,12 +185,12 @@ const ExamForm = ({ exam, preset = null }) => {
 
         <TextField
           id="exam-details"
-          label="Was lernen, was mitbringen · optional"
+          label={t("Was lernen, was mitbringen · optional")}
           multiline
           rows={3}
           value={fields.details}
           error={errors.details}
-          hint={`${fields.details.length} von ${DETAILS_MAX} Zeichen · Links bitte als Material`}
+          hint={t("{length} von {DETAILS_MAX} Zeichen · Links bitte als Material", { length: fields.details.length, DETAILS_MAX })}
           maxLength={DETAILS_MAX}
           onChange={(event) => change({ details: event.target.value })}
         />
@@ -195,22 +198,22 @@ const ExamForm = ({ exam, preset = null }) => {
         <AttachMaterials subject={subject} value={fields.materialIds} known={exam?.materials} error={errors.materialIds} onChange={(materialIds) => change({ materialIds })} />
 
         {/* сервер сам переносит Test, если урок выпал (часть 24) */}
-        {fields.lesson != null && subject && <AutoMoveNote lead="Fällt die Stunde aus,">rutscht der Test auf die nächste {subjectName(subject)}-Stunde.</AutoMoveNote>}
+        {fields.lesson != null && subject && <AutoMoveNote lead={t("Fällt die Stunde aus,")}>{t("rutscht der Test auf die nächste")} {subjectName(subject)}{t("-Stunde.")}</AutoMoveNote>}
 
         {/* з уроку Muster: пояснюємо, що станеться, коли вийде справжній план (макет 19 handy-05) */}
-        {preset?.muster && <MusterNote lead="Stunde aus dem Muster.">Kommt der echte Plan anders, siehst du „Einträge prüfen“.</MusterNote>}
+        {preset?.muster && <MusterNote lead={t("Stunde aus dem Muster.")}>{t("Kommt der echte Plan anders, siehst du „Einträge prüfen“.")}</MusterNote>}
 
-        {teacher && <StudentsMayEdit checked={studentsMayEdit} onChange={(value) => change({ studentsMayEdit: value })} note="An: Schüler mit Freigabe dürfen Datum, Stunde und Thema ändern." />}
+        {teacher && <StudentsMayEdit checked={studentsMayEdit} onChange={(value) => change({ studentsMayEdit: value })} note={t("An: Schüler mit Freigabe dürfen Datum, Stunde und Thema ändern.")} />}
       </div>
 
       <div className="mt-auto flex flex-col gap-2.5 pt-6">
         <Button variant="primary" type="submit" disabled={flow.busy} className="flex-none">
-          <CheckIcon className="size-4" /> Speichern
+          <CheckIcon className="size-4" /> {t("Speichern")}
         </Button>
         {/* учень із Freigabe запис учителя лише міняє, видаляти не може (canDelete) */}
         {exam && exam.canDelete !== false && (
           <Button variant="danger" disabled={flow.busy} className="flex-none" onClick={() => flow.setDialog({ kind: "delete" })}>
-            <TrashIcon className="size-4" /> Löschen
+            <TrashIcon className="size-4" /> {t("Löschen")}
           </Button>
         )}
       </div>

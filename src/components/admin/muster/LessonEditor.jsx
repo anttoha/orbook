@@ -6,6 +6,7 @@ import ListPicker from "../../ui/ListPicker";
 import Button from "../../ui/Button";
 import { CheckIcon, TrashIcon } from "../../ui/icons";
 import TextField from "../../ui/TextField";
+import { useT } from "../../../shared/hooks/useT";
 
 const NEW_ENTRY = { subject: "", course: null, teacher: null, room: null };
 
@@ -21,23 +22,25 @@ function entryItems(courses, suggested, entry) {
 const entryValue = (entry) => entry.course?.nr ?? (entry.subject ? `fach:${entry.subject}` : null);
 
 // Один курс уроку: поле «Kurs» зі списком і пошуком (design/neu/19c), «Lehrer», «Raum». index — щоб id не повторювались
-const EntryFields = ({ entry, index, courses, suggested, onChange, onRemove }) => (
+const EntryFields = ({ entry, index, courses, suggested, onChange, onRemove }) => {
+  const t = useT();
+  return (
   <div className="flex flex-col gap-3.5">
     <div>
       <div className="mb-1.5 flex items-center justify-between">
-        <span className="text-hint font-extrabold text-faint">{index === 0 ? "Kurs" : `Parallelkurs ${index}`}</span>
+        <span className="text-hint font-extrabold text-faint">{index === 0 ? t("Kurs") : t("Parallelkurs {index}", { index })}</span>
         {onRemove && (
           <button type="button" onClick={onRemove} className="text-label font-bold text-danger">
-            Entfernen
+            {t("Entfernen")}
           </button>
         )}
       </div>
       <ListPicker
         id={`muster-course-${index}`}
-        label="Kurs"
+        label={t("Kurs")}
         inline // на телефоні поле вже у шторці
-        title="Kurs wählen"
-        placeholder="Kurs wählen"
+        title={t("Kurs wählen")}
+        placeholder={t("Kurs wählen")}
         items={entryItems(courses, suggested, entry)}
         value={entryValue(entry)}
         onChange={(nr) => {
@@ -47,11 +50,12 @@ const EntryFields = ({ entry, index, courses, suggested, onChange, onRemove }) =
       />
     </div>
     <div className="grid grid-cols-2 gap-2">
-      <TextField id={`muster-teacher-${index}`} inputClassName="lg:bg-paper" label="Lehrer" maxLength={20} value={entry.teacher ?? ""} onChange={(event) => onChange({ ...entry, teacher: event.target.value })} />
-      <TextField id={`muster-room-${index}`} inputClassName="lg:bg-paper" label="Raum" maxLength={20} value={entry.room ?? ""} onChange={(event) => onChange({ ...entry, room: event.target.value })} />
+      <TextField id={`muster-teacher-${index}`} inputClassName="lg:bg-paper" label={t("Lehrer")} maxLength={20} value={entry.teacher ?? ""} onChange={(event) => onChange({ ...entry, teacher: event.target.value })} />
+      <TextField id={`muster-room-${index}`} inputClassName="lg:bg-paper" label={t("Raum")} maxLength={20} value={entry.room ?? ""} onChange={(event) => onChange({ ...entry, room: event.target.value })} />
     </div>
   </div>
 );
+};
 
 // ─────────────────────────────────────────────────────────────
 // «Stunde bearbeiten» (макет 19b handy-04, pc-03 праворуч): курси одного уроку.
@@ -60,6 +64,7 @@ const EntryFields = ({ entry, index, courses, suggested, onChange, onRemove }) =
 //   courses   — курси класу (/api/admin/courses), names — назви предметів за кодом
 // ─────────────────────────────────────────────────────────────
 const LessonEditor = ({ entries, autoEntries, courses, names, onApply }) => {
+  const t = useT();
   const [draft, setDraft] = useState(() => (entries.length ? entries : [NEW_ENTRY]));
   const ready = draft.every((entry) => entry.subject); // у кожного курсу вибраний предмет
   const suggested = autoEntries.map((entry) => entry.course?.nr).filter(Boolean); // «Vorschlag»: що тут у плані
@@ -69,20 +74,20 @@ const LessonEditor = ({ entries, autoEntries, courses, names, onApply }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      {courses.length === 0 && <p className="text-label text-faint">Noch keine Kurse — sie kommen mit dem ersten Plan.</p>}
+      {courses.length === 0 && <p className="text-label text-faint">{t("Noch keine Kurse — sie kommen mit dem ersten Plan.")}</p>}
       {draft.map((entry, index) => (
         <EntryFields key={index} entry={entry} index={index} courses={courses} suggested={suggested} onChange={(next) => change(index, next)} onRemove={index > 0 ? () => setDraft(draft.filter((_, i) => i !== index)) : null} />
       ))}
       <button type="button" onClick={() => setDraft([...draft, NEW_ENTRY])} className="flex items-center gap-2 self-start text-body-sm font-bold text-accent-ink">
-        <Plus className="size-4" /> Parallelkurs in dieser Stunde
+        <Plus className="size-4" /> {t("Parallelkurs in dieser Stunde")}
       </button>
-      <p className="text-caption text-faint">Automatisch war: {autoText(autoEntries, names)}</p>
+      <p className="text-caption text-faint">{t("Automatisch war:")} {autoText(autoEntries, names)}</p>
       <div className="flex gap-2 border-t border-hair pt-4">
         <Button variant="danger" className="flex-none px-5" onClick={() => onApply([])}>
-          <TrashIcon className="size-4" /> Leeren
+          <TrashIcon className="size-4" /> {t("Leeren")}
         </Button>
         <Button variant="primary" className="flex-1" disabled={!ready} onClick={() => onApply(draft.map(clean))}>
-          <CheckIcon className="size-4" /> Übernehmen
+          <CheckIcon className="size-4" /> {t("Übernehmen")}
         </Button>
       </div>
     </div>

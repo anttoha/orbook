@@ -9,6 +9,7 @@ import { usePlanView } from "../../shared/hooks/usePlanView";
 import { shownLessons, subjectLook } from "../../shared/utils/planView";
 import StatusBadge from "../ui/StatusBadge";
 import LessonContextMenu from "../lesson/LessonContextMenu";
+import { useT } from "../../shared/hooks/useT";
 
 const PX_PER_MIN = 1.28; // шкала: скільки пікселів висоти на одну хвилину
 const BLOCK_PX_PER_MIN = 1.2; // блок трохи нижчий за свій час: так між уроками є зазор, як на макеті
@@ -22,6 +23,7 @@ const BLOCK_PADDING = 12; // внутрішній відступ блока: н�
 // Паралельні курси стоять поруч.
 // ─────────────────────────────────────────────────────────────
 const Timeline = ({ day, lessons, onOpen }) => {
+  const t = useT();
   const { now, today } = useNow(); // час школи
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
   const scale = useUserStore((s) => FONT_SCALES[s.fontScale]); // шрифт більший — блоки теж вищі
@@ -61,7 +63,7 @@ const Timeline = ({ day, lessons, onOpen }) => {
       {/* підписи перерв посередині проміжку */}
       {breaks.map((b) => (
         <span key={b.from} className="absolute -translate-y-1/2 text-tiny font-extrabold text-faint2" style={{ top: y((b.from + b.to) / 2), left: AXIS + BLOCK_PADDING }}>
-          Pause · {b.to - b.from} min
+          {t("Pause ·")} {b.to - b.from} min
         </span>
       ))}
 
@@ -102,7 +104,7 @@ const Timeline = ({ day, lessons, onOpen }) => {
                   {lesson.start}–{lesson.end}
                 </span>
               </div>
-              <p className="truncate text-caption text-muted">{isCancelled ? "fällt aus" : [lesson.teacher, lesson.room].filter(Boolean).join(" · ")}</p>
+              <p className="truncate text-caption text-muted">{isCancelled ? t("fällt aus") : [lesson.teacher, lesson.room].filter(Boolean).join(" · ")}</p>
             </button>
           </LessonContextMenu>
         );

@@ -33,7 +33,7 @@ const NotizenBlock = ({ editing }) => {
           )}
         </>
       ) : (
-        <BlockEmpty text="Noch keine Notizen" />
+        <BlockEmpty text={t("Noch keine Notizen")} />
       )}
     </BlockCard>
   );

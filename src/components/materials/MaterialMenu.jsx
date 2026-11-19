@@ -6,6 +6,7 @@ import Kbd from "../ui/Kbd";
 import { TrashIcon } from "../ui/icons";
 import { menuContentClass, menuIconClass, menuItemClass, menuSeparatorClass } from "../ui/menuStyles";
 import DeleteMaterialDialog from "./DeleteMaterialDialog";
+import { useT } from "../../shared/hooks/useT";
 
 const Shortcut = ({ children }) => <Kbd className="ml-auto">{children}</Kbd>;
 
@@ -15,6 +16,7 @@ const Shortcut = ({ children }) => <Kbd className="ml-auto">{children}</Kbd>;
 // children — сам рядок (MaterialRow), він стає тригером меню.
 // ─────────────────────────────────────────────────────────────
 const MaterialMenu = ({ item, children }) => {
+  const t = useT();
   const actions = useMaterialActions(item);
 
   // Клавіші у відкритому меню: E — Bearbeiten, Entf/⌫ — Löschen
@@ -33,24 +35,24 @@ const MaterialMenu = ({ item, children }) => {
         <ContextMenu.Portal>
           <ContextMenu.Content className={menuContentClass} onKeyDown={handleKeyDown}>
             <ContextMenu.Item className={menuItemClass} onSelect={actions.open}>
-              <ExternalLink className={menuIconClass} /> Öffnen <Shortcut>↵</Shortcut>
+              <ExternalLink className={menuIconClass} /> {t("Öffnen")} <Shortcut>↵</Shortcut>
             </ContextMenu.Item>
             <ContextMenu.Item className={menuItemClass} onSelect={actions.copy}>
-              <Copy className={menuIconClass} /> Link kopieren
+              <Copy className={menuIconClass} /> {t("Link kopieren")}
             </ContextMenu.Item>
             <ContextMenu.Item className={menuItemClass} onSelect={actions.share}>
-              <Share className={menuIconClass} /> Teilen
+              <Share className={menuIconClass} /> {t("Teilen")}
             </ContextMenu.Item>
             {item.canEdit && (
               <ContextMenu.Item className={menuItemClass} onSelect={actions.edit}>
-                <Pencil className={menuIconClass} /> Bearbeiten <Shortcut>E</Shortcut>
+                <Pencil className={menuIconClass} /> {t("Bearbeiten")} <Shortcut>E</Shortcut>
               </ContextMenu.Item>
             )}
             {item.canDelete && (
               <>
                 <ContextMenu.Separator className={menuSeparatorClass} />
                 <ContextMenu.Item className={cn(menuItemClass, "text-danger")} onSelect={actions.askDelete}>
-                  <TrashIcon className={cn(menuIconClass, "text-danger")} /> Löschen <Shortcut>⌫</Shortcut>
+                  <TrashIcon className={cn(menuIconClass, "text-danger")} /> {t("Löschen")} <Shortcut>⌫</Shortcut>
                 </ContextMenu.Item>
               </>
             )}

@@ -4,6 +4,7 @@ import { fachDotClass } from "../../shared/utils/lessons";
 import { FilterIcon } from "../ui/icons";
 import RoundButton from "../ui/RoundButton";
 import ChipButton from "../ui/ChipButton";
+import { useT } from "../../shared/hooks/useT";
 
 const chip = "flex h-8.25 shrink-0 items-center gap-1.5 rounded-full border px-3 text-hint font-bold outline-none focus-visible:ring-2 focus-visible:ring-accent/50";
 const chipOn = "border-accent bg-accent text-on-accent";
@@ -15,13 +16,14 @@ const chipOff = "border-rule text-muted";
 // Без onOpenFilter кнопки фільтра немає (на ПК вона в шапці сторінки)
 // ─────────────────────────────────────────────────────────────
 const ExamChips = ({ codes, selected, filterActive, onAll, onToggle, onOpenFilter }) => {
+  const t = useT();
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори предметів
 
   return (
     // -my-3 py-3: место под тени стеклянных чипов — ряд с прокруткой срезал бы их сверху и снизу
     <div className="no-scrollbar -mx-gutter flex min-w-0 items-center gap-1.75 overflow-x-auto px-gutter -my-3 py-3 lg:mx-0 lg:px-0">
       <ChipButton aria-pressed={selected.length === 0} onClick={onAll} on={selected.length === 0} look={cn(chip, selected.length === 0 ? chipOn : chipOff)}>
-        Alle
+        {t("Alle")}
       </ChipButton>
       {codes.map((code) => {
         const active = selected.includes(code);
@@ -35,7 +37,7 @@ const ExamChips = ({ codes, selected, filterActive, onAll, onToggle, onOpenFilte
       {/* вид і період у ряду не видно, тому кнопка сама показує, що фільтр увімкнено */}
       {onOpenFilter && (
         <RoundButton
-          aria-label="Filter"
+          aria-label={t("Filter")}
           onClick={onOpenFilter} look={cn("grid size-8.5 shrink-0 place-items-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent/50", filterActive ? "bg-tint text-accent-ink" : "bg-card text-ink")}>
           <FilterIcon className="size-4.25" />
         </RoundButton>

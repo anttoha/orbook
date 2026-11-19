@@ -7,10 +7,12 @@ import { promptInstall } from "../../shared/utils/serviceWorker";
 import OrbitMark from "../ui/OrbitMark";
 import PillButton from "../ui/PillButton";
 import RoundButton from "../ui/RoundButton";
+import { useT } from "../../shared/hooks/useT";
 
 // «ORBook als App» вверху Mehr (макет 17 handy-09): пока не установлено и не закрыто ✕.
 // Android/ПК — окно браузера, iPhone — шторка с шагами
 const InstallCard = () => {
+  const t = useT();
   const how = useInstallPrompt();
   const dismissed = usePushStore((s) => s.installDismissed);
   const dismiss = usePushStore((s) => s.dismissInstall);
@@ -29,15 +31,15 @@ const InstallCard = () => {
           <OrbitMark className="size-8" />
         </span>
         <div className="min-w-0">
-          <p className="text-row font-extrabold text-ink">ORBook als App</p>
-          <p className="text-caption text-muted">Eigenes Symbol, schneller Start, Mitteilungen.</p>
+          <p className="text-row font-extrabold text-ink">{t("ORBook als App")}</p>
+          <p className="text-caption text-muted">{t("Eigenes Symbol, schneller Start, Mitteilungen.")}</p>
         </div>
       </div>
-      <RoundButton onClick={dismiss} aria-label="Nicht mehr zeigen" look="absolute top-2.5 right-2.5 grid size-8 place-items-center rounded-full bg-card text-muted">
+      <RoundButton onClick={dismiss} aria-label={t("Nicht mehr zeigen")} look="absolute top-2.5 right-2.5 grid size-8 place-items-center rounded-full bg-card text-muted">
         <X className="size-4" />
       </RoundButton>
       <PillButton glass="filled" size="md" onClick={install} className="flex h-10 items-center justify-center gap-2 rounded-full bg-accent text-label font-extrabold text-on-accent transition-transform active:scale-95">
-        <Download className="size-4" aria-hidden="true" /> Installieren
+        <Download className="size-4" aria-hidden="true" /> {t("Installieren")}
       </PillButton>
     </section>
   );

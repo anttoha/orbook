@@ -17,6 +17,7 @@ import PlanCheckBanner from "../../muster/PlanCheckBanner";
 import WeekLetter from "../../muster/WeekLetter";
 import { abLetter } from "../../../shared/utils/muster";
 import Liquid from "../../ui/Liquid";
+import { useT } from "../../../shared/hooks/useT";
 
 // Перемикач «Liste / Zeitleiste» (тільки іконки, як на макеті)
 const VIEWS = [
@@ -29,6 +30,7 @@ const VIEWS = [
 // Заголовок — посилання на повну сторінку дня. date — "2026-10-07"
 // ─────────────────────────────────────────────────────────────
 const DayPanel = ({ date }) => {
+  const t = useT();
   const { today } = useNow(); // сьогодні
   const { openSheet } = useSheet(); // відкрити шторку
   const filter = useLessonFilter(); // «Meine Kurse»
@@ -53,16 +55,16 @@ const DayPanel = ({ date }) => {
             {longDate(date)}
           </Link>
         </div>
-        {lessons.length > 0 && <Segmented label="Ansicht" options={VIEWS} value={view} onChange={setView} variant="accent" size="sm" iconOnly className="shrink-0" />}
+        {lessons.length > 0 && <Segmented label={t("Ansicht")} options={VIEWS} value={view} onChange={setView} variant="accent" size="sm" iconOnly className="shrink-0" />}
       </header>
 
       {day?.info.length > 0 && <DayInfoBanner info={day.info} onClick={() => openSheet("info", { datum: date })} />}
       <AppointmentBanner date={date} />
       {day && <PlanCheckBanner day={day} />}
       {/* день із Muster (частина 19, макет pc-01) */}
-      {day?.muster && <MusterNote lead="Muster:">so ist der {weekdayLong(date)} normalerweise. Der echte Plan kommt meist am Vortag.</MusterNote>}
+      {day?.muster && <MusterNote lead={t("Muster:")}>{t("so ist der")} {weekdayLong(date)} {t("normalerweise. Der echte Plan kommt meist am Vortag.")}</MusterNote>}
 
-      {day && lessons.length === 0 && <p className="py-10 text-center text-body font-bold text-faint">{freeText(day) ?? "Kein Unterricht"}</p>}
+      {day && lessons.length === 0 && <p className="py-10 text-center text-body font-bold text-faint">{freeText(day) ?? t("Kein Unterricht")}</p>}
       {day && lessons.length > 0 && view === "liste" && <LessonList day={day} lessons={lessons} onOpen={openLesson} />}
       {day && lessons.length > 0 && view === "zeitleiste" && <Timeline day={day} lessons={lessons} onOpen={openLesson} />}
     </Liquid>

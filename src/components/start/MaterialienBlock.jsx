@@ -23,7 +23,7 @@ const MaterialienBlock = ({ editing }) => {
   }, [load]);
 
   const body = () => {
-    if (!list.length) return status === "loading" || status === "idle" ? <BlockSkeleton /> : <BlockEmpty text="Noch keine Links" />;
+    if (!list.length) return status === "loading" || status === "idle" ? <BlockSkeleton /> : <BlockEmpty text={t("Noch keine Links")} />;
     return (
       <ul className="flex flex-col gap-2">
         {list.map((item) => (

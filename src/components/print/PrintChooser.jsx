@@ -7,18 +7,22 @@ import Switch from "../ui/Switch";
 import ClassSheet from "./ClassSheet";
 import { usePrint } from "../../shared/hooks/usePrint";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Строка «Blatt für die Klasse drucken» в окне «Einladen» (макет 25 handy-10)
-export const PrintRow = ({ onClick }) => (
+export const PrintRow = ({ onClick }) => {
+  const t = useT();
+  return (
   <Liquid as="button" refract type="button" onClick={onClick} className="flex items-center gap-3 rounded-card border border-accent bg-card px-3.5 py-3 text-left outline-none transition-[background-color,scale] duration-150 hover:bg-tint focus-visible:ring-2 focus-visible:ring-accent/50 active:scale-98">
     <Printer className="size-5 shrink-0 text-accent-ink" />
     <span className="min-w-0 flex-1">
-      <span className="block text-row font-bold text-accent-ink">Blatt für die Klasse drucken</span>
-      <span className="block text-caption text-faint">A4 · Aushang oder Kärtchen zum Verteilen</span>
+      <span className="block text-row font-bold text-accent-ink">{t("Blatt für die Klasse drucken")}</span>
+      <span className="block text-caption text-faint">{t("A4 · Aushang oder Kärtchen zum Verteilen")}</span>
     </span>
     <ChevronRight className="size-4 shrink-0 text-faint2" />
   </Liquid>
 );
+};
 
 const KINDS = [
   { kind: "aushang", title: "Aushang", hint: "1 großer QR" },
@@ -51,6 +55,7 @@ const MiniSheet = ({ kind }) => (
 // Внутри окна «Einladen» — onBack возвращает к QR. На ПК справа уменьшенный настоящий лист
 // ─────────────────────────────────────────────────────────────
 const PrintChooser = ({ url, className, onBack }) => {
+  const t = useT();
   const [kind, setKind] = useState("aushang");
   const [steps, setSteps] = useState(true);
   const { print, area } = usePrint();
@@ -59,11 +64,11 @@ const PrintChooser = ({ url, className, onBack }) => {
   return (
     <div className="flex flex-col gap-4 motion-safe:animate-rise-in">
       <button type="button" onClick={onBack} className="-mt-2 -ml-1 flex min-h-11 items-center gap-1 self-start rounded-full px-1 text-hint font-extrabold text-muted hover:text-ink">
-        <ChevronLeft className="size-3.5" /> Zurück zu Link und QR
+        <ChevronLeft className="size-3.5" /> {t("Zurück zu Link und QR")}
       </button>
       <div className="flex gap-6">
         <div className="flex min-w-0 flex-1 flex-col gap-4">
-          <div role="radiogroup" aria-label="Art des Blatts" className="grid grid-cols-2 gap-2">
+          <div role="radiogroup" aria-label={t("Art des Blatts")} className="grid grid-cols-2 gap-2">
             {KINDS.map((item) => (
               <button
                 key={item.kind}
@@ -89,13 +94,13 @@ const PrintChooser = ({ url, className, onBack }) => {
           {kind === "aushang" && (
             <Liquid as="div" refract press={false} className="flex items-center gap-3 rounded-card bg-card px-3.5 py-3.5">
               <span className="min-w-0 flex-1">
-                <span className="block text-row text-ink">Kurze Anleitung aufs Blatt</span>
-                <span className="block text-caption text-faint">3 Schritte: scannen, Kurse wählen, fertig</span>
+                <span className="block text-row text-ink">{t("Kurze Anleitung aufs Blatt")}</span>
+                <span className="block text-caption text-faint">{t("3 Schritte: scannen, Kurse wählen, fertig")}</span>
               </span>
-              <Switch checked={steps} onChange={setSteps} label="Kurze Anleitung aufs Blatt" />
+              <Switch checked={steps} onChange={setSteps} label={t("Kurze Anleitung aufs Blatt")} />
             </Liquid>
           )}
-          <p className="text-caption text-faint">Link aus = Blatt geht nicht mehr.</p>
+          <p className="text-caption text-faint">{t("Link aus = Blatt geht nicht mehr.")}</p>
         </div>
         {/* ПК: настоящий лист, уменьшенный (zoom меняет и место в разметке, не только картинку) */}
         <div aria-hidden="true" className="hidden shrink-0 rounded-card bg-sand p-3 lg:block">
@@ -105,9 +110,9 @@ const PrintChooser = ({ url, className, onBack }) => {
         </div>
       </div>
       <Button variant="primary" onClick={() => print(sheet)} className="flex-none">
-        <Printer className="size-4" /> Drucken
+        <Printer className="size-4" /> {t("Drucken")}
       </Button>
-      <p className="-mt-2 text-center text-caption text-faint">Öffnet das Druckfenster — dort geht auch „Als PDF speichern“.</p>
+      <p className="-mt-2 text-center text-caption text-faint">{t("Öffnet das Druckfenster — dort geht auch „Als PDF speichern“.")}</p>
       {area}
     </div>
   );

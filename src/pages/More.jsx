@@ -28,22 +28,28 @@ import { isTeacher } from "../shared/utils/examRules";
 const THEME_LABELS = { light: "Hell", dark: "Dunkel", system: "System" };
 
 // Рядок унизу: версія і вхід в адмінку
-const Footer = () => (
+const Footer = () => {
+  const t = useT();
+  return (
   <footer className="flex items-center justify-between text-caption text-faint">
-    <p>ORBook {version.split(".").slice(0, 2).join(".")} · Teil von ORBitium</p>
+    <p>ORBook {version.split(".").slice(0, 2).join(".")} {t("· Teil von ORBitium")}</p>
     <Link to="/admin">Admin</Link>
   </footer>
 );
+};
 
 // На ПК «Übersicht» праворуч від меню розділів: плитки замість списку (макет 22)
-const DesktopOverview = () => (
+const DesktopOverview = () => {
+  const t = useT();
+  return (
   <section className="flex flex-col gap-5">
-    <h2 className="text-heading text-ink">Übersicht</h2>
+    <h2 className="text-heading text-ink">{t("Übersicht")}</h2>
     <InstallCard />
     <SettingsTiles />
     <Footer />
   </section>
 );
+};
 
 // ─────────────────────────────────────────────────────────────
 // Сторінка «Mehr» (макет 22). Своїх запитів немає: me і courses уже завантажені.
@@ -92,27 +98,27 @@ const PhoneMenu = () => {
 
       {/* «Seiten» — просто сторінки й вікна; Statistik переїхала сюди з нижнього меню (частина 22) */}
       <ListCard title={seiten.title} hint={seiten.hint}>
-        {statsEnabled && <MenuRow to="/statistik" icon={StatsIcon} label="Statistik" value="Woche · Monat" />}
-        <MenuRow to="/mehr/neuigkeiten" icon={Sparkles} label="Neuigkeiten" badge={<NewBadge />} value={changelog[0]?.version} />
-        <MenuRow to="/materialien" icon={Folder} label="Materialien" value={links ? `${links} ${t(links === 1 ? "Link" : "Links")}` : null} />
+        {statsEnabled && <MenuRow to="/statistik" icon={StatsIcon} label={t("Statistik")} value="Woche · Monat" />}
+        <MenuRow to="/mehr/neuigkeiten" icon={Sparkles} label={t("Neuigkeiten")} badge={<NewBadge />} value={changelog[0]?.version} />
+        <MenuRow to="/materialien" icon={Folder} label={t("Materialien")} value={links ? `${links} ${t(links === 1 ? "Link" : "Links")}` : null} />
         {/* частина 16: посилання і QR для однокласників; вимкнене — шторка так і скаже */}
-        <MenuRow onClick={() => openSheet("einladen")} icon={UserPlus} label="Klasse einladen" value="Link + QR" />
+        <MenuRow onClick={() => openSheet("einladen")} icon={UserPlus} label={t("Klasse einladen")} value="Link + QR" />
         {/* часть 25: три подсказки с первого входа — открыть ещё раз */}
-        <MenuRow onClick={() => openSheet("tipps")} icon={Info} label="Kurz erklärt" value="3 Tipps" />
-        <MenuRow to="/mehr/datenschutz" icon={ShieldIcon} label="Datenschutz" />
+        <MenuRow onClick={() => openSheet("tipps")} icon={Info} label={t("Kurz erklärt")} value="3 Tipps" />
+        <MenuRow to="/mehr/datenschutz" icon={ShieldIcon} label={t("Datenschutz")} />
       </ListCard>
 
       {/* «Einstellungen» — те, що налаштовується */}
       <ListCard title={einstellungen.title} hint={einstellungen.hint}>
-        <MenuRow to="/mehr/kurse" icon={Table2} label="Meine Kurse" value={count.all > 0 ? `${count.on} ${t("von")} ${count.all}` : null} />
-        <MenuRow to="/mehr/darstellung" icon={Sun} label="Darstellung" value={THEME_LABELS[theme]} />
-        <MenuRow to="/mehr/fachfarben" icon={Palette} label="Fachfarben" />
-        {pushAllowed && <MenuRow to="/mehr/mitteilungen" icon={Bell} label="Mitteilungen" value={prefsSummary(pushOn, pushPrefs)} />}
+        <MenuRow to="/mehr/kurse" icon={Table2} label={t("Meine Kurse")} value={count.all > 0 ? `${count.on} ${t("von")} ${count.all}` : null} />
+        <MenuRow to="/mehr/darstellung" icon={Sun} label={t("Darstellung")} value={THEME_LABELS[theme]} />
+        <MenuRow to="/mehr/fachfarben" icon={Palette} label={t("Fachfarben")} />
+        {pushAllowed && <MenuRow to="/mehr/mitteilungen" icon={Bell} label={t("Mitteilungen")} value={prefsSummary(pushOn, pushPrefs)} />}
         {/* праворуч — перша група коду, як у макеті: «K7QM-…» */}
-        {syncAllowed && <MenuRow to="/mehr/sync" icon={SyncIcon} label="Synchronisieren" value={syncCode ? `${syncCode.slice(0, 4)}-…` : "Aus"} />}
-        {!isTeacher(me) && <MenuRow to="/mehr/editor-code" icon={KeyIcon} label="Tests eintragen" value={me?.editor?.label ?? "Editor-Code"} />}
+        {syncAllowed && <MenuRow to="/mehr/sync" icon={SyncIcon} label={t("Synchronisieren")} value={syncCode ? `${syncCode.slice(0, 4)}-…` : "Aus"} />}
+        {!isTeacher(me) && <MenuRow to="/mehr/editor-code" icon={KeyIcon} label={t("Tests eintragen")} value={me?.editor?.label ?? "Editor-Code"} />}
         {/* часть 29c: учитель или староста с правом «Klasse verwalten» — Zugangscodes своего класса */}
-        {me?.canManageClass && <MenuRow to="/mehr/klasse-verwalten" icon={UsersRound} label="Klasse verwalten" value="Zugangscodes" />}
+        {me?.canManageClass && <MenuRow to="/mehr/klasse-verwalten" icon={UsersRound} label={t("Klasse verwalten")} value="Zugangscodes" />}
       </ListCard>
 
       <ListCard>

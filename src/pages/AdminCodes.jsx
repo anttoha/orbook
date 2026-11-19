@@ -17,6 +17,7 @@ import { useAdminStore } from "../shared/store/adminStore";
 import { isTeacherCode } from "../shared/utils/admin";
 import RoundButton from "../components/ui/RoundButton";
 import Liquid from "../components/ui/Liquid";
+import { useT } from "../shared/hooks/useT";
 
 // Тексти двох списків: Editor-Codes (макети 41, 43) і Lehrer-Codes (частина 14, handy-10, pc-04)
 const TEXTS = {
@@ -26,16 +27,17 @@ const TEXTS = {
 
 // Телефон: «Editor-Codes · 4 | Lehrer-Codes · 3» — дві адреси, одна вкладка «Codes»
 const KindSwitch = ({ kind, codes }) => {
+  const t = useT();
   const navigate = useNavigate();
   const count = (teacher) => codes.filter((code) => isTeacherCode(code) === teacher).length;
   return (
     <Segmented
-      label="Codes"
+      label={t("Codes")}
       className="lg:hidden"
       value={kind}
       options={[
-        { value: "editor", label: `Editor-Codes · ${count(false)}` },
-        { value: "teacher", label: `Lehrer-Codes · ${count(true)}` },
+        { value: "editor", label: t("Editor-Codes · {1}", { "1": count(false) }) },
+        { value: "teacher", label: t("Lehrer-Codes · {1}", { "1": count(true) }) },
       ]}
       onChange={(value) => navigate(value === "teacher" ? "/admin/lehrer" : "/admin/codes", { replace: true })}
     />
@@ -51,6 +53,7 @@ const matches = (code, query) => `${code.label} ${code.masked}`.toLowerCase().in
 // kind = "teacher" — «Lehrer-Codes» (/admin/lehrer): той самий список /admin/codes, інший фільтр і вікно
 // ─────────────────────────────────────────────────────────────
 const AdminCodes = ({ kind = "editor" }) => {
+  const t = useT();
   const teacher = kind === "teacher";
   const texts = TEXTS[kind];
   const { today } = useNow();
@@ -83,10 +86,10 @@ const AdminCodes = ({ kind = "editor" }) => {
 
   const addButton = isDesktop ? (
     <Button variant="primary" className="flex-none px-5" onClick={openNew}>
-      <Plus className="size-4.5" /> Neuer Code
+      <Plus className="size-4.5" /> {t("Neuer Code")}
     </Button>
   ) : (
-    <RoundButton aria-label="Neuer Code" onClick={openNew} look="grid size-9.5 place-items-center rounded-full bg-accent text-on-accent">
+    <RoundButton aria-label={t("Neuer Code")} onClick={openNew} look="grid size-9.5 place-items-center rounded-full bg-accent text-on-accent">
       <Plus className="size-5" />
     </RoundButton>
   );
@@ -98,12 +101,12 @@ const AdminCodes = ({ kind = "editor" }) => {
       return (
         <AdminEmpty text={texts.empty}>
           <Button variant="primary" className="flex-none px-5" onClick={openNew}>
-            <Plus className="size-4.5" /> Neuer Code
+            <Plus className="size-4.5" /> {t("Neuer Code")}
           </Button>
         </AdminEmpty>
       );
     }
-    if (!list.length) return <AdminEmpty text="Kein Code passt zur Suche." />;
+    if (!list.length) return <AdminEmpty text={t("Kein Code passt zur Suche.")} />;
     if (!isDesktop) {
       return (
         <ul className="flex flex-col gap-2.5">

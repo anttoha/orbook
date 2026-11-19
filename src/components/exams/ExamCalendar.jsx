@@ -7,6 +7,7 @@ import { mondayOf } from "../../shared/utils/format";
 import MonthGrid from "../ui/MonthGrid";
 import MonthNav from "../ui/MonthNav";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Календар місяця праворуч від списку Klausuren (ПК, макет 14).
@@ -15,6 +16,7 @@ import Liquid from "../ui/Liquid";
 // Клік по дню з Klausur відкриває її, по іншому дню — сторінку дня.
 // ─────────────────────────────────────────────────────────────
 const ExamCalendar = ({ exams }) => {
+  const t = useT();
   const { today } = useNow();
   const { openSheet } = useSheet();
   const navigate = useNavigate();
@@ -30,7 +32,7 @@ const ExamCalendar = ({ exams }) => {
   };
 
   return (
-    <Liquid as="section" refract press={false} aria-label="Kalender" className="flex flex-col gap-3 rounded-card bg-card p-4">
+    <Liquid as="section" refract press={false} aria-label={t("Kalender")} className="flex flex-col gap-3 rounded-card bg-card p-4">
       <MonthNav month={month} onChange={setMonth} titleClassName="text-number" />
       <MonthGrid month={month} today={today} highlight={mondayOf(today)} rowShape="tile" examDays={examDays} onPick={pick} />
     </Liquid>

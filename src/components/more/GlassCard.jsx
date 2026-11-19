@@ -39,7 +39,7 @@ const GlassCard = ({ glassBg, glassMode, onBg, onMode }) => {
         </div>
         <div className="flex h-16.75 items-center justify-between gap-3 border-t border-hair">
           <p className="text-row text-ink">{t("Glas-Effekt")}</p>
-          <Segmented label="Glas-Effekt" size="form" className="w-fit" options={MODES} value={glassMode} onChange={onMode} />
+          <Segmented label={t("Glas-Effekt")} size="form" className="w-fit" options={MODES} value={glassMode} onChange={onMode} />
         </div>
       </Liquid>
     </section>

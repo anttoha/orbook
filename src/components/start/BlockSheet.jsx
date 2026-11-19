@@ -37,13 +37,13 @@ const BlockSheet = ({ block, onClose, onSize, onOpt, onRemove }) => {
           {(hasCount || hasMine) && (
             <ListCard>
               {hasCount && (
-                <SettingRow label="Einträge">
-                  <Segmented label="Einträge" size="form" className="w-fit" options={COUNT_OPTIONS} value={block.opts.count} onChange={(n) => onOpt("count", n)} />
+                <SettingRow label={t("Einträge")}>
+                  <Segmented label={t("Einträge")} size="form" className="w-fit" options={COUNT_OPTIONS} value={block.opts.count} onChange={(n) => onOpt("count", n)} />
                 </SettingRow>
               )}
               {hasMine && (
-                <SettingRow label="Nur meine Kurse">
-                  <Switch label="Nur meine Kurse" checked={block.opts.mine} onChange={(on) => onOpt("mine", on)} />
+                <SettingRow label={t("Nur meine Kurse")}>
+                  <Switch label={t("Nur meine Kurse")} checked={block.opts.mine} onChange={(on) => onOpt("mine", on)} />
                 </SettingRow>
               )}
             </ListCard>

@@ -3,6 +3,7 @@ import { EMPTY_FILTER } from "../../shared/utils/exams";
 import ExamFilterFields from "../exams/ExamFilterFields";
 import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Вікно фільтра. Адреса: ?sheet=klausurfilter.
@@ -11,6 +12,7 @@ import Sheet from "../ui/Sheet";
 // На ПК сторінка Klausuren відкриває замість нього випадне вікно (ExamFilterPopover).
 // ─────────────────────────────────────────────────────────────
 const ExamFilterSheet = ({ open, onClose }) => {
+  const t = useT();
   const { draft, change, setDraft, apply, count, pastLoading } = useExamFilterDraft(open);
 
   return (
@@ -18,10 +20,10 @@ const ExamFilterSheet = ({ open, onClose }) => {
       open={open}
       onClose={onClose}
       desktop="dialog"
-      title="Filter"
+      title={t("Filter")}
       footer={
         <>
-          <Button onClick={() => setDraft(EMPTY_FILTER)}>Zurücksetzen</Button>
+          <Button onClick={() => setDraft(EMPTY_FILTER)}>{t("Zurücksetzen")}</Button>
           <Button
             variant="primary"
             onClick={() => {
@@ -29,7 +31,7 @@ const ExamFilterSheet = ({ open, onClose }) => {
               onClose();
             }}
           >
-            {pastLoading ? "Anzeigen" : `${count} anzeigen`}
+            {pastLoading ? t("Anzeigen") : `${count} anzeigen`}
           </Button>
         </>
       }

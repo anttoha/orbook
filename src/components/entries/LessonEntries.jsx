@@ -3,6 +3,7 @@ import { useSheet } from "../../shared/hooks/useSheet";
 import { homeworkWhen, isMajorType } from "../../shared/utils/entries";
 import Badge from "../ui/Badge";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Серая строка рядом с бейджем Test: «Lernen: S. 40–58 · 2 Materialien»
 const examNote = (exam) => {
@@ -32,6 +33,7 @@ const Row = ({ badge, note, title, onClick }) => (
 // Записей нет — блока нет. Нажатие — окно записи вместо окна урока (replace: «Назад» не вернёт сюда)
 // ─────────────────────────────────────────────────────────────
 const LessonEntries = ({ exams, homework, lesson }) => {
+  const t = useT();
   const { openSheet } = useSheet();
   const count = exams.length + homework.length;
   if (count === 0) return null;
@@ -39,14 +41,14 @@ const LessonEntries = ({ exams, homework, lesson }) => {
   return (
     <section className="flex flex-col gap-2.5">
       <h3 className="flex items-baseline justify-between text-hint font-extrabold text-faint">
-        Für diese Stunde <span>{count === 1 ? "1 Eintrag" : `${count} Einträge`}</span>
+        {t("Für diese Stunde")} <span>{count === 1 ? "1 Eintrag" : t("{count} Einträge", { count })}</span>
       </h3>
       <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
         {exams.map((exam) => (
           <Row key={`e${exam.id}`} badge={<Badge variant={isMajorType(exam.type) ? "exam" : "soft"}>{exam.type}</Badge>} note={examNote(exam)} title={exam.topic || exam.type} onClick={() => openSheet("klausur", { id: exam.id }, { replace: true })} />
         ))}
         {homework.map((item) => (
-          <Row key={`h${item.id}`} badge={<Badge variant="soft">Hausaufgabe</Badge>} note={homeworkWhen(item, lesson)} title={item.text?.split("\n")[0]} onClick={() => openSheet("hausaufgabe", { id: item.id }, { replace: true })} />
+          <Row key={`h${item.id}`} badge={<Badge variant="soft">{t("Hausaufgabe")}</Badge>} note={homeworkWhen(item, lesson)} title={item.text?.split("\n")[0]} onClick={() => openSheet("hausaufgabe", { id: item.id }, { replace: true })} />
         ))}
       </Liquid>
     </section>

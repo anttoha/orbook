@@ -8,11 +8,13 @@ import StepBar from "../components/courses/StepBar";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { startChoice, withNumbers } from "../shared/utils/courses";
+import { useT } from "../shared/hooks/useT";
 
 // Екран першого запуску «Welche Kurse hast du?» (макет 03).
 // Вибір зберігається лише після «Weiter»: до цього він живе у стані екрана.
 // Первый вход: курсов много, «Weiter» далеко внизу — кнопка «вниз», пока до него не долистали
 const CourseStart = () => {
+  const t = useT();
   const status = usePlanStore((s) => s.coursesStatus);
   const logout = usePlanStore((s) => s.logout);
   const schoolClass = usePlanStore((s) => s.me?.className);
@@ -42,10 +44,10 @@ const CourseStart = () => {
         <main className="flex w-full flex-1 flex-col px-gutter pt-5.5 pb-7.5 lg:w-205 lg:flex-none lg:rounded-card lg:bg-card lg:px-9 lg:py-8 lg:shadow-sheet">
           <StepBar done={2} total={3} />
 
-          <p className="mt-5 text-hint font-extrabold text-faint">Schritt 2 von 3</p>
-          <h1 className="mt-1 text-title text-ink lg:text-welcome">Welche Kurse hast du?</h1>
+          <p className="mt-5 text-hint font-extrabold text-faint">{t("Schritt 2 von 3")}</p>
+          <h1 className="mt-1 text-title text-ink lg:text-welcome">{t("Welche Kurse hast du?")}</h1>
           <p className="mt-3 mb-6 text-body-sm leading-5.25 text-muted lg:text-row">
-            Nur deine Kurse erscheinen im Plan. Ändern kannst du das später unter Mehr → Meine Kurse.
+            {t("Nur deine Kurse erscheinen im Plan. Ändern kannst du das später unter Mehr → Meine Kurse.")}
           </p>
 
           <CourseLists isOn={isOn} onToggle={toggle} />
@@ -53,11 +55,11 @@ const CourseStart = () => {
           <div className="mt-auto flex gap-2.5 pt-6 lg:justify-end">
             {/* Попередній крок — вхід. Сесія вже є, тому повернутись туди можна лише вийшовши */}
             <Button onClick={logout} className="flex-none px-4.5">
-              Zurück
+              {t("Zurück")}
             </Button>
             {status === "ready" && (
               <Button variant="primary" onClick={() => finishCourseChoice(startChoice(picked), hiddenRequired)} className="gap-1.5 lg:flex-none lg:px-4.5">
-                <ChevronRight className="size-4" /> Weiter
+                <ChevronRight className="size-4" /> {t("Weiter")}
               </Button>
             )}
           </div>

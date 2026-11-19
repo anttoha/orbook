@@ -98,7 +98,7 @@ const JetztBlock = ({ editing }) => {
 
   // Сегодня уроков больше нет — первый урок следующего учебного дня (если неделя уже загружена)
   const first = nextDay?.status === "ok" ? mineOnly(filter(nextDay.lessons)).find((l) => l.status !== "cancelled") : null;
-  if (!first) return card({ title: t("Jetzt") }, <BlockEmpty text="Heute kein Unterricht" />);
+  if (!first) return card({ title: t("Jetzt") }, <BlockEmpty text={t("Heute kein Unterricht")} />);
   const when = nextDate === addDays(today, 1) ? t("Morgen") : weekdayLong(nextDate);
   return card(
     { title: `${when} · ${first.period}. ${t("Stunde")}`, aside: first.muster && <MusterBadge /> },

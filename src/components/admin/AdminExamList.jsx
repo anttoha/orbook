@@ -8,24 +8,29 @@ import ExamBadge from "../exams/ExamBadge";
 import ExamDateTile from "../exams/ExamDateTile";
 import { PencilIcon, TrashIcon } from "../ui/icons";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 const lessonText = (exam) => (exam.lesson ? `${exam.lesson}. Std` : "—");
 const iconButton = "grid size-9 shrink-0 place-items-center rounded-full text-ink hover:bg-sand";
 
 // Олівець і кошик у рядку
-const RowActions = ({ exam, onEdit, onDelete }) => (
+const RowActions = ({ exam, onEdit, onDelete }) => {
+  const t = useT();
+  return (
   <div className="flex shrink-0 items-center">
-    <button type="button" aria-label="Bearbeiten" className={iconButton} onClick={() => onEdit(exam)}>
+    <button type="button" aria-label={t("Bearbeiten")} className={iconButton} onClick={() => onEdit(exam)}>
       <PencilIcon className="size-4" />
     </button>
-    <button type="button" aria-label="Löschen" className={iconButton} onClick={() => onDelete(exam)}>
+    <button type="button" aria-label={t("Löschen")} className={iconButton} onClick={() => onDelete(exam)}>
       <TrashIcon className="size-4" />
     </button>
   </div>
 );
+};
 
 // Телефон (макет 44): плашка дати, тип і предмет, тема; під карткою — хто вніс і коли
 const ExamCards = ({ exams, now, onEdit, onDelete }) => {
+  const t = useT();
   const overrides = useUserStore((s) => s.colorOverrides);
   return (
     <ul className="flex flex-col gap-3">
@@ -43,7 +48,7 @@ const ExamCards = ({ exams, now, onEdit, onDelete }) => {
             <RowActions exam={exam} onEdit={onEdit} onDelete={onDelete} />
           </Liquid>
           <p className="mt-1.5 px-1 text-caption text-faint">
-            über {authorText(exam)} · {ago(exam.createdAt, now)}
+            {t("über")} {authorText(exam)} · {ago(exam.createdAt, now)}
           </p>
         </li>
       ))}
@@ -55,18 +60,19 @@ const th = "pb-3 text-left text-hint font-extrabold text-faint";
 
 // ПК (макет 46): таблиця
 const ExamTable = ({ exams, now, onEdit, onDelete }) => {
+  const t = useT();
   const overrides = useUserStore((s) => s.colorOverrides);
   return (
     <table className="w-full border-collapse">
       <thead className="border-b border-hair">
         <tr>
-          {["Datum", "Art", "Fach", "Thema", "Stunde", "Eingetragen von", "Seit"].map((title) => (
+          {[t("Datum"), t("Art"), t("Fach"), t("Thema"), t("Stunde"), t("Eingetragen von"), t("Seit")].map((title) => (
             <th key={title} className={th}>
               {title}
             </th>
           ))}
           <th className={th}>
-            <span className="sr-only">Aktionen</span>
+            <span className="sr-only">{t("Aktionen")}</span>
           </th>
         </tr>
       </thead>

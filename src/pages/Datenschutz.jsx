@@ -8,6 +8,7 @@ import { FACTS, SECTIONS, STAND } from "../shared/datenschutz";
 import { usePublicInfo } from "../shared/hooks/usePublicInfo";
 import { longDate } from "../shared/utils/format";
 import { responsibleText } from "../shared/utils/privacy";
+import { useT } from "../shared/hooks/useT";
 
 const ICONS = { konten: Users, server: Server, notizen: FileText, tracking: EyeOff };
 
@@ -25,6 +26,7 @@ const Fact = ({ Icon, title, text }) => (
 // Открывается и без входа: ссылка есть на экране «Zugang». Тексты — в shared/datenschutz.js.
 // Внизу «Meine Sync-Notizen löschen» — только после входа и когда на устройстве есть Sync-Code.
 const Datenschutz = () => {
+  const t = useT();
   const info = usePublicInfo();
   const { pathname } = useLocation();
   const [openId, setOpenId] = useState(null); // открыт один раздел за раз — страница не превращается в простыню
@@ -35,23 +37,23 @@ const Datenschutz = () => {
 
   return (
     <Wrapper className={inApp ? undefined : "mx-auto min-h-dvh w-full max-w-110 bg-paper px-gutter py-5"}>
-      <PageHeader backTo={inApp ? "/mehr" : "/"} eyebrow="Kurz und ehrlich" title="Datenschutz" />
+      <PageHeader backTo={inApp ? "/mehr" : "/"} eyebrow={t("Kurz und ehrlich")} title={t("Datenschutz")} />
 
       <ul className="mt-5 flex flex-col gap-5">
         {FACTS.map((fact) => (
           <Fact key={fact.id} Icon={ICONS[fact.id]} title={fact.title} text={fact.text} />
         ))}
-        <Fact Icon={Shield} title="Verantwortlich" text={responsibleText(info?.privacy)} />
+        <Fact Icon={Shield} title={t("Verantwortlich")} text={responsibleText(info?.privacy)} />
       </ul>
 
-      <h2 className="mt-7 text-hint font-extrabold text-faint">Genauer</h2>
+      <h2 className="mt-7 text-hint font-extrabold text-faint">{t("Genauer")}</h2>
       <ul className="mt-2.5 flex flex-col gap-2.5">
         {SECTIONS.map((section) => (
           <PrivacySection key={section.id} section={section} open={openId === section.id} onToggle={() => setOpenId(openId === section.id ? null : section.id)} />
         ))}
       </ul>
       <p className="mt-3 text-caption text-faint">
-        Stand: {longDate(STAND)} {STAND.slice(0, 4)}
+        {t("Stand:")} {longDate(STAND)} {STAND.slice(0, 4)}
       </p>
 
       <DeleteSyncNotes />

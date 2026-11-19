@@ -3,6 +3,7 @@ import { useLongPress } from "../../shared/hooks/useLongPress";
 import { materialMeta } from "../../shared/utils/materials";
 import Badge from "../ui/Badge";
 import MaterialTile from "./MaterialTile";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Рядок посилання (макет handy-01):
@@ -13,6 +14,7 @@ import MaterialTile from "./MaterialTile";
 // fresh — щойно збережене: мітка «Neu»
 // ─────────────────────────────────────────────────────────────
 const MaterialRow = ({ item, overrides, fresh, onActions, ref, ...menuProps }) => {
+  const t = useT();
   const press = useLongPress(() => onActions?.(item));
   return (
     <a
@@ -29,7 +31,7 @@ const MaterialRow = ({ item, overrides, fresh, onActions, ref, ...menuProps }) =
         <span className="block truncate text-row font-extrabold text-ink">{item.title}</span>
         <span className="mt-1 block truncate text-note text-faint">{materialMeta(item)}</span>
       </span>
-      {fresh && <Badge variant="changed">Neu</Badge>}
+      {fresh && <Badge variant="changed">{t("Neu")}</Badge>}
       <ExternalLink className="size-4.5 shrink-0 text-faint" aria-hidden="true" />
     </a>
   );

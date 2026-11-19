@@ -3,9 +3,11 @@ import { cn } from "../../shared/utils/cn";
 import { versionLabel } from "../../shared/utils/dayHistory";
 import Badge from "../ui/Badge";
 import ChangeLine from "./ChangeLine";
+import { useT } from "../../shared/hooks/useT";
 
 // Что показать под временем Fassung
 const Changes = ({ entry }) => {
+  const t = useT();
   if (entry.first) return <p className="text-label text-muted">{entry.summary}</p>;
   const { items, hidden, infoChanged } = entry.changes;
   const lines = [...items];
@@ -21,11 +23,11 @@ const Changes = ({ entry }) => {
       )}
       {hidden > 0 && (
         <p className="text-caption text-faint">
-          {lines.length ? "Dazu " : ""}
-          {hidden} {hidden === 1 ? "Änderung" : "Änderungen"} in anderen Kursen
+          {lines.length ? t("Dazu ") : ""}
+          {hidden} {hidden === 1 ? t("Änderung") : t("Änderungen")} {t("in anderen Kursen")}
         </p>
       )}
-      {!lines.length && !hidden && <p className="text-caption text-faint">Nur Kleinigkeiten geändert</p>}
+      {!lines.length && !hidden && <p className="text-caption text-faint">{t("Nur Kleinigkeiten geändert")}</p>}
     </>
   );
 };
@@ -35,7 +37,9 @@ const Changes = ({ entry }) => {
 // entries — dayHistory(); today — для «Heute 07:12»; onOpen(id) — «Ansehen» у старой Fassung.
 // Строки появляются по очереди сверху вниз.
 // ─────────────────────────────────────────────────────────────
-const VersionTimeline = ({ entries, today, onOpen }) => (
+const VersionTimeline = ({ entries, today, onOpen }) => {
+  const t = useT();
+  return (
   <ol className="relative rounded-card bg-card px-3.5 py-1">
     {/* линия за точками: от первой точки до последней */}
     {entries.length > 1 && <span aria-hidden="true" className="absolute top-6 bottom-8 left-5.75 w-0.5 rounded-full bg-rule" />}
@@ -53,11 +57,11 @@ const VersionTimeline = ({ entries, today, onOpen }) => (
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <div className="flex items-center gap-2">
             <p className="text-row font-extrabold text-ink">{versionLabel(entry.fetchedAt, today)}</p>
-            {entry.current && <Badge variant="changed">Aktuell</Badge>}
-            {!entry.current && entry.first && <Badge variant="soft">Erste Fassung</Badge>}
+            {entry.current && <Badge variant="changed">{t("Aktuell")}</Badge>}
+            {!entry.current && entry.first && <Badge variant="soft">{t("Erste Fassung")}</Badge>}
             {!entry.current && (
               <button type="button" onClick={() => onOpen(entry.id)} className="-my-1 ml-auto flex items-center gap-0.5 rounded-full py-1 pr-0.5 pl-2 text-label font-bold text-accent-ink hover:bg-tint">
-                Ansehen <ChevronRight className="size-3.5" />
+                {t("Ansehen")} <ChevronRight className="size-3.5" />
               </button>
             )}
           </div>
@@ -67,5 +71,6 @@ const VersionTimeline = ({ entries, today, onOpen }) => (
     ))}
   </ol>
 );
+};
 
 export default VersionTimeline;

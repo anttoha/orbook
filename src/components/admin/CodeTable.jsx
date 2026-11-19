@@ -4,25 +4,28 @@ import Switch from "../ui/Switch";
 import CodeChip from "./CodeChip";
 import ClassTag from "./schools/ClassTag";
 import CodeMenu from "./CodeMenu";
+import { useT } from "../../shared/hooks/useT";
 
 const th = "pb-3 text-left text-hint font-extrabold text-faint";
 
 // Таблиця кодів на ПК (макети 43 і 42). compact — на Übersicht: без «Gültig bis».
 // subjectsOf(code) — Lehrer-Codes (pc-04): колонки «Lehrkraft · Fächer · … · Darf»
-const CodeTable = ({ codes, today, compact = false, onToggle, onAction, subjectsOf = null }) => (
+const CodeTable = ({ codes, today, compact = false, onToggle, onAction, subjectsOf = null }) => {
+  const t = useT();
+  return (
   <table className="w-full border-collapse">
     <thead className="border-b border-hair">
       <tr>
-        <th className={th}>{subjectsOf ? "Lehrkraft" : "Name"}</th>
-        {subjectsOf && <th className={th}>Fächer</th>}
-        <th className={th}>Code</th>
-        <th className={th}>{subjectsOf ? "Darf" : "Rechte"}</th>
-        {!compact && <th className={th}>Gültig bis</th>}
-        <th className={th}>Zuletzt</th>
-        <th className={th}>Einträge</th>
-        <th className={th}>Status</th>
+        <th className={th}>{subjectsOf ? t("Lehrkraft") : t("Name")}</th>
+        {subjectsOf && <th className={th}>{t("Fächer")}</th>}
+        <th className={th}>{t("Code")}</th>
+        <th className={th}>{subjectsOf ? t("Darf") : t("Rechte")}</th>
+        {!compact && <th className={th}>{t("Gültig bis")}</th>}
+        <th className={th}>{t("Zuletzt")}</th>
+        <th className={th}>{t("Einträge")}</th>
+        <th className={th}>{t("Status")}</th>
         <th className={th}>
-          <span className="sr-only">Aktionen</span>
+          <span className="sr-only">{t("Aktionen")}</span>
         </th>
       </tr>
     </thead>
@@ -54,5 +57,6 @@ const CodeTable = ({ codes, today, compact = false, onToggle, onAction, subjects
     </tbody>
   </table>
 );
+};
 
 export default CodeTable;

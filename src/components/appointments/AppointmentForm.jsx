@@ -16,6 +16,7 @@ import { CheckIcon, TrashIcon } from "../ui/icons";
 import PageHeader from "../ui/PageHeader";
 import TextField from "../ui/TextField";
 import ChipButton from "../ui/ChipButton";
+import { useT } from "../../shared/hooks/useT";
 
 // Як зберігати — для спільного useExamSave (If-Match, 409, «Rückgängig»). admin — шлях адмінки
 const opsFor = (admin) => ({
@@ -47,6 +48,7 @@ const Choice = ({ selected, onClick, children }) => (
 // subjects — предмети для «Für» (учитель — лише свої); eyebrow — хто записує; admin — запис від школи.
 // ─────────────────────────────────────────────────────────────
 const AppointmentForm = ({ item, subjects, eyebrow, admin = false }) => {
+  const t = useT();
   const { today } = useNow();
   const [fields, setFields] = useState(() => appointmentToForm(item));
   const [localErrors, setLocalErrors] = useState({});
@@ -79,10 +81,10 @@ const AppointmentForm = ({ item, subjects, eyebrow, admin = false }) => {
       noValidate
       className="flex flex-1 flex-col lg:max-w-186"
     >
-      <PageHeader backTo={backTo} eyebrow={eyebrow} eyebrowClassName="text-accent-ink" title={item ? "Termin ändern" : "Neuer Termin"} />
+      <PageHeader backTo={backTo} eyebrow={eyebrow} eyebrowClassName="text-accent-ink" title={item ? t("Termin ändern") : t("Neuer Termin")} />
 
       <div className="mt-5 flex flex-col gap-5">
-        <Field label="Art" error={errors.kind}>
+        <Field label={t("Art")} error={errors.kind}>
           <div className="flex flex-wrap gap-2">
             {KINDS.map((kind) => (
               <Choice key={kind.value} selected={fields.kind === kind.value} onClick={() => change({ kind: kind.value })}>
@@ -92,48 +94,48 @@ const AppointmentForm = ({ item, subjects, eyebrow, admin = false }) => {
           </div>
         </Field>
 
-        <Field label="Für" error={errors.subject}>
+        <Field label={t("Für")} error={errors.subject}>
           <div className="flex flex-wrap gap-2">
             <Choice selected={!fields.subject} onClick={() => change({ subject: null })}>
-              Ganze Klasse
+              {t("Ganze Klasse")}
             </Choice>
           </div>
           {/* або один курс: поле зі списком і пошуком (design/neu/19c) */}
-          <ListPicker id="appointment-subject" label="Nur für ein Fach" placeholder="Nur für ein Fach …" className="mt-2" items={subjectItems(subjects)} value={fields.subject} clearable clearLabel="Ganze Klasse" onChange={(subject) => change({ subject })} />
-          {fields.subject && <p className="mt-2 text-caption text-faint">{subjectName(subjects.find((s) => s.code === fields.subject) ?? { code: fields.subject })}: sehen nur Schüler mit diesem Kurs.</p>}
+          <ListPicker id="appointment-subject" label={t("Nur für ein Fach")} placeholder={t("Nur für ein Fach …")} className="mt-2" items={subjectItems(subjects)} value={fields.subject} clearable clearLabel={t("Ganze Klasse")} onChange={(subject) => change({ subject })} />
+          {fields.subject && <p className="mt-2 text-caption text-faint">{subjectName(subjects.find((s) => s.code === fields.subject) ?? { code: fields.subject })}{t(": sehen nur Schüler mit diesem Kurs.")}</p>}
         </Field>
 
         <TextField
           id="termin-title"
-          label="Titel"
-          placeholder="z. B. Exkursion Phänomenta"
+          label={t("Titel")}
+          placeholder={t("z. B. Exkursion Phänomenta")}
           value={fields.title}
           error={errors.title}
-          hint={fields.title ? `${fields.title.length} von ${TITLE_MAX} Zeichen` : undefined}
+          hint={fields.title ? t("{length} von {TITLE_MAX} Zeichen", { length: fields.title.length, TITLE_MAX }) : undefined}
           maxLength={TITLE_MAX}
           onChange={(event) => change({ title: event.target.value })}
         />
 
         <div className="grid grid-cols-2 gap-2.5 lg:gap-5">
-          <TextField id="termin-from" label="Von" type="date" value={fields.dateFrom} error={errors.dateFrom} hint={dateHint(fields.dateFrom, today)} onChange={(event) => change({ dateFrom: event.target.value })} />
-          <TextField id="termin-to" label="Bis · optional" type="date" min={fields.dateFrom || undefined} value={fields.dateTo} error={errors.dateTo} hint={fields.dateTo ? null : "Für mehrere Tage"} onChange={(event) => change({ dateTo: event.target.value })} />
+          <TextField id="termin-from" label={t("Von")} type="date" value={fields.dateFrom} error={errors.dateFrom} hint={dateHint(fields.dateFrom, today)} onChange={(event) => change({ dateFrom: event.target.value })} />
+          <TextField id="termin-to" label={t("Bis · optional")} type="date" min={fields.dateFrom || undefined} value={fields.dateTo} error={errors.dateTo} hint={fields.dateTo ? null : t("Für mehrere Tage")} onChange={(event) => change({ dateTo: event.target.value })} />
         </div>
 
         <div className="grid grid-cols-2 gap-2.5 lg:gap-5">
-          <TextField id="termin-time-from" label="Uhrzeit · optional" type="time" value={fields.timeFrom} error={errors.timeFrom} hint={errors.timeFrom ? null : "Leer = ganzer Tag."} onChange={(event) => change({ timeFrom: event.target.value })} />
-          <TextField id="termin-time-to" label="Bis · optional" type="time" value={fields.timeTo} error={errors.timeTo} onChange={(event) => change({ timeTo: event.target.value })} />
+          <TextField id="termin-time-from" label={t("Uhrzeit · optional")} type="time" value={fields.timeFrom} error={errors.timeFrom} hint={errors.timeFrom ? null : t("Leer = ganzer Tag.")} onChange={(event) => change({ timeFrom: event.target.value })} />
+          <TextField id="termin-time-to" label={t("Bis · optional")} type="time" value={fields.timeTo} error={errors.timeTo} onChange={(event) => change({ timeTo: event.target.value })} />
         </div>
 
-        <TextField id="termin-place" label="Ort · optional" placeholder="z. B. Aula" value={fields.place} error={errors.place} maxLength={80} trailing={<MapPin className="size-4.5" />} onChange={(event) => change({ place: event.target.value })} />
+        <TextField id="termin-place" label={t("Ort · optional")} placeholder={t("z. B. Aula")} value={fields.place} error={errors.place} maxLength={80} trailing={<MapPin className="size-4.5" />} onChange={(event) => change({ place: event.target.value })} />
 
         <TextField
           id="termin-note"
-          label="Hinweis · optional"
+          label={t("Hinweis · optional")}
           multiline
-          placeholder="z. B. Treffpunkt 07:30 am Bahnhof"
+          placeholder={t("z. B. Treffpunkt 07:30 am Bahnhof")}
           value={fields.note}
           error={errors.note}
-          hint={fields.note ? `${fields.note.length} von ${NOTE_MAX} Zeichen` : null}
+          hint={fields.note ? t("{length} von {NOTE_MAX} Zeichen", { length: fields.note.length, NOTE_MAX }) : null}
           maxLength={NOTE_MAX}
           onChange={(event) => change({ note: event.target.value })}
         />
@@ -142,11 +144,11 @@ const AppointmentForm = ({ item, subjects, eyebrow, admin = false }) => {
 
       <div className="mt-auto flex flex-col gap-2.5 pt-6">
         <Button variant="primary" type="submit" disabled={flow.busy} className="flex-none">
-          <CheckIcon className="size-4" /> Speichern
+          <CheckIcon className="size-4" /> {t("Speichern")}
         </Button>
         {item?.canDelete && (
           <Button variant="danger" disabled={flow.busy} className="flex-none" onClick={() => flow.setDialog({ kind: "delete" })}>
-            <TrashIcon className="size-4" /> Löschen
+            <TrashIcon className="size-4" /> {t("Löschen")}
           </Button>
         )}
       </div>
@@ -154,25 +156,25 @@ const AppointmentForm = ({ item, subjects, eyebrow, admin = false }) => {
       <ConfirmDialog
         open={flow.dialog?.kind === "delete"}
         onClose={() => flow.setDialog(null)}
-        title="Termin löschen?"
-        text={item ? `„${item.title}“ verschwindet für die ganze Klasse – auch aus Woche und Tag.` : ""}
+        title={t("Termin löschen?")}
+        text={item ? t("„{title}“ verschwindet für die ganze Klasse – auch aus Woche und Tag.", { title: item.title }) : ""}
         icon={
           <span className="grid size-11 place-items-center rounded-full bg-danger-tint">
             <TrashIcon className="size-5.5 text-danger" />
           </span>
         }
       >
-        <Button onClick={() => flow.setDialog(null)}>Abbrechen</Button>
+        <Button onClick={() => flow.setDialog(null)}>{t("Abbrechen")}</Button>
         <Button variant="danger" disabled={flow.busy} onClick={flow.remove}>
-          <TrashIcon className="size-4" /> Löschen
+          <TrashIcon className="size-4" /> {t("Löschen")}
         </Button>
       </ConfirmDialog>
-      <ConfirmDialog open={flow.dialog?.kind === "conflict"} onClose={() => flow.setDialog(null)} title="Der Termin wurde inzwischen geändert." text={flow.dialog?.exam ? `Jetzt: »${flow.dialog.exam.title}«` : ""}>
+      <ConfirmDialog open={flow.dialog?.kind === "conflict"} onClose={() => flow.setDialog(null)} title={t("Der Termin wurde inzwischen geändert.")} text={flow.dialog?.exam ? t("Jetzt: »{title}«", { title: flow.dialog.exam.title }) : ""}>
         <Button variant="primary" className="flex-none basis-full" onClick={() => submit(true)}>
-          Meine Änderung trotzdem speichern
+          {t("Meine Änderung trotzdem speichern")}
         </Button>
         <Button className="flex-none basis-full" onClick={flow.discard}>
-          Verwerfen
+          {t("Verwerfen")}
         </Button>
       </ConfirmDialog>
     </form>

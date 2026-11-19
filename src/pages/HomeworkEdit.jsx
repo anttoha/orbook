@@ -6,20 +6,25 @@ import PageHeader from "../components/ui/PageHeader";
 import { useHomeworkItem } from "../shared/hooks/useHomework";
 import { usePlanStore } from "../shared/store/planStore";
 import { addHomeworkTarget, canCreateHomework, examPreset } from "../shared/utils/examRules";
+import { useT } from "../shared/hooks/useT";
 
-const Placeholder = ({ text }) => (
+const Placeholder = ({ text }) => {
+  const t = useT();
+  return (
   <section className="flex flex-col gap-5 lg:max-w-186">
-    <PageHeader backTo="/testen?liste=hausaufgaben" eyebrow="Hausaufgaben" title="Hausaufgabe ändern" />
+    <PageHeader backTo="/testen?liste=hausaufgaben" eyebrow={t("Hausaufgaben")} title={t("Hausaufgabe ändern")} />
     {text ? <p className="text-body-sm text-muted">{text}</p> : <Skeleton className="h-40 rounded-card" />}
   </section>
 );
+};
 
 // Правка: /testen/hausaufgaben/4/bearbeiten
 const EditExisting = ({ id }) => {
+  const t = useT();
   const { item, status, error } = useHomeworkItem(id);
   if (status === "loading") return <Placeholder />;
-  if (!item) return <Placeholder text={status === "missing" ? "Diese Hausaufgabe gibt es nicht (mehr)." : error?.message} />;
-  if (!item.canEdit) return <Placeholder text="Diese Hausaufgabe kannst du nicht ändern." />;
+  if (!item) return <Placeholder text={status === "missing" ? t("Diese Hausaufgabe gibt es nicht (mehr).") : error?.message} />;
+  if (!item.canEdit) return <Placeholder text={t("Diese Hausaufgabe kannst du nicht ändern.")} />;
   return <HomeworkForm key={item.id} item={item} />;
 };
 

@@ -13,6 +13,7 @@ import { FlagIcon, LockIcon } from "../ui/icons";
 import { cn } from "../../shared/utils/cn";
 import Kbd from "../ui/Kbd";
 import { menuContentClass, menuIconClass, menuItemClass, menuSeparatorClass } from "../ui/menuStyles";
+import { useT } from "../../shared/hooks/useT";
 
 // Підказка клавіші праворуч у пункті меню (тільки на ПК, на телефоні схована)
 const Shortcut = ({ children }) => <Kbd className="ml-auto hidden lg:inline-grid">{children}</Kbd>;
@@ -27,6 +28,7 @@ const Shortcut = ({ children }) => <Kbd className="ml-auto hidden lg:inline-grid
 // lesson — урок із сервера; date — "2026-10-07"
 // ─────────────────────────────────────────────────────────────
 const LessonContextMenu = ({ lesson, date, children }) => {
+  const t = useT();
   const { openSheet } = useSheet(); // відкрити шторку
   const courses = usePlanStore((s) => s.courses); // курси класу
   const picked = useUserStore((s) => s.picked); // вибрані курси
@@ -97,24 +99,24 @@ const LessonContextMenu = ({ lesson, date, children }) => {
       <ContextMenu.Portal>
         <ContextMenu.Content className={menuContentClass} onKeyDown={handleKeyDown}>
           <ContextMenu.Item className={menuItemClass} onSelect={openDetails}>
-            <Info className={menuIconClass} /> Details <Shortcut>↵</Shortcut>
+            <Info className={menuIconClass} /> {t("Details")} <Shortcut>↵</Shortcut>
           </ContextMenu.Item>
           <ContextMenu.Item className={menuItemClass} onSelect={openNote}>
-            <FileText className={menuIconClass} /> Notiz zur Stunde <Shortcut>N</Shortcut>
+            <FileText className={menuIconClass} /> {t("Notiz zur Stunde")} <Shortcut>N</Shortcut>
           </ContextMenu.Item>
           {giveHomework && (
             <ContextMenu.Item className={cn(menuItemClass, "text-accent-ink")} onSelect={giveHomework}>
-              <BookOpen className={cn(menuIconClass, "text-accent-ink")} /> Hausaufgabe geben {canCreateHomework(me) ? <Shortcut>H</Shortcut> : <LockIcon className="ml-auto size-4 text-faint" />}
+              <BookOpen className={cn(menuIconClass, "text-accent-ink")} /> {t("Hausaufgabe geben")} {canCreateHomework(me) ? <Shortcut>H</Shortcut> : <LockIcon className="ml-auto size-4 text-faint" />}
             </ContextMenu.Item>
           )}
           {addExam && (
             <ContextMenu.Item className={cn(menuItemClass, "text-accent-ink")} onSelect={addExam}>
-              <FlagIcon className={cn(menuIconClass, "text-accent-ink")} /> Test eintragen {canCreateExam(me) ? <Shortcut>T</Shortcut> : <LockIcon className="ml-auto size-4 text-faint" />}
+              <FlagIcon className={cn(menuIconClass, "text-accent-ink")} /> {t("Test eintragen")} {canCreateExam(me) ? <Shortcut>T</Shortcut> : <LockIcon className="ml-auto size-4 text-faint" />}
             </ContextMenu.Item>
           )}
           {shareEnabled && (
             <ContextMenu.Item className={menuItemClass} onSelect={share}>
-              <Share className={menuIconClass} /> Teilen <Shortcut>S</Shortcut>
+              <Share className={menuIconClass} /> {t("Teilen")} <Shortcut>S</Shortcut>
             </ContextMenu.Item>
           )}
 
@@ -123,12 +125,12 @@ const LessonContextMenu = ({ lesson, date, children }) => {
           {/* у уроку без предмета (subject: null) немає кольору, який можна змінити */}
           {lesson.subject && (
             <ContextMenu.Item className={menuItemClass} onSelect={() => openSheet("farbe", { fach: lesson.subject.code })}>
-              <Palette className={menuIconClass} /> Fachfarbe ändern
+              <Palette className={menuIconClass} /> {t("Fachfarbe ändern")}
             </ContextMenu.Item>
           )}
           {canHide && (
             <ContextMenu.Item className={menuItemClass} onSelect={handleHide}>
-              <EyeOff className={menuIconClass} /> Kurs ausblenden
+              <EyeOff className={menuIconClass} /> {t("Kurs ausblenden")}
             </ContextMenu.Item>
           )}
         </ContextMenu.Content>

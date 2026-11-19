@@ -3,6 +3,7 @@ import { metaText, whenText } from "../../shared/utils/appointments";
 import Badge from "../ui/Badge";
 import AppointmentBadge from "./AppointmentBadge";
 import AppointmentDateTile from "./AppointmentDateTile";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Рядок терміну (макет 18 handy-01):
@@ -11,6 +12,7 @@ import AppointmentDateTile from "./AppointmentDateTile";
 // highlight — найближчий (рамка), fresh — щойно збережений (мітка «Neu» замість «коли»)
 // ─────────────────────────────────────────────────────────────
 const AppointmentRow = ({ item, today, highlight, fresh, onClick }) => {
+  const t = useT();
   const meta = metaText(item);
   return (
     <button
@@ -26,7 +28,7 @@ const AppointmentRow = ({ item, today, highlight, fresh, onClick }) => {
         </span>
         <span className="mt-1 block truncate text-row font-extrabold text-ink">{item.title}</span>
       </span>
-      {fresh ? <Badge variant="changed">Neu</Badge> : <span className={cn("shrink-0 text-caption font-bold", highlight ? "text-accent-ink" : "text-faint")}>{whenText(item, today)}</span>}
+      {fresh ? <Badge variant="changed">{t("Neu")}</Badge> : <span className={cn("shrink-0 text-caption font-bold", highlight ? "text-accent-ink" : "text-faint")}>{whenText(item, today)}</span>}
     </button>
   );
 };

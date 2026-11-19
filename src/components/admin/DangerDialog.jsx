@@ -5,6 +5,7 @@ import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import { TrashIcon, WarningIcon } from "../ui/icons";
 import TextField from "../ui/TextField";
+import { useT } from "../../shared/hooks/useT";
 
 // Текст після невдалої спроби
 function failText(result) {
@@ -21,6 +22,7 @@ function failText(result) {
 //   onDone(result) — після успіху (оновити лічильники)
 // ─────────────────────────────────────────────────────────────
 const DangerForm = ({ action, title, text, confirmLabel, withDate, today, onClose, onDone }) => {
+  const t = useT();
   const [word, setWord] = useState("");
   const [password, setPassword] = useState("");
   const [before, setBefore] = useState(today);
@@ -57,18 +59,18 @@ const DangerForm = ({ action, title, text, confirmLabel, withDate, today, onClos
   const ready = word === "LÖSCHEN" && password && (!withDate || before) && !busy && !locked;
   const body = (
     <>
-      {withDate && <TextField id="danger-before" label="Tests vor dem" type="date" max={today} value={before} onChange={(event) => setBefore(event.target.value)} />}
-      <TextField id="danger-word" label="Zum Bestätigen LÖSCHEN eintippen" value={word} autoComplete="off" autoCapitalize="characters" spellCheck={false} onChange={(event) => setWord(event.target.value)} />
-      <TextField id="danger-password" label="Admin-Passwort" type="password" autoComplete="current-password" value={password} error={error} onChange={(event) => setPassword(event.target.value)} />
-      <p className="text-label text-faint">Vorher wird automatisch ein Backup angelegt.</p>
+      {withDate && <TextField id="danger-before" label={t("Tests vor dem")} type="date" max={today} value={before} onChange={(event) => setBefore(event.target.value)} />}
+      <TextField id="danger-word" label={t("Zum Bestätigen LÖSCHEN eintippen")} value={word} autoComplete="off" autoCapitalize="characters" spellCheck={false} onChange={(event) => setWord(event.target.value)} />
+      <TextField id="danger-password" label={t("Admin-Passwort")} type="password" autoComplete="current-password" value={password} error={error} onChange={(event) => setPassword(event.target.value)} />
+      <p className="text-label text-faint">{t("Vorher wird automatisch ein Backup angelegt.")}</p>
     </>
   );
 
   return (
     <ConfirmDialog open onClose={onClose} icon={<WarningIcon className="size-6.5 text-danger" />} title={title} text={text} body={body}>
-      <Button onClick={onClose}>Abbrechen</Button>
+      <Button onClick={onClose}>{t("Abbrechen")}</Button>
       <Button variant="danger" disabled={!ready} onClick={run}>
-        <TrashIcon className="size-4" /> {confirmLabel ?? "Endgültig löschen"}
+        <TrashIcon className="size-4" /> {confirmLabel ?? t("Endgültig löschen")}
       </Button>
     </ConfirmDialog>
   );

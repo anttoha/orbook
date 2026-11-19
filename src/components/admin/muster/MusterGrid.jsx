@@ -1,6 +1,7 @@
 import { cn } from "../../../shared/utils/cn";
 import { gridPeriods, isOwnChange, slotLessons, WEEKDAYS, WEEKDAYS_LONG } from "../../../shared/utils/musterEditor";
 import MusterCell from "./MusterCell";
+import { useT } from "../../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Сітка Mo–Fr × уроки, як «Woche» (Soft 04), але без дат: Muster однаковий для кожного тижня A (чи B).
@@ -9,6 +10,7 @@ import MusterCell from "./MusterCell";
 //   selected    — відкрита клітинка; lessonTimes — час уроків зліва
 // ─────────────────────────────────────────────────────────────
 const MusterGrid = ({ lessons, auto, mode, lessonTimes, names, selected, onPick, desktop = false }) => {
+  const t = useT();
   const rows = gridPeriods(lessonTimes, lessons, auto);
 
   return (
@@ -37,7 +39,7 @@ const MusterGrid = ({ lessons, auto, mode, lessonTimes, names, selected, onPick,
                 desktop={desktop}
                 changed={mode === "admin" && isOwnChange(lessons, auto, weekday, period)}
                 selected={selected?.weekday === weekday && selected?.period === period}
-                label={`${WEEKDAYS_LONG[weekday]}, ${period}. Stunde`}
+                label={t("{1}, {period}. Stunde", { "1": WEEKDAYS_LONG[weekday], period })}
                 onClick={() => onPick?.({ weekday, period })}
               />
             </div>

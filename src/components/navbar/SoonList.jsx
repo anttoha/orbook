@@ -4,12 +4,14 @@ import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
 import { dayNumber, examWhen, subjectName, weekdayShort } from "../../shared/utils/format";
 import { fachClasses } from "../../shared/utils/lessons";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // «Bald» у сайдбарі: 3 найближчі Klausuren (GET /api/exams).
 // Квадрат зліва — дата в кольорі предмета, праворуч — «Klausur · Mathe / in 2 Tagen».
 // ─────────────────────────────────────────────────────────────
 const SoonList = () => {
+  const t = useT();
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
   const exams = usePlanStore((s) => s.exams).slice(0, 3); // три найближчі
 
@@ -17,7 +19,7 @@ const SoonList = () => {
 
   return (
     <section className="mt-7">
-      <h3 className="px-3 text-label font-extrabold text-faint">Bald</h3>
+      <h3 className="px-3 text-label font-extrabold text-faint">{t("Bald")}</h3>
       <ul className="mt-2.5 flex flex-col gap-1">
         {exams.map((exam, i) => (
           <li key={exam.id}>

@@ -2,6 +2,7 @@ import { audienceChip, hasLink, isFull } from "../../../shared/utils/accessCodes
 import { codeChip } from "../../../shared/utils/admin";
 import Badge from "../../ui/Badge";
 import ClassTag from "../schools/ClassTag";
+import { useT } from "../../../shared/hooks/useT";
 
 // Чипи коду: GRUPPE (фіолетовий) або PERSÖNLICH (пісочний); ще GESPERRT/ABGELAUFEN, якщо не діє.
 // withStatus — телефон (на ПК статус окремою колонкою)
@@ -12,10 +13,16 @@ const STATUS = { locked: "off", expired: "danger" };
 export const StatusChip = ({ code }) => <Badge variant={STATUS[code.status] ?? "ok"}>{codeChip(code)}</Badge>;
 
 // VOLL — ліміт пристроїв вичерпано: нові пристрої не увійдуть
-export const FullChip = ({ code }) => (isFull(code) ? <Badge variant="changed">Voll</Badge> : null);
+export const FullChip = ({ code }) => {
+  const t = useT();
+  return (isFull(code) ? <Badge variant="changed">{t("Voll")}</Badge> : null);
+};
 
 // LINK — у коду працює посилання-запрошення (частина 16)
-export const LinkChip = ({ code }) => (hasLink(code) ? <Badge variant="ok">Link</Badge> : null);
+export const LinkChip = ({ code }) => {
+  const t = useT();
+  return (hasLink(code) ? <Badge variant="ok">{t("Link")}</Badge> : null);
+};
 
 export const CodeChips = ({ code }) => (
   <>

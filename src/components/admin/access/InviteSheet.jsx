@@ -13,6 +13,7 @@ import InviteCard, { InviteCardSkeleton } from "../../invite/InviteCard";
 import QrFullscreen from "../../invite/QrFullscreen";
 import PrintChooser, { PrintRow } from "../../print/PrintChooser";
 import Liquid from "../../ui/Liquid";
+import { useT } from "../../../shared/hooks/useT";
 
 // Рядок картки: значок, підпис, праворуч перемикач або «›»
 const Row = ({ icon: Icon, label, hint, checked, onToggle, onClick }) => {
@@ -35,6 +36,7 @@ const Row = ({ icon: Icon, label, hint, checked, onToggle, onClick }) => {
 //   onRenew — питання «Neuen Link erzeugen?» (вікно відкриває AccessDialogs)
 // ─────────────────────────────────────────────────────────────
 const InviteSheet = ({ code: start, onClose, onRenew }) => {
+  const t = useT();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const actions = useAccessActions();
   const { access, className } = useAccessScope();
@@ -62,9 +64,9 @@ const InviteSheet = ({ code: start, onClose, onRenew }) => {
       // ключ сервера змінили — старе посилання не прочитати, потрібне нове
       return (
         <Liquid as="div" refract press={false} className="flex flex-col gap-3 rounded-card bg-card p-4 text-body-sm text-muted">
-          Dieser Link kann nicht mehr angezeigt werden. Erzeuge einen neuen.
+          {t("Dieser Link kann nicht mehr angezeigt werden. Erzeuge einen neuen.")}
           <Button variant="primary" className="flex-none" onClick={onRenew}>
-            <RenewIcon className="size-4" /> Neuen Link erzeugen
+            <RenewIcon className="size-4" /> {t("Neuen Link erzeugen")}
           </Button>
         </Liquid>
       );
@@ -73,7 +75,7 @@ const InviteSheet = ({ code: start, onClose, onRenew }) => {
   };
 
   return (
-    <Sheet open onClose={onClose} desktop="qr" eyebrow={off ? `${code.label} · Link ausgeschaltet` : `${code.label} · ${audienceChip(code.audience)} · ${devicesText(code.devices, code.maxDevices)}`} title={printing ? "Blatt drucken" : "Einladen"}>
+    <Sheet open onClose={onClose} desktop="qr" eyebrow={off ? t("{label} · Link ausgeschaltet", { label: code.label }) : `${code.label} · ${audienceChip(code.audience)} · ${devicesText(code.devices, code.maxDevices)}`} title={printing ? t("Blatt drucken") : t("Einladen")}>
       {printing && url ? <PrintChooser url={url} className={className} onBack={() => setPrinting(false)} /> : renderBody()}
     </Sheet>
   );
@@ -85,17 +87,17 @@ const InviteSheet = ({ code: start, onClose, onRenew }) => {
       {renderCard()}
       {invite && (
         <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
-          {!isDesktop && url && <Row icon={Maximize} label="QR groß zeigen" hint="Beamer" onClick={() => setBig(true)} />}
-          <Row icon={Link2} label="Link aktiv" checked={invite.active} onToggle={(on) => toggle("active", on, on ? "Link eingeschaltet" : "Link ausgeschaltet")} />
+          {!isDesktop && url && <Row icon={Maximize} label={t("QR groß zeigen")} hint={t("Beamer")} onClick={() => setBig(true)} />}
+          <Row icon={Link2} label={t("Link aktiv")} checked={invite.active} onToggle={(on) => toggle("active", on, on ? t("Link eingeschaltet") : t("Link ausgeschaltet"))} />
           {/* одноклассникам — лише посилання групи; особисте — для однієї людини */}
-          {code.audience === "group" && <Row icon={Users} label="Mitschüler dürfen teilen" checked={invite.shared} onToggle={(on) => toggle("shared", on, on ? "Mitschüler sehen den Link unter »Klasse einladen«" : "Mitschüler sehen den Link nicht mehr")} />}
-          <Row icon={RenewIcon} label="Neuen Link erzeugen" hint="alter geht aus" onClick={onRenew} />
+          {code.audience === "group" && <Row icon={Users} label={t("Mitschüler dürfen teilen")} checked={invite.shared} onToggle={(on) => toggle("shared", on, on ? t("Mitschüler sehen den Link unter »Klasse einladen«") : t("Mitschüler sehen den Link nicht mehr"))} />}
+          <Row icon={RenewIcon} label={t("Neuen Link erzeugen")} hint={t("alter geht aus")} onClick={onRenew} />
         </Liquid>
       )}
       <p className="text-caption text-faint">
         {code.audience === "group"
-          ? `Wer den Link hat, kommt in die ${className ?? "Klasse"} und zählt zu »${code.label}«. Nur in der Klassengruppe teilen.`
-          : `Persönlicher Link: nur an diese eine Person schicken. Er zählt zum Geräte-Limit von »${code.label}«.`}
+          ? t("Wer den Link hat, kommt in die {1} und zählt zu »{label}«. Nur in der Klassengruppe teilen.", { "1": className ?? t("Klasse"), label: code.label })
+          : t("Persönlicher Link: nur an diese eine Person schicken. Er zählt zum Geräte-Limit von »{label}«.", { label: code.label })}
       </p>
       {url && !off && code.audience === "group" && <PrintRow onClick={() => setPrinting(true)} />}
       {url && <QrFullscreen open={big} onClose={() => setBig(false)} url={url} className={className} />}

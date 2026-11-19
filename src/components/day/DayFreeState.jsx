@@ -7,6 +7,7 @@ import Button from "../ui/Button";
 import { PlanDown } from "../ui/PlanState";
 import StateScreen from "../ui/StateScreen";
 import PillButton from "../ui/PillButton";
+import { useT } from "../../shared/hooks/useT";
 
 // Заголовок вільного дня. Назви свята в даних немає, тому пишемо загальне «Schulfrei».
 const freeTitle = (day, isToday) => {
@@ -20,6 +21,7 @@ const freeTitle = (day, isToday) => {
 // fill — зайняти висоту екрана (false, коли нижче є сірі уроки «vorläufig»)
 // ─────────────────────────────────────────────────────────────
 const DayFreeState = ({ day, today, week, onRetry, fill }) => {
+  const t = useT();
   const holidays = usePlanStore((s) => s.meta?.holidays);
   const refreshPlan = usePlanStore((s) => s.refreshPlan);
   const refreshing = usePlanStore((s) => s.refreshing);
@@ -28,10 +30,10 @@ const DayFreeState = ({ day, today, week, onRetry, fill }) => {
   if (day.status === "holiday") {
     const next = nextSchoolDay(day.date, holidays);
     return (
-      <StateScreen icon={Sun} title={freeTitle(day, day.date === today)} text="Laut Plan kein Unterricht." fill={fill}>
+      <StateScreen icon={Sun} title={freeTitle(day, day.date === today)} text={t("Laut Plan kein Unterricht.")} fill={fill}>
         {next && (
           <PillButton glass="glass" size="lg" to={`/tag/${next}`} className="flex h-12 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink">
-            <ChevronRight className="size-4" /> Nächster Schultag · {weekdayShort(next)}, {shortDate(next)}
+            <ChevronRight className="size-4" /> {t("Nächster Schultag ·")} {weekdayShort(next)}, {shortDate(next)}
           </PillButton>
         )}
       </StateScreen>
@@ -42,16 +44,16 @@ const DayFreeState = ({ day, today, week, onRetry, fill }) => {
     return (
       <StateScreen
         icon={Clock}
-        title={`Plan für ${weekdayLong(day.date)} fehlt noch`}
+        title={t("Plan für {1} fehlt noch", { "1": weekdayLong(day.date) })}
         // «regelmäßig», а не «alle 5 Minuten»: на канікулах і у вихідні сервер дивиться раз на годину
-        text="Die Schule stellt den Plan meist am Vortag ab Mittag online. ORBook schaut regelmäßig nach."
+        text={t("Die Schule stellt den Plan meist am Vortag ab Mittag online. ORBook schaut regelmäßig nach.")}
         fill={fill}
       >
         <Button variant="primary" onClick={() => refreshPlan(mondayOf(day.date))} disabled={refreshing} className="flex-none">
-          <RotateCw className={refreshing ? "size-4 motion-safe:animate-spin" : "size-4"} /> {refreshing ? "Wird geprüft…" : "Jetzt prüfen"}
+          <RotateCw className={refreshing ? "size-4 motion-safe:animate-spin" : "size-4"} /> {refreshing ? t("Wird geprüft…") : t("Jetzt prüfen")}
         </Button>
         {/* часть 26: время проверки этого дня */}
-        <p className="w-full text-center text-caption text-faint">{day.checkedAt ? `Zuletzt geprüft ${agoText(day.checkedAt, now)}` : "Noch nicht geprüft"}</p>
+        <p className="w-full text-center text-caption text-faint">{day.checkedAt ? t("Zuletzt geprüft {1}", { "1": agoText(day.checkedAt, now) }) : t("Noch nicht geprüft")}</p>
       </StateScreen>
     );
   }

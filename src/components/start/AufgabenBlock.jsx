@@ -32,7 +32,7 @@ const AufgabenBlock = ({ editing }) => {
   const first = open[0];
 
   const body = () => {
-    if (!first) return status === "loading" && !tasks.length ? <BlockSkeleton /> : <BlockEmpty text="Nichts offen" />;
+    if (!first) return status === "loading" && !tasks.length ? <BlockSkeleton /> : <BlockEmpty text={t("Nichts offen")} />;
     const what = [first.subject && (names?.[first.subject] ?? first.subject), first.text].filter(Boolean).join(" · ");
     return (
       <>

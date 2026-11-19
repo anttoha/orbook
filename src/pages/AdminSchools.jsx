@@ -13,19 +13,23 @@ import { useAdminClasses } from "../shared/hooks/useAdminClasses";
 import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useAdminStore } from "../shared/store/adminStore";
 import { adminClassColor } from "../shared/utils/adminClasses";
+import { useT } from "../shared/hooks/useT";
 
 // Пунктирная карточка «Schule hinzufügen» внизу списка (телефон)
-const AddSchoolTile = ({ onClick }) => (
+const AddSchoolTile = ({ onClick }) => {
+  const t = useT();
+  return (
   <button type="button" onClick={onClick} className="flex items-center gap-4 rounded-card border-2 border-dashed border-rule px-4 py-4 text-left">
     <span className="grid size-10 shrink-0 place-items-center rounded-full bg-tint text-accent-ink">
       <SchoolIcon className="size-5" />
     </span>
     <span className="min-w-0">
-      <span className="block text-subhead text-ink">Schule hinzufügen</span>
-      <span className="block truncate text-label text-faint">Mit den Zugangsdaten von stundenplan24.de</span>
+      <span className="block text-subhead text-ink">{t("Schule hinzufügen")}</span>
+      <span className="block truncate text-label text-faint">{t("Mit den Zugangsdaten von stundenplan24.de")}</span>
     </span>
   </button>
 );
+};
 
 const NOTE = "Eine Klasse entsteht mit ihrem ersten Code (Zugangs-, Lehrer- oder Editor-Code) und hat eigene Tests, Kanäle und Einstellungen. Den Plan lädt ORBook pro Schule einmal.";
 const NOTE_SHORT = "Eine Klasse entsteht mit ihrem ersten Code. Der Plan lädt pro Schule nur einmal.";
@@ -36,6 +40,7 @@ const NOTE_SHORT = "Eine Klasse entsteht mit ihrem ersten Code. Der Plan lädt p
 // с этой школой, «Schule hinzufügen» / «Zugang ändern» — окно школы, ⋮ → «Klasse löschen» (ПК).
 // ─────────────────────────────────────────────────────────────
 const AdminSchools = () => {
+  const t = useT();
   const navigate = useNavigate();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const schools = useAdminStore((s) => s.schools);
@@ -71,13 +76,13 @@ const AdminSchools = () => {
   return (
     <section className="flex flex-col gap-4 lg:gap-5">
       <AdminHeader
-        title="Schulen & Klassen"
+        title={t("Schulen & Klassen")}
         backTo="/admin/einstellungen"
         server
         actions={
           isDesktop && (
             <Button variant="primary" className="flex-none px-5" onClick={() => setSheet({ school: null })}>
-              <Plus className="size-4.5" /> Schule hinzufügen
+              <Plus className="size-4.5" /> {t("Schule hinzufügen")}
             </Button>
           )
         }
@@ -90,7 +95,7 @@ const AdminSchools = () => {
       {renderBody()}
       {!isDesktop && schools.status === "ready" && <AddSchoolTile onClick={() => setSheet({ school: null })} />}
       {isDesktop ? (
-        <p className="text-label text-faint">Klasse löschen: im Menü ⋮ — mit dem Wort LÖSCHEN und Admin-Passwort. Die Daten der anderen Klassen bleiben.</p>
+        <p className="text-label text-faint">{t("Klasse löschen: im Menü ⋮ — mit dem Wort LÖSCHEN und Admin-Passwort. Die Daten der anderen Klassen bleiben.")}</p>
       ) : (
         <p className="flex gap-3 rounded-card bg-sand px-4 py-3.5 text-body-sm text-muted">
           <Info className="mt-0.5 size-4.5 shrink-0" /> {NOTE_SHORT}
@@ -101,9 +106,9 @@ const AdminSchools = () => {
       <DangerDialog
         open={deleting !== null}
         action={{ classId: deleting?.id }}
-        title={`Klasse ${deleting?.name ?? ""} löschen?`}
-        text="Alle Codes, Tests, Hausaufgaben, Materialien und Termine dieser Klasse werden gelöscht. Ihre Geräte verlieren nur diese Klasse."
-        confirmLabel="Klasse löschen"
+        title={t("Klasse {1} löschen?", { "1": deleting?.name ?? "" })}
+        text={t("Alle Codes, Tests, Hausaufgaben, Materialien und Termine dieser Klasse werden gelöscht. Ihre Geräte verlieren nur diese Klasse.")}
+        confirmLabel={t("Klasse löschen")}
         onClose={() => setDeleting(null)}
         onDone={reloadSchools}
       />

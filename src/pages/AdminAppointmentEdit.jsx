@@ -5,6 +5,7 @@ import AppointmentForm from "../components/appointments/AppointmentForm";
 import { loadAdminCourses } from "../shared/api/admin";
 import { loadAdminAppointments } from "../shared/api/appointments";
 import { useAdminLoad } from "../shared/hooks/useAdminLoad";
+import { useT } from "../shared/hooks/useT";
 
 // Предмети класу для «Für»: назва з налаштувань або зі шкільних даних
 const toSubjects = (data) => (data?.subjects ?? []).map((s) => ({ code: s.code, name: s.name ?? s.defaultName ?? null }));
@@ -14,6 +15,7 @@ const toSubjects = (data) => (data?.subjects ?? []).map((s) => ({ code: s.code, 
 // але запис іде від школи (POST /api/admin/appointments), а правити можна будь-який термін.
 // ─────────────────────────────────────────────────────────────
 const AdminAppointmentEdit = () => {
+  const t = useT();
   const { id } = useParams();
   const data = useAdminLoad("appointment-form", () => Promise.all([loadAdminCourses(), id ? loadAdminAppointments() : null]));
 
@@ -24,12 +26,12 @@ const AdminAppointmentEdit = () => {
   if (id && !item) {
     return (
       <section className="flex flex-col gap-5">
-        <AdminHeader title="Termin ändern" backTo="/admin/termine" />
-        <p className="text-body-sm text-muted">Diesen Termin gibt es nicht (mehr).</p>
+        <AdminHeader title={t("Termin ändern")} backTo="/admin/termine" />
+        <p className="text-body-sm text-muted">{t("Diesen Termin gibt es nicht (mehr).")}</p>
       </section>
     );
   }
-  return <AppointmentForm key={item?.id ?? "neu"} item={item} subjects={toSubjects(courses)} eyebrow="Admin · Schule" admin />;
+  return <AppointmentForm key={item?.id ?? "neu"} item={item} subjects={toSubjects(courses)} eyebrow={t("Admin · Schule")} admin />;
 };
 
 export default AdminAppointmentEdit;

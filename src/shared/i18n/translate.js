@@ -11,5 +11,8 @@ export const setCurrentLanguage = (code) => {
   current = code;
 };
 
-export const translateTo = (code, text) => DICTIONARIES[code]?.[text] ?? text;
-export const translate = (text) => translateTo(current, text);
+// Вставки: t("Klasse {name}", { name }) — переводим шаблон целиком, потом подставляем значения
+const fill = (text, vars) => (vars ? text.replace(/\{(\w+)\}/g, (all, k) => (k in vars ? String(vars[k] ?? "") : all)) : text);
+
+export const translateTo = (code, text, vars) => fill(DICTIONARIES[code]?.[text] ?? text, vars);
+export const translate = (text, vars) => translateTo(current, text, vars);

@@ -47,7 +47,7 @@ const ClassSwitcher = ({ variant = "phone", all = false }) => {
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content align="start" sideOffset={6} className={cn(menuContentClass, "w-72")}>
-          {demo && variant === "side" && <p className="px-3 pt-1.5 pb-1 text-micro font-extrabold text-accent-ink uppercase">Demo · {t("ausgedachte Daten")}</p>}
+          {demo && variant === "side" && <p className="px-3 pt-1.5 pb-1 text-micro font-extrabold text-accent-ink uppercase">{t("Demo ·")} {t("ausgedachte Daten")}</p>}
           {schoolGroups(list).map((group) => (
             <Fragment key={group.key}>
               {group.school && (

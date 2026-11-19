@@ -4,6 +4,7 @@ import { useAdminClasses } from "../../shared/hooks/useAdminClasses";
 import { cn } from "../../shared/utils/cn";
 import AdminClassChip from "./schools/AdminClassChip";
 import RoundButton from "../ui/RoundButton";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Шапка сторінки адмінки: «Admin · 9b ⌄» над заголовком, праворуч кнопки (actions).
@@ -12,18 +13,19 @@ import RoundButton from "../ui/RoundButton";
 // server — сторінка всього сервера («Schulen & Klassen»): замість чипа класу «Admin · Server»
 // ─────────────────────────────────────────────────────────────
 const AdminHeader = ({ title, backTo, accent = false, server = false, actions }) => {
+  const t = useT();
   const { current } = useAdminClasses(); // null — список классов ещё не пришёл
 
   return (
     <header className="flex items-end gap-2.5">
       {backTo && (
-        <RoundButton to={backTo} aria-label="Zurück" look="grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink lg:hidden">
+        <RoundButton to={backTo} aria-label={t("Zurück")} look="grid size-9.5 shrink-0 place-items-center rounded-full bg-card text-ink lg:hidden">
           <ChevronLeft className="size-4.5" />
         </RoundButton>
       )}
       <div className="min-w-0 flex-1 space-y-1">
         <div className={cn("flex h-6.5 items-center gap-1.5 text-hint font-extrabold", accent || server ? "text-accent-ink" : "text-faint")}>
-          {server ? "Admin · Server" : current ? "Admin ·" : "Admin"}
+          {server ? t("Admin · Server") : current ? t("Admin ·") : "Admin"}
           {!server && <AdminClassChip />}
         </div>
         <h1 className="truncate text-title text-ink lg:text-lobby">{title}</h1>

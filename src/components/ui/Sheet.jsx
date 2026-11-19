@@ -10,6 +10,7 @@ import { useMoreBelow } from "../../shared/hooks/useMoreBelow";
 import Kbd from "./Kbd";
 import RoundButton from "./RoundButton";
 import ScrollDownButton from "./ScrollDownButton";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Спільна шторка.
@@ -34,6 +35,7 @@ import ScrollDownButton from "./ScrollDownButton";
 //   footer        — кнопки внизу
 // ─────────────────────────────────────────────────────────────
 const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, titleAside, titleClassName, hideClose = false, icon, footer, children }) => {
+  const t = useT();
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // який варіант показувати
   const isPanel = isDesktop && desktop === "panel"; // панель праворуч?
   const glass = useGlass(); // «Glas» на телефоні — шторка з бібліотеки liquid-glass
@@ -58,7 +60,7 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
   const renderClose = (Close) => glass ? (
     <div className="flex shrink-0 items-center gap-2">
       {isDesktop && <Kbd>Esc</Kbd>}
-      <RoundButton aria-label="Schließen" onClick={onClose}>
+      <RoundButton aria-label={t("Schließen")} onClick={onClose}>
         <X className="size-4" />
       </RoundButton>
     </div>
@@ -66,7 +68,7 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
     <div className="flex shrink-0 items-center gap-2">
       {isDesktop && <Kbd>Esc</Kbd>}
       <Close
-        aria-label="Schließen"
+        aria-label={t("Schließen")}
         className="grid size-8.5 place-items-center rounded-full bg-card text-ink transition-colors outline-none hover:bg-sand focus-visible:ring-2 focus-visible:ring-accent/50"
       >
         <X className="size-4" />

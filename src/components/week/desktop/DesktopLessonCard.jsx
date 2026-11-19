@@ -1,6 +1,7 @@
 import { cn } from "../../../shared/utils/cn";
 import { lessonBadge, lessonName } from "../../../shared/utils/format";
 import { PLAN_DEFAULTS, subjectLook } from "../../../shared/utils/planView";
+import { useT } from "../../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Картка уроку в сітці тижня на ПК (макет: 128×77, заокруглення 14px).
@@ -14,6 +15,7 @@ import { PLAN_DEFAULTS, subjectLook } from "../../../shared/utils/planView";
 // ─────────────────────────────────────────────────────────────
 // plan — «Stundenplan» (частина 30b): тут діє лише «Fachfarbe» (заливка / смужка / без кольору)
 const DesktopLessonCard = ({ lesson, isPast, overrides, plan = PLAN_DEFAULTS, className, ...props }) => {
+  const t = useT();
   const isCancelled = lesson.status === "cancelled"; // fällt aus?
   const isChanged = !isCancelled && lesson.status !== "normal"; // Vertretung, Raum, перенос
   const badge = lessonBadge(lesson); // текст бейджа або null
@@ -21,7 +23,7 @@ const DesktopLessonCard = ({ lesson, isPast, overrides, plan = PLAN_DEFAULTS, cl
   return (
     <button
       type="button"
-      aria-label={[lessonName(lesson), badge, lesson.notMine && "nicht dein Kurs"].filter(Boolean).join(", ")}
+      aria-label={[lessonName(lesson), badge, lesson.notMine && t("nicht dein Kurs")].filter(Boolean).join(", ")}
       {...props}
       className={cn(
         "flex min-h-0 flex-col items-start overflow-hidden rounded-cell px-2.75 py-2.25 text-left select-none",

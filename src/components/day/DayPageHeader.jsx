@@ -6,6 +6,7 @@ import ChangedLine from "../week/ChangedLine";
 import WeekLetter from "../muster/WeekLetter";
 import { abLetter } from "../../shared/utils/muster";
 import RoundButton from "../ui/RoundButton";
+import { useT } from "../../shared/hooks/useT";
 
 
 // ─────────────────────────────────────────────────────────────
@@ -15,6 +16,7 @@ import RoundButton from "../ui/RoundButton";
 // Четверта кругла кнопка не вміщається поруч із довгою датою, тому (i) — малий значок біля дня тижня.
 // ─────────────────────────────────────────────────────────────
 const DayPageHeader = ({ date, today, day, onInfo }) => {
+  const t = useT();
   const holidays = usePlanStore((s) => s.meta?.holidays); // канікули й свята пропускаємо
   const word = relativeDayWord(date, today); // heute / morgen / gestern
   const prev = nextSchoolDay(date, holidays, -1); // попередній навчальний день
@@ -23,7 +25,7 @@ const DayPageHeader = ({ date, today, day, onInfo }) => {
   return (
     <header className="flex items-start gap-2.5">
       {/* назад до тижня */}
-      <RoundButton to={`/woche?woche=${mondayOf(date)}`} aria-label="Zur Woche" className="mt-1">
+      <RoundButton to={`/woche?woche=${mondayOf(date)}`} aria-label={t("Zur Woche")} className="mt-1">
         <ChevronLeft className="size-4.25" />
       </RoundButton>
 
@@ -35,7 +37,7 @@ const DayPageHeader = ({ date, today, day, onInfo }) => {
           </p>
           {/* від'ємні поля: зона натискання 32px, а рядок лишається низьким */}
           {day && (
-            <button type="button" aria-label="Info zum Tag" onClick={onInfo} className="-my-2 grid size-8 shrink-0 place-items-center text-muted">
+            <button type="button" aria-label={t("Info zum Tag")} onClick={onInfo} className="-my-2 grid size-8 shrink-0 place-items-center text-muted">
               <Info className="size-3.5" />
             </button>
           )}
@@ -51,10 +53,10 @@ const DayPageHeader = ({ date, today, day, onInfo }) => {
 
       {/* гортати дні (вихідні та канікули пропускаються) */}
       <div className="mt-1 flex shrink-0 gap-1.5">
-        <RoundButton to={`/tag/${prev}`} aria-label="Vorheriger Schultag">
+        <RoundButton to={`/tag/${prev}`} aria-label={t("Vorheriger Schultag")}>
           <ChevronLeft className="size-4.25" />
         </RoundButton>
-        <RoundButton to={`/tag/${next}`} aria-label="Nächster Schultag">
+        <RoundButton to={`/tag/${next}`} aria-label={t("Nächster Schultag")}>
           <ChevronRight className="size-4.25" />
         </RoundButton>
       </div>

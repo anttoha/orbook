@@ -19,7 +19,7 @@ const CountdownBlock = ({ editing }) => {
   const next = holidayCountdown(items, today, holidays ?? []);
 
   const body = () => {
-    if (!next) return status === "loading" || status === "idle" ? <BlockSkeleton /> : <BlockEmpty text="Keine Ferien eingetragen" />;
+    if (!next) return status === "loading" || status === "idle" ? <BlockSkeleton /> : <BlockEmpty text={t("Keine Ferien eingetragen")} />;
     if (next.running) {
       return (
         <>
@@ -32,7 +32,7 @@ const CountdownBlock = ({ editing }) => {
       <>
         <p className="flex items-baseline gap-1.5">
           <span className="text-stat text-ink">{next.days}</span>
-          <span className="text-body-sm font-semibold text-muted">{t(next.days === 1 ? "Schultag" : "Schultage")}</span>
+          <span className="text-body-sm font-semibold text-muted">{t(next.days === 1 ? t("Schultag") : t("Schultage"))}</span>
         </p>
         <p className="mt-auto truncate text-body-sm font-semibold text-ink">{`${t("bis")} ${next.item.title}`}</p>
         {next.progress != null && (

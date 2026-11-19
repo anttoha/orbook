@@ -87,7 +87,7 @@ const CardBody = ({ data, item, today, wide, onRetry }) => {
       <div className="mb-2 flex h-5 items-center justify-between gap-2 text-micro font-extrabold tracking-wide text-faint uppercase">
         <span className="truncate">
           {t("Heute")}
-          {lessons.length > 0 && ` · ${lessons.length} ${t(lessons.length === 1 ? "Stunde" : "Stunden")}`}
+          {lessons.length > 0 && ` · ${lessons.length} ${t(lessons.length === 1 ? t("Stunde") : t("Stunden"))}`}
           {offline && ` · ${t("Offline")}`}
         </span>
         {exam && (

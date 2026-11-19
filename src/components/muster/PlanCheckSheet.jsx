@@ -13,9 +13,11 @@ import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
 import SubjectBadge from "../ui/SubjectBadge";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Одна картка: що стояло в уроці → що каже справжній план → кнопки
 const CheckCard = ({ item, lessons, onDone }) => {
+  const t = useT();
   const navigate = useNavigate();
   const names = usePlanStore((s) => s.meta?.subjects);
   const moveNote = useUserStore((s) => s.moveNote);
@@ -41,8 +43,8 @@ const CheckCard = ({ item, lessons, onDone }) => {
         <SubjectBadge subject={subject} size="lg" className="size-10" />
         <div className="min-w-0 flex-1">
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-caption text-faint">
-            <Badge variant={isNote ? "changed" : "soft"}>{isNote ? "Notiz" : item.exam.type}</Badge>
-            {subjectName(subject)} · {period}. Stunde
+            <Badge variant={isNote ? "changed" : "soft"}>{isNote ? t("Notiz") : item.exam.type}</Badge>
+            {subjectName(subject)} · {period}{t(". Stunde")}
           </p>
           <h3 className="mt-1 truncate text-body font-extrabold text-ink">{isNote ? item.note.text : item.exam.topic || item.exam.type}</h3>
         </div>
@@ -52,26 +54,26 @@ const CheckCard = ({ item, lessons, onDone }) => {
       <p className={cn("mt-3 flex items-center gap-2.5 rounded-field px-3 py-2.5 text-label", isNote && item.target ? "bg-tint" : "bg-danger-tint")}>
         {isNote && item.target ? <ArrowRight className="size-4 shrink-0 text-accent-ink" /> : <TriangleAlert className="size-4 shrink-0 text-danger" />}
         <span className="min-w-0 text-muted">
-          <span className={cn("font-bold", isNote && item.target ? "text-accent-ink" : "text-danger")}>Echter Plan:</span> {reason}
+          <span className={cn("font-bold", isNote && item.target ? "text-accent-ink" : "text-danger")}>{t("Echter Plan:")}</span> {reason}
         </span>
       </p>
 
       <div className="mt-3 flex gap-2">
         {isNote && item.target && (
           <Button variant="primary" className="h-10.5" onClick={move}>
-            <ArrowRight className="size-4" /> In die {item.target}. Stunde
+            <ArrowRight className="size-4" /> {t("In die")} {item.target}{t(". Stunde")}
           </Button>
         )}
         {!isNote && item.exam.canEdit && (
           <Button className="h-10.5" onClick={() => navigate(`/testen/${item.exam.id}/bearbeiten`)}>
-            <Pencil className="size-4" /> {item.exam.type} ändern
+            <Pencil className="size-4" /> {item.exam.type} {t("ändern")}
           </Button>
         )}
         <Button className="h-10.5" onClick={keep}>
-          So lassen
+          {t("So lassen")}
         </Button>
       </div>
-      {!isNote && !item.exam.canEdit && <p className="mt-2.5 text-caption text-faint">Ändern dürfen Lehrkräfte und Editor-Codes.</p>}
+      {!isNote && !item.exam.canEdit && <p className="mt-2.5 text-caption text-faint">{t("Ändern dürfen Lehrkräfte und Editor-Codes.")}</p>}
     </Liquid>
   );
 };
@@ -81,6 +83,7 @@ const CheckCard = ({ item, lessons, onDone }) => {
 // Нічого не змінюється без людини: нотатку переносить сам учень, Klausur — той, хто має право.
 // ─────────────────────────────────────────────────────────────
 const PlanCheckSheet = ({ open, onClose, sheet }) => {
+  const t = useT();
   const { today } = useNow();
   const { day } = useDay(sheet.datum);
   const notes = useUserStore((s) => s.notes);
@@ -92,19 +95,19 @@ const PlanCheckSheet = ({ open, onClose, sheet }) => {
       open={open}
       onClose={onClose}
       desktop="dialog"
-      eyebrow={sheet.datum ? `Plan für ${weekdayShort(sheet.datum)}, ${longDate(sheet.datum)}` : null}
-      title="Einträge prüfen"
+      eyebrow={sheet.datum ? t("Plan für {1}, {2}", { "1": weekdayShort(sheet.datum), "2": longDate(sheet.datum) }) : null}
+      title={t("Einträge prüfen")}
     >
       {items.length > 0 ? (
         <div className="flex flex-col gap-2.5">
-          <p className="text-body-sm text-muted">Diese Einträge hängen an Stunden, die sich geändert haben. Nichts passiert ohne dich.</p>
+          <p className="text-body-sm text-muted">{t("Diese Einträge hängen an Stunden, die sich geändert haben. Nichts passiert ohne dich.")}</p>
           {items.map((item) => (
             // остання картка сама закриває шторку
             <CheckCard key={checkKey(item)} item={item} lessons={day.lessons} onDone={() => items.length === 1 && onClose()} />
           ))}
         </div>
       ) : (
-        <p className="text-body-sm text-muted">Alles passt zum Plan.</p>
+        <p className="text-body-sm text-muted">{t("Alles passt zum Plan.")}</p>
       )}
     </Sheet>
   );

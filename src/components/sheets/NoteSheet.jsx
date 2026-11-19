@@ -11,6 +11,7 @@ import Button from "../ui/Button";
 import Field from "../ui/Field";
 import { CalendarIcon, CheckIcon, TrashIcon } from "../ui/icons";
 import Sheet from "../ui/Sheet";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // Шторка «Notiz» (макет 20 — телефон, 21 — вікно на ПК). Нотатки живуть на пристрої (userStore),
@@ -20,6 +21,7 @@ import Sheet from "../ui/Sheet";
 //   ?sheet=notiz&datum=…           — нова нотатка на день
 // ─────────────────────────────────────────────────────────────
 const NoteSheet = ({ open, onClose, sheet }) => {
+  const t = useT();
   const valid = isIsoDate(sheet.datum); // чи правильна дата в адресі
   const period = sheet.stunde ? Number(sheet.stunde) : null; // номер уроку (якщо нотатка до уроку)
   const noteId = period ? `${sheet.datum}#${period}` : sheet.id; // до уроку — «дата#урок», на день — з адреси
@@ -28,7 +30,7 @@ const NoteSheet = ({ open, onClose, sheet }) => {
   if (!valid) return null; // крива адреса
 
   return (
-    <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow="Notizen" title="Notiz">
+    <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow={t("Notizen")} title={t("Notiz")}>
       {/* key — при зміні нотатки форма створюється заново з її текстом */}
       <NoteForm key={noteId ?? "neu"} note={note} noteId={noteId} date={sheet.datum} period={period} onDone={onClose} />
     </Sheet>
@@ -37,6 +39,7 @@ const NoteSheet = ({ open, onClose, sheet }) => {
 
 // Форма: текст, предмет, дата, кнопки
 const NoteForm = ({ note, noteId, date: openedOn, period, onDone }) => {
+  const t = useT();
   const { day } = useDay(openedOn); // уроки дня — для чіпів предметів
   const lesson = period ? day?.lessons.find((l) => l.period === period) : null; // урок нотатки
   const [text, setText] = useState(note?.text ?? "");
@@ -71,12 +74,12 @@ const NoteForm = ({ note, noteId, date: openedOn, period, onDone }) => {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <Field label="Notiz">
+      <Field label={t("Notiz")}>
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          aria-label="Notiz"
-          placeholder="z. B. Sportsachen mitnehmen"
+          aria-label={t("Notiz")}
+          placeholder={t("z. B. Sportsachen mitnehmen")}
           rows={4}
           autoFocus // одразу можна друкувати
           className="h-31 w-full resize-none rounded-field bg-card px-4.25 py-3.5 text-input text-ink outline-none placeholder:text-faint focus:ring-2 focus:ring-accent/30"
@@ -84,9 +87,9 @@ const NoteForm = ({ note, noteId, date: openedOn, period, onDone }) => {
       </Field>
 
       {subjects.length > 0 && (
-        <Field label="Zu Fach · optional">
+        <Field label={t("Zu Fach · optional")}>
           {/* необов'язковий: «Ohne Fach» знімає; у шторці на телефоні список розгортається на місці */}
-          <ListPicker id="note-subject" label="Zu Fach" inline clearable items={subjectItems(subjects.map((code) => ({ code, name: subjectNames?.[code] ?? null })))} value={subject} onChange={setSubject} />
+          <ListPicker id="note-subject" label={t("Zu Fach")} inline clearable items={subjectItems(subjects.map((code) => ({ code, name: subjectNames?.[code] ?? null })))} value={subject} onChange={setSubject} />
         </Field>
       )}
 
@@ -97,11 +100,11 @@ const NoteForm = ({ note, noteId, date: openedOn, period, onDone }) => {
           {/* «Löschen» тільки для вже збереженої нотатки */}
           {note && (
             <Button variant="danger" onClick={handleDelete} className="flex-none px-4.5">
-              <TrashIcon className="size-4" /> Löschen
+              <TrashIcon className="size-4" /> {t("Löschen")}
             </Button>
           )}
           <Button type="submit" variant="primary" disabled={!text.trim()}>
-            <CheckIcon className="size-4" /> Speichern
+            <CheckIcon className="size-4" /> {t("Speichern")}
           </Button>
         </div>
       </div>
@@ -111,6 +114,7 @@ const NoteForm = ({ note, noteId, date: openedOn, period, onDone }) => {
 
 // «Mittwoch, 17. September · Ändern». У нотатки до уроку дату не міняємо: вона прив'язана до уроку
 const DateRow = ({ date, period, onChange }) => {
+  const t = useT();
   const picker = useRef(null); // приховане поле дати: «Ändern» відкриває його календар
   const label = `${weekdayLong(date)}, ${longDate(date)}${period ? ` · ${period}. Std` : ""}`;
 
@@ -129,9 +133,9 @@ const DateRow = ({ date, period, onChange }) => {
       {!period && (
         <>
           <button type="button" onClick={openPicker} className="text-label font-bold text-accent-ink">
-            Ändern
+            {t("Ändern")}
           </button>
-          <input ref={picker} type="date" value={date} onChange={(e) => isIsoDate(e.target.value) && onChange(e.target.value)} aria-label="Datum" tabIndex={-1} className="sr-only" />
+          <input ref={picker} type="date" value={date} onChange={(e) => isIsoDate(e.target.value) && onChange(e.target.value)} aria-label={t("Datum")} tabIndex={-1} className="sr-only" />
         </>
       )}
     </div>

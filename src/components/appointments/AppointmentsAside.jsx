@@ -8,6 +8,7 @@ import { addDays, mondayOf } from "../../shared/utils/format";
 import MonthGrid from "../ui/MonthGrid";
 import MonthNav from "../ui/MonthNav";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Усі дні, які займають терміни (крапки в календарі)
 const coveredDays = (items) => {
@@ -21,6 +22,7 @@ const coveredDays = (items) => {
 // Клік по дню з терміном відкриває його, по іншому дню — сторінку дня
 // ─────────────────────────────────────────────────────────────
 const AppointmentsAside = ({ next, items }) => {
+  const t = useT();
   const { today } = useNow();
   const { openSheet } = useSheet();
   const navigate = useNavigate();
@@ -40,7 +42,7 @@ const AppointmentsAside = ({ next, items }) => {
         <button type="button" onClick={() => openSheet("termin", { id: next.id })} className="flex h-23.5 w-full items-center gap-4 rounded-card bg-accent px-4.5 text-left text-on-accent transition-shadow hover:shadow-raise">
           {card.number !== null && <span className="text-countdown-pc">{card.number}</span>}
           <span className="min-w-0">
-            <span className="block text-hint font-extrabold text-today-sub">{card.number !== null ? (card.number === 1 ? "Tag bis" : "Tage bis") : card.label}</span>
+            <span className="block text-hint font-extrabold text-today-sub">{card.number !== null ? (card.number === 1 ? t("Tag bis") : t("Tage bis")) : card.label}</span>
             <span className="mt-0.5 block truncate text-input font-bold">{next.title}</span>
             <span className="mt-0.5 block truncate text-hint">
               {dateText(next)}
@@ -49,7 +51,7 @@ const AppointmentsAside = ({ next, items }) => {
           </span>
         </button>
       )}
-      <Liquid as="section" refract press={false} aria-label="Kalender" className="flex flex-col gap-3 rounded-card bg-card p-4">
+      <Liquid as="section" refract press={false} aria-label={t("Kalender")} className="flex flex-col gap-3 rounded-card bg-card p-4">
         <MonthNav month={month} onChange={setMonth} titleClassName="text-number" />
         <MonthGrid month={month} today={today} highlight={mondayOf(today)} rowShape="tile" examDays={coveredDays(items)} onPick={pick} />
       </Liquid>

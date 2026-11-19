@@ -2,9 +2,11 @@ import { toast } from "sonner";
 import { pushErrorText, usePushStore } from "../../shared/store/pushStore";
 import { cn } from "../../shared/utils/cn";
 import Segmented from "../ui/Segmented";
+import { useT } from "../../shared/hooks/useT";
 
 // «Für welche Kurse»: как в «Meine Kurse» или всё, что есть в классе
 const PushCourses = ({ courseCount, disabled = false }) => {
+  const t = useT();
   const mine = usePushStore((s) => s.mine);
   const update = usePushStore((s) => s.update);
   const options = [
@@ -16,10 +18,10 @@ const PushCourses = ({ courseCount, disabled = false }) => {
 
   return (
     <section className={cn("flex flex-col gap-2.5", disabled && "pointer-events-none opacity-55")} aria-disabled={disabled || undefined}>
-      <h2 className="text-hint font-extrabold text-faint">Für welche Kurse</h2>
-      <Segmented label="Für welche Kurse" options={options} value={mine ? "mine" : "all"} onChange={change} />
+      <h2 className="text-hint font-extrabold text-faint">{t("Für welche Kurse")}</h2>
+      <Segmented label={t("Für welche Kurse")} options={options} value={mine ? "mine" : "all"} onChange={change} />
       <p className="text-caption text-faint">
-        {mine ? "So wie unter „Meine Kurse“. Änderst du dort was, gilt es hier auch." : "Alles aus der Klasse, auch Kurse, die du nicht hast."}
+        {mine ? t("So wie unter „Meine Kurse“. Änderst du dort was, gilt es hier auch.") : t("Alles aus der Klasse, auch Kurse, die du nicht hast.")}
       </p>
     </section>
   );

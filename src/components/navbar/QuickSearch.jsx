@@ -4,6 +4,7 @@ import { useHotkeys } from "../../shared/hooks/useHotkeys";
 import { cn } from "../../shared/utils/cn";
 import Kbd from "../ui/Kbd";
 import SearchPalette from "./SearchPalette";
+import { useT } from "../../shared/hooks/useT";
 
 // ─────────────────────────────────────────────────────────────
 // «Suchen ⌘K» у сайдбарі. Виглядає як поле, але лише відкриває вікно пошуку посередині
@@ -12,6 +13,7 @@ import SearchPalette from "./SearchPalette";
 // collapsed — сайдбар згорнутий: видно тільки лупу
 // ─────────────────────────────────────────────────────────────
 const QuickSearch = ({ collapsed }) => {
+  const t = useT();
   const [open, setOpen] = useState(false); // чи відкрите вікно пошуку
 
   useHotkeys({ "mod+k": () => setOpen(true) });
@@ -21,13 +23,13 @@ const QuickSearch = ({ collapsed }) => {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Suchen"
+        aria-label={t("Suchen")}
         aria-haspopup="dialog"
         className="relative flex h-10 w-full shrink-0 items-center rounded-full bg-paper pl-10 text-left text-body text-faint outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
       >
         <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-faint" />
         {/* підпис і ⌘K ховаються разом із сайдбаром */}
-        <span className={cn("truncate transition-opacity duration-300", collapsed ? "opacity-0" : "opacity-100 delay-150")}>Suchen</span>
+        <span className={cn("truncate transition-opacity duration-300", collapsed ? "opacity-0" : "opacity-100 delay-150")}>{t("Suchen")}</span>
         {!collapsed && <Kbd className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2">⌘K</Kbd>}
       </button>
       <SearchPalette open={open} onOpenChange={setOpen} />

@@ -1,4 +1,5 @@
 import { cn } from "../../shared/utils/cn";
+import { useT } from "../../shared/hooks/useT";
 
 // Мелкие детали листов A4 (макеты 25 a4-01…03). Только токены qr-* и white: бумага всегда светлая
 
@@ -24,13 +25,16 @@ export const PrintHead = ({ right }) => (
 export const StepDot = ({ n, className }) => <span className={cn("grid size-9 shrink-0 place-items-center rounded-full bg-qr-eye text-row font-black text-white", className)}>{n}</span>;
 
 // Строка внизу листа
-export const PrintFoot = ({ lines }) => (
+export const PrintFoot = ({ lines }) => {
+  const t = useT();
+  return (
   <footer className="mt-auto flex items-end justify-between border-t border-qr-ink/15 pt-5 text-label text-qr-ink/70">
     <div>
       {lines.map((line) => (
         <p key={line}>{line}</p>
       ))}
     </div>
-    <p className="font-bold text-qr-ink/50">Teil von ORBitium</p>
+    <p className="font-bold text-qr-ink/50">{t("Teil von ORBitium")}</p>
   </footer>
 );
+};

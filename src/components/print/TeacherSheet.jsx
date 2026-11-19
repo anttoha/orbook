@@ -1,6 +1,7 @@
 import { CheckIcon } from "../ui/icons";
 import QrCode from "../ui/QrCode";
 import { PrintFoot, PrintHead, StepDot } from "./PrintBits";
+import { useT } from "../../shared/hooks/useT";
 
 // Что учитель может делать — по правам кода (part 14: create, homework, materials)
 function abilities({ className, subjects, rights }) {
@@ -16,25 +17,27 @@ function abilities({ className, subjects, rights }) {
 // Личный лист учителя (макет 25 a4-03): QR с кодом (код после «#», вписывается в поле сам), код, 3 шага, что можно.
 // Печатается сразу после «Code erstellen» — код виден только сейчас
 // ─────────────────────────────────────────────────────────────
-const TeacherSheet = ({ code, url, className, teacher, subjects, rights, printedOn }) => (
+const TeacherSheet = ({ code, url, className, teacher, subjects, rights, printedOn }) => {
+  const t = useT();
+  return (
   <article className="flex h-a4h w-a4w flex-col bg-white px-16 pt-14 pb-12 text-qr-ink">
-    <PrintHead right={className ? `Klasse ${className}` : null} />
+    <PrintHead right={className ? t("Klasse {className}", { className }) : null} />
     <h1 className="mt-12 text-display">
-      Ihr Zugang
-      <span className="block text-qr-eye">als Lehrkraft</span>
+      {t("Ihr Zugang")}
+      <span className="block text-qr-eye">{t("als Lehrkraft")}</span>
     </h1>
-    <p className="mt-4 text-input text-qr-ink/70">{[teacher && `Für ${teacher}`, subjects?.join(", ")].filter(Boolean).join(" · ")}. Persönlich — bitte nicht weitergeben.</p>
+    <p className="mt-4 text-input text-qr-ink/70">{[teacher && `Für ${teacher}`, subjects?.join(", ")].filter(Boolean).join(" · ")}{t(". Persönlich — bitte nicht weitergeben.")}</p>
     <div className="mt-8 flex items-center gap-9">
       <div className="rounded-panel bg-qr-ink/5 p-5">
-        <QrCode value={url} className="size-64" label="QR-Code mit dem Lehrer-Code" />
+        <QrCode value={url} className="size-64" label={t("QR-Code mit dem Lehrer-Code")} />
       </div>
       <div className="min-w-0">
-        <p className="text-label font-extrabold text-qr-ink/55">Lehrer-Code</p>
+        <p className="text-label font-extrabold text-qr-ink/55">{t("Lehrer-Code")}</p>
         <p className="mt-1 text-title font-black tracking-code break-all">{code}</p>
         <ol className="mt-6 space-y-4">
           {[
             ["QR scannen", "Der Code ist dann schon eingetragen."],
-            [`Oder: ${new URL(url).host}`, "„Lehrkraft? Mit Lehrer-Code anmelden“"],
+            [t("Oder: {host}", { host: new URL(url).host }), "„Lehrkraft? Mit Lehrer-Code anmelden“"],
             ["„Anmelden“ tippen", "Gilt auf diesem Gerät bis Schuljahresende."],
           ].map(([title, text], i) => (
             <li key={title} className="flex gap-3">
@@ -48,7 +51,7 @@ const TeacherSheet = ({ code, url, className, teacher, subjects, rights, printed
         </ol>
       </div>
     </div>
-    <h2 className="mt-12 text-heading font-black">Was Sie damit können</h2>
+    <h2 className="mt-12 text-heading font-black">{t("Was Sie damit können")}</h2>
     <ul className="mt-4 space-y-2.5">
       {abilities({ className, subjects, rights }).map((item) => (
         <li key={item.title} className="flex items-center gap-3 rounded-field bg-qr-ink/5 px-4.5 py-3.5 text-row">
@@ -59,8 +62,9 @@ const TeacherSheet = ({ code, url, className, teacher, subjects, rights, printed
         </li>
       ))}
     </ul>
-    <PrintFoot lines={["Code verloren? Der Admin sperrt ihn und gibt Ihnen einen neuen.", `Ausgedruckt am ${printedOn}`]} />
+    <PrintFoot lines={["Code verloren? Der Admin sperrt ihn und gibt Ihnen einen neuen.", t("Ausgedruckt am {printedOn}", { printedOn })]} />
   </article>
 );
+};
 
 export default TeacherSheet;

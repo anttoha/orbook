@@ -4,9 +4,11 @@ import { toast } from "sonner";
 import { pushErrorText, usePushStore } from "../../shared/store/pushStore";
 import { lastSentLabel } from "../../shared/utils/push";
 import PillButton from "../ui/PillButton";
+import { useT } from "../../shared/hooks/useT";
 
 // Зелёная карточка «An auf diesem Gerät» + «Test senden» (макет 17 handy-01)
 const PushStatus = () => {
+  const t = useT();
   const lastSentAt = usePushStore((s) => s.lastSentAt);
   const test = usePushStore((s) => s.test);
   const [sending, setSending] = useState(false);
@@ -30,14 +32,14 @@ const PushStatus = () => {
         <Bell className="size-4.5 text-ok" aria-hidden="true" />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-row font-extrabold text-ok">An auf diesem Gerät</p>
+        <p className="text-row font-extrabold text-ok">{t("An auf diesem Gerät")}</p>
         <p className="truncate text-caption text-muted">{lastSentLabel(lastSentAt)}</p>
       </div>
       <PillButton glass="glass" size="sm"
        
         onClick={sendTest}
         disabled={sending} className="h-9 shrink-0 rounded-full bg-card px-3.5 text-label font-extrabold text-accent-ink transition-transform active:scale-95 disabled:opacity-50">
-        Test senden
+        {t("Test senden")}
       </PillButton>
     </div>
   );

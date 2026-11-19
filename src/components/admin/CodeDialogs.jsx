@@ -17,17 +17,19 @@ import CodeReveal from "./CodeReveal";
 import RightsFields from "./RightsFields";
 import ValidFields from "./ValidFields";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Значення праворуч у шторці телефона: «Eintragen, eigene», «31. Juli»
 const hintOf = (kind, code) => ({ rights: rightsText(code.rights, code.kind), validity: validText(code) })[kind];
 
 // Шторка «Code-Aktionen» на телефоні (макет 43)
 const ActionsSheet = ({ code, onAction, onClose }) => {
+  const t = useT();
   const { today } = useNow();
   return (
     <Sheet open onClose={onClose} desktop="dialog" eyebrow={`${code.masked} · ${code.active ? "aktiv" : "gesperrt"}`} title={code.label}>
       <p className="-mt-2 text-body-sm text-muted">
-        {entriesCount(code)} Einträge · {lastUsedText(code.lastUsedAt, today)}
+        {entriesCount(code)} {t("Einträge ·")} {lastUsedText(code.lastUsedAt, today)}
       </p>
       <Liquid as="ul" refract press={false} className="divide-y divide-hair rounded-card bg-card px-3.5">
         {codeActions(code).map((item) => (
@@ -42,7 +44,7 @@ const ActionsSheet = ({ code, onAction, onClose }) => {
         ))}
       </Liquid>
       <p className="flex gap-2.5 rounded-card bg-sand px-3.5 py-3 text-label text-muted">
-        <Info className="mt-0.5 size-4 shrink-0" /> Einträge dieses Codes bleiben beim Löschen erhalten.
+        <Info className="mt-0.5 size-4 shrink-0" /> {t("Einträge dieses Codes bleiben beim Löschen erhalten.")}
       </p>
     </Sheet>
   );
@@ -50,6 +52,7 @@ const ActionsSheet = ({ code, onAction, onClose }) => {
 
 // Маленьке вікно з однією формою і кнопкою «Speichern»
 const FormSheet = ({ code, title, onClose, onSave, children }) => {
+  const t = useT();
   const [busy, setBusy] = useState(false);
   const submit = async (event) => {
     event.preventDefault();
@@ -59,11 +62,11 @@ const FormSheet = ({ code, title, onClose, onSave, children }) => {
     if (ok) onClose();
   };
   return (
-    <Sheet open onClose={onClose} desktop="dialog" eyebrow={`Admin · ${code.label}`} title={title}>
+    <Sheet open onClose={onClose} desktop="dialog" eyebrow={t("Admin · {label}", { label: code.label })} title={title}>
       <form onSubmit={submit} noValidate className="flex flex-col gap-4">
         {children}
         <Button type="submit" variant="primary" disabled={busy} className="flex-none">
-          <CheckIcon className="size-4" /> Speichern
+          <CheckIcon className="size-4" /> {t("Speichern")}
         </Button>
       </form>
     </Sheet>
@@ -71,6 +74,7 @@ const FormSheet = ({ code, title, onClose, onSave, children }) => {
 };
 
 const RenameSheet = ({ code, actions, onClose }) => {
+  const t = useT();
   const [label, setLabel] = useState(code.label);
   const [error, setError] = useState(null);
   const save = () => {
@@ -79,13 +83,14 @@ const RenameSheet = ({ code, actions, onClose }) => {
     return found ? false : actions.rename(code, label);
   };
   return (
-    <FormSheet code={code} title="Umbenennen" onClose={onClose} onSave={save}>
-      <TextField id="code-rename" label="Bezeichnung" value={label} maxLength={40} error={error} onChange={(event) => setLabel(event.target.value)} autoComplete="off" />
+    <FormSheet code={code} title={t("Umbenennen")} onClose={onClose} onSave={save}>
+      <TextField id="code-rename" label={t("Bezeichnung")} value={label} maxLength={40} error={error} onChange={(event) => setLabel(event.target.value)} autoComplete="off" />
     </FormSheet>
   );
 };
 
 const RightsSheet = ({ code, actions, onClose }) => {
+  const t = useT();
   const [rights, setRights] = useState(code.rights);
   const [error, setError] = useState(null);
   const save = () => {
@@ -93,13 +98,14 @@ const RightsSheet = ({ code, actions, onClose }) => {
     return hasRight(rights) ? actions.setRights(code, editableRights(code, rights)) : false;
   };
   return (
-    <FormSheet code={code} title="Rechte ändern" onClose={onClose} onSave={save}>
+    <FormSheet code={code} title={t("Rechte ändern")} onClose={onClose} onSave={save}>
       <RightsFields value={rights} onChange={setRights} error={error} kind={code.kind} />
     </FormSheet>
   );
 };
 
 const ValiditySheet = ({ code, actions, onClose }) => {
+  const t = useT();
   const { today } = useNow();
   const yearEnd = useAdminStore((s) => s.settings.data?.settings.school.yearEnd ?? null);
   const [valid, setValid] = useState({ choice: yearEnd ? "schuljahresende" : "30d", date: code.validUntil ?? "" });
@@ -111,8 +117,8 @@ const ValiditySheet = ({ code, actions, onClose }) => {
     return found ? false : actions.setValidUntil(code, date);
   };
   return (
-    <FormSheet code={code} title="Gültigkeit" onClose={onClose} onSave={save}>
-      <p className="-mt-1 text-body-sm text-muted">Jetzt: {validText(code)}</p>
+    <FormSheet code={code} title={t("Gültigkeit")} onClose={onClose} onSave={save}>
+      <p className="-mt-1 text-body-sm text-muted">{t("Jetzt:")} {validText(code)}</p>
       <ValidFields choice={valid.choice} date={valid.date} yearEnd={yearEnd} onChange={setValid} error={error} />
     </FormSheet>
   );
@@ -124,6 +130,7 @@ const ValiditySheet = ({ code, actions, onClose }) => {
 // «lock» вікна не має: одразу Sperren / Entsperren.
 // ─────────────────────────────────────────────────────────────
 const CodeDialogs = ({ action, onChange }) => {
+  const t = useT();
   const actions = useCodeActions();
   const [busy, setBusy] = useState(false);
   const close = () => onChange(null);
@@ -161,10 +168,10 @@ const CodeDialogs = ({ action, onChange }) => {
       if (result) onChange({ kind: "reveal", code, result });
     };
     return (
-      <ConfirmDialog open onClose={close} icon={<RenewIcon className="size-6.5 text-accent" />} title={`${code.label} neu erzeugen?`} text="Der alte Code geht sofort nicht mehr. Geräte mit dem alten Code fragen wieder nach einem Code.">
-        <Button onClick={close}>Abbrechen</Button>
+      <ConfirmDialog open onClose={close} icon={<RenewIcon className="size-6.5 text-accent" />} title={t("{label} neu erzeugen?", { label: code.label })} text={t("Der alte Code geht sofort nicht mehr. Geräte mit dem alten Code fragen wieder nach einem Code.")}>
+        <Button onClick={close}>{t("Abbrechen")}</Button>
         <Button variant="primary" disabled={busy} onClick={regenerate}>
-          Neu erzeugen
+          {t("Neu erzeugen")}
         </Button>
       </ConfirmDialog>
     );
@@ -172,11 +179,11 @@ const CodeDialogs = ({ action, onChange }) => {
 
   if (kind === "reveal") {
     return (
-      <Sheet open onClose={close} desktop="dialog" eyebrow={`Admin · ${code.label}`} title="Neuer Code">
-        <CodeReveal code={action.result.code} masked={action.result.item.masked} title="Neuer Code" note="Du siehst ihn später wieder: ⋮ → »Code anzeigen«." />
+      <Sheet open onClose={close} desktop="dialog" eyebrow={t("Admin · {label}", { label: code.label })} title={t("Neuer Code")}>
+        <CodeReveal code={action.result.code} masked={action.result.item.masked} title={t("Neuer Code")} note={t("Du siehst ihn später wieder: ⋮ → »Code anzeigen«.")} />
         <CodeQr code={action.result.code} kind={code.kind} teacher={code.kind === "teacher" ? code.label : null} rights={code.rights} />
         <Button variant="primary" className="flex-none" onClick={close}>
-          <CheckIcon className="size-4" /> Fertig
+          <CheckIcon className="size-4" /> {t("Fertig")}
         </Button>
       </Sheet>
     );
@@ -187,10 +194,10 @@ const CodeDialogs = ({ action, onChange }) => {
     if (await confirm(() => actions.remove(code))) close();
   };
   return (
-    <ConfirmDialog open onClose={close} icon={<TrashIcon className="size-6.5 text-danger" />} title={`${code.label} löschen?`} text="Der Code geht sofort nicht mehr. Die Einträge dieses Codes bleiben erhalten, als Autor steht dann »unbekannt«.">
-      <Button onClick={close}>Abbrechen</Button>
+    <ConfirmDialog open onClose={close} icon={<TrashIcon className="size-6.5 text-danger" />} title={`${code.label} löschen?`} text={t("Der Code geht sofort nicht mehr. Die Einträge dieses Codes bleiben erhalten, als Autor steht dann »unbekannt«.")}>
+      <Button onClick={close}>{t("Abbrechen")}</Button>
       <Button variant="danger" disabled={busy} onClick={remove}>
-        <TrashIcon className="size-4" /> Löschen
+        <TrashIcon className="size-4" /> {t("Löschen")}
       </Button>
     </ConfirmDialog>
   );

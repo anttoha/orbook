@@ -6,6 +6,7 @@ import { examWhen, lessonBadge, lessonName, subjectName, weekdayShort } from "..
 import { upcomingChanges } from "../../../shared/utils/lessons";
 import { FlagIcon } from "../../ui/icons";
 import Liquid from "../../ui/Liquid";
+import { useT } from "../../../shared/hooks/useT";
 
 // Бейдж уроку → слово праворуч у рядку
 const CHANGE_WORDS = { VERTRETUNG: "Vertretung", "FÄLLT AUS": "fällt aus", RAUM: "Raumwechsel", TEST: "Test" };
@@ -19,6 +20,7 @@ const CHANGE_WORDS = { VERTRETUNG: "Vertretung", "FÄLLT AUS": "fällt aus", RAU
 // days — дні тижня; today — "YYYY-MM-DD"
 // ─────────────────────────────────────────────────────────────
 const UpcomingCard = ({ days, today }) => {
+  const t = useT();
   const { openSheet } = useSheet(); // відкрити урок
   const exam = usePlanStore((s) => s.exams.find((e) => e.date > today)); // найближча Klausur після сьогодні
   const changes = upcomingChanges(days, today)
@@ -29,7 +31,7 @@ const UpcomingCard = ({ days, today }) => {
 
   return (
     <section className="flex flex-col gap-2.5">
-      <h2 className="px-1 text-label font-extrabold text-faint">Kommt noch</h2>
+      <h2 className="px-1 text-label font-extrabold text-faint">{t("Kommt noch")}</h2>
       <Liquid as="div" refract press={false} className="flex flex-col divide-y divide-hair rounded-card bg-card px-4">
         {changes.map(({ date, weekday, lesson }) => {
           const Icon = lesson.status === "cancelled" ? CircleSlash : RefreshCw; // значок
@@ -43,11 +45,11 @@ const UpcomingCard = ({ days, today }) => {
               <Icon className="size-4.5 shrink-0 text-muted" />
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-body font-semibold text-ink">
-                  {weekday} · {lesson.period}. Std {lessonName(lesson)}
+                  {weekday} · {lesson.period}{t(". Std")} {lessonName(lesson)}
                 </span>
                 {lesson.room && (
                   <span className="block truncate text-caption font-semibold text-faint">
-                    Raum {lesson.room}
+                    {t("Raum")} {lesson.room}
                     {lesson.teacher && ` · ${lesson.teacher}`}
                   </span>
                 )}

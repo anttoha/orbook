@@ -5,16 +5,19 @@ import Badge from "../ui/Badge";
 import ChangeGroups from "./ChangeGroups";
 import NewsPicture from "./NewsPicture";
 import Liquid from "../ui/Liquid";
+import { useT } from "../../shared/hooks/useT";
 
 // Одна версия в списке «Neuigkeiten»: свёрнута — дата и число изменений, открыта — все группы.
 // index — место в списке: карточки выплывают по очереди.
-const EntryCard = ({ entry, open, isNew, index, onToggle }) => (
+const EntryCard = ({ entry, open, isNew, index, onToggle }) => {
+  const t = useT();
+  return (
   <Liquid as="li" refract press={false} className="rounded-card bg-card motion-safe:animate-rise-in" style={{ animationDelay: `${index * 70}ms` }}>
     <button type="button" onClick={onToggle} aria-expanded={open} className="flex w-full items-center gap-3 rounded-card px-4 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent/50">
       <span className="min-w-0 flex-1">
         <span className="flex items-center gap-2.5 text-body font-extrabold text-ink">
-          Version {entry.version}
-          {isNew && <Badge variant="live" className="motion-safe:animate-badge-pop">Neu</Badge>}
+          {t("Version")} {entry.version}
+          {isNew && <Badge variant="live" className="motion-safe:animate-badge-pop">{t("Neu")}</Badge>}
         </span>
         <span className="block text-caption text-faint">{open ? newsDateLong(entry.date) : entryHint(entry)}</span>
       </span>
@@ -31,5 +34,6 @@ const EntryCard = ({ entry, open, isNew, index, onToggle }) => (
     </div>
   </Liquid>
 );
+};
 
 export default EntryCard;
