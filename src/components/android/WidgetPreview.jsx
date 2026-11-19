@@ -10,7 +10,7 @@ const WidgetPreview = ({ widget }) => {
   const size = info?.sizes.includes(wanted) ? wanted : info?.sizes[0];
   const block = { id: "vorschau", kind: widget.kind, size, opts: info?.opts ?? {} };
   return (
-    <div data-glass-bg="aurora" className="glass-backdrop grid min-h-48 place-items-center rounded-card p-4" aria-hidden="true">
+    <div data-glass-bg="aurora" className="glass-backdrop widget-wall grid min-h-48 place-items-center rounded-card p-4" aria-hidden="true">
       {/* inert: превью только смотреть — ссылки и кнопки блока не нажимаются */}
       <div inert className={size === "klein" ? "w-1/2" : "w-full"}>
         <StartBlock block={block} editing />

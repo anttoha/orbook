@@ -562,6 +562,8 @@
         radial-gradient(36% 30% at 92% 100%, var(--color-glass-1), transparent 72%),
         var(--color-page);
 }
+/* Превью виджета (часть 31b): «обои» Aurora в любом оформлении — основа под пятнами своя */
+.widget-wall { --color-page: var(--color-tint); }
 html[data-design="glas"] body { background: var(--color-page); }
 html[data-design="glas"] body::before {
     content: "";
