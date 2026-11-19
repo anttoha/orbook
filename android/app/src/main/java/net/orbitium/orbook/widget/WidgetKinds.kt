@@ -282,11 +282,12 @@ private class WeekCellSize(val height: Int, val room: Boolean, val teacher: Bool
             val h = (free / periods.coerceAtLeast(1)).toInt() - gap
             val room = detail != "kuerzel"
             val teacher = detail == "lehrkraft"
+            // строка текста Android занимает больше, чем размер шрифта (отступы шрифта): 11 sp ≈ 17 dp, 9,5 sp ≈ 15 dp
             return when {
                 h >= 48 -> WeekCellSize(minOf(h, 60), room, teacher, 12.5f, true)
                 h >= 34 -> WeekCellSize(h, room, false, 12.5f, true)
-                h >= 18 -> WeekCellSize(h, false, false, 11f, true)
-                h >= 13 -> WeekCellSize(h, false, false, 9.5f, true)
+                h >= 19 -> WeekCellSize(h, false, false, 11f, true)
+                h >= 15 -> WeekCellSize(h, false, false, 9.5f, true)
                 else -> WeekCellSize(h.coerceAtLeast(6), false, false, 9.5f, false) // только цвет
             }
         }
@@ -303,14 +304,23 @@ private fun WeekCell(s: WidgetState, look: Look, lesson: Lesson?, cell: WeekCell
     val ink = if (lesson.cancelled) look.p.danger else fach.text
     if (!cell.text) return Box(mod.background(look.of(bg))) {}
     // подпись: «Wie App» — как клетка недели в приложении (Kürzel или Name)
-    val label = when (s.config.subject) {
-        "name" -> lesson.title
-        "kuerzel" -> lesson.code
+    val small = cell.height < 34
+    val label = when {
+        small -> lesson.code // в маленькой клетке «Mathe» не влезет — только Kürzel
+        s.config.subject == "name" -> lesson.title
+        s.config.subject == "kuerzel" -> lesson.code
         else -> if (s.snapshot.plan.lessonLabel == "name") lesson.title else lesson.code
+    }
+    if (small) {
+        // маленькая клетка: Kürzel по центру, без отступов — иначе в узкой клетке текста не останется
+        return Box(mod.background(look.of(bg)), contentAlignment = Alignment.Center) {
+            Label(label, look.of(ink), cell.fontSize, heavy = true, strike = lesson.cancelled)
+        }
     }
     Row(mod.background(look.of(bg)).padding(horizontal = 5.dp), verticalAlignment = Alignment.CenterVertically) {
         Column(GlanceModifier.defaultWeight()) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            // fillMaxWidth обязателен: без него defaultWeight внутри получает 0 dp и текст пропадает (ошибка 31d)
+            Row(GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Box(GlanceModifier.defaultWeight()) { Label(label, look.of(ink), cell.fontSize, heavy = true, strike = lesson.cancelled) }
                 if (cell.teacher && lesson.teacher != null) Label(lesson.teacher, look.of(ink), 9.5f, bold = true)
             }
