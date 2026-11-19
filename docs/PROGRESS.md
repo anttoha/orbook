@@ -570,3 +570,9 @@ Spec и план: `docs/specs/30-personalisierung/spec.md` — под-части
 Datenschutz на EN/UK: абзацы из `src/shared/datenschutz.js` переводятся целиком (ключ — немецкий абзац), `t()` в `pages/Datenschutz.jsx` и `components/datenschutz/PrivacySection.jsx`. +71 пара в `en.js`/`uk.js` (скрипт `/root/work/orbook-compare/_tools/i18n/tr32c.mjs`). Названия кнопок в тексте — как в переведённом интерфейсе. Имена cookie не переводятся. Тест в `datenschutz.test.js`: у каждого текста есть перевод — поменял абзац по-немецки, тест напомнит обновить перевод.
 **Часть 32 готова.** Changelog — при следующем релизе («на прод»).
 **Дальше:** часть 31 (Android-APK + виджет) — нужен дизайн (`/orb-design`), Opus · effort high.
+
+## Часть 31 «Android-App + Widget» — ждёт «ок дизайн» (2026-11-19)
+Макеты: `design/neu/31-android-widget/` (`gen.py` — блоки и оформление из части 30, `build.py` — обзор `index.html`), артефакт https://claude.ai/artifact/RK6AsskFyQuMcpRoMyNzT4, PNG с Nunito — `/root/work/orbook-compare/31-android-widget/png/`.
+Экраны: рабочий стол с виджетами (те же 9 блоков, что на Start, любой размер), состояния виджета (Wochenende, offline «Stand …», nicht angemeldet, Zugang beendet, lädt), «Widget einstellen» (Klasse, Inhalt, Nur meine Kurse, Aussehen, Hintergrund), Mehr → карточка «ORBook für Android» и страница «Android-App» (APK, шаги, виджет, «Lieber als Web-App»), ошибка загрузки, обновление внутри APK (окно, загрузка), «Android-App» в самом приложении (мои виджеты), ПК — QR.
+План: 31a Capacitor-обёртка + подпись + сборка APK в Actions + проверка обновлений; 31b виджет на Kotlin (Jetpack Glance); 31c сайт (Mehr, QR, Datenschutz, changelog); бэкенд — APK и версия в `/api/public/info`.
+**Дальше:** «ок дизайн» → spec и код на Opus · effort high (`/orb 31`).
