@@ -5,6 +5,15 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.18.1",
+    date: "2026-11-19",
+    neu: ["Android: Ein Einladungslink oder QR-Code öffnet jetzt direkt die ORBook-App, du musst den Code nicht mehr abtippen."],
+    behoben: [
+      "Widget „Woche“ zeigt jetzt die ganze Woche mit allen Stunden – nichts wird mehr abgeschnitten.",
+      "Beim Einstellen eines Widgets ragt die Vorschau mit langen Zeilen nicht mehr über den Rand.",
+    ],
+  },
+  {
     version: "0.18.0",
     date: "2026-11-19",
     neu: [

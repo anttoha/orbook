@@ -49,7 +49,7 @@ const HeuteBlock = ({ block, editing }) => {
               <span className="w-9 shrink-0 text-caption text-faint">{lesson.start}</span>
               <span className={cn("size-2 shrink-0 rounded-full", cancelled ? "bg-danger" : fachDotClass(lesson.subject?.code, overrides))} />
               <span className={cn("min-w-0 flex-1 truncate text-body-sm font-bold", cancelled ? "text-danger line-through" : "text-ink")}>{subjectName(lesson.subject)}</span>
-              {aside.text && <span className={cn("shrink-0 truncate text-caption", aside.className)}>{aside.text}</span>}
+              {aside.text && <span className={cn("max-w-[45%] shrink-0 truncate text-caption", aside.className)}>{aside.text}</span>}
             </li>
           );
         })}
