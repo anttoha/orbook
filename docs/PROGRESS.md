@@ -604,3 +604,10 @@ Android: виджет на Glance (9 видов, размеры, состоян�
 Листы: 9 видов × 5 размеров (2×1 … 4×5, светлая); Soft/Glas/Klar на рабочем столе (светлая и тёмная); 6 акцентов и прозрачность фона; «Widget einstellen» (светлая и тёмная) + настройки отдельных видов.
 Правило содержания (в `gen.py`, функция `fit`): важность (идёт сейчас → изменения → остальное → прошедшее) → плотность (2 строки → 1 → мельче; узко — Kürzel или две строки) → «+ N weitere». Glas в виджете — без размытия (полупрозрачность, кромка, блик).
 **Дальше:** «ок дизайн» → spec и код на Opus · effort high (`/orb 31d`).
+Владелец 19.11: «ок дизайн», все настройки оставить.
+
+## Часть 31d — готово на демо (2026-11-19)
+Сайт `82894c3`: «Widget einstellen» по макету handy-12/13 — плитки видов, «Anzeige» своя у каждого вида (`WIDGET_ROWS`), Aussehen (Design, Hell/Dunkel, Schrift, Hintergrund 0–100 %, Akzent), Verhalten (Aktualisieren, Beim Tippen öffnen); настройка — `widgetConfig.js` (+ тест); снимок v2 с оформлением и «Stundenplan» + тест «каждая настройка в снимке».
+Android `4f9b3f5`: правило содержания `WidgetLayout.kt` (+ JUnit), 9 видов по размеру `WidgetKinds.kt`, палитры Soft/Glas/Klar × 6 акцентов (`Soft.kt`), новые поля `WidgetConfig`, частота обновления 15/30/60. Datenschutz: «alle 15, 30 oder 60 Minuten». Gradle lint — 0 ошибок, тесты зелёные; `npm run lint`, 621 тест, build — ок.
+Демо: сайт выложен, демо-APK 0.18.1 (6) на `/api/public/android/apk`. Снимки экрана: `/root/work/orbook-compare/31d-widget-design/` (`vergleich-einstellen.png`, скрипт `_tools/p31d-einstellen.mjs`).
+**Дальше:** владелец проверяет виджеты на телефоне; потом «на прод» (changelog + релиз + прод-APK).
