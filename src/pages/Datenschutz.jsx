@@ -23,7 +23,7 @@ const Fact = ({ Icon, title, text }) => (
 );
 
 // Экран «Datenschutz» (макет 27, часть 23). Сверху — коротко, как в макете; ниже «Genauer» — всё подробно, по разделам.
-// Открывается и без входа: ссылка есть на экране «Zugang». Тексты — в shared/datenschutz.js.
+// Открывается и без входа: ссылка есть на экране «Zugang». Тексты — в shared/datenschutz.js, переводы — в i18n по немецкому тексту.
 // Внизу «Meine Sync-Notizen löschen» — только после входа и когда на устройстве есть Sync-Code.
 const Datenschutz = () => {
   const t = useT();
@@ -41,7 +41,7 @@ const Datenschutz = () => {
 
       <ul className="mt-5 flex flex-col gap-5">
         {FACTS.map((fact) => (
-          <Fact key={fact.id} Icon={ICONS[fact.id]} title={fact.title} text={fact.text} />
+          <Fact key={fact.id} Icon={ICONS[fact.id]} title={t(fact.title)} text={t(fact.text)} />
         ))}
         <Fact Icon={Shield} title={t("Verantwortlich")} text={responsibleText(info?.privacy)} />
       </ul>

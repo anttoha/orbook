@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { FACTS, SECTIONS, STAND } from "../datenschutz";
 import { isIsoDate } from "./format";
+import { en } from "../i18n/en";
+import { uk } from "../i18n/uk";
 
 // Тексты Datenschutz — не логика, но ошибки в них дорогие: проверяем форму и что старые неверные фразы не вернулись.
 const allText = [...FACTS.map((f) => f.text), ...SECTIONS.flatMap((s) => [...s.intro, ...(s.rows ?? []).flat()])].join(" ");
@@ -26,5 +28,19 @@ describe("Datenschutz-Texte", () => {
 
   it("без устаревших фраз из первой версии", () => {
     expect(allText).not.toMatch(/gemeinsamen Passwort|ohne Autor|außer der Anmeldung\./);
+  });
+});
+
+// Страница переводится целиком (часть 32): у каждого заголовка, абзаца и строки таблицы — пара в en и uk.
+// Имена cookie — не текст, их не переводим.
+describe("Datenschutz-Übersetzungen", () => {
+  const cookieNames = SECTIONS.find((s) => s.id === "cookies").rows.map(([name]) => name);
+  const texts = [
+    ...FACTS.flatMap((f) => [f.title, f.text]),
+    ...SECTIONS.flatMap((s) => [s.title, ...s.intro, ...(s.rows ?? []).flat()]),
+  ].filter((text) => !cookieNames.includes(text));
+
+  it.each([["en", en], ["uk", uk]])("на %s переведён каждый текст", (code, dict) => {
+    expect(texts.filter((text) => !(text in dict))).toEqual([]);
   });
 });
