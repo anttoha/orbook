@@ -3,6 +3,10 @@ package net.orbitium.orbook
 import android.net.Uri
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import net.orbitium.orbook.widget.WidgetStore
+import net.orbitium.orbook.widget.WidgetWorker
+import net.orbitium.orbook.widget.Widgets
+import org.json.JSONException
 import org.json.JSONObject
 
 /**
@@ -10,7 +14,15 @@ import org.json.JSONObject
  * Отвечает только нашему сайту: на чужой странице методы ничего не делают.
  * Обёртка во фронте — src/shared/api/android.js.
  */
-class AndroidBridge(private val web: WebView) {
+class AndroidBridge(private val web: WebView, private val host: WidgetHost? = null) {
+    /** Экран «Widget einstellen» (WidgetConfigActivity) узнаёт, что виджет сохранили или закрыли. */
+    interface WidgetHost {
+        fun widgetSaved(id: Int)
+        fun widgetClosed()
+    }
+
+    private val context = web.context.applicationContext
+
     @Volatile
     var pageUrl: String? = null
 
@@ -38,6 +50,47 @@ class AndroidBridge(private val web: WebView) {
     @JavascriptInterface
     fun cancelUpdate() {
         if (allowed()) updater.cancel()
+    }
+
+    // ── виджет (часть 31b) ──
+
+    /** Виджеты на телефоне: [{"id", "kind", "classId", "mine", "look", "background", "cols", "rows"}] */
+    @JavascriptInterface
+    fun widgets(): String? = if (allowed()) Widgets.list(context).toString() else null
+
+    @JavascriptInterface
+    fun widget(id: Int): String? = if (allowed()) Widgets.describe(context, id).toString() else null
+
+    /** «Fertig» в «Widget einstellen»: сохранить и обновить виджет. */
+    @JavascriptInterface
+    fun saveWidget(id: Int, json: String) {
+        if (!allowed()) return
+        try {
+            Widgets.save(context, id, JSONObject(json))
+        } catch (e: JSONException) {
+            return
+        }
+        web.post { host?.widgetSaved(id) }
+    }
+
+    /** ✕ в «Widget einstellen»: при первой настройке — виджет не кладётся. */
+    @JavascriptInterface
+    fun closeWidget() {
+        if (allowed()) web.post { host?.widgetClosed() }
+    }
+
+    /** То, чего нет на сервере: классы, «Meine Kurse», заметки, галочки, тексты (src/shared/utils/widgetSnapshot.js). */
+    @JavascriptInterface
+    fun saveSnapshot(json: String) {
+        if (!allowed()) return
+        WidgetStore(context).saveSnapshot(json)
+        Widgets.redraw(context)
+    }
+
+    /** Новый план пришёл в открытое приложение — освежить виджеты сразу, не ждать 30 минут. */
+    @JavascriptInterface
+    fun refreshWidgets() {
+        if (allowed()) WidgetWorker.refreshNow(context)
     }
 
     /** Событие для сайта: window.addEventListener("orbook-android", e => e.detail) */

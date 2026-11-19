@@ -10,10 +10,11 @@ import { isNewer } from "../shared/utils/android";
 import { cn } from "../shared/utils/cn";
 import Button from "../components/ui/Button";
 import OrbitMark from "../components/ui/OrbitMark";
+import WidgetList from "../components/android/WidgetList";
 import PageHeader from "../components/ui/PageHeader";
 import { useT } from "../shared/hooks/useT";
 
-// «Android-App» внутри APK (часть 31a, макет 31 handy-10 без виджетов — они в 31b).
+// «Android-App» внутри APK (часть 31a, макет 31 handy-10; виджеты — часть 31b).
 // В браузере страницы пока нет (31c добавит APK, шаги и QR) — уходим в «Mehr».
 const AndroidApp = () => {
   const t = useT();
@@ -71,6 +72,7 @@ const AndroidApp = () => {
           </Button>
         )}
       </section>
+      <WidgetList />
     </div>
   );
 };

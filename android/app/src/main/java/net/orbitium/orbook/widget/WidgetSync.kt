@@ -1,0 +1,96 @@
+package net.orbitium.orbook.widget
+
+import android.content.Context
+import android.net.Uri
+import android.webkit.CookieManager
+import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.updateAll
+import androidx.work.Constraints
+import androidx.work.CoroutineWorker
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
+import net.orbitium.orbook.Site
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
+import java.util.concurrent.TimeUnit
+
+/**
+ * Загрузка данных виджетов: GET /api/widget с cookie входа из WebView приложения.
+ * Каждый класс (и «Nur meine Kurse» вкл/выкл) спрашивается один раз, сколько бы виджетов его ни показывали.
+ */
+object WidgetSync {
+    suspend fun run(context: Context) {
+        val store = WidgetStore(context)
+        val snapshot = store.snapshot()
+        val manager = GlanceAppWidgetManager(context)
+        val configs = manager.getGlanceIds(OrbWidget::class.java)
+            .mapNotNull { store.config(manager.getAppWidgetId(it)) }
+        for ((classId, mine) in configs.map { it.classId to it.mine }.distinct()) {
+            val own = snapshot.classes.firstOrNull { it.id == classId }
+            fetch(store, classId, mine, own)
+        }
+        OrbWidget().updateAll(context)
+    }
+
+    private fun fetch(store: WidgetStore, classId: Int?, mine: Boolean, own: SnapshotClass?) {
+        val key = WidgetStore.key(classId, mine)
+        val query = Uri.Builder()
+        if (mine && own != null) {
+            if (own.courses.isNotEmpty()) query.appendQueryParameter("courses", own.courses.joinToString(","))
+            if (own.hidden.isNotEmpty()) query.appendQueryParameter("hidden", own.hidden.joinToString(","))
+        }
+        val url = Site.url("/api/widget") + (query.build().encodedQuery?.let { "?$it" } ?: "")
+        val connection = URL(url).openConnection() as HttpURLConnection
+        try {
+            connection.connectTimeout = 15_000
+            connection.readTimeout = 20_000
+            CookieManager.getInstance().getCookie(Site.url("/"))?.let { connection.setRequestProperty("Cookie", it) }
+            classId?.let { connection.setRequestProperty("X-ORBook-Class", it.toString()) }
+            if (store.data(key) != null) store.etag(key)?.let { connection.setRequestProperty("If-None-Match", it) }
+            val now = System.currentTimeMillis()
+            when (connection.responseCode) {
+                200 -> store.saveData(key, connection.inputStream.bufferedReader().use { it.readText() }, connection.getHeaderField("ETag"), now)
+                304 -> store.touch(key, now)
+                401 -> store.saveState(key, "auth")
+                403 -> store.saveState(key, "ended")
+                // остальное (сервер занят, 5xx) — оставляем последние данные, виджет покажет «Stand …»
+            }
+        } catch (e: IOException) {
+            // нет сети — тоже последние данные и «Stand …»
+        } finally {
+            connection.disconnect()
+        }
+    }
+}
+
+/** Фоновое обновление: раз в 30 минут (WorkManager сам ждёт сеть) и сразу по просьбе сайта или Android. */
+class WidgetWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
+    override suspend fun doWork(): Result {
+        WidgetSync.run(applicationContext)
+        return Result.success()
+    }
+
+    companion object {
+        private const val PERIODIC = "orbook-widget"
+        private const val NOW = "orbook-widget-now"
+
+        fun schedule(context: Context) {
+            val request = PeriodicWorkRequestBuilder<WidgetWorker>(30, TimeUnit.MINUTES)
+                .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                .build()
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork(PERIODIC, ExistingPeriodicWorkPolicy.KEEP, request)
+        }
+
+        fun refreshNow(context: Context) {
+            WorkManager.getInstance(context).enqueueUniqueWork(NOW, ExistingWorkPolicy.REPLACE, OneTimeWorkRequestBuilder<WidgetWorker>().build())
+        }
+
+        fun stop(context: Context) = WorkManager.getInstance(context).cancelUniqueWork(PERIODIC)
+    }
+}

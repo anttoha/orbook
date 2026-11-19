@@ -4,4 +4,6 @@
     <color name="paper">#FBF7F2</color>
     <color name="accent">#6C4DF6</color>
     <color name="tint">#EEE9FF</color>
+    <color name="card">#FFFFFF</color>
+    <color name="faint">#978FA1</color>
 </resources>

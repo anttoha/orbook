@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Подпись в списке виджетов Android (виджет сам берёт язык сайта; здесь — язык телефона) -->
+    <string name="widget_description">Stundenplan, Tests und Aufgaben auf dem Startbildschirm</string>
+</resources>

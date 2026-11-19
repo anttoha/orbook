@@ -18,6 +18,7 @@ import { useNotesSync } from "../shared/hooks/useNotesSync";
 import { useAppHotkeys } from "../shared/hooks/useAppHotkeys";
 import { useNewsOnStart } from "../shared/hooks/useNewsOnStart";
 import { useAndroidUpdateOnStart } from "../shared/hooks/useAndroidUpdateOnStart";
+import { useAndroidWidgetSync } from "../shared/hooks/useAndroidWidgetSync";
 import { useTipsOnStart } from "../shared/hooks/useTipsOnStart";
 import { usePlanLive } from "../shared/hooks/usePlanLive";
 import { usePushOnStart } from "../shared/hooks/usePushOnStart";
@@ -62,6 +63,7 @@ const HomePage = () => {
   useNewsOnStart(Boolean(me) && coursesChosen); // «Was ist neu» — один раз после новой версии (часть 22b)
   useTipsOnStart(Boolean(me) && coursesChosen && !link); // «Kurz erklärt» — один раз новичку (часть 25)
   useAndroidUpdateOnStart(Boolean(me) && coursesChosen); // в Android-App: раз в день «Update ist da?» (часть 31a)
+  useAndroidWidgetSync(Boolean(me)); // в Android-App: снимок для виджета и «освежить» после нового плана (часть 31b)
   usePushOnStart(Boolean(me) && me.features?.push !== false); // часть 17: Mitteilungen — курсы и «я ещё здесь»
   usePlanLive(Boolean(me)); // часть 26: новый план приходит сам (поток), без потока — опрос раз в минуту
   useNotesSync(Boolean(me) && me.features?.notesSync !== false); // нотатки на інших пристроях (якщо є Sync-Code)

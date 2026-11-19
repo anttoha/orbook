@@ -34,3 +34,17 @@ export function onAndroidEvent(handler) {
 
 // Последнее APK на сервере (без входа) или null, если его там нет
 export const getAndroidRelease = () => api("/public/android");
+
+// ── Часть 31b: виджет на рабочем столе ──
+
+// Виджеты на телефоне (строка JSON) — разбирает shared/utils/widgetSnapshot.js. Без моста — null
+export const androidWidgets = () => androidBridge()?.widgets?.() ?? null;
+export const androidWidget = (id) => androidBridge()?.widget?.(Number(id)) ?? null;
+
+// «Fertig»: приложение сохраняет настройку и обновляет виджет
+export const saveWidget = (id, config) => androidBridge()?.saveWidget?.(Number(id), JSON.stringify(config));
+export const closeWidget = () => androidBridge()?.closeWidget?.();
+
+// Снимок для виджета (классы, «Meine Kurse», заметки, галочки, тексты) и «освежить сейчас» после нового плана
+export const saveSnapshot = (snapshot) => androidBridge()?.saveSnapshot?.(JSON.stringify(snapshot));
+export const refreshWidgets = () => androidBridge()?.refreshWidgets?.();

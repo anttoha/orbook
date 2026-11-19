@@ -11,13 +11,11 @@ import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import net.orbitium.orbook.widget.WidgetWorker
 
 /**
  * Всё приложение — это наш сайт в WebView. Поэтому интерфейс обновляется вместе с сайтом,
@@ -39,7 +37,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         web = WebView(this)
         web.setBackgroundColor(getColor(R.color.paper))
-        setContentView(withSystemBarPadding(web))
+        setContentView(withSystemBarPadding(this, web))
 
         setUpWebView()
         bridge = AndroidBridge(web)
@@ -47,21 +45,22 @@ class MainActivity : ComponentActivity() {
         onBackPressedDispatcher.addCallback(this, backCallback)
 
         if (savedInstanceState == null || web.restoreState(savedInstanceState) == null) {
-            web.loadUrl(Site.url("/"))
+            web.loadUrl(startUrl(intent))
         }
     }
 
-    /** Android 15 рисует приложение под строкой состояния — отодвигаем сайт от системных панелей и клавиатуры. */
-    private fun withSystemBarPadding(content: WebView): FrameLayout {
-        val root = FrameLayout(this)
-        root.setBackgroundColor(getColor(R.color.paper))
-        root.addView(content)
-        ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
-            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
-            view.setPadding(bars.left, bars.top, bars.right, bars.bottom)
-            WindowInsetsCompat.CONSUMED
-        }
-        return root
+    // Нажали на виджет: открыть нужную страницу (Heute, Woche, Tests …), только своего сайта
+    private fun startUrl(intent: Intent?): String = intent?.data?.takeIf { Site.isOwn(it) }?.toString() ?: Site.url("/")
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.data != null) web.loadUrl(startUrl(intent))
+    }
+
+    // Приложение открыли — заодно освежить виджеты (новый вход, новый план)
+    override fun onResume() {
+        super.onResume()
+        WidgetWorker.refreshNow(this)
     }
 
     private fun setUpWebView() {

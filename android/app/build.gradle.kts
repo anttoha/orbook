@@ -3,6 +3,8 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    // Виджет (часть 31b) рисуется Jetpack Glance — ему нужен компилятор Compose
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 // Ключ подписи и пароль лежат только на сервере (/root/.orbook-android), не в git.
@@ -63,6 +65,7 @@ android {
 
     buildFeatures {
         buildConfig = true
+        compose = true
     }
 
     compileOptions {
@@ -77,4 +80,7 @@ android {
 dependencies {
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.activity:activity-ktx:1.9.3")
+    // Виджет на рабочем столе: Glance рисует его, WorkManager обновляет раз в 30 минут
+    implementation("androidx.glance:glance-appwidget:1.1.1")
+    implementation("androidx.work:work-runtime-ktx:2.10.0")
 }

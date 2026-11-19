@@ -2,7 +2,7 @@
 // Меняется что-то в данных (новая таблица, cookie, срок) — поправь текст здесь и дату STAND.
 // Формат раздела: title, intro — абзацы, rows — пары [что, пояснение] (cookies, сроки).
 
-export const STAND = "2026-11-13";
+export const STAND = "2026-11-19";
 
 // Коротко — первые строки страницы (макет 27). Иконки подставляет страница по id.
 export const FACTS = [
@@ -79,6 +79,7 @@ export const SECTIONS = [
     title: "Auf deinem Gerät",
     intro: [
       "Im Browser (localStorage) liegen: deine Klassen mit dem Namen und der Farbe, die du ihnen gibst, deine Kurse, Darstellung (auch die Sprache, Design und Akzentfarbe), Fachfarben, Stundenplan-Ansicht und die Blöcke auf deinem Start, deine Notizen, Aufgaben und Häkchen, dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne, damit die App auch ohne Netz geht.",
+      "In der Android-App liegt zusätzlich eine Kopie für das Widget: der Plan der nächsten zwei Wochen, Tests, Hausaufgaben, Termine, deine letzten Notizen und Häkchen. Dafür fragt die App den Server etwa alle 30 Minuten – mit deiner Anmeldung, wie die Website. Entfernst du das letzte Widget, hört das auf. Die Kopie löscht Android zusammen mit der App.",
       "„Klasse verlassen“ oder „Klasse entfernen“ löscht die Kopie der Pläne dieser Klasse. Notizen und Einstellungen bleiben, bis du die Website-Daten im Browser löschst.",
       "Die App lädt nichts von fremden Servern: keine Schriften von Google, kein CDN, keine Analyse.",
     ],
