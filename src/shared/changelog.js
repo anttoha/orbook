@@ -5,6 +5,16 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.19.0",
+    date: "2026-11-19",
+    neu: [
+      "Widgets passen sich jetzt an: Ist wenig Platz, werden die Zeilen dichter, und was nicht mehr reinpasst, steht unten als „+ 3 weitere“. Nichts wird mehr einfach abgeschnitten.",
+      "Widgets sehen aus wie deine App: Soft, Glas oder Klar, dazu deine Akzentfarbe, hell oder dunkel. Änderst du das in der App, ziehen die Widgets mit.",
+      "„Widget einstellen“ kann viel mehr: Schriftgröße, wie durchsichtig der Hintergrund ist, nur Änderungen zeigen, wie oft es sich aktualisiert und was sich beim Antippen öffnet. Jedes Widget hat dazu eigene Einstellungen.",
+    ],
+    behoben: ["Widget „Woche“: In jeder Stunde steht wieder das Fach. Ist das Widget breit und niedrig, liegt die Woche quer – Tage als Zeilen."],
+  },
+  {
     version: "0.18.1",
     date: "2026-11-19",
     neu: ["Android: Ein Einladungslink oder QR-Code öffnet jetzt direkt die ORBook-App, du musst den Code nicht mehr abtippen."],
