@@ -92,3 +92,11 @@ it("класс виджета: сохранённый, если он ещё ес
   expect(widgetClass({ classId: 9 }, classes, 1)).toBe(1);
   expect(widgetClass({ classId: null }, [], null)).toBeNull();
 });
+
+it("заголовки видов виджета с заглавной буквы на любом языке", async () => {
+  const { upperFirst } = await import("./format");
+  expect(upperFirst("зміни")).toBe("Зміни");
+  expect(upperFirst("changes")).toBe("Changes");
+  expect(upperFirst("")).toBe("");
+  expect(upperFirst(undefined)).toBeUndefined();
+});

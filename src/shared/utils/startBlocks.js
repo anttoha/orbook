@@ -1,4 +1,5 @@
 import { translate } from "../i18n/translate";
+import { upperFirst } from "./format";
 // ─────────────────────────────────────────────────────────────
 // «Start» из блоков (часть 30c). Раскладка — просто список { id, kind, size, opts }:
 // только порядок и размер, без координат. Сетка CSS сама раскладывает его
@@ -18,7 +19,7 @@ export const BLOCKS = [
   { kind: "woche", get label() { return translate("Woche"); }, get hint() { return translate("Die ganze Woche im Kleinen"); }, sizes: ["gross"] },
   { kind: "tests", get label() { return translate("Tests"); }, get hint() { return translate("Was als Nächstes ansteht"); }, sizes: ["klein", "breit", "gross"], opts: { count: 2, mine: true } },
   { kind: "aufgaben", get label() { return translate("Aufgaben"); }, get hint() { return translate("Offene Hausaufgaben"); }, sizes: ["klein", "breit"] },
-  { kind: "aenderungen", get label() { return translate("Änderungen"); }, get hint() { return translate("Ausfall und Vertretung"); }, sizes: ["klein", "breit"] },
+  { kind: "aenderungen", get label() { return upperFirst(translate("Änderungen")); }, get hint() { return translate("Ausfall und Vertretung"); }, sizes: ["klein", "breit"] },
   { kind: "termine", get label() { return translate("Termine"); }, get hint() { return translate("Ferien, Elternabend, Ausflug"); }, sizes: ["klein", "breit"], opts: { count: 2 } },
   { kind: "notizen", get label() { return translate("Notizen"); }, get hint() { return translate("Deine letzten Notizen"); }, sizes: ["klein", "breit"] },
   { kind: "materialien", get label() { return translate("Materialien"); }, get hint() { return translate("Neue Links der Klasse"); }, sizes: ["klein", "breit"] },

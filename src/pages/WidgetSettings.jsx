@@ -77,10 +77,10 @@ const WidgetSettings = () => {
           </RowSwitch>
         </li>
         <SettingRow label={t("Aussehen")}>
-          <Segmented label={t("Aussehen")} size="form" className="w-53" options={LOOKS} value={draft.look} onChange={(look) => change({ look })} />
+          <Segmented label={t("Aussehen")} size="form" className="w-60" options={LOOKS} value={draft.look} onChange={(look) => change({ look })} />
         </SettingRow>
         <SettingRow label={t("Hintergrund")}>
-          <Segmented label={t("Hintergrund")} size="form" className="w-53" options={BACKGROUNDS} value={draft.background} onChange={(background) => change({ background })} />
+          <Segmented label={t("Hintergrund")} size="form" className="w-60" options={BACKGROUNDS} value={draft.background} onChange={(background) => change({ background })} />
         </SettingRow>
       </ListCard>
 

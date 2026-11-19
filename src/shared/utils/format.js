@@ -244,3 +244,6 @@ export function infoParagraphs(info) {
   }
   return paragraphs.filter((p) => p.length).map((p) => p.join(" "));
 }
+
+// Первая буква заглавная: перевод «Änderungen» → «зміни» годится в тексте («3 зміни»), а в списках нужно «Зміни»
+export const upperFirst = (text) => (text ? text[0].toUpperCase() + text.slice(1) : text);
