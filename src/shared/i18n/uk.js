@@ -1837,4 +1837,18 @@ export const uk = {
   "Die App verarbeitet nur, was sie zum Funktionieren braucht (Art. 6 Abs. 1 lit. f DSGVO: berechtigtes Interesse, der Klasse einen aktuellen Plan zu geben).": "Застосунок обробляє лише те, що потрібно для роботи (ст. 6 ч. 1 п. f GDPR: законний інтерес — давати класу актуальний розклад).",
   "Du kannst fragen, was gespeichert ist, und Daten berichtigen oder löschen lassen oder widersprechen (Art. 15–21 DSGVO). Schreib dafür an die Person unter „Verantwortlich“. Du kannst dich auch bei einer Datenschutz-Aufsichtsbehörde beschweren.": "Ти можеш запитати, що зберігається, вимагати виправити чи видалити дані або заперечити (ст. 15–21 GDPR). Для цього напиши особі, вказаній у розділі «Відповідальна особа». Ти також можеш поскаржитися до наглядового органу із захисту даних.",
   "Vieles kannst du selbst: Sync-Daten löschen, „Klasse verlassen“, Website-Daten im Browser löschen.": "Багато чого можна зробити самому: видалити дані синхронізації, «Покинути клас», видалити дані сайту в браузері.",
+  // Часть 31a: Android-App
+  "Download fehlgeschlagen – keine Verbindung": "Не вдалося завантажити – немає з’єднання",
+  "Download fehlgeschlagen": "Не вдалося завантажити",
+  "Wird geladen …": "Завантаження …",
+  "{loaded} von {total} MB": "{loaded} з {total} МБ",
+  "Aktualisieren": "Оновити",
+  "Version {version}": "Версія {version}",
+  "Update ist da": "Є оновлення",
+  "Android-App": "Додаток для Android",
+  "ORBook für Android": "ORBook для Android",
+  "Update {version} ist da": "Є оновлення {version}",
+  "Installiert · {version} · aktuell": "Встановлено · {version} · актуальна",
+  "Installiert · {version}": "Встановлено · {version}",
+  "Nach Update suchen": "Перевірити оновлення",
 };

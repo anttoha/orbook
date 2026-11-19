@@ -16,6 +16,7 @@ import TipsSheet from "./TipsSheet";
 import LessonSheet from "./LessonSheet";
 import MaterialSheet from "./MaterialSheet";
 import NewsSheet from "./NewsSheet";
+import UpdateSheet from "./UpdateSheet";
 import NoteSheet from "./NoteSheet";
 import ShareSheet from "./ShareSheet";
 import ShortcutsSheet from "./ShortcutsSheet";
@@ -49,6 +50,7 @@ const SHEETS = {
   editorcode: EditorCodeSheet, // код посеред запису: форма лишається під вікном
   tasten: ShortcutsSheet, // Tastenkürzel (клавіша «?»)
   news: NewsSheet, // «Was ist neu» после новой версии (часть 22b)
+  update: UpdateSheet, // «Update ist da» — только в Android-App (часть 31a)
   einladen: ClassInviteSheet, // «Klasse einladen»: посилання і QR (частина 16)
   ruhezeit: QuietSheet, // Mitteilungen → Ruhezeit (частина 17)
   installieren: IosInstallSheet, // «ORBook installieren» на iPhone (частина 17)

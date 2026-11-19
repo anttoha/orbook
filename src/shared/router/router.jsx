@@ -44,6 +44,7 @@ import RouteError from "../../pages/RouteError";
 import Datenschutz from "../../pages/Datenschutz";
 import JoinPage from "../../pages/JoinPage";
 import Neuigkeiten from "../../pages/Neuigkeiten";
+import AndroidApp from "../../pages/AndroidApp";
 import SettingsLayout from "../../pages/SettingsLayout";
 
 // Помилка спрацьовує на найближчому errorElement. Тому він є на кожній сторінці:
@@ -126,6 +127,7 @@ export const router = createBrowserRouter([
               page({ path: "editor-code", Component: EditorCode }),
               page({ path: "klasse-verwalten", Component: ClassManage }), // Zugangscodes своего класса (часть 29c)
               page({ path: "neuigkeiten", Component: Neuigkeiten }), // «Was ist neu», все версии (часть 22b)
+              page({ path: "android", Component: AndroidApp }), // Android-App: версия и обновление (часть 31a)
               page({ path: "datenschutz", Component: Datenschutz }),
             ],
           },

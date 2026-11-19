@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Без панели: весь экран — сайт. Фон как у сайта, чтобы при запуске не мигало белым -->
+    <style name="Theme.ORBook" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/paper</item>
+        <item name="android:colorAccent">@color/accent</item>
+    </style>
+</resources>

@@ -38,6 +38,14 @@
 | 31b | Виджет: Glance, 9 видов, размеры, состояния (03), «Widget einstellen» (04), `GET /api/widget` (бэкенд), `saveSnapshot`/`refreshWidgets`, WorkManager; список виджетов в «Android-App» (10) | `android/`, бэкенд, фронт |
 | 31c | Сайт: карточка в Mehr и строка «Android-App» (06), страница с APK, шагами и QR (05, 09, pc-01), Datenschutz (что хранит APK и виджет на телефоне), changelog, переводы EN/UK | фронт |
 
+## 31a — как сделано (2026-11-19)
+- Мост: `version()` → JSON `{versionName, versionCode, site}`; `installUpdate()` **без аргумента** — приложение само читает `/api/public/android`, качает `/api/public/android/apk`, сверяет `sha256` и открывает установщик (чужой адрес подсунуть нельзя); `cancelUpdate()` — для «Abbrechen». Ход — событие `orbook-android` (`download` / `done` / `error` с `reason`: `network`, `checksum`, `missing`, `permission`).
+- Первое обновление: если ORBook ещё не может ставить приложения, Android открывает экран разрешения; тоста нет.
+- Фронт: `shared/api/android.js` (мост, тест), `shared/utils/android.js` (сравнение версий, «раз в день», МБ, тест), `shared/store/androidStore.js` (в localStorage — только день проверки), `useAndroidUpdateOnStart` (не перебивает открытое окно, например «Was ist neu»), `UpdateSheet` (`?sheet=update`), страница `/mehr/android`, строка «Android-App» в Mehr — пока только внутри APK.
+- `notes` в `android.json` — запись changelog с той же версией (`scripts/android-notes.mjs`), `versionName` — последняя версия changelog.
+- Бэкенд: `GET /api/public/android`, `/api/public/android/apk`, папка `ORBOOK_ANDROID_DIR` (по умолчанию `android` рядом с базой); выложен 19.11, пока отвечает `null`.
+- Ограничения WebView: Web Push внутри APK не работает (Mitteilungen — через браузер/PWA или Telegram); скачивание через `blob:` (ICS в Termin) в APK не сохраняется — решить в 31b вместе с мостом.
+
 ## Datenschutz (дописать в 31b/31c)
 APK и виджет хранят на телефоне то же, что сайт, плюс копию данных виджета (план на несколько дней, тесты, домашки, заметки для виджета) — только на устройстве. Сервер отдаёт APK без входа и не узнаёт, установлено ли приложение. Проверка обновлений — анонимный запрос раз в день.
 

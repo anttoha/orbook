@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="paper">#16131C</color>
+    <color name="accent">#A58BFF</color>
+    <color name="tint">#2C2548</color>
+</resources>

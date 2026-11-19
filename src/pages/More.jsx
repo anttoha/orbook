@@ -1,5 +1,5 @@
-import { Bell, Folder, Info, Palette, Sparkles, Sun, Table2, UserPlus, UsersRound } from "lucide-react";
-import { useEffect } from "react";
+import { Bell, Folder, Info, Palette, Smartphone, Sparkles, Sun, Table2, UserPlus, UsersRound } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { version } from "../../package.json";
 import NewBadge from "../components/changelog/NewBadge";
@@ -11,6 +11,7 @@ import { usePushStore } from "../shared/store/pushStore";
 import { prefsSummary } from "../shared/utils/push";
 import { KeyIcon, ShieldIcon, StatsIcon, SyncIcon } from "../components/ui/icons";
 import { changelog } from "../shared/changelog";
+import { androidApp } from "../shared/api/android";
 import { settingsGroups } from "../shared/constants/constants";
 import ListCard from "../components/ui/ListCard";
 import { useSyncAllowed } from "../shared/hooks/useNotesSync";
@@ -71,6 +72,7 @@ const PhoneMenu = () => {
   const theme = useTheme((s) => s.theme);
   const syncCode = useSyncStore((s) => s.code);
   const syncAllowed = useSyncAllowed();
+  const [android] = useState(androidApp); // Android-App (часть 31a); в браузере — null
   const pushOn = usePushStore((s) => s.enabled);
   const pushPrefs = usePushStore((s) => s.prefs);
   const pushAllowed = me?.features?.push !== false;
@@ -104,6 +106,8 @@ const PhoneMenu = () => {
         <MenuRow to="/materialien" icon={Folder} label={t("Materialien")} value={links ? `${links} ${t(links === 1 ? "Link" : "Links")}` : null} />
         {/* частина 16: посилання і QR для однокласників; вимкнене — шторка так і скаже */}
         <MenuRow onClick={() => openSheet("einladen")} icon={UserPlus} label={t("Klasse einladen")} value="Link + QR" />
+        {/* часть 31a: только внутри APK — версия и обновление (в браузере строка появится в 31c) */}
+        {android && <MenuRow to="/mehr/android" icon={Smartphone} label={t("Android-App")} value={android.versionName} />}
         {/* часть 25: три подсказки с первого входа — открыть ещё раз */}
         <MenuRow onClick={() => openSheet("tipps")} icon={Info} label={t("Kurz erklärt")} value={t("3 Tipps")} />
         <MenuRow to="/mehr/datenschutz" icon={ShieldIcon} label={t("Datenschutz")} />

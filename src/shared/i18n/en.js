@@ -1837,4 +1837,18 @@ export const en = {
   "Die App verarbeitet nur, was sie zum Funktionieren braucht (Art. 6 Abs. 1 lit. f DSGVO: berechtigtes Interesse, der Klasse einen aktuellen Plan zu geben).": "The app only processes what it needs to work (Art. 6 (1)(f) GDPR: legitimate interest in giving the class an up-to-date timetable).",
   "Du kannst fragen, was gespeichert ist, und Daten berichtigen oder löschen lassen oder widersprechen (Art. 15–21 DSGVO). Schreib dafür an die Person unter „Verantwortlich“. Du kannst dich auch bei einer Datenschutz-Aufsichtsbehörde beschweren.": "You can ask what is stored, and have data corrected or deleted, or object (Art. 15–21 GDPR). To do so, write to the person under “Responsible”. You can also complain to a data protection supervisory authority.",
   "Vieles kannst du selbst: Sync-Daten löschen, „Klasse verlassen“, Website-Daten im Browser löschen.": "You can do a lot yourself: delete sync data, “Leave class”, clear site data in your browser.",
+  // Часть 31a: Android-App
+  "Download fehlgeschlagen – keine Verbindung": "Download failed – no connection",
+  "Download fehlgeschlagen": "Download failed",
+  "Wird geladen …": "Downloading …",
+  "{loaded} von {total} MB": "{loaded} of {total} MB",
+  "Aktualisieren": "Update",
+  "Version {version}": "Version {version}",
+  "Update ist da": "Update available",
+  "Android-App": "Android app",
+  "ORBook für Android": "ORBook for Android",
+  "Update {version} ist da": "Update {version} available",
+  "Installiert · {version} · aktuell": "Installed · {version} · up to date",
+  "Installiert · {version}": "Installed · {version}",
+  "Nach Update suchen": "Check for updates",
 };

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Цвета Soft из src/index.css (--color-paper, --color-accent, --color-tint) -->
+<resources>
+    <color name="paper">#FBF7F2</color>
+    <color name="accent">#6C4DF6</color>
+    <color name="tint">#EEE9FF</color>
+</resources>
