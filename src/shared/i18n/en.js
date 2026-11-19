@@ -1881,7 +1881,7 @@ export const en = {
   "Startbildschirm": "Home screen",
   "lange drücken": "long-press",
   "Widgets → ORBook": "Widgets → ORBook",
-  "In der Android-App liegt zusätzlich eine Kopie für das Widget: der Plan der nächsten zwei Wochen, Tests, Hausaufgaben, Termine, deine letzten Notizen und Häkchen. Dafür fragt die App den Server etwa alle 30 Minuten – mit deiner Anmeldung, wie die Website. Entfernst du das letzte Widget, hört das auf. Die Kopie löscht Android zusammen mit der App.": "In the Android app there is also a copy for the widget: the timetable for the next two weeks, tests, homework, events, your latest notes and ticks. For this the app asks the server about every 30 minutes – signed in, just like the website. Remove the last widget and this stops. Android deletes the copy together with the app.",
+  "In der Android-App liegt zusätzlich eine Kopie für das Widget: der Plan der nächsten zwei Wochen, Tests, Hausaufgaben, Termine, deine letzten Notizen und Häkchen. Dafür fragt die App den Server alle 15, 30 oder 60 Minuten (so wie im Widget eingestellt, sonst 30) – mit deiner Anmeldung, wie die Website. Entfernst du das letzte Widget, hört das auf. Die Kopie löscht Android zusammen mit der App.": "In the Android app there is also a copy for the widget: the timetable for the next two weeks, tests, homework, events, your latest notes and ticks. For this the app asks the server every 15, 30 or 60 minutes (as set in the widget, otherwise 30) – signed in, just like the website. Remove the last widget and this stops. Android deletes the copy together with the app.",
   "APK herunterladen": "APK download",
   "Datei *öffnen*": "*Open* the file",
   "*„Installation erlauben“*": "*“Allow installation”*",

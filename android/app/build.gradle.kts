@@ -85,4 +85,6 @@ dependencies {
     // Виджет на рабочем столе: Glance рисует его, WorkManager обновляет раз в 30 минут
     implementation("androidx.glance:glance-appwidget:1.1.1")
     implementation("androidx.work:work-runtime-ktx:2.10.0")
+    // Тесты чистых функций виджета (правило содержания 31d) — обычный JUnit на компьютере, без телефона
+    testImplementation("junit:junit:4.13.2")
 }

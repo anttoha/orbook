@@ -117,20 +117,32 @@ fun nowOf(days: List<Day>, at: LocalDateTime): Now? {
     return Now(lesson, running = time >= lesson.start!!, nextCancelled = nextCancelled, after = active.getOrNull(index + 1))
 }
 
-/** День для «Heute»: сегодня, а после последнего урока («abends») и в выходные — следующий учебный день. */
-fun dayToShow(days: List<Day>, at: LocalDateTime): Day? {
+/**
+ * День для «Heute»: сегодня, а после последнего урока («Abends schon morgen») и в выходные — следующий учебный день.
+ * evening = false — сегодняшний день виден до полуночи.
+ */
+fun dayToShow(days: List<Day>, at: LocalDateTime, evening: Boolean = true): Day? {
     val date = at.toLocalDate()
     val today = days.firstOrNull { it.date == date }
     val lastEnd = today?.active()?.lastOrNull()?.end
-    if (today != null && today.hasLessons && lastEnd != null && at.toLocalTime() < lastEnd) return today
+    if (today != null && today.hasLessons && (!evening || (lastEnd != null && at.toLocalTime() < lastEnd))) return today
     return days.firstOrNull { it.date > date && it.hasLessons }
 }
 
-/** «Änderungen»: сегодня (ещё не закончившиеся) и следующий учебный день. */
-fun changesSoon(days: List<Day>, at: LocalDateTime): List<Pair<Day, Lesson>> {
+/**
+ * «Änderungen»: отмены и замены. range: heute — только сегодня (ещё не закончившиеся),
+ * morgen — сегодня и следующий учебный день, woche — до конца этой недели (в выходные — следующей).
+ */
+fun changesIn(days: List<Day>, at: LocalDateTime, range: String = "morgen"): List<Pair<Day, Lesson>> {
     val date = at.toLocalDate()
     val next = days.firstOrNull { it.date > date && it.hasLessons }
-    return days.filter { (it.date == date || it.date == next?.date) && it.status == "ok" }
+    val weekEnd = weekToShow(days, at).lastOrNull()?.date ?: date
+    val inRange: (Day) -> Boolean = when (range) {
+        "heute" -> { d -> d.date == date }
+        "woche" -> { d -> d.date >= date && d.date <= weekEnd }
+        else -> { d -> d.date == date || d.date == next?.date }
+    }
+    return days.filter { inRange(it) && it.status == "ok" }
         .flatMap { d -> d.lessons.filter { it.cancelled || it.changed }.map { d to it } }
         .filter { (d, l) -> d.date != date || l.end == null || l.end > at.toLocalTime() }
 }

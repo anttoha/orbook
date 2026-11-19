@@ -1,5 +1,7 @@
 package net.orbitium.orbook.widget
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.net.Uri
 import android.webkit.CookieManager
@@ -69,7 +71,10 @@ object WidgetSync {
     }
 }
 
-/** Фоновое обновление: раз в 30 минут (WorkManager сам ждёт сеть) и сразу по просьбе сайта или Android. */
+/**
+ * Фоновое обновление: так часто, как просит самый «нетерпеливый» виджет («Aktualisieren» 15/30/60 мин, часть 31d;
+ * 15 минут — меньше Android не даёт), WorkManager сам ждёт сеть; и сразу по просьбе сайта или Android.
+ */
 class WidgetWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
         WidgetSync.run(applicationContext)
@@ -81,10 +86,14 @@ class WidgetWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         private const val NOW = "orbook-widget-now"
 
         fun schedule(context: Context) {
-            val request = PeriodicWorkRequestBuilder<WidgetWorker>(30, TimeUnit.MINUTES)
+            val store = WidgetStore(context)
+            val ids = AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, OrbWidgetReceiver::class.java))
+            val minutes = ids.toList().mapNotNull { id -> store.config(id)?.refresh }.minOrNull() ?: 30
+            val request = PeriodicWorkRequestBuilder<WidgetWorker>(minutes.toLong(), TimeUnit.MINUTES)
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                 .build()
-            WorkManager.getInstance(context).enqueueUniquePeriodicWork(PERIODIC, ExistingPeriodicWorkPolicy.KEEP, request)
+            // UPDATE: новая частота сразу, без потери уже запланированного запуска
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork(PERIODIC, ExistingPeriodicWorkPolicy.UPDATE, request)
         }
 
         fun refreshNow(context: Context) {

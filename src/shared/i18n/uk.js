@@ -1881,7 +1881,7 @@ export const uk = {
   "Startbildschirm": "Головний екран",
   "lange drücken": "утримуйте",
   "Widgets → ORBook": "Віджети → ORBook",
-  "In der Android-App liegt zusätzlich eine Kopie für das Widget: der Plan der nächsten zwei Wochen, Tests, Hausaufgaben, Termine, deine letzten Notizen und Häkchen. Dafür fragt die App den Server etwa alle 30 Minuten – mit deiner Anmeldung, wie die Website. Entfernst du das letzte Widget, hört das auf. Die Kopie löscht Android zusammen mit der App.": "В Android-застосунку є ще копія для віджета: розклад на два тижні вперед, тести, домашні завдання, події, твої останні нотатки й позначки. Для цього застосунок приблизно кожні 30 хвилин звертається до сервера – з твоїм входом, як і сайт. Прибереш останній віджет – це припиниться. Копію Android видаляє разом із застосунком.",
+  "In der Android-App liegt zusätzlich eine Kopie für das Widget: der Plan der nächsten zwei Wochen, Tests, Hausaufgaben, Termine, deine letzten Notizen und Häkchen. Dafür fragt die App den Server alle 15, 30 oder 60 Minuten (so wie im Widget eingestellt, sonst 30) – mit deiner Anmeldung, wie die Website. Entfernst du das letzte Widget, hört das auf. Die Kopie löscht Android zusammen mit der App.": "В Android-застосунку є ще копія для віджета: розклад на два тижні вперед, тести, домашні завдання, події, твої останні нотатки й позначки. Для цього застосунок кожні 15, 30 або 60 хвилин (як налаштовано у віджеті, інакше 30) звертається до сервера – з твоїм входом, як і сайт. Прибереш останній віджет – це припиниться. Копію Android видаляє разом із застосунком.",
   "APK herunterladen": "Завантажити APK",
   "Datei *öffnen*": "*Відкрийте* файл",
   "*„Installation erlauben“*": "*«Дозволити встановлення»*",

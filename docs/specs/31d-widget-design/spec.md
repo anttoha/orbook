@@ -1,6 +1,6 @@
 # Часть 31d — Виджеты: дизайн, содержание, настройки
 
-**Статус:** макеты готовы (`design/neu/31d-widget-design/`, `gen.py` + `build.py`), ждёт «ок дизайн». Модель: Opus · effort high (дизайн — `/orb-design`, потом код).
+**Статус:** дизайн ок 2026-11-19 (`design/neu/31d-widget-design/`), код — см. «Как сделано». Модель: Opus · effort high (дизайн — `/orb-design`, потом код).
 **Источник:** замечания владельца 2026-11-19 после проверки APK 0.18.0 на телефоне.
 
 ## Что не так сейчас
@@ -48,3 +48,18 @@
 ## Связанное, ждёт владельца
 - «ок nginx» для `/.well-known/assetlinks.json` (ссылка-приглашение и QR открывают приложение) — коммит `932c600`, APK не собран.
 - Сборка демо-APK с исправленным «Woche» — по слову «собирай демо».
+
+## Как сделано (код, 2026-11-19)
+**Сайт** (`src/`): настройка виджета — `shared/utils/widgetConfig.js` (поля, значения по умолчанию, разбор ответа моста, строки «Anzeige» у каждого вида — `WIDGET_ROWS`, тест рядом). Экран `pages/WidgetSettings.jsx` собран из `components/android/WidgetKindGrid` (плитки 3×3), `WidgetShow` (Anzeige), `WidgetLook` (Design, Hell/Dunkel, Schrift, Hintergrund-ползунок, Akzent), `WidgetBehaviour` (Aktualisieren, Beim Tippen öffnen). Снимок v2 (`widgetSnapshot.js`): `look` (design, accent, glassBg, glassMode, fontScale), `plan` (planOf), `showWeekend`; список `WIDGET_APP_SETTINGS` + тест «каждая настройка в снимке».
+**Android** (`android/…/widget/`): `WidgetLayout.kt` — правило содержания `fit()` (+ JUnit `WidgetLayoutTest`), `WidgetKinds.kt` — 9 видов по размеру (x×1, узкий, широкий), `Soft.kt` — палитры Soft/Glas/Klar × 6 акцентов, `Look` (рамка, радиус, прозрачность, шрифт), `WidgetStore.kt` — новые поля `WidgetConfig` и чтение снимка v2, `WidgetSync.kt` — частота обновления = самая частая из настроек виджетов.
+
+### Технические решения
+- «Wie App» у «Raum · Lehrkraft»: кабинет всегда, учитель — когда виджет широкий (как макет); «Fach · Wie App» в строках — полное имя, в узкой строке длинное → Kürzel; в клетке «Woche» — как «Stundenplan» приложения.
+- «Ausfall · Wie App» — как «Stundenplan → Ausfall» приложения.
+- Glas: размытия в виджетах Android нет — полупрозрачная карточка + светлая кромка (1,5 dp), без блика-градиента.
+- «Beim Tippen öffnen» — выпадающий список (`SelectPill`, «Passend / Tag / Woche / Tests / Start») вместо строки со стрелкой: отдельный экран выбора ради 5 вариантов не нужен.
+- Countdown «Bis …»: сервер знает только ближайшие каникулы — строки выбора цели нет; есть «Zählen: Schultage / Tage».
+- «Änderungen» большого размера: день («morgen», «Do») во второй строке, без отдельных подзаголовков «Heute/Morgen».
+- Старая настройка 31b «Hintergrund Halb» читается как 70 %.
+- Datenschutz: частота обновления теперь «15, 30 oder 60 Minuten».
+- Проверить виджет на сервере нечем (эмулятора нет): Kotlin — компиляция, lint, JUnit; вид — на телефоне владельца.

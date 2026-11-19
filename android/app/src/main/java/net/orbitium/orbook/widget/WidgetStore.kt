@@ -4,29 +4,83 @@ import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
 
-/** Настройка одного виджета («Widget einstellen»). */
+/**
+ * Настройка одного виджета («Widget einstellen»). Поля и значения — как в src/shared/utils/widgetConfig.js.
+ * «app» — «Wie App»: виджет повторяет «Darstellung» и «Stundenplan» приложения (они приходят в снимке).
+ */
 data class WidgetConfig(
     val kind: String = "jetzt",
     val classId: Int? = null,
     val mine: Boolean = true,
     val look: String = "app", // app | hell | dunkel
-    val background: String = "voll", // voll | halb
+    val design: String = "app", // app | soft | glas | klar
+    val accent: String = "app", // app | violett | blau | gruen | orange | pink | grafit
+    val font: String = "m", // s | m | l
+    val alpha: Int = 100, // фон карточки, %: 0 — только текст
+    val onlyChanges: Boolean = false,
+    val evening: Boolean = true, // «Abends schon morgen»
+    val subject: String = "app", // app | kuerzel | name
+    val place: String = "app", // app | raum | beides
+    val cancelled: String = "app", // app | ausblenden
+    val next: Boolean = true, // Jetzt: «Danach zeigen»
+    val progress: Boolean = true, // Jetzt: полоска
+    val weekend: String = "next", // Woche: next | leer
+    val cell: String = "kuerzel", // Woche: kuerzel | raum | lehrkraft
+    val testsDays: Int = 14, // 7 | 14 | 0 (все)
+    val showDone: Boolean = false,
+    val sort: String = "faellig", // faellig | fach
+    val changes: String = "morgen", // heute | morgen | woche
+    val termineDays: Int = 90, // 30 | 90 | 0 (все)
+    val count: String = "schultage", // schultage | tage
+    val refresh: Int = 30, // минут: 15 | 30 | 60
+    val open: String = "auto", // auto | tag | woche | tests | start
 ) {
     fun toJson(): JSONObject = JSONObject()
         .put("kind", kind).put("classId", classId ?: JSONObject.NULL).put("mine", mine)
-        .put("look", look).put("background", background)
+        .put("look", look).put("design", design).put("accent", accent).put("font", font).put("alpha", alpha)
+        .put("onlyChanges", onlyChanges).put("evening", evening).put("subject", subject).put("place", place).put("cancelled", cancelled)
+        .put("next", next).put("progress", progress).put("weekend", weekend).put("cell", cell).put("testsDays", testsDays)
+        .put("showDone", showDone).put("sort", sort).put("changes", changes).put("termineDays", termineDays).put("count", count)
+        .put("refresh", refresh).put("open", open)
 
     companion object {
         val KINDS = listOf("jetzt", "heute", "woche", "tests", "aufgaben", "aenderungen", "termine", "notizen", "countdown")
+        private val ACCENTS = listOf("app", "violett", "blau", "gruen", "orange", "pink", "grafit")
 
         fun from(json: JSONObject?): WidgetConfig {
             if (json == null) return WidgetConfig()
+            val d = WidgetConfig()
+            fun pick(key: String, allowed: Collection<String>, default: String) = json.optString(key).takeIf { it in allowed } ?: default
+            fun pickInt(key: String, allowed: Collection<Int>, default: Int) = if (json.has(key)) json.optInt(key, default).takeIf { it in allowed } ?: default else default
+            fun bool(key: String, default: Boolean) = if (json.opt(key) is Boolean) json.getBoolean(key) else default
+            // настройка из 31b: «Hintergrund Halb» = 70 %
+            val alpha = if (json.has("alpha")) json.optInt("alpha", 100).coerceIn(0, 100) else if (json.optString("background") == "halb") 70 else 100
             return WidgetConfig(
-                kind = json.optString("kind").takeIf { it in KINDS } ?: "jetzt",
+                kind = pick("kind", KINDS, d.kind),
                 classId = if (json.isNull("classId") || !json.has("classId")) null else json.optInt("classId"),
-                mine = json.optBoolean("mine", true),
-                look = json.optString("look").takeIf { it in setOf("app", "hell", "dunkel") } ?: "app",
-                background = json.optString("background").takeIf { it in setOf("voll", "halb") } ?: "voll",
+                mine = bool("mine", d.mine),
+                look = pick("look", setOf("app", "hell", "dunkel"), d.look),
+                design = pick("design", setOf("app", "soft", "glas", "klar"), d.design),
+                accent = pick("accent", ACCENTS, d.accent),
+                font = pick("font", setOf("s", "m", "l"), d.font),
+                alpha = alpha,
+                onlyChanges = bool("onlyChanges", d.onlyChanges),
+                evening = bool("evening", d.evening),
+                subject = pick("subject", setOf("app", "kuerzel", "name"), d.subject),
+                place = pick("place", setOf("app", "raum", "beides"), d.place),
+                cancelled = pick("cancelled", setOf("app", "ausblenden"), d.cancelled),
+                next = bool("next", d.next),
+                progress = bool("progress", d.progress),
+                weekend = pick("weekend", setOf("next", "leer"), d.weekend),
+                cell = pick("cell", setOf("kuerzel", "raum", "lehrkraft"), d.cell),
+                testsDays = pickInt("testsDays", setOf(7, 14, 0), d.testsDays),
+                showDone = bool("showDone", d.showDone),
+                sort = pick("sort", setOf("faellig", "fach"), d.sort),
+                changes = pick("changes", setOf("heute", "morgen", "woche"), d.changes),
+                termineDays = pickInt("termineDays", setOf(30, 90, 0), d.termineDays),
+                count = pick("count", setOf("schultage", "tage"), d.count),
+                refresh = pickInt("refresh", setOf(15, 30, 60), d.refresh),
+                open = pick("open", setOf("auto", "tag", "woche", "tests", "start"), d.open),
             )
         }
     }
@@ -45,6 +99,17 @@ data class Snapshot(
     val palette: Map<String, String>,
     val theme: String?, // light | dark | null (как телефон)
     val texts: Texts,
+    val design: String = "soft", // часть 31d: оформление приложения — «Wie App» у виджета
+    val accent: String = "violett",
+    val plan: PlanView = PlanView(),
+)
+
+/** «Stundenplan» приложения (src/shared/utils/planView.js) — то, что нужно виджету. */
+data class PlanView(
+    val lessonLabel: String = "kuerzel", // kuerzel | name — подпись в клетке недели
+    val showRoom: Boolean = true,
+    val showTeacher: Boolean = false,
+    val hideCancelled: Boolean = false, // «Ausfall · Ausblenden»
 )
 
 /**
@@ -68,12 +133,22 @@ class WidgetStore(context: Context) {
             )
         }
         val texts = o.optJSONObject("texts")
+        val look = o.optJSONObject("look")
+        val plan = o.optJSONObject("plan")
         return Snapshot(
             classes = classes,
             done = o.optJSONArray("done").strings().mapNotNull(String::toIntOrNull).toSet(),
             palette = o.optJSONObject("palette").toMap(),
             theme = o.optString("theme").takeIf { it == "light" || it == "dark" },
             texts = Texts(texts.toMap(), o.optString("lang", "de")),
+            design = look?.optString("design")?.takeIf { it in setOf("soft", "glas", "klar") } ?: "soft",
+            accent = look?.optString("accent")?.ifEmpty { null } ?: "violett",
+            plan = PlanView(
+                lessonLabel = if (plan?.optString("lessonLabel") == "name") "name" else "kuerzel",
+                showRoom = plan?.optBoolean("showRoom", true) ?: true,
+                showTeacher = plan?.optBoolean("showTeacher", false) ?: false,
+                hideCancelled = plan?.optString("cancelled") == "ausblenden",
+            ),
         )
     }
 
