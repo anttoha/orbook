@@ -5,6 +5,15 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.18.0",
+    date: "2026-11-19",
+    neu: [
+      "ORBook gibt es jetzt als Android-App: Du lädst sie unter Mehr → Android-App herunter. Neue Versionen meldet sie dir selbst.",
+      "Dazu Widgets für den Startbildschirm – Plan, Tests, Aufgaben und mehr. Die stellst du in der App unter „Widget einstellen“ ein.",
+      "Jetzt wirklich alles auf English und Українська: Auch Meldungen, Fehlertexte, Wochentage und der Datenschutz sind übersetzt.",
+    ],
+  },
+  {
     version: "0.17.1",
     date: "2026-11-14",
     neu: ["Auf Start steht jetzt „Muster“, wenn Woche, Jetzt oder Heute nur nach dem normalen Stundenplan gebaut sind und der echte Plan noch fehlt. Die Stunden sind dann gestreift – so verwechselst du sie nicht mit dem echten Plan."],
