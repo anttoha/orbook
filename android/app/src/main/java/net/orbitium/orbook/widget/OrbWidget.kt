@@ -356,10 +356,11 @@ private fun ColumnScope.Woche(s: WidgetState, data: WidgetData, look: Look, now:
     val week = days.firstOrNull()?.date?.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)
     Header(s, look, if (week != null) "${t.t("Woche")} · ${t.t("KW")} $week" else t.t("Woche"), R.drawable.w_week, chip = true)
     val periods = days.flatMap { d -> d.lessons.map { it.period } }.distinct().sorted()
+    // Показываем ВСЕ уроки недели: высота ячейки подбирается под виджет, а не наоборот
     val size = LocalSize.current
-    val showRoom = size.height >= 260.dp
-    val cell = if (showRoom) 40 else 26
-    val rows = ((size.height.value - 70 - if (s.offline) 20 else 0) / (cell + 4)).toInt().coerceAtLeast(1)
+    val free = size.height.value - 70 - if (s.offline) 20 else 0
+    val gap = if (periods.size > 6) 2 else 4
+    val cell = WeekCellSize.of(free, periods.size, gap)
     // шапка дней: сегодняшний — цветом акцента
     Row(GlanceModifier.fillMaxWidth()) {
         days.forEach { d ->
@@ -368,28 +369,44 @@ private fun ColumnScope.Woche(s: WidgetState, data: WidgetData, look: Look, now:
             }
         }
     }
-    periods.take(rows).forEach { period ->
-        Row(GlanceModifier.fillMaxWidth().padding(bottom = 4.dp)) {
+    periods.forEach { period ->
+        Row(GlanceModifier.fillMaxWidth().padding(bottom = gap.dp)) {
             days.forEach { d ->
                 val lesson = d.lessons.firstOrNull { it.period == period && !it.cancelled } ?: d.lessons.firstOrNull { it.period == period }
-                Box(GlanceModifier.defaultWeight().padding(horizontal = 2.dp)) { WeekCell(s, look, lesson, cell, showRoom) }
+                Box(GlanceModifier.defaultWeight().padding(horizontal = 2.dp)) { WeekCell(s, look, lesson, cell) }
             }
         }
     }
     Fill(); Footer(s, look)
 }
 
+/** Размер ячейки недели: чем больше уроков, тем меньше ячейка и тем меньше в ней написано. */
+private class WeekCellSize(val height: Int, val room: Boolean, val fontSize: Int, val text: Boolean) {
+    companion object {
+        fun of(free: Float, periods: Int, gap: Int): WeekCellSize {
+            val h = (free / periods.coerceAtLeast(1)).toInt() - gap
+            return when {
+                h >= 34 -> WeekCellSize(minOf(h, 40), room = true, fontSize = 12, text = true)
+                h >= 20 -> WeekCellSize(h, room = false, fontSize = 12, text = true)
+                h >= 14 -> WeekCellSize(h, room = false, fontSize = 10, text = true)
+                else -> WeekCellSize(h.coerceAtLeast(6), room = false, fontSize = 10, text = false) // только цвет
+            }
+        }
+    }
+}
+
 @Composable
-private fun WeekCell(s: WidgetState, look: Look, lesson: Lesson?, height: Int, showRoom: Boolean) {
-    val mod = GlanceModifier.fillMaxWidth().height(height.dp).cornerRadius(10.dp)
+private fun WeekCell(s: WidgetState, look: Look, lesson: Lesson?, cell: WeekCellSize) {
+    val mod = GlanceModifier.fillMaxWidth().height(cell.height.dp).cornerRadius(if (cell.height < 20) 6.dp else 10.dp)
     if (lesson == null) return Box(mod.background(look.of(Soft.sand))) {}
     val fach = Soft.fach(lesson.subject, s.snapshot.palette)
     val bg = if (lesson.cancelled) Soft.dangerTint else fach.tint
     val ink = if (lesson.cancelled) Soft.danger else fach.text
+    if (!cell.text) return Box(mod.background(look.of(bg))) {}
     Row(mod.background(look.of(bg)).padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
         Column(GlanceModifier.defaultWeight()) {
-            Label(lesson.code, look.of(ink), 12, heavy = true, strike = lesson.cancelled)
-            if (showRoom && lesson.room != null) Label(lesson.room, look.of(ink), 11)
+            Label(lesson.code, look.of(ink), cell.fontSize, heavy = true, strike = lesson.cancelled)
+            if (cell.room && lesson.room != null) Label(lesson.room, look.of(ink), 11)
         }
         if (lesson.changed) Dot(look.of(Soft.accent), 6)
     }
