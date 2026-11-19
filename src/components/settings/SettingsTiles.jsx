@@ -16,6 +16,7 @@ import { usePushStore } from "../../shared/store/pushStore";
 import { prefsSummary } from "../../shared/utils/push";
 import { appearanceHint, coursesHint, editorHint, sectionVisible, subjectsHint, syncHint } from "../../shared/utils/settings";
 import Liquid from "../ui/Liquid";
+import { useAndroidOffer } from "../../shared/hooks/useAndroidOffer";
 import { useT } from "../../shared/hooks/useT";
 import { translate } from "../../shared/i18n/translate";
 
@@ -60,6 +61,7 @@ const useHints = () => {
     push: prefsSummary(pushOn, pushPrefs),
     editor: editorHint(me?.editor),
     manage: translate("Zugangscodes · Einladen"),
+    android: translate("APK · Widget"),
     privacy: translate("Keine Konten, kein Tracking"),
     stats: translate("Stunden, Ausfälle, Vertretungen"),
     news: changelog[0] ? translate("Neu in {version} · {v2}", { version: changelog[0].version, v2: newsDate(changelog[0].date) }) : null,
@@ -83,8 +85,10 @@ const SettingsTiles = () => {
   const hints = useHints();
   const syncAllowed = useSyncAllowed();
   const me = usePlanStore((s) => s.me);
+  const { app, offer } = useAndroidOffer();
+  const android = Boolean(app) || offer;
   const { openSheet } = useSheet();
-  const visible = settingsSections.filter((section) => section.hint && sectionVisible(section, { syncAllowed, teacher: isTeacher(me), features: me?.features, canManage: Boolean(me?.canManageClass) }));
+  const visible = settingsSections.filter((section) => section.hint && sectionVisible(section, { syncAllowed, teacher: isTeacher(me), features: me?.features, canManage: Boolean(me?.canManageClass), android }));
 
   return (
     <div className="flex flex-col gap-6">

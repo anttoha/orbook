@@ -35,5 +35,5 @@ export const editorHint = (editor) => editor?.label ?? (editor ? "freigeschaltet
 
 // Чи показувати розділ «Mehr»: Sync і Statistik школа могла вимкнути, Editor-Code учителю не потрібен,
 // «Klasse verwalten» — лише з правом canManageClass (частина 29c)
-export const sectionVisible = (section, { syncAllowed, teacher, features, canManage = false }) =>
-  (!section.sync || syncAllowed) && !(section.classOnly && teacher) && !(section.manage && !canManage) && isTabEnabled(section, features);
+export const sectionVisible = (section, { syncAllowed, teacher, features, canManage = false, android = false }) =>
+  (!section.sync || syncAllowed) && (!section.android || android) && !(section.classOnly && teacher) && !(section.manage && !canManage) && isTabEnabled(section, features);

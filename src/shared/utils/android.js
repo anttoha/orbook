@@ -36,3 +36,18 @@ export function updateErrorText(reason) {
   if (reason === "network") return translate("Download fehlgeschlagen – keine Verbindung");
   return translate("Download fehlgeschlagen");
 }
+
+// ── Часть 31c: страница «Android-App» на сайте (скачать APK) ──
+
+// Адрес файла APK — относительный, как все /api (QR на ПК берёт полный адрес из origin)
+export const APK_PATH = "/api/public/android/apk";
+
+// Открыт ли сайт в браузере на Android (карточка «ORBook für Android» нужна только там)
+export const isAndroidBrowser = (ua = globalThis.navigator?.userAgent ?? "") => /Android/i.test(ua);
+
+// «Version 0.18.0 · 6,4 MB»; нет размера — только версия
+export function releaseLabel(release, lang = "de") {
+  if (!release?.versionName) return "";
+  const size = release.size > 0 ? ` · ${megabytes(release.size, lang)} MB` : "";
+  return `${translate("Version {version}", { version: release.versionName })}${size}`;
+}

@@ -10,15 +10,20 @@ import { isNewer } from "../shared/utils/android";
 import { cn } from "../shared/utils/cn";
 import Button from "../components/ui/Button";
 import OrbitMark from "../components/ui/OrbitMark";
+import AndroidDownload from "../components/android/AndroidDownload";
 import WidgetList from "../components/android/WidgetList";
+import { useAndroidOffer } from "../shared/hooks/useAndroidOffer";
 import PageHeader from "../components/ui/PageHeader";
 import { useT } from "../shared/hooks/useT";
 
-// «Android-App» внутри APK (часть 31a, макет 31 handy-10; виджеты — часть 31b).
-// В браузере страницы пока нет (31c добавит APK, шаги и QR) — уходим в «Mehr».
+// «Android-App»: внутри APK — версия и виджеты (31a/31b, макет 31 handy-10),
+// в браузере — скачать APK, шаги и QR (31c, handy-05 · pc-01). Если APK на сервере нет — уходим в «Mehr».
 const AndroidApp = () => {
   const t = useT();
   const [app] = useState(androidApp); // установленная версия не меняется, пока страница открыта
+  const { release: offered, offer } = useAndroidOffer();
+  const markSeen = useAndroidStore((s) => s.markSeen);
+  const loaded = useAndroidStore((s) => s.release !== undefined);
   const { openSheet } = useSheet();
   const release = useAndroidStore((s) => s.release);
   const checking = useAndroidStore((s) => s.checking);
@@ -29,7 +34,22 @@ const AndroidApp = () => {
     if (app && useAndroidStore.getState().release === undefined) check().catch(() => {});
   }, [app, check]);
 
-  if (!app) return <Navigate to="/mehr" replace />;
+  // Открыли страницу в браузере — метка «Neu» в Mehr больше не нужна
+  useEffect(() => {
+    if (offer) markSeen();
+  }, [offer, markSeen]);
+
+  if (!app) {
+    if (offer) {
+      return (
+        <div className="flex flex-col gap-4.5">
+          <PageHeader backTo="/mehr" eyebrow={t("Mehr")} title={t("Android-App")} />
+          <AndroidDownload release={offered} />
+        </div>
+      );
+    }
+    return loaded ? <Navigate to="/mehr" replace /> : null; // сервер ещё не ответил — не дёргаем
+  }
 
   const newer = isNewer(app, release);
   const search = async () => {

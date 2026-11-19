@@ -80,6 +80,7 @@ export const SECTIONS = [
     intro: [
       "Im Browser (localStorage) liegen: deine Klassen mit dem Namen und der Farbe, die du ihnen gibst, deine Kurse, Darstellung (auch die Sprache, Design und Akzentfarbe), Fachfarben, Stundenplan-Ansicht und die Blöcke auf deinem Start, deine Notizen, Aufgaben und Häkchen, dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne, damit die App auch ohne Netz geht.",
       "In der Android-App liegt zusätzlich eine Kopie für das Widget: der Plan der nächsten zwei Wochen, Tests, Hausaufgaben, Termine, deine letzten Notizen und Häkchen. Dafür fragt die App den Server etwa alle 30 Minuten – mit deiner Anmeldung, wie die Website. Entfernst du das letzte Widget, hört das auf. Die Kopie löscht Android zusammen mit der App.",
+      "Die App lädst du als Datei (APK) direkt von dieser Website, nicht aus einem App-Store. Der Server gibt sie ohne Anmeldung heraus und merkt nicht, wer sie installiert. Die App fragt einmal am Tag anonym nach, ob es eine neuere Version gibt.",
       "„Klasse verlassen“ oder „Klasse entfernen“ löscht die Kopie der Pläne dieser Klasse. Notizen und Einstellungen bleiben, bis du die Website-Daten im Browser löschst.",
       "Die App lädt nichts von fremden Servern: keine Schriften von Google, kein CDN, keine Analyse.",
     ],

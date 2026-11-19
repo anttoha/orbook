@@ -12,6 +12,11 @@ import { prefsSummary } from "../shared/utils/push";
 import { KeyIcon, ShieldIcon, StatsIcon, SyncIcon } from "../components/ui/icons";
 import { changelog } from "../shared/changelog";
 import { androidApp } from "../shared/api/android";
+import AndroidCard from "../components/android/AndroidCard";
+import { useAndroidCard } from "../shared/hooks/useAndroidCard";
+import Badge from "../components/ui/Badge";
+import { useAndroidOffer } from "../shared/hooks/useAndroidOffer";
+import { useAndroidStore } from "../shared/store/androidStore";
 import { settingsGroups } from "../shared/constants/constants";
 import ListCard from "../components/ui/ListCard";
 import { useSyncAllowed } from "../shared/hooks/useNotesSync";
@@ -72,7 +77,10 @@ const PhoneMenu = () => {
   const theme = useTheme((s) => s.theme);
   const syncCode = useSyncStore((s) => s.code);
   const syncAllowed = useSyncAllowed();
-  const [android] = useState(androidApp); // Android-App (часть 31a); в браузере — null
+  const [android] = useState(androidApp); // внутри APK — версия; в браузере — null
+  const { offer } = useAndroidOffer(); // в браузере: APK на сервере есть (часть 31c)
+  const androidCard = useAndroidCard();
+  const androidSeen = useAndroidStore((s) => s.seen);
   const pushOn = usePushStore((s) => s.enabled);
   const pushPrefs = usePushStore((s) => s.prefs);
   const pushAllowed = me?.features?.push !== false;
@@ -97,7 +105,7 @@ const PhoneMenu = () => {
         <h1 className="text-title text-ink">{t("Mehr")}</h1>
       </header>
 
-      <InstallCard />
+      {androidCard ? <AndroidCard /> : <InstallCard />}
 
       {/* «Seiten» — просто сторінки й вікна; Statistik переїхала сюди з нижнього меню (частина 22) */}
       <ListCard title={seiten.title} hint={seiten.hint}>
@@ -106,8 +114,9 @@ const PhoneMenu = () => {
         <MenuRow to="/materialien" icon={Folder} label={t("Materialien")} value={links ? `${links} ${t(links === 1 ? "Link" : "Links")}` : null} />
         {/* частина 16: посилання і QR для однокласників; вимкнене — шторка так і скаже */}
         <MenuRow onClick={() => openSheet("einladen")} icon={UserPlus} label={t("Klasse einladen")} value="Link + QR" />
-        {/* часть 31a: только внутри APK — версия и обновление (в браузере строка появится в 31c) */}
+        {/* часть 31a/31c: в APK — версия и обновление, в браузере — скачать (пока на сервере есть APK) */}
         {android && <MenuRow to="/mehr/android" icon={Smartphone} label={t("Android-App")} value={android.versionName} />}
+        {offer && <MenuRow to="/mehr/android" icon={Smartphone} label={t("Android-App")} value={t("APK · Widget")} badge={androidSeen ? null : <Badge variant="live">{t("Neu")}</Badge>} />}
         {/* часть 25: три подсказки с первого входа — открыть ещё раз */}
         <MenuRow onClick={() => openSheet("tipps")} icon={Info} label={t("Kurz erklärt")} value={t("3 Tipps")} />
         <MenuRow to="/mehr/datenschutz" icon={ShieldIcon} label={t("Datenschutz")} />

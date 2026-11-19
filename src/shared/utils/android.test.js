@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dayKey, isCheckDue, isNewer, megabytes, parseAppInfo, percentOf, updateErrorText } from "./android";
+import { dayKey, isAndroidBrowser, isCheckDue, isNewer, megabytes, parseAppInfo, percentOf, releaseLabel, updateErrorText } from "./android";
 
 describe("parseAppInfo", () => {
   it("читает ответ моста", () => {
@@ -60,5 +60,24 @@ describe("updateErrorText", () => {
     expect(updateErrorText("network")).toBe("Download fehlgeschlagen – keine Verbindung");
     expect(updateErrorText("checksum")).toBe("Download fehlgeschlagen");
     expect(updateErrorText("permission")).toBeNull();
+  });
+});
+
+describe("isAndroidBrowser", () => {
+  it("узнаёт Chrome на Android, но не iPhone и не ПК", () => {
+    expect(isAndroidBrowser("Mozilla/5.0 (Linux; Android 14; Pixel 8) Chrome/126")).toBe(true);
+    expect(isAndroidBrowser("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0) Safari")).toBe(false);
+    expect(isAndroidBrowser("Mozilla/5.0 (X11; Linux x86_64) Firefox/130")).toBe(false);
+    expect(isAndroidBrowser("")).toBe(false);
+  });
+});
+
+describe("releaseLabel", () => {
+  it("версия и размер", () => {
+    expect(releaseLabel({ versionName: "0.18.0", size: 6710886 })).toBe("Version 0.18.0 · 6,4 MB");
+  });
+  it("нет размера или APK нет (null) — без падения", () => {
+    expect(releaseLabel({ versionName: "0.18.0" })).toBe("Version 0.18.0");
+    expect(releaseLabel(null)).toBe("");
   });
 });

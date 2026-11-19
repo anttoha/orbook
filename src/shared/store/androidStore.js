@@ -5,13 +5,15 @@ import { dayKey } from "../utils/android";
 
 // ─────────────────────────────────────────────────────────────
 // androidStore — обновление Android-App (часть 31a).
-// В localStorage ("orbook.android") только день последней проверки: проверяем раз в день.
+// В localStorage ("orbook.android"): день последней проверки (раз в день), закрыта ли карточка в Mehr (31c), открывали ли страницу (метка «Neu»).
 // release — ответ GET /api/public/android: undefined — ещё не спрашивали, null — APK на сервере нет. download — ход загрузки нового APK.
 // ─────────────────────────────────────────────────────────────
 export const useAndroidStore = create(
   persist(
     (set) => ({
       checkedOn: null,
+      cardDismissed: false, // карточку «ORBook für Android» в Mehr закрыли ✕
+      seen: false, // страницу «Android-App» уже открывали — «Neu» гаснет
       release: undefined,
       checking: false,
       download: null, // { loaded, total }, пока качается
@@ -29,7 +31,9 @@ export const useAndroidStore = create(
       },
 
       setDownload: (download) => set({ download }),
+      dismissCard: () => set({ cardDismissed: true }),
+      markSeen: () => set({ seen: true }),
     }),
-    { name: "orbook.android", partialize: (state) => ({ checkedOn: state.checkedOn }) },
+    { name: "orbook.android", partialize: ({ checkedOn, cardDismissed, seen }) => ({ checkedOn, cardDismissed, seen }) },
   ),
 );

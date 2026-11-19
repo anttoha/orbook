@@ -8,6 +8,7 @@ import { blockInfo } from "../../shared/utils/startBlocks";
 import { cellsLabel, parseWidgets } from "../../shared/utils/widgetSnapshot";
 import { BLOCK_ICONS } from "../start/blockIcons";
 import ListCard from "../ui/ListCard";
+import Step from "./Step";
 
 // Один виджет: значок вида, название, «9b · 4 × 2» → «Widget einstellen»
 const WidgetRow = ({ widget, className }) => {
@@ -29,20 +30,6 @@ const WidgetRow = ({ widget, className }) => {
   );
 };
 
-// Шаг «как добавить»: номер, текст (жирная часть — что нажать) и значок справа
-const Step = ({ number, text, strong, icon: Icon }) => (
-  <li className="flex h-14.5 items-center gap-3">
-    <span className="grid size-7 shrink-0 place-items-center rounded-full bg-tint text-label font-black text-accent-ink">{number}</span>
-    <span className="min-w-0 flex-1 truncate text-row text-ink">
-      {text && `${text} `}
-      <b className="font-extrabold">{strong}</b>
-    </span>
-    <span className="grid size-8 shrink-0 place-items-center rounded-tile bg-sand text-accent-ink">
-      <Icon className="size-4.5" />
-    </span>
-  </li>
-);
-
 // «Widgets auf diesem Handy» и «Widget hinzufügen» на странице Android-App (макет 31 handy-10)
 const WidgetList = () => {
   const t = useT();
@@ -59,8 +46,8 @@ const WidgetList = () => {
         </ListCard>
       )}
       <ListCard title={t("Widget hinzufügen")}>
-        <Step number={1} text={t("Startbildschirm")} strong={t("lange drücken")} icon={Pointer} />
-        <Step number={2} strong={t("Widgets → ORBook")} icon={LayoutGrid} />
+        <Step number={1} label={t("Startbildschirm *lange drücken*")} icon={Pointer} />
+        <Step number={2} label={t("*Widgets → ORBook*")} icon={LayoutGrid} />
       </ListCard>
     </>
   );

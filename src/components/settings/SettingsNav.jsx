@@ -10,6 +10,7 @@ import { isTabActive } from "../../shared/utils/isTabActive";
 import { sectionVisible } from "../../shared/utils/settings";
 import NewBadge from "../changelog/NewBadge";
 import LeaveClass from "../more/LeaveClass";
+import { useAndroidOffer } from "../../shared/hooks/useAndroidOffer";
 import { useT } from "../../shared/hooks/useT";
 
 // Пункт меню: 40px заввишки, вибраний — фіолетова «пігулка» (макет 22)
@@ -49,8 +50,10 @@ const SettingsNav = () => {
   const { pathname } = useLocation();
   const syncAllowed = useSyncAllowed(); // школа могла вимкнути синхронізацію
   const me = usePlanStore((s) => s.me);
+  const { app, offer } = useAndroidOffer();
+  const android = Boolean(app) || offer;
   const { openSheet } = useSheet();
-  const visible = settingsSections.filter((section) => sectionVisible(section, { syncAllowed, teacher: isTeacher(me), features: me?.features, canManage: Boolean(me?.canManageClass) }));
+  const visible = settingsSections.filter((section) => sectionVisible(section, { syncAllowed, teacher: isTeacher(me), features: me?.features, canManage: Boolean(me?.canManageClass), android }));
 
   return (
     <nav aria-label={t("Mehr")} className="w-settings-nav shrink-0">

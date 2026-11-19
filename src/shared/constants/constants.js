@@ -1,4 +1,4 @@
-import { Bell, CalendarDays, Ellipsis, FileText, Folder, House, Layers, List, Megaphone, Palette, Server, Sparkles, Sun, Table2, UserRound, UsersRound } from "lucide-react";
+import { Bell, CalendarDays, Ellipsis, FileText, Folder, House, Layers, List, Megaphone, Palette, Server, Smartphone, Sparkles, Sun, Table2, UserRound, UsersRound } from "lucide-react";
 import { FlagIcon, KeyIcon, LockIcon, SchoolIcon, ShieldIcon, StatsIcon, SyncIcon } from "../../components/ui/icons";
 import { translate } from "../i18n/translate";
 
@@ -46,6 +46,7 @@ export const settingsSections = [
   { to: "/mehr", get label() { return translate("Übersicht"); }, icon: House, exact: true },
   { to: "/statistik", get label() { return translate("Statistik"); }, icon: StatsIcon, hint: "stats", group: "seiten", feature: "statistics" },
   { to: "/mehr/neuigkeiten", get label() { return translate("Neuigkeiten"); }, icon: Sparkles, hint: "news", group: "seiten", badge: "news" }, // часть 22b
+  { to: "/mehr/android", get label() { return translate("Android-App"); }, icon: Smartphone, hint: "android", group: "seiten", android: true }, // часть 31c: пока на сервере есть APK или мы внутри него
   { to: "/mehr/datenschutz", get label() { return translate("Datenschutz"); }, icon: ShieldIcon, hint: "privacy", group: "seiten" },
   { to: "/mehr/kurse", get label() { return translate("Meine Kurse"); }, icon: Table2, hint: "courses", group: "einstellungen" },
   { to: "/mehr/darstellung", get label() { return translate("Darstellung"); }, icon: Sun, hint: "appearance", group: "einstellungen" },
