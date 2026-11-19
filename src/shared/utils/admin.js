@@ -5,6 +5,7 @@
 // тому годину й дату беремо прямо з рядка: це вже берлінський час.
 // ─────────────────────────────────────────────────────────────
 import { addDays, daysBetween, daysLeftText, shortDate } from "./format";
+import { translate } from "../i18n/translate";
 
 // Сьогодні в Берліні: "2026-11-06" (шведський формат дати якраз YYYY-MM-DD)
 export const berlinToday = (date = new Date()) =>
@@ -23,16 +24,16 @@ export const clock = (iso) => iso?.slice(11, 16) ?? null;
 
 // «vor 2 Std», «gestern», «vor 5 Tagen» — відносний час для списків
 export function ago(iso, nowIso) {
-  if (!iso) return "noch nie";
+  if (!iso) return translate("noch nie");
   const minutes = Math.round((Date.parse(nowIso) - Date.parse(iso)) / 60000);
   if (minutes < 1) return "gerade eben";
-  if (minutes < 60) return `vor ${minutes} Min`;
+  if (minutes < 60) return translate("vor {minutes} Min", { minutes });
   const hours = Math.round(minutes / 60);
-  if (hours < 24) return `vor ${hours} Std`;
+  if (hours < 24) return translate("vor {hours} Std", { hours });
   const days = Math.round(hours / 24);
-  if (days === 1) return "gestern";
-  if (days < 14) return `vor ${days} Tagen`;
-  return `vor ${Math.round(days / 7)} Wochen`;
+  if (days === 1) return translate("gestern");
+  if (days < 14) return translate("vor {days} Tagen", { days });
+  return translate("vor {v1} Wochen", { v1: Math.round(days / 7) });
 }
 
 // Час у Protokoll: сьогодні «16:40», учора «gestern 17:02» (withTime) або «gestern», раніше «10. Sept»
@@ -40,7 +41,7 @@ export function eventTime(iso, todayIso, { withTime = true } = {}) {
   const day = iso.slice(0, 10);
   if (day === todayIso) return clock(iso);
   if (daysBetween(day, todayIso) === 1)
-    return withTime ? `gestern ${clock(iso)}` : "gestern";
+    return withTime ? `gestern ${clock(iso)}` : translate("gestern");
   return shortDate(day);
 }
 
@@ -62,9 +63,9 @@ export function planHealth(plan) {
 
 // Заголовок і чип картки за станом
 export const HEALTH = {
-  ok: { title: "Vertretungsplan läuft", chip: "OK", dot: "bg-ok" },
-  warn: { title: "Plan ist veraltet", chip: "ALT", dot: "bg-accent" },
-  error: { title: "Plan-Abruf gestört", chip: "FEHLER", dot: "bg-danger" },
+  ok: { get title() { return translate("Vertretungsplan läuft"); }, chip: "OK", dot: "bg-ok" },
+  warn: { get title() { return translate("Plan ist veraltet"); }, chip: "ALT", dot: "bg-accent" },
+  error: { get title() { return translate("Plan-Abruf gestört"); }, chip: "FEHLER", dot: "bg-danger" },
 };
 
 // «Zuletzt geladen 16:40 · nächster Abruf 16:45» (часу немає — «noch nie» / без другої частини)
@@ -73,7 +74,7 @@ export function planTimesText(status) {
     ? `Zuletzt geladen ${clock(status.lastOkAt)}`
     : "Noch nie geladen";
   return status?.nextFetchAt
-    ? `${last} · nächster Abruf ${clock(status.nextFetchAt)}`
+    ? translate("{last} · nächster Abruf {v2}", { last, v2: clock(status.nextFetchAt) })
     : last;
 }
 
@@ -90,8 +91,8 @@ export const hostOf = (url) => url?.replace(/^https?:\/\//, "") ?? "";
 export function serverLine(baseUrl, classCount, hours) {
   const parts = [];
   if (baseUrl) parts.push(`Server ${hostOf(baseUrl)}`);
-  if (classCount != null) parts.push(`${classCount} Klassen`);
-  if (hours?.length) parts.push(`${errorHours(hours)} Fehler in 24 Std`);
+  if (classCount != null) parts.push(translate("{classCount} Klassen", { classCount }));
+  if (hours?.length) parts.push(translate("{v1} Fehler in 24 Std", { v1: errorHours(hours) }));
   return parts.join(" · ");
 }
 
@@ -109,8 +110,8 @@ const mb = (bytes) =>
   `${(bytes / 1048576).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MB`;
 export function storageText(storage) {
   if (!storage) return "";
-  const backups = `Backups ${mb(storage.backupsBytes ?? 0)} von ${mb(storage.backupsLimitBytes ?? 0)}`;
-  return `DB ${mb(storage.dbBytes ?? 0)} · ${backups} · ${storage.diskFreePercent ?? "?"} % frei`;
+  const backups = translate("Backups {v1} von {v2}", { v1: mb(storage.backupsBytes ?? 0), v2: mb(storage.backupsLimitBytes ?? 0) });
+  return translate("DB {v1} · {backups} · {v3} % frei", { v1: mb(storage.dbBytes ?? 0), backups, v3: storage.diskFreePercent ?? "?" });
 }
 
 // ── Editor-Codes ──
@@ -120,7 +121,7 @@ export const isTeacherCode = (code) => code?.kind === "teacher";
 
 // Права Lehrer-Code → «Klausuren · Hausaufgaben» / «Nur Klausuren» (макет handy-10); + «Materialien» (частина 15)
 function teacherRightsText(rights) {
-  const parts = [rights?.create && "Tests", rights?.homework && "Hausaufgaben", rights?.materials && "Materialien"].filter(Boolean);
+  const parts = [rights?.create && translate("Tests"), rights?.homework && translate("Hausaufgaben"), rights?.materials && translate("Materialien")].filter(Boolean);
   if (parts.length === 0) return "—";
   return parts.length === 1 ? `Nur ${parts[0]}` : parts.join(" · ");
 }
@@ -129,12 +130,12 @@ function teacherRightsText(rights) {
 export function rightsText(rights, kind = "editor") {
   if (kind === "teacher") return teacherRightsText(rights);
   let text = "—";
-  if (rights?.editAll) text = "Alle bearbeiten";
+  if (rights?.editAll) text = translate("Alle bearbeiten");
   else if (rights?.create && rights?.editOwn)
     text = "Eintragen · eigene bearbeiten";
   else if (rights?.create) text = "Eintragen";
   else if (rights?.editOwn) text = "Eigene bearbeiten";
-  const extra = [rights?.homework && "Hausaufgaben", rights?.materials && "Materialien"].filter(Boolean);
+  const extra = [rights?.homework && translate("Hausaufgaben"), rights?.materials && translate("Materialien")].filter(Boolean);
   if (extra.length === 0) return text;
   return [...(text === "—" ? [] : [text]), ...extra].join(" · ");
 }
@@ -167,16 +168,16 @@ export const codeChip = (code) =>
 
 // День останнього використання: «heute», «gestern», «vor 5 Tagen», «vor 3 Wochen», «noch nie»
 export function lastUsedDay(iso, todayIso) {
-  if (!iso) return "noch nie";
+  if (!iso) return translate("noch nie");
   const days = daysBetween(iso.slice(0, 10), todayIso);
   return days >= 14
-    ? `vor ${Math.round(days / 7)} Wochen`
+    ? translate("vor {v1} Wochen", { v1: Math.round(days / 7) })
     : daysLeftText(-days);
 }
 
 // Підпис у картці телефона: «zuletzt heute» або «noch nie benutzt»
 export const lastUsedText = (iso, todayIso) =>
-  iso ? `zuletzt ${lastUsedDay(iso, todayIso)}` : "noch nie benutzt";
+  iso ? translate("zuletzt {day}", { day: lastUsedDay(iso, todayIso) }) : translate("noch nie benutzt");
 
 // «Gültig bis»: «31. Juli» або «abgelaufen»; дати немає — «—»
 export function validText(code) {
@@ -186,9 +187,9 @@ export function validText(code) {
 
 // Варіанти «Gültig bis». yearEnd — settings.school.yearEnd ("07-31"); null — без «Schuljahresende»
 export const validChoices = (yearEnd) => [
-  { value: "30d", label: "30 Tage" },
+  { value: "30d", label: translate("30 Tage") },
   ...(yearEnd ? [{ value: "schuljahresende", label: "Schuljahresende" }] : []),
-  { value: "date", label: "Datum" },
+  { value: "date", label: translate("Datum") },
 ];
 
 // Кінець навчального року: найближче yearEnd ("07-31") від сьогодні. null — не задано
@@ -210,8 +211,8 @@ export function validUntilFor(choice, { todayIso, yearEnd, date }) {
 // Мітка коду: 1–40 символів, без e-mail, телефонів і посилань (те саме перевіряє сервер)
 export function labelError(label) {
   const text = label.trim();
-  if (!text) return "Bitte eine Bezeichnung eingeben.";
-  if (text.length > 40) return "Höchstens 40 Zeichen.";
+  if (!text) return translate("Bitte eine Bezeichnung eingeben.");
+  if (text.length > 40) return translate("Höchstens 40 Zeichen.");
   if (/@|https?:|www\.|\d{5,}/i.test(text))
     return "Keine E-Mail, Telefonnummer oder Links.";
   return null;
@@ -262,9 +263,9 @@ export function courseCaption(course, state) {
     ? `Gruppe ${course.group}`
     : course.parallelWith
       ? `parallel zu ${course.parallelWith}`
-      : "läuft parallel";
+      : translate("läuft parallel");
   if (state === "pflicht" && !course.group)
-    return `${why} · beide Kurse für alle sichtbar`;
+    return translate("{why} · beide Kurse für alle sichtbar", { why });
   return `Automatisch Wahl · ${why}`;
 }
 

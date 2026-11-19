@@ -9,6 +9,7 @@ import WeekLetter from "../../muster/WeekLetter";
 import RoundButton from "../../ui/RoundButton";
 import PillButton from "../../ui/PillButton";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // Кругла біла кнопка 38×38 (як на макеті)
 const roundButton =
@@ -16,8 +17,8 @@ const roundButton =
 
 // Варіанти вигляду тижня
 const VIEWS = [
-  { value: "zeitraster", label: "Zeitraster", icon: Clock },
-  { value: "stunden", label: "Stunden + Tag", icon: List },
+  { value: "zeitraster", get label() { return translate("Zeitraster"); }, icon: Clock },
+  { value: "stunden", get label() { return translate("Stunden + Tag"); }, icon: List },
 ];
 
 // ─────────────────────────────────────────────────────────────

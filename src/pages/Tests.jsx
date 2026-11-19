@@ -27,11 +27,12 @@ import Aufgaben from "./Aufgaben";
 import { filterExams, groupExams, isFilterActive, searchExams, subjectChips, toggleSubject } from "../shared/utils/exams";
 import RoundButton from "../components/ui/RoundButton";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // «Ab heute · 5 geplant». Поки записів немає — без числа
 const eyebrowText = (past, count) => {
-  if (past) return count > 0 ? `Vergangen · ${count}` : "Vergangen";
-  return count > 0 ? `Ab heute · ${count} geplant` : "Ab heute";
+  if (past) return count > 0 ? `Vergangen · ${count}` : translate("Vergangen");
+  return count > 0 ? translate("Ab heute · {count} geplant", { count }) : translate("Ab heute");
 };
 
 // «Kommend · 5» — число, тільки коли список уже прийшов
@@ -77,7 +78,7 @@ const ExamList = () => {
   const filterActive = isFilterActive(filter) || query.trim() !== "";
   const addTarget = addExamTarget(me); // куди веде «+»
   // минулі йдуть однією групою: поділ на тижні в них не працює
-  const groups = filter.past ? [{ title: "Vergangen", exams: shown }] : groupExams(shown, today);
+  const groups = filter.past ? [{ title: translate("Vergangen"), exams: shown }] : groupExams(shown, today);
 
   const body = () => {
     if (resource.status === "error") return <PlanError resource={resource} onRetry={reload} title={t("Tests konnten nicht geladen werden")} />;

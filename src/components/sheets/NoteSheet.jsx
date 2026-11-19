@@ -12,6 +12,7 @@ import Field from "../ui/Field";
 import { CalendarIcon, CheckIcon, TrashIcon } from "../ui/icons";
 import Sheet from "../ui/Sheet";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Шторка «Notiz» (макет 20 — телефон, 21 — вікно на ПК). Нотатки живуть на пристрої (userStore),
@@ -58,17 +59,17 @@ const NoteForm = ({ note, noteId, date: openedOn, period, onDone }) => {
     try {
       saveNote({ id: noteId, date, period, subject, text: text.trim() });
     } catch {
-      toast.error("Notiz konnte nicht gespeichert werden"); // localStorage переповнений або заборонений
+      toast.error(translate("Notiz konnte nicht gespeichert werden")); // localStorage переповнений або заборонений
       return;
     }
-    toast.success("Notiz gespeichert");
+    toast.success(translate("Notiz gespeichert"));
     onDone();
   };
 
   // Видалення без питання: у сповіщенні є «Rückgängig» (docs/frontend/06-notizen.md)
   const handleDelete = () => {
     deleteNote(noteId);
-    toast("Notiz gelöscht", { duration: 6000, action: { label: "Rückgängig", onClick: () => restoreNote(note) } });
+    toast(translate("Notiz gelöscht"), { duration: 6000, action: { label: translate("Rückgängig"), onClick: () => restoreNote(note) } });
     onDone();
   };
 
@@ -116,7 +117,7 @@ const NoteForm = ({ note, noteId, date: openedOn, period, onDone }) => {
 const DateRow = ({ date, period, onChange }) => {
   const t = useT();
   const picker = useRef(null); // приховане поле дати: «Ändern» відкриває його календар
-  const label = `${weekdayLong(date)}, ${longDate(date)}${period ? ` · ${period}. Std` : ""}`;
+  const label = `${weekdayLong(date)}, ${longDate(date)}${period ? translate(" · {period}. Std", { period }) : ""}`;
 
   const openPicker = () => {
     try {

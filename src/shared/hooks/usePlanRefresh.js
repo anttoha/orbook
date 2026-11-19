@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { retryText } from "../api/api";
 import { refreshPlan } from "../api/admin";
 import { useAdminStore } from "../store/adminStore";
+import { translate } from "../i18n/translate";
 
 // Кнопка «Plan jetzt neu laden»: POST /admin/plan/refresh, потім оновити огляд
 export const usePlanRefresh = () => {
@@ -12,7 +13,7 @@ export const usePlanRefresh = () => {
     setBusy(true);
     try {
       await refreshPlan();
-      toast.success("Plan wird neu geladen");
+      toast.success(translate("Plan wird neu geladen"));
     } catch (error) {
       toast.error(error.status === 429 ? retryText(error) : error.message);
     } finally {

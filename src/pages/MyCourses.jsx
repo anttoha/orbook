@@ -6,11 +6,12 @@ import { useUserStore } from "../shared/store/userStore";
 import { isCourseVisible, optionalNumbers, switchCourses, withNumbers } from "../shared/utils/courses";
 import { useClassEyebrow } from "../shared/hooks/useClassEyebrow";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // «Meine Kurse» (макет 23). На відміну від першого запуску вибір діє одразу.
 const MyCourses = () => {
   const t = useT();
-  const eyebrow = useClassEyebrow("Mehr"); // несколько классов — «Klasse 8b»: курсы у каждого класса свои (часть 29)
+  const eyebrow = useClassEyebrow(translate("Mehr")); // несколько классов — «Klasse 8b»: курсы у каждого класса свои (часть 29)
   const courses = usePlanStore((s) => s.courses);
   const picked = useUserStore((s) => s.picked);
   const setPicked = useUserStore((s) => s.setPicked);

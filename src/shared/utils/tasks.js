@@ -6,6 +6,7 @@
 // ─────────────────────────────────────────────────────────────
 import { addDays, isWeekend, mondayOf, numericDate, weekdayShort } from "./format";
 import { groupHomework } from "./homework";
+import { translate } from "../i18n/translate";
 
 export const TASK_MAX = 120;
 const DONE_VISIBLE_DAYS = 14; // сделанные свои задачи видны в «Erledigt» две недели
@@ -27,8 +28,8 @@ export const setMark = (marks, id, done, now = new Date()) => [...marks.filter((
 
 export function validateTaskText(value) {
   const text = (value ?? "").trim();
-  if (!text) return "Was ist zu tun?";
-  if (text.length > TASK_MAX) return `Höchstens ${TASK_MAX} Zeichen.`;
+  if (!text) return translate("Was ist zu tun?");
+  if (text.length > TASK_MAX) return translate("Höchstens {TASK_MAX} Zeichen.", { TASK_MAX });
   return null;
 }
 
@@ -38,7 +39,7 @@ export function dueChoices(today) {
   let next = addDays(tomorrow, 1);
   while (isWeekend(next)) next = addDays(next, 1);
   return [
-    { label: "Morgen", value: tomorrow },
+    { label: translate("Morgen"), value: tomorrow },
     { label: `${weekdayShort(next)} ${numericDate(next)}`, value: next },
   ];
 }
@@ -58,7 +59,7 @@ export function aufgabenList({ homework = [], tasks = [], marks = [], today }) {
   const done = rows.filter((row) => row.done && (row.kind === "homework" || row.task.updatedAt.slice(0, 10) >= since));
   const groups = groupHomework(open.filter((row) => row.due), today);
   const undated = open.filter((row) => !row.due);
-  if (undated.length > 0) groups.push({ title: "Ohne Datum", items: undated });
+  if (undated.length > 0) groups.push({ title: translate("Ohne Datum"), items: undated });
   return { groups, open, done };
 }
 

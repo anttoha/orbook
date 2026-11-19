@@ -5,6 +5,7 @@ import { CircleDashed } from "lucide-react";
 import { cn } from "../../../shared/utils/cn";
 import { FlagIcon } from "../../ui/icons";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Смуга днів тижня над списком (макет «Tag · Liste»):
@@ -24,7 +25,7 @@ const DayStrip = ({ days, date, today }) => {
   // Значок дня (тест / изменения) — иконкой рядом с подписью
   if (glass) {
     const options = days.map((day) => ({
-      label: `${day.weekday} ${Number(day.date.slice(8))}.${day.date === today ? " · heute" : ""}`,
+      label: `${translate(day.weekday)} ${Number(day.date.slice(8))}.${day.date === today ? translate(" · heute") : ""}`,
       icon: day.exams.length > 0 ? <FlagIcon className="size-3.5" /> : undefined,
     }));
     return (
@@ -62,7 +63,7 @@ const DayStrip = ({ days, date, today }) => {
             aria-current={active ? "page" : undefined}
             className={cn("relative flex min-w-0 flex-1 items-center gap-2 rounded-full px-4 transition-colors duration-300", active ? "text-on-accent" : "text-ink hover:bg-card/60")}
           >
-            <span className={cn("text-caption font-extrabold uppercase", active ? "text-today-sub" : "text-faint")}>{day.weekday}</span>
+            <span className={cn("text-caption font-extrabold uppercase", active ? "text-today-sub" : "text-faint")}>{translate(day.weekday)}</span>
             <span className="text-body font-black">{Number(day.date.slice(8))}.</span>
             {day.date === today && <span className={cn("text-small font-semibold", active ? "text-today-sub" : "text-accent")}>heute</span>}
 

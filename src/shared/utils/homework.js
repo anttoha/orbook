@@ -4,20 +4,21 @@
 // Сервер перевіряє те саме і відповість 422 — тут лише щоб показати помилку до відправки.
 // ─────────────────────────────────────────────────────────────
 import { addDays, mondayOf, numericDate, weekdayLong, weekdayShort } from "./format";
+import { translate } from "../i18n/translate";
 
 export const TEXT_MAX = 300;
 
 // Текст завдання: кілька рядків можна, контактів і посилань — ні (як clean_text на сервері)
 export function validateHomeworkText(value) {
   const text = (value ?? "").trim();
-  if (!text) return "Bitte die Aufgabe eintragen.";
-  if (text.length > TEXT_MAX) return `Die Aufgabe darf höchstens ${TEXT_MAX} Zeichen lang sein.`;
+  if (!text) return translate("Bitte die Aufgabe eintragen.");
+  if (text.length > TEXT_MAX) return translate("Die Aufgabe darf höchstens {TEXT_MAX} Zeichen lang sein.", { TEXT_MAX });
   // eslint-disable-next-line no-control-regex -- шукаємо саме керівні символи, крім переносу рядка
-  if (/[\u0000-\u0009\u000b-\u001f\u007f-\u009f]/.test(text)) return "Die Aufgabe enthält ungültige Zeichen.";
-  if (/[^\s@]+@[^\s@]+\.[^\s@]+/.test(text)) return "Bitte keine E-Mail-Adressen in der Aufgabe.";
-  if (/(https?:\/\/|www\.|\b[a-z0-9-]+\.(?:de|com|net|org|eu|io|app|info|ru|me|ly)\b)/i.test(text)) return "Bitte keine Links in der Aufgabe.";
+  if (/[\u0000-\u0009\u000b-\u001f\u007f-\u009f]/.test(text)) return translate("Die Aufgabe enthält ungültige Zeichen.");
+  if (/[^\s@]+@[^\s@]+\.[^\s@]+/.test(text)) return translate("Bitte keine E-Mail-Adressen in der Aufgabe.");
+  if (/(https?:\/\/|www\.|\b[a-z0-9-]+\.(?:de|com|net|org|eu|io|app|info|ru|me|ly)\b)/i.test(text)) return translate("Bitte keine Links in der Aufgabe.");
   for (const run of text.match(/[+\d][\d\s/()-]*/g) ?? []) {
-    if ((run.match(/\d/g) ?? []).length >= 9) return "Bitte keine Telefonnummern in der Aufgabe.";
+    if ((run.match(/\d/g) ?? []).length >= 9) return translate("Bitte keine Telefonnummern in der Aufgabe.");
   }
   return null;
 }
@@ -39,10 +40,10 @@ export function groupHomework(items, today) {
   const nextMonday = addDays(mondayOf(today), 7);
   const afterNext = addDays(nextMonday, 7);
   const groups = [
-    { title: "Bis morgen", items: items.filter((item) => item.due <= tomorrow) },
-    { title: "Diese Woche", items: items.filter((item) => item.due > tomorrow && item.due < nextMonday) },
-    { title: "Nächste Woche", items: items.filter((item) => item.due > tomorrow && item.due >= nextMonday && item.due < afterNext) },
-    { title: "Später", items: items.filter((item) => item.due > tomorrow && item.due >= afterNext) },
+    { title: translate("Bis morgen"), items: items.filter((item) => item.due <= tomorrow) },
+    { title: translate("Diese Woche"), items: items.filter((item) => item.due > tomorrow && item.due < nextMonday) },
+    { title: translate("Nächste Woche"), items: items.filter((item) => item.due > tomorrow && item.due >= nextMonday && item.due < afterNext) },
+    { title: translate("Später"), items: items.filter((item) => item.due > tomorrow && item.due >= afterNext) },
   ];
   return groups.filter((group) => group.items.length > 0);
 }
@@ -54,7 +55,7 @@ export const authorShort = (entry) => entry?.author?.short ?? null;
 export function editRightsText(entry) {
   const short = authorShort(entry);
   if (!short) return null;
-  return entry.studentsMayEdit ? `Ändern: ${short}, Admin und Schüler mit Freigabe.` : `Ändern dürfen nur ${short} und der Admin.`;
+  return entry.studentsMayEdit ? translate("Ändern: {short}, Admin und Schüler mit Freigabe.", { short }) : translate("Ändern dürfen nur {short} und der Admin.", { short });
 }
 
 // «Eingetragen von Mü · Lehrkraft» або «… von Ihnen (Mü)», якщо дивиться сам учитель.
@@ -63,14 +64,14 @@ export function authorLine(entry, me) {
   const short = authorShort(entry);
   if (!short) return null;
   const mine = me?.teacher?.short === short;
-  return { name: mine ? `Ihnen (${short})` : short, role: mine ? null : "Lehrkraft", changedByStudent: entry.lastChange?.by === "student" };
+  return { name: mine ? `Ihnen (${short})` : short, role: mine ? null : translate("Lehrkraft"), changedByStudent: entry.lastChange?.by === "student" };
 }
 
 // «Bis morgen, Do 18.9.» — заголовок вікна Hausaufgabe
 export function dueTitle(due, today) {
   const date = `${weekdayShort(due)} ${numericDate(due)}`;
-  if (due === today) return `Bis heute, ${date}`;
-  if (due === addDays(today, 1)) return `Bis morgen, ${date}`;
+  if (due === today) return translate("Bis heute, {date}", { date });
+  if (due === addDays(today, 1)) return translate("Bis morgen, {date}", { date });
   return `Bis ${date}`;
 }
 
@@ -78,8 +79,8 @@ export function dueTitle(due, today) {
 
 // Хто змінив: учитель — Kürzel, учень — без імені
 export function changeActor(change) {
-  if (change.by === "teacher") return change.short ?? "Lehrkraft";
-  return { student: "Schüler mit Freigabe", class: "Klasse", admin: "Admin", system: "Automatisch" }[change.by] ?? "Unbekannt";
+  if (change.by === "teacher") return change.short ?? translate("Lehrkraft");
+  return { student: translate("Schüler mit Freigabe"), class: translate("Klasse"), admin: "Admin", system: "Automatisch" }[change.by] ?? "Unbekannt";
 }
 
 // «Mi 15:15»: дати в API вже в часі школи, тому беремо з рядка
@@ -89,30 +90,30 @@ const shortDay = (iso) => (iso ? `${weekdayShort(iso)} ${numericDate(iso)}` : "�
 const quoted = (text) => (text ? `„${text.length > 40 ? `${text.slice(0, 39)}…` : text}“` : "—");
 const FIELD_TEXT = {
   due: (v) => `Abgabe: ${shortDay(v.old)} → ${shortDay(v.new)}`,
-  date: (v) => `Datum: ${shortDay(v.old)} → ${shortDay(v.new)}`,
-  lesson: (v) => `Stunde: ${v.old ?? "—"} → ${v.new ?? "—"}`,
+  date: (v) => translate("Datum: {v1} → {v2}", { v1: shortDay(v.old), v2: shortDay(v.new) }),
+  lesson: (v) => translate("Stunde: {v1} → {v2}", { v1: v.old ?? "—", v2: v.new ?? "—" }),
   type: (v) => `Art: ${v.old} → ${v.new}`,
-  subject: (v) => `Fach: ${v.old?.code ?? v.old ?? "—"} → ${v.new?.code ?? v.new ?? "—"}`,
+  subject: (v) => translate("Fach: {v1} → {v2}", { v1: v.old?.code ?? v.old ?? "—", v2: v.new?.code ?? v.new ?? "—" }),
   topic: (v) => `Thema: ${quoted(v.old)} → ${quoted(v.new)}`,
-  text: () => "Text geändert",
-  details: () => "Beschreibung geändert",
+  text: () => translate("Text geändert"),
+  details: () => translate("Beschreibung geändert"),
   materials: (v) => `Materialien: ${v.new?.length ?? 0}`,
-  studentsMayEdit: (v) => (v.new ? "Schüler dürfen ändern" : "Schüler dürfen nicht mehr ändern"),
+  studentsMayEdit: (v) => (v.new ? translate("Schüler dürfen ändern") : translate("Schüler dürfen nicht mehr ändern")),
 };
 
 // Другий рядок у «Verlauf»: що сталося
 export function changeText(change) {
-  if (change.action === "created") return "Eingetragen";
-  if (change.action === "deleted") return "Gelöscht";
+  if (change.action === "created") return translate("Eingetragen");
+  if (change.action === "deleted") return translate("Gelöscht");
   if (change.action === "restored") return "Wiederhergestellt";
   // часть 24: сервер перенёс запись, потому что урок выпал
   if (change.action === "moved") {
     const day = change.changes?.date ?? change.changes?.due;
     const lesson = change.changes?.lesson?.new;
-    return `Verschoben, weil die Stunde ausfällt${day ? `: ${shortDay(day.new)}${lesson ? `, ${lesson}. Std` : ""}` : ""}`;
+    return translate("Verschoben, weil die Stunde ausfällt{v1}", { v1: day ? `: ${shortDay(day.new)}${lesson ? translate(", {lesson}. Std", { lesson }) : ""}` : "" });
   }
-  const parts = Object.entries(change.changes ?? {}).map(([field, value]) => FIELD_TEXT[field]?.(value ?? {}) ?? `${field} geändert`);
-  return parts.length > 0 ? parts.join(" · ") : "Geändert";
+  const parts = Object.entries(change.changes ?? {}).map(([field, value]) => FIELD_TEXT[field]?.(value ?? {}) ?? translate("{field} geändert", { field }));
+  return parts.length > 0 ? parts.join(" · ") : translate("Geändert");
 }
 
 // ── Форма ──
@@ -131,7 +132,7 @@ export function nextLessonDate(days, code, today) {
 // Підпис під датою: «Donnerstag · morgen» або просто «Donnerstag»
 export function dueHint(due, today) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(due ?? "")) return null;
-  const word = { [today]: "heute", [addDays(today, 1)]: "morgen" }[due];
+  const word = { [today]: translate("heute"), [addDays(today, 1)]: translate("morgen") }[due];
   return word ? `${weekdayLong(due)} · ${word}` : weekdayLong(due);
 }
 
@@ -139,7 +140,7 @@ export function dueHint(due, today) {
 // Стару дату при правці не перевіряємо, як і в Klausur
 export function validateHomeworkForm(form, today, validateDate, originalDue = null) {
   const errors = {};
-  if (!form.subject) errors.subject = "Bitte ein Fach wählen.";
+  if (!form.subject) errors.subject = translate("Bitte ein Fach wählen.");
   const dateError = form.due === originalDue ? null : validateDate(form.due, today);
   if (dateError) errors.due = dateError.message;
   const textError = validateHomeworkText(form.text);

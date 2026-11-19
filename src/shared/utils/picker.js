@@ -4,6 +4,7 @@
 // Тут — чисті функції: пункти для курсів і предметів, пошук, групи.
 // ─────────────────────────────────────────────────────────────
 import { subjectName } from "./format";
+import { translate } from "../i18n/translate";
 
 // Для пошуку: малі літери, без умлаутів і наголосів («Französisch» знаходиться за «franz» і «französ»)
 export const normalize = (text) =>
@@ -40,10 +41,10 @@ export function courseItems(courses, suggested = []) {
     value: course.nr,
     code: course.subject?.code ?? course.label,
     title: course.group ? `${subjectName(course.subject)} · ${course.group}` : subjectName(course.subject),
-    subtitle: [course.teacher ?? "ohne Lehrer", `Kurs ${course.nr}`].join(" · "),
+    subtitle: [course.teacher ?? translate("ohne Lehrer"), translate("Kurs {nr}", { nr: course.nr })].join(" · "),
   }));
-  const top = items.filter((item) => suggested.includes(item.value)).sort(byTitle).map((item) => ({ ...item, group: "Vorschlag · stand hier im Plan" }));
-  const rest = items.filter((item) => !suggested.includes(item.value)).sort(byTitle).map((item) => ({ ...item, group: "Alle Kurse" }));
+  const top = items.filter((item) => suggested.includes(item.value)).sort(byTitle).map((item) => ({ ...item, group: translate("Vorschlag · stand hier im Plan") }));
+  const rest = items.filter((item) => !suggested.includes(item.value)).sort(byTitle).map((item) => ({ ...item, group: translate("Alle Kurse") }));
   return [...top, ...rest];
 }
 
@@ -61,8 +62,8 @@ export function subjectItems(subjects, mine = [], courses = []) {
   }));
   if (own.size === 0 || own.size >= items.length) return items.sort(byTitle);
   return [
-    ...items.filter((item) => own.has(item.value)).sort(byTitle).map((item) => ({ ...item, group: "Deine Fächer" })),
-    ...items.filter((item) => !own.has(item.value)).sort(byTitle).map((item) => ({ ...item, group: "Alle Fächer" })),
+    ...items.filter((item) => own.has(item.value)).sort(byTitle).map((item) => ({ ...item, group: translate("Deine Fächer") })),
+    ...items.filter((item) => !own.has(item.value)).sort(byTitle).map((item) => ({ ...item, group: translate("Alle Fächer") })),
   ];
 }
 

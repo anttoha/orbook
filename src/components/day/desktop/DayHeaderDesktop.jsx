@@ -7,11 +7,12 @@ import Segmented from "../../ui/Segmented";
 import { AllCoursesButton } from "../../week/AllCourses";
 import RoundButton from "../../ui/RoundButton";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 
 // Варіанти вигляду дня
 const VIEWS = [
-  { value: "liste", label: "Liste", icon: List },
+  { value: "liste", get label() { return translate("Liste"); }, icon: List },
   { value: "zeitleiste", label: "Zeitleiste", icon: TimelineIcon },
 ];
 

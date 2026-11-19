@@ -17,6 +17,7 @@ import { prefsSummary } from "../../shared/utils/push";
 import { appearanceHint, coursesHint, editorHint, sectionVisible, subjectsHint, syncHint } from "../../shared/utils/settings";
 import Liquid from "../ui/Liquid";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Вміст плитки: кругла іконка, назва, підпис, стрілка
 const TileBody = ({ icon: Icon, label, hint, badge }) => (
@@ -58,10 +59,10 @@ const useHints = () => {
     sync: syncHint(syncCode, lastSyncAt),
     push: prefsSummary(pushOn, pushPrefs),
     editor: editorHint(me?.editor),
-    manage: "Zugangscodes · Einladen",
-    privacy: "Keine Konten, kein Tracking",
-    stats: "Stunden, Ausfälle, Vertretungen",
-    news: changelog[0] ? `Neu in ${changelog[0].version} · ${newsDate(changelog[0].date)}` : null,
+    manage: translate("Zugangscodes · Einladen"),
+    privacy: translate("Keine Konten, kein Tracking"),
+    stats: translate("Stunden, Ausfälle, Vertretungen"),
+    news: changelog[0] ? translate("Neu in {version} · {v2}", { version: changelog[0].version, v2: newsDate(changelog[0].date) }) : null,
   };
 };
 

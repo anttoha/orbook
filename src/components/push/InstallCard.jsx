@@ -8,6 +8,7 @@ import OrbitMark from "../ui/OrbitMark";
 import PillButton from "../ui/PillButton";
 import RoundButton from "../ui/RoundButton";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // «ORBook als App» вверху Mehr (макет 17 handy-09): пока не установлено и не закрыто ✕.
 // Android/ПК — окно браузера, iPhone — шторка с шагами
@@ -21,7 +22,7 @@ const InstallCard = () => {
 
   const install = async () => {
     if (how === "ios") return openSheet("installieren");
-    if (await promptInstall()) toast.success("ORBook ist jetzt installiert");
+    if (await promptInstall()) toast.success(translate("ORBook ist jetzt installiert"));
   };
 
   return (

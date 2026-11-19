@@ -2,16 +2,17 @@ import Segmented from "../ui/Segmented";
 import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
 import Liquid from "../ui/Liquid";
+import { translate } from "../../shared/i18n/translate";
 
 const BACKGROUNDS = [
-  { value: "aurora", label: "Aurora" },
-  { value: "abendrot", label: "Abendrot" },
-  { value: "meer", label: "Meer" },
-  { value: "wald", label: "Wald" },
+  { value: "aurora", get label() { return translate("Aurora"); } },
+  { value: "abendrot", get label() { return translate("Abendrot"); } },
+  { value: "meer", get label() { return translate("Meer"); } },
+  { value: "wald", get label() { return translate("Wald"); } },
 ];
 const MODES = [
-  { value: "voll", label: "Voll" },
-  { value: "einfach", label: "Einfach" },
+  { value: "voll", get label() { return translate("Voll"); } },
+  { value: "einfach", get label() { return translate("Einfach"); } },
 ];
 
 // Только для Glas: фон под стеклом и «Glas-Effekt» (Einfach — без размытия, для слабых телефонов).

@@ -12,12 +12,13 @@ import { useNow } from "../shared/hooks/useNow";
 import { useAdminStore } from "../shared/store/adminStore";
 import PillButton from "../components/ui/PillButton";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 const FILTERS = [
-  { value: "all", label: "Alles" },
-  { value: "plan", label: "Plan" },
+  { value: "all", get label() { return translate("Alles"); } },
+  { value: "plan", get label() { return translate("Plan"); } },
   { value: "error", label: "Fehler" }, // сервер додає всі записи з level = err
-  { value: "code", label: "Codes" },
+  { value: "code", get label() { return translate("Codes"); } },
 ];
 
 // ─────────────────────────────────────────────────────────────

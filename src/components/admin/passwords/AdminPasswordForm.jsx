@@ -9,6 +9,7 @@ import { KeyIcon } from "../../ui/icons";
 import PasswordField from "../../ui/PasswordField";
 import PasswordSection from "./PasswordSection";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // Помилку сервера ставимо під потрібне поле: неправильний поточний пароль — під «Aktuelles Passwort»,
 // закороткий новий (422) — під «Neues Passwort»
@@ -31,13 +32,13 @@ const AdminPasswordForm = () => {
 
   const submit = async (event) => {
     event.preventDefault();
-    const found = { current: current ? null : "Bitte das aktuelle Passwort eingeben.", next: lengthError(next, ADMIN_PASSWORD_MIN) };
+    const found = { current: current ? null : translate("Bitte das aktuelle Passwort eingeben."), next: lengthError(next, ADMIN_PASSWORD_MIN) };
     setErrors(found);
     if (found.current || found.next || busy || locked) return;
     setBusy(true);
     try {
       const result = await changeAdminPassword(current, next);
-      toast.success(changedText("Admin-Passwort geändert", result.otherSessionsEnded));
+      toast.success(changedText(translate("Admin-Passwort geändert"), result.otherSessionsEnded));
       setCurrent("");
       setNext("");
     } catch (error) {

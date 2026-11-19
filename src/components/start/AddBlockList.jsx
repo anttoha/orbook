@@ -5,6 +5,7 @@ import { cn } from "../../shared/utils/cn";
 import { BLOCKS, isBlockEnabled } from "../../shared/utils/startBlocks";
 import { CheckIcon } from "../ui/icons";
 import { BLOCK_ICONS } from "./blockIcons";
+import { translate } from "../../shared/i18n/translate";
 
 // Одна строка: иконка, название и что показывает, справа «+» или галочка
 const BlockRow = ({ info, added, onAdd, t }) => {
@@ -48,8 +49,8 @@ const AddBlockList = ({ blocks, onAdd }) => {
   const onStart = new Set(blocks.map((b) => b.kind));
   const all = BLOCKS.filter((info) => isBlockEnabled(info, features));
   const groups = [
-    { title: "Hinzufügen", items: all.filter((info) => !onStart.has(info.kind)), added: false },
-    { title: "Schon auf Start", items: all.filter((info) => onStart.has(info.kind)), added: true },
+    { title: translate("Hinzufügen"), items: all.filter((info) => !onStart.has(info.kind)), added: false },
+    { title: translate("Schon auf Start"), items: all.filter((info) => onStart.has(info.kind)), added: true },
   ].filter((group) => group.items.length > 0);
 
   return (

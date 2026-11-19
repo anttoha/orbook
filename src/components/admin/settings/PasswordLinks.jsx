@@ -11,7 +11,7 @@ const PasswordLinks = ({ className }) => {
   <SettingsCard title={t("Zugang")} className={className}>
     <ul className="divide-y divide-hair">
       <MenuRow to="/admin/zugang" icon={KeyIcon} label={t("Zugangscodes")} value="verwalten" />
-      <MenuRow to="/admin/passwoerter" icon={ShieldIcon} label={t("Admin-Passwort")} value="ändern" />
+      <MenuRow to="/admin/passwoerter" icon={ShieldIcon} label={t("Admin-Passwort")} value={t("ändern")} />
     </ul>
     <p className="mt-2 mb-2 hidden text-caption text-faint lg:block">{t("Zugangscodes erstellen und sperren, Admin-Passwort ändern.")}</p>
   </SettingsCard>

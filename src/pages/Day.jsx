@@ -36,10 +36,11 @@ import DayCheckRow from "../components/live/DayCheckRow";
 import PlanCheckBanner from "../components/muster/PlanCheckBanner";
 import Liquid from "../components/ui/Liquid";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // Варіанти перемикача вигляду
 const VIEWS = [
-  { value: "liste", label: "Liste", icon: List },
+  { value: "liste", get label() { return translate("Liste"); }, icon: List },
   { value: "zeitleiste", label: "Zeitleiste", icon: TimelineIcon },
 ];
 

@@ -24,18 +24,19 @@ import { isoWeek } from "../shared/utils/format";
 import { isOwnChange, saveLabel, slotLessons, WEEKDAYS_LONG } from "../shared/utils/musterEditor";
 import Liquid from "../components/ui/Liquid";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 const SOURCES = [
   { value: "auto", label: "Automatisch" },
   { value: "admin", label: "Vom Admin" },
 ];
 const SOURCE_HINT = {
-  auto: "Aus den echten Plänen der letzten Wochen, ohne Ausfälle.",
-  admin: "Gilt für alle in der Klasse. Der echte Plan geht immer vor.",
+  get auto() { return translate("Aus den echten Plänen der letzten Wochen, ohne Ausfälle."); },
+  get admin() { return translate("Gilt für alle in der Klasse. Der echte Plan geht immer vor."); },
 };
 const WEEK_TABS = [
-  { value: "A", label: "Woche A" },
-  { value: "B", label: "Woche B" },
+  { value: "A", get label() { return translate("Woche A"); } },
+  { value: "B", get label() { return translate("Woche B"); } },
 ];
 
 // Пісочна підказка з «стосом» (як «Muster»-плашки частини 19)
@@ -48,7 +49,7 @@ const Note = ({ children }) => (
 
 // «Gebaut aus KW 41–44» — з яких тижнів автоматика
 function autoNote(data) {
-  if (!data.autoFrom) return "Noch kein Plan da. Wähle „Vom Admin“ und fülle die Wochen selbst aus.";
+  if (!data.autoFrom) return translate("Noch kein Plan da. Wähle „Vom Admin“ und fülle die Wochen selbst aus.");
   const from = isoWeek(data.autoFrom);
   const to = isoWeek(data.autoTo);
   return `Gebaut aus KW ${from === to ? from : `${from}–${to}`}. Falsch? „Vom Admin“ wählen und ändern.`;
@@ -110,7 +111,7 @@ const MusterEditor = ({ data, courses, onReload }) => {
       }}
     />
   );
-  const cellTitle = picked && `Woche ${week} · ${WEEKDAYS_LONG[picked.weekday]} · ${picked.period}. Stunde`;
+  const cellTitle = picked && translate("Woche {week} · {v2} · {period}. Stunde", { week, v2: translate(WEEKDAYS_LONG[picked.weekday]), period: picked.period });
   const save = { busy: draft.busy, dirty: draft.dirty, onSave: draft.save, label: saveLabel(draft.count) };
 
   return (

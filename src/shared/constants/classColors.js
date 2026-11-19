@@ -4,11 +4,12 @@
 //   tint  — значок класса «9b» (светлый фон + текст), solid — кружочек выбора
 // ─────────────────────────────────────────────────────────────
 import { PALETTES } from "./fachColors";
+import { translate } from "../i18n/translate";
 
 const fromPalette = (key) => ({ tint: PALETTES[key].tint, solid: PALETTES[key].solid, label: PALETTES[key].label });
 
 export const CLASS_COLORS = {
-  accent: { tint: "bg-tint text-accent-ink", solid: "bg-accent", label: "Violett" },
+  accent: { tint: "bg-tint text-accent-ink", solid: "bg-accent", get label() { return translate("Violett"); } },
   englisch: fromPalette("englisch"),
   biologie: fromPalette("biologie"),
   mathe: fromPalette("mathe"),

@@ -1,36 +1,37 @@
 import { isTabEnabled } from "./isTabActive";
+import { translate } from "../i18n/translate";
 
 // Підписи під плитками «Einstellungen · Übersicht» на ПК (макет 22).
 // Чисті функції: усі дані приходять параметрами, тому їх легко перевірити тестом.
 
-const THEME_LABELS = { light: "Hell", dark: "Dunkel", system: "System" };
+const THEME_LABELS = { get light() { return translate("Hell"); }, get dark() { return translate("Dunkel"); }, get system() { return translate("System"); } };
 
 // Локальна дата і час пристрою: «2026-11-06», «07:40»
 const localDate = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 const localTime = (d) => `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 
 // «7 von 8 Kursen»; курсів ще немає → null (рядок просто порожній)
-export const coursesHint = ({ on, all }) => (all > 0 ? `${on} von ${all} Kursen` : null);
+export const coursesHint = ({ on, all }) => (all > 0 ? translate("{on} von {all} Kursen", { on, all }) : null);
 
 // «Hell · Start mit Woche»
 export const appearanceHint = (theme, startView) =>
-  `${THEME_LABELS[theme] ?? THEME_LABELS.system} · Start mit ${{ heute: "Heute", start: "Blöcken" }[startView] ?? "Woche"}`;
+  translate("{v1} · Start mit {v2}", { v1: THEME_LABELS[theme] ?? THEME_LABELS.system, v2: { heute: translate("Heute"), start: translate("Blöcken") }[startView] ?? translate("Woche") });
 
 // «8 Fächer» / «1 Fach»; без предметів → null
-export const subjectsHint = (count) => (count > 0 ? `${count} ${count === 1 ? "Fach" : "Fächer"}` : null);
+export const subjectsHint = (count) => (count > 0 ? `${count} ${count === 1 ? translate("Fach") : translate("Fächer")}` : null);
 
 // «K7QM-… · heute 07:40», «K7QM-… · 4.11.», без коду — «Aus»
 export const syncHint = (code, lastSyncAt, now = new Date()) => {
-  if (!code) return "Aus";
+  if (!code) return translate("Aus");
   const head = `${code.slice(0, 4)}-…`;
   const last = lastSyncAt ? new Date(lastSyncAt) : null;
   if (!last || Number.isNaN(last.getTime())) return head; // ще жодного разу не синхронізували
-  const when = localDate(last) === localDate(now) ? `heute ${localTime(last)}` : `${last.getDate()}.${last.getMonth() + 1}.`;
+  const when = localDate(last) === localDate(now) ? translate("heute {v1}", { v1: localTime(last) }) : `${last.getDate()}.${last.getMonth() + 1}.`;
   return `${head} · ${when}`;
 };
 
 // «Code A» (мітка коду) або «nicht freigeschaltet»
-export const editorHint = (editor) => editor?.label ?? (editor ? "freigeschaltet" : "nicht freigeschaltet");
+export const editorHint = (editor) => editor?.label ?? (editor ? "freigeschaltet" : translate("nicht freigeschaltet"));
 
 // Чи показувати розділ «Mehr»: Sync і Statistik школа могла вимкнути, Editor-Code учителю не потрібен,
 // «Klasse verwalten» — лише з правом canManageClass (частина 29c)

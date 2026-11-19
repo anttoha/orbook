@@ -1,3 +1,4 @@
+import { translate } from "../i18n/translate";
 // ─────────────────────────────────────────────────────────────
 // Сторінка «Passwörter» в адмінці (частина 14b): перевірки й тексти без React.
 // Мінімальну довжину так само перевіряє сервер (security/accounts.py) — тут лише щоб не чекати відповіді.
@@ -11,7 +12,7 @@ export const lengthError = (password, min) => (password.length < min ? `Mindeste
 // «1 Gerät abgemeldet», «24 Geräte abgemeldet»; число невідоме або 0 → null (нічого дописувати)
 export function devicesText(count) {
   if (!(count > 0)) return null;
-  return `${count} ${count === 1 ? "Gerät" : "Geräte"} abgemeldet`;
+  return `${count} ${count === 1 ? translate("Gerät") : translate("Geräte")} abgemeldet`;
 }
 
 // Тост після зміни: «Passwort geändert · 24 Geräte abgemeldet»
@@ -19,6 +20,6 @@ export const changedText = (title, count) => [title, devicesText(count)].filter(
 
 // Готовий текст для чату класу після «Erzeugen». className може бути null (сервер ще не знає клас)
 export function classShareText(password, { className, url }) {
-  const forWhom = className ? `für die ${className}` : "für die Klasse";
+  const forWhom = className ? translate("für die {className}", { className }) : translate("für die Klasse");
   return `Neues ORBook-Passwort ${forWhom}: ${password}\n${url}`;
 }

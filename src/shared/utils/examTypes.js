@@ -1,3 +1,4 @@
+import { translate } from "../i18n/translate";
 // ─────────────────────────────────────────────────────────────
 // examTypes.js — «Arten von Tests» в админке (часть 24) без React: список для PUT /api/admin/exam-types.
 // Сервер получает весь список по порядку; переименование — с was (старое имя), тогда меняются и записи.
@@ -27,13 +28,13 @@ export function validateType(form, rows, index) {
   const name = form.name.trim();
   const short = form.short.trim();
   const others = rows.filter((_, k) => k !== index);
-  if (!name) errors.name = "Bitte einen Namen eintragen.";
-  else if (name.length > NAME_MAX) errors.name = `Höchstens ${NAME_MAX} Zeichen.`;
+  if (!name) errors.name = translate("Bitte einen Namen eintragen.");
+  else if (name.length > NAME_MAX) errors.name = translate("Höchstens {NAME_MAX} Zeichen.", { NAME_MAX });
   else if (others.some((row) => row.name.trim().toLowerCase() === name.toLowerCase())) errors.name = `„${name}“ gibt es schon.`;
-  if (!/^[A-Za-zÄÖÜäöüß0-9]{1,4}$/.test(short)) errors.short = "1 bis 4 Buchstaben oder Ziffern.";
-  else if (others.some((row) => row.short.trim().toLowerCase() === short.toLowerCase())) errors.short = `Kürzel „${short}“ gibt es schon.`;
+  if (!/^[A-Za-zÄÖÜäöüß0-9]{1,4}$/.test(short)) errors.short = translate("1 bis 4 Buchstaben oder Ziffern.");
+  else if (others.some((row) => row.short.trim().toLowerCase() === short.toLowerCase())) errors.short = translate("Kürzel „{short}“ gibt es schon.", { short });
   return errors;
 }
 
 // «3 Einträge» / «1 Eintrag» / «keine Einträge»
-export const countText = (count) => (count === 1 ? "1 Eintrag" : count ? `${count} Einträge` : "keine Einträge");
+export const countText = (count) => (count === 1 ? "1 Eintrag" : count ? translate("{count} Einträge", { count }) : translate("keine Einträge"));

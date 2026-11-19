@@ -5,6 +5,7 @@ import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
 import Sheet from "../ui/Sheet";
 import { CHANGED_FORMATS } from "../../shared/utils/planView";
+import { translate } from "../../shared/i18n/translate";
 
 
 // Приклад тижня для прев'ю (сьогодні — Mi 17.): дні з тими самими полями, що й з сервера.
@@ -20,7 +21,7 @@ const SAMPLE = [
 // Одна плашка дня в прев'ю: «MO / 15 / ⟳ 12.09.» (як DayHeader у тижні, але без посилання)
 const PreviewDay = ({ day }) => (
   <div className={cn("flex h-15.5 min-w-0 flex-1 flex-col items-center justify-center rounded-cell", day.today ? "bg-accent text-on-accent" : "bg-paper text-ink")}>
-    <span className={cn("text-micro font-bold uppercase", day.today ? "text-today-sub" : "text-faint")}>{day.weekday}</span>
+    <span className={cn("text-micro font-bold uppercase", day.today ? "text-today-sub" : "text-faint")}>{translate(day.weekday)}</span>
     <span className="text-cell-sm">{day.n}</span>
     <ChangedLine day={day} isToday={day.today} className="h-2.5 max-w-full px-0.5 text-nano leading-none" />
   </div>

@@ -7,9 +7,10 @@ import { upcomingChanges } from "../../../shared/utils/lessons";
 import { FlagIcon } from "../../ui/icons";
 import Liquid from "../../ui/Liquid";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // Бейдж уроку → слово праворуч у рядку
-const CHANGE_WORDS = { VERTRETUNG: "Vertretung", "FÄLLT AUS": "fällt aus", RAUM: "Raumwechsel", TEST: "Test" };
+const CHANGE_WORDS = { get VERTRETUNG() { return translate("Vertretung"); }, get "FÄLLT AUS"() { return translate("fällt aus"); }, get RAUM() { return translate("Raumwechsel"); }, get TEST() { return translate("Test"); } };
 
 // ─────────────────────────────────────────────────────────────
 // «Kommt noch» у правій колонці дня (ПК): що зміниться найближчим часом.

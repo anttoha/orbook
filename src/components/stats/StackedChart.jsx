@@ -1,5 +1,6 @@
 import { cn } from "../../shared/utils/cn";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Квадратик легенди і його підпис
 const LegendItem = ({ className, label }) => (
@@ -28,7 +29,7 @@ const Bar = ({ bar, showValue }) => (
 const StackedChart = ({ title, bars, large = false, className }) => {
   const t = useT();
   // для скрінрідера — те саме словами: «Mo: 1 fällt aus, 0 Vertretung»
-  const summary = bars.map((b) => `${b.label}: ${b.cancelled} fällt aus, ${b.substitutions} Vertretung`).join("; ");
+  const summary = bars.map((b) => translate("{label}: {cancelled} fällt aus, {substitutions} Vertretung", { label: b.label, cancelled: b.cancelled, substitutions: b.substitutions })).join("; ");
 
   return (
     <section className={cn("flex flex-col rounded-card bg-card px-3.5 pt-3.5 pb-4 lg:px-4.5 lg:pt-4.5", className)}>

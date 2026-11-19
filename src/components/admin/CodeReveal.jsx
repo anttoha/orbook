@@ -2,11 +2,12 @@ import { copyText } from "../../shared/utils/share";
 import { CopyIcon } from "../ui/icons";
 import RoundButton from "../ui/RoundButton";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Фіолетова картка «… · nur jetzt sichtbar» (макети 42 і 44, пароль класу — 14b).
 // Повний код або пароль є тільки у відповіді сервера: ніде не зберігаємо, лише показуємо один раз.
 // title і note — для пароля класу інші тексти; за замовчуванням — новий Editor-Code
-const CodeReveal = ({ code, masked, title = "Neuer Code", note, copyLabel = "Code kopieren" }) => {
+const CodeReveal = ({ code, masked, title = translate("Neuer Code"), note, copyLabel = translate("Code kopieren") }) => {
   const t = useT();
   return (
   <div className="rounded-card bg-accent px-4 py-4 text-on-accent">

@@ -3,6 +3,7 @@
 // ─────────────────────────────────────────────────────────────
 import { schoolYearEnd } from "./admin";
 import { addDays } from "./format";
+import { translate } from "../i18n/translate";
 
 // «Geräte höchstens»: 1 · 2 · 30 · Unbegrenzt · Andere (своє число в полі нижче). null — без ліміту
 export const DEVICE_CHOICES = [
@@ -27,7 +28,7 @@ export const choiceFromDevices = (max) => (max == null ? "none" : PRESETS.includ
 export function customDevicesError(choice, custom) {
   if (choice !== "custom") return null;
   const n = Number(custom);
-  return Number.isInteger(n) && n >= 1 && n <= MAX_DEVICES ? null : `Bitte eine Zahl von 1 bis ${MAX_DEVICES} eingeben.`;
+  return Number.isInteger(n) && n >= 1 && n <= MAX_DEVICES ? null : translate("Bitte eine Zahl von 1 bis {MAX_DEVICES} eingeben.", { MAX_DEVICES });
 }
 
 // «Für wen?»: людині вистачає 2 (телефон + ноутбук), групі — 30
@@ -37,21 +38,21 @@ export const AUDIENCES = [
 ];
 export const defaultDevices = (audience) => (audience === "person" ? "2" : "30");
 export const audienceHint = (audience) =>
-  audience === "person" ? "Eine Person: ein Gerät reicht meistens." : "Eine Gruppe: z. B. alle Eltern oder die Vertretung.";
+  audience === "person" ? translate("Eine Person: ein Gerät reicht meistens.") : translate("Eine Gruppe: z. B. alle Eltern oder die Vertretung.");
 
 // Чип у картці: GRUPPE / PERSÖNLICH
-export const audienceChip = (audience) => (audience === "person" ? "Persönlich" : "Gruppe");
+export const audienceChip = (audience) => (audience === "person" ? translate("Persönlich") : "Gruppe");
 export const audienceShort = (audience) => (audience === "person" ? "Person" : "Gruppe");
 
 // «9 von 30 Geräten», «1 von 1 Gerät», «21 Geräte · unbegrenzt»
 export function devicesText(devices, maxDevices) {
   const used = devices ?? 0;
-  if (maxDevices == null) return `${used} ${used === 1 ? "Gerät" : "Geräte"} · unbegrenzt`;
-  return `${used} von ${maxDevices} ${maxDevices === 1 ? "Gerät" : "Geräten"}`;
+  if (maxDevices == null) return `${used} ${used === 1 ? translate("Gerät") : translate("Geräte")} · unbegrenzt`;
+  return translate("{used} von {maxDevices} {v3}", { used, maxDevices, v3: maxDevices === 1 ? translate("Gerät") : translate("Geräten") });
 }
 
 // Коротко для таблиці на ПК: «9 von 30», «21 · unbegrenzt»
-export const devicesShort = (devices, maxDevices) => (maxDevices == null ? `${devices ?? 0} · unbegrenzt` : `${devices ?? 0} von ${maxDevices}`);
+export const devicesShort = (devices, maxDevices) => (maxDevices == null ? `${devices ?? 0} · unbegrenzt` : translate("{v1} von {maxDevices}", { v1: devices ?? 0, maxDevices }));
 
 // Ліміт повний — нове пристрій не увійде (чип VOLL)
 // Мітка LINK: у коду є робоче посилання-запрошення (частина 16)
@@ -69,7 +70,7 @@ export function halfYearEnd(todayIso, yearEnd) {
 
 // «Gültig bis»: 30 Tage · Halbjahr · Schuljahresende (без yearEnd — без останнього)
 export const accessValidChoices = (yearEnd) => [
-  { value: "30d", label: "30 Tage" },
+  { value: "30d", label: translate("30 Tage") },
   { value: "halbjahr", label: "Halbjahr" },
   ...(yearEnd ? [{ value: "schuljahresende", label: "Schuljahresende" }] : []),
 ];
@@ -85,18 +86,18 @@ export function accessValidUntil(choice, todayIso, yearEnd) {
 export const accessValidValue = (choice, todayIso, yearEnd) => (choice === "halbjahr" ? halfYearEnd(todayIso, yearEnd) : choice);
 
 // Нижній рядок картки: «zuletzt heute · bis 31. Juli» / «… · abgelaufen»
-export const validTail = (code, shortDate) => (code.status === "expired" ? "abgelaufen" : `bis ${shortDate(code.validUntil)}`);
+export const validTail = (code, shortDate) => (code.status === "expired" ? "abgelaufen" : translate("bis {v1}", { v1: shortDate(code.validUntil) }));
 
 // Тост після дії: «»Eltern« gesperrt · 9 Geräte abgemeldet»
 export function signedOutText(title, signedOut) {
   const n = signedOut ?? 0;
   if (!n) return title;
-  return `${title} · ${n} ${n === 1 ? "Gerät" : "Geräte"} abgemeldet`;
+  return `${title} · ${n} ${n === 1 ? translate("Gerät") : translate("Geräte")} abgemeldet`;
 }
 
 // Підсумок над списком: «5 Zugänge · 35 Geräte angemeldet» (рядок Klassenpasswort теж рахуємо)
 export function summaryText(codes, classPassword) {
   const count = codes.length + (classPassword ? 1 : 0);
   const devices = codes.reduce((sum, code) => sum + (code.devices ?? 0), 0) + (classPassword?.devices ?? 0);
-  return `${count} ${count === 1 ? "Zugang" : "Zugänge"} · ${devices} ${devices === 1 ? "Gerät" : "Geräte"} angemeldet`;
+  return `${count} ${count === 1 ? translate("Zugang") : translate("Zugänge")} · ${devices} ${devices === 1 ? translate("Gerät") : translate("Geräte")} angemeldet`;
 }

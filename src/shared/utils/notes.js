@@ -5,6 +5,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import { planMomentText } from "./format";
+import { translate } from "../i18n/translate";
 
 const TOMBSTONE_DAYS = 30; // видалена нотатка живе як «надгробок», щоб видалення дійшло до інших пристроїв
 
@@ -52,18 +53,18 @@ export function noteSubjects(lessons = [], current = null) {
 
 // Підпис під нотаткою: «Sport · 6. Std · nur für dich», «Mathe · nur für dich» або «nur für dich».
 // subjectLabel — назва предмета (або null), period — номер уроку (або null)
-export const noteMeta = (subjectLabel, period) => [subjectLabel, period ? `${period}. Std` : null, "nur für dich"].filter(Boolean).join(" · ");
+export const noteMeta = (subjectLabel, period) => [subjectLabel, period ? translate("{period}. Std", { period }) : null, translate("nur für dich")].filter(Boolean).join(" · ");
 
 // Знайти живу нотатку за id (надгробки не показуємо)
 export const findNote = (notes, id) => notes.find((n) => n.id === id && !n.deleted);
 
 // Тексти помилок синхронізації (docs/frontend/06-notizen.md, «Состояния и ошибки»)
 export function syncErrorText(error) {
-  if (error?.message === "wrong_code") return "Code passt nicht zu den Daten";
-  if (error?.message === "conflict") return "Konnte nicht abgeglichen werden. Später erneut versuchen.";
-  if (error?.message === "too_big") return "Zu viel zum Synchronisieren — lösch ein paar alte Notizen oder Aufgaben.";
-  if (error?.code === "sync_full") return "Der Sync-Speicher ist voll.";
-  if (error?.code === "offline" || error?.code === "timeout") return "Nicht synchronisiert — keine Verbindung";
+  if (error?.message === "wrong_code") return translate("Code passt nicht zu den Daten");
+  if (error?.message === "conflict") return translate("Konnte nicht abgeglichen werden. Später erneut versuchen.");
+  if (error?.message === "too_big") return translate("Zu viel zum Synchronisieren — lösch ein paar alte Notizen oder Aufgaben.");
+  if (error?.code === "sync_full") return translate("Der Sync-Speicher ist voll.");
+  if (error?.code === "offline" || error?.code === "timeout") return translate("Nicht synchronisiert — keine Verbindung");
   return error?.message || "Nicht synchronisiert";
 }
 
@@ -75,6 +76,6 @@ const localMoment = (date) => {
 
 // «Zuletzt synchronisiert heute 07:40 · 6 Notizen» / «Noch nicht synchronisiert · 1 Notiz»
 export function syncedText(lastSyncAt, now = new Date()) {
-  if (!lastSyncAt) return "Noch nicht synchronisiert";
+  if (!lastSyncAt) return translate("Noch nicht synchronisiert");
   return `Zuletzt synchronisiert ${planMomentText(localMoment(new Date(lastSyncAt)), localMoment(now).slice(0, 10))} · alles aktuell`;
 }

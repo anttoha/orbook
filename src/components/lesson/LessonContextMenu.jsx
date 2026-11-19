@@ -14,6 +14,7 @@ import { cn } from "../../shared/utils/cn";
 import Kbd from "../ui/Kbd";
 import { menuContentClass, menuIconClass, menuItemClass, menuSeparatorClass } from "../ui/menuStyles";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Підказка клавіші праворуч у пункті меню (тільки на ПК, на телефоні схована)
 const Shortcut = ({ children }) => <Kbd className="ml-auto hidden lg:inline-grid">{children}</Kbd>;
@@ -67,7 +68,7 @@ const LessonContextMenu = ({ lesson, date, children }) => {
     else setHiddenRequired(withNumbers(hiddenRequired, nrs, true));
     toast(`${subjectName(lesson.subject)} (${course.label}) ausgeblendet`, {
       action: {
-        label: "Rückgängig",
+        label: translate("Rückgängig"),
         onClick: () => {
           setPicked(before.picked);
           setHiddenRequired(before.hiddenRequired);

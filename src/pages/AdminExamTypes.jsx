@@ -15,6 +15,7 @@ import { countText, moveRow, toPayload, toRows } from "../shared/utils/examTypes
 import RoundButton from "../components/ui/RoundButton";
 import Liquid from "../components/ui/Liquid";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // Строка вида: «⋮⋮» тянуть (порядок), имя, Kürzel, сколько записей, ✎
 const TypeRow = ({ row, onEdit, onGrab, rowRef }) => (
@@ -99,7 +100,7 @@ const AdminExamTypes = () => {
   const remove = async (replacement) => {
     const next = rows.filter((row) => row !== deleting);
     if (await store(next, replacement ? { [deleting.was]: replacement } : {})) {
-      toast.success(`„${deleting.name}“ gelöscht`);
+      toast.success(translate("„{name}“ gelöscht", { name: deleting.name }));
       setDeleting(null);
       setEditing(undefined);
     }

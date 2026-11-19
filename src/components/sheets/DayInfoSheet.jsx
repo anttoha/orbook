@@ -13,6 +13,7 @@ import LiveDot from "../live/LiveDot";
 import Button from "../ui/Button";
 import Sheet from "../ui/Sheet";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Шторка «Info zum Tag». Адреса: ?sheet=info&datum=2026-10-07
@@ -76,7 +77,7 @@ const InlineHistory = ({ day }) => {
         <LiveDot on={live && !day.stale} />
         <span className="text-caption text-faint">
           <span className={live ? "font-extrabold text-ok" : "font-extrabold text-muted"}>{live ? t("Live") : t("Nicht live")}</span>
-          {ago && ` · geprüft ${ago}`}
+          {ago && translate(" · geprüft {ago}", { ago })}
         </span>
       </div>
       <DayHistory date={day.date} withIntro={false} />

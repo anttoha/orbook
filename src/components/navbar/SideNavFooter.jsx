@@ -14,19 +14,20 @@ import { useGlass } from "../../shared/hooks/useGlass";
 import RoundButton from "../ui/RoundButton";
 import Segmented from "../ui/Segmented";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Вкладка «Mehr» (частина 22: раніше «Einstellungen»): сторінки й налаштування; Statistik теж відкривається звідти
-const settingsTab = { to: "/mehr", label: "Mehr", icon: Ellipsis, activeOn: ["/statistik"] };
+const settingsTab = { to: "/mehr", get label() { return translate("Mehr"); }, icon: Ellipsis, activeOn: ["/statistik"] };
 
 // Текст стану плану (GET /api/plan/status):
 //   «Live · Stand 07:12» (часть 26) / «Plan aktuell · Stand 07:12» / «Plan veraltet · Stand von gestern 18:30» / «Plan noch nicht geladen»
 const planText = (status, today, live) => {
-  if (!status?.lastOkAt) return "Plan noch nicht geladen"; // сервер ще жодного разу не опитав школу
+  if (!status?.lastOkAt) return translate("Plan noch nicht geladen"); // сервер ще жодного разу не опитав школу
   const stand =
     status.lastOkAt.slice(0, 10) === today
-      ? `Stand ${status.lastOkAt.slice(11, 16)}`
+      ? translate("Stand {v1}", { v1: status.lastOkAt.slice(11, 16) })
       : standText(status.lastOkAt, today);
-  return `${status.stale ? "Plan veraltet" : live ? "Live" : "Plan aktuell"} · ${stand}`;
+  return `${status.stale ? translate("Plan veraltet") : live ? translate("Live") : translate("Plan aktuell")} · ${stand}`;
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -44,7 +45,7 @@ const SideNavFooter = ({ collapsed }) => {
 
   const isDark = isDarkTheme(theme);
   const glass = useGlass();
-  const text = refreshing ? "Plan wird geladen…" : planText(status, today, live);
+  const text = refreshing ? translate("Plan wird geladen…") : planText(status, today, live);
 
   return (
     <div className="mt-auto">

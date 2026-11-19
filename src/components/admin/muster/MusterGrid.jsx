@@ -39,7 +39,7 @@ const MusterGrid = ({ lessons, auto, mode, lessonTimes, names, selected, onPick,
                 desktop={desktop}
                 changed={mode === "admin" && isOwnChange(lessons, auto, weekday, period)}
                 selected={selected?.weekday === weekday && selected?.period === period}
-                label={t("{1}, {period}. Stunde", { "1": WEEKDAYS_LONG[weekday], period })}
+                label={t("{1}, {period}. Stunde", { "1": t(WEEKDAYS_LONG[weekday]), period })}
                 onClick={() => onPick?.({ weekday, period })}
               />
             </div>

@@ -18,13 +18,14 @@ import TextField from "../ui/TextField";
 import DeleteMaterialDialog from "./DeleteMaterialDialog";
 import LinkStatus from "./LinkStatus";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Як зберігати посилання — для спільного useExamSave (той самий шлях, що в Klausuren і Hausaufgaben):
 // If-Match, 409 «вже змінили», «Rückgängig». Список живе в materialsStore, а не в planStore
 const MATERIAL_OPS = {
-  noun: "Link",
+  get noun() { return translate("Link"); },
   listPath: "/materialien",
-  savedText: "Gespeichert · die Klasse sieht den Link",
+  get savedText() { return translate("Gespeichert · die Klasse sieht den Link"); },
   save: saveMaterial,
   remove: deleteMaterial,
   restore: recreateMaterial,
@@ -43,7 +44,7 @@ const Note = ({ icon: Icon, children }) => (
 // Предмет — одне поле зі списком і пошуком (design/neu/19c)
 const SubjectChoice = ({ subjects, courses, value, error, teacher, onChange }) => {
   const t = useT();
-  const hint = teacher ? (subjects.length > 0 ? "Nur Ihre Fächer laut Plan." : "Für Ihre Fächer gibt es im Plan keine Kurse.") : null;
+  const hint = teacher ? (subjects.length > 0 ? translate("Nur Ihre Fächer laut Plan.") : translate("Für Ihre Fächer gibt es im Plan keine Kurse.")) : null;
   return (
     <Field label={t("Fach")} error={error}>
       <ListPicker id="material-subject" label={t("Fach")} items={subjectItems(subjects, [], courses)} value={value} error={Boolean(error)} onChange={onChange} />

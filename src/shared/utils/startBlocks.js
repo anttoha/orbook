@@ -1,3 +1,4 @@
+import { translate } from "../i18n/translate";
 // ─────────────────────────────────────────────────────────────
 // «Start» из блоков (часть 30c). Раскладка — просто список { id, kind, size, opts }:
 // только порядок и размер, без координат. Сетка CSS сама раскладывает его
@@ -7,22 +8,22 @@
 
 // Размеры: Klein — одна колонка, Breit и Groß — две (Groß показывает больше строк)
 export const SIZES = ["klein", "breit", "gross"];
-export const SIZE_LABELS = { klein: "Klein", breit: "Breit", gross: "Groß" };
+export const SIZE_LABELS = { get klein() { return translate("Klein"); }, get breit() { return translate("Breit"); }, get gross() { return translate("Groß"); } };
 
 // Все виды блоков. sizes — какие размеры у блока бывают (первый — по умолчанию),
 // opts — настройки блока по умолчанию, feature — раздел, который школа может выключить (me.features)
 export const BLOCKS = [
-  { kind: "jetzt", label: "Jetzt", hint: "Aktuelle und nächste Stunde", sizes: ["breit"] },
-  { kind: "heute", label: "Heute", hint: "Alle Stunden des Tages", sizes: ["breit", "gross"] },
-  { kind: "woche", label: "Woche", hint: "Die ganze Woche im Kleinen", sizes: ["gross"] },
-  { kind: "tests", label: "Tests", hint: "Was als Nächstes ansteht", sizes: ["klein", "breit", "gross"], opts: { count: 2, mine: true } },
-  { kind: "aufgaben", label: "Aufgaben", hint: "Offene Hausaufgaben", sizes: ["klein", "breit"] },
-  { kind: "aenderungen", label: "Änderungen", hint: "Ausfall und Vertretung", sizes: ["klein", "breit"] },
-  { kind: "termine", label: "Termine", hint: "Ferien, Elternabend, Ausflug", sizes: ["klein", "breit"], opts: { count: 2 } },
-  { kind: "notizen", label: "Notizen", hint: "Deine letzten Notizen", sizes: ["klein", "breit"] },
-  { kind: "materialien", label: "Materialien", hint: "Neue Links der Klasse", sizes: ["klein", "breit"] },
-  { kind: "statistik", label: "Statistik", hint: "Ausfall in dieser Woche", sizes: ["klein"], feature: "statistics" },
-  { kind: "countdown", label: "Countdown", hint: "Tage bis zu den Ferien", sizes: ["klein"] },
+  { kind: "jetzt", get label() { return translate("Jetzt"); }, get hint() { return translate("Aktuelle und nächste Stunde"); }, sizes: ["breit"] },
+  { kind: "heute", get label() { return translate("Heute"); }, get hint() { return translate("Alle Stunden des Tages"); }, sizes: ["breit", "gross"] },
+  { kind: "woche", get label() { return translate("Woche"); }, get hint() { return translate("Die ganze Woche im Kleinen"); }, sizes: ["gross"] },
+  { kind: "tests", get label() { return translate("Tests"); }, get hint() { return translate("Was als Nächstes ansteht"); }, sizes: ["klein", "breit", "gross"], opts: { count: 2, mine: true } },
+  { kind: "aufgaben", get label() { return translate("Aufgaben"); }, get hint() { return translate("Offene Hausaufgaben"); }, sizes: ["klein", "breit"] },
+  { kind: "aenderungen", get label() { return translate("Änderungen"); }, get hint() { return translate("Ausfall und Vertretung"); }, sizes: ["klein", "breit"] },
+  { kind: "termine", get label() { return translate("Termine"); }, get hint() { return translate("Ferien, Elternabend, Ausflug"); }, sizes: ["klein", "breit"], opts: { count: 2 } },
+  { kind: "notizen", get label() { return translate("Notizen"); }, get hint() { return translate("Deine letzten Notizen"); }, sizes: ["klein", "breit"] },
+  { kind: "materialien", get label() { return translate("Materialien"); }, get hint() { return translate("Neue Links der Klasse"); }, sizes: ["klein", "breit"] },
+  { kind: "statistik", get label() { return translate("Statistik"); }, get hint() { return translate("Ausfall in dieser Woche"); }, sizes: ["klein"], feature: "statistics" },
+  { kind: "countdown", get label() { return translate("Countdown"); }, get hint() { return translate("Tage bis zu den Ferien"); }, sizes: ["klein"] },
 ];
 
 // Сколько строк показывают Tests и Termine (настройка «Einträge»)

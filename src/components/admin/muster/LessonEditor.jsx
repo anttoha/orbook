@@ -7,6 +7,7 @@ import Button from "../../ui/Button";
 import { CheckIcon, TrashIcon } from "../../ui/icons";
 import TextField from "../../ui/TextField";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 const NEW_ENTRY = { subject: "", course: null, teacher: null, room: null };
 
@@ -16,7 +17,7 @@ function entryItems(courses, suggested, entry) {
   const items = courseItems(courses, suggested);
   const value = entryValue(entry);
   if (!value || items.some((item) => item.value === value)) return items;
-  return [{ value, code: entry.subject, title: entry.subject, subtitle: entry.course?.nr ? `Kurs ${entry.course.nr}` : "ohne Kurs", group: "Jetzt" }, ...items];
+  return [{ value, code: entry.subject, title: entry.subject, subtitle: entry.course?.nr ? translate("Kurs {nr}", { nr: entry.course.nr }) : translate("ohne Kurs"), group: translate("Jetzt") }, ...items];
 }
 // Що вибрано в полі: номер курсу, а урок без курсу — «fach:Ma»
 const entryValue = (entry) => entry.course?.nr ?? (entry.subject ? `fach:${entry.subject}` : null);

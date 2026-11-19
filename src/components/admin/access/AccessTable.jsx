@@ -8,6 +8,7 @@ import { accessActions, passwordActions } from "./accessActions";
 import { FullChip, LinkChip, StatusChip } from "./AccessChips";
 import ClassTag from "../schools/ClassTag";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 const th = "pb-3 text-left text-hint font-extrabold text-faint";
 const HEAD = ["Bezeichnung", "Für", "Code", "Geräte", "Gültig bis", "Zuletzt", "Status"];
@@ -42,7 +43,7 @@ const AccessTable = ({ codes, password, today, onToggle, onAction, onPasswordTog
       <tr>
         {HEAD.map((name) => (
           <th key={name} className={th}>
-            {name}
+            {translate(name)}
           </th>
         ))}
         <th className={th}>
@@ -74,7 +75,7 @@ const AccessTable = ({ codes, password, today, onToggle, onAction, onPasswordTog
       {password && (
         <Row
           active={password.enabled}
-          cells={["Klassenpasswort", "alle (alt)", "••••••••", devicesShort(password.devices, null), "ohne Ablauf", lastUsedDay(password.lastUsedAt, today)]}
+          cells={[translate("Klassenpasswort"), translate("alle (alt)"), "••••••••", devicesShort(password.devices, null), translate("ohne Ablauf"), lastUsedDay(password.lastUsedAt, today)]}
           status={<Badge variant={password.enabled ? "ok" : "off"}>{password.enabled ? t("Aktiv") : t("Aus")}</Badge>}
           switchProps={{ checked: password.enabled, onChange: onPasswordToggle, label: password.enabled ? t("Klassenpasswort ausschalten") : t("Klassenpasswort einschalten") }}
           menu={<CodeMenu code={{ label: t("Klassenpasswort") }} items={passwordActions(password)} onAction={(kind) => onAction(kind, null)} />}

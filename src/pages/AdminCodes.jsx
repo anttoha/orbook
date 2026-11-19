@@ -18,11 +18,12 @@ import { isTeacherCode } from "../shared/utils/admin";
 import RoundButton from "../components/ui/RoundButton";
 import Liquid from "../components/ui/Liquid";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // Тексти двох списків: Editor-Codes (макети 41, 43) і Lehrer-Codes (частина 14, handy-10, pc-04)
 const TEXTS = {
-  editor: { title: "Editor-Codes", search: "Code suchen", empty: "Noch keine Editor-Codes" },
-  teacher: { title: "Lehrer-Codes", search: "Kürzel suchen", empty: "Noch keine Lehrer-Codes" },
+  editor: { get title() { return translate("Editor-Codes"); }, get search() { return translate("Code suchen"); }, get empty() { return translate("Noch keine Editor-Codes"); } },
+  teacher: { title: "Lehrer-Codes", get search() { return translate("Kürzel suchen"); }, get empty() { return translate("Noch keine Lehrer-Codes"); } },
 };
 
 // Телефон: «Editor-Codes · 4 | Lehrer-Codes · 3» — дві адреси, одна вкладка «Codes»

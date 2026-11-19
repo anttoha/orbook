@@ -4,21 +4,22 @@
 // ─────────────────────────────────────────────────────────────
 import { validateDetails } from "./entries";
 import { subjectName, weekdayShort } from "./format";
+import { translate } from "../i18n/translate";
 
 export const TOPIC_MAX = 60;
 
 // null, якщо тема гаразд, інакше { type, message }
 export function validateTopic(value) {
   const topic = (value ?? "").trim();
-  if (topic.length > TOPIC_MAX) return { type: "too_long", message: `Das Thema darf höchstens ${TOPIC_MAX} Zeichen lang sein.` };
+  if (topic.length > TOPIC_MAX) return { type: "too_long", message: translate("Das Thema darf höchstens {TOPIC_MAX} Zeichen lang sein.", { TOPIC_MAX }) };
   // eslint-disable-next-line no-control-regex -- саме керівні символи й шукаємо
-  if (/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/.test(topic)) return { type: "control_chars", message: "Das Thema muss in einer Zeile stehen." };
-  if (/[^\s@]+@[^\s@]+\.[^\s@]+/.test(topic)) return { type: "contains_email", message: "Bitte keine E-Mail-Adressen im Thema." };
+  if (/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/.test(topic)) return { type: "control_chars", message: translate("Das Thema muss in einer Zeile stehen.") };
+  if (/[^\s@]+@[^\s@]+\.[^\s@]+/.test(topic)) return { type: "contains_email", message: translate("Bitte keine E-Mail-Adressen im Thema.") };
   if (/(https?:\/\/|www\.|\b[a-z0-9-]+\.(?:de|com|net|org|eu|io|app|info|ru|me|ly)\b)/i.test(topic)) {
-    return { type: "contains_link", message: "Bitte keine Links im Thema." };
+    return { type: "contains_link", message: translate("Bitte keine Links im Thema.") };
   }
   for (const run of topic.match(/[+\d][\d\s/()-]*/g) ?? []) {
-    if ((run.match(/\d/g) ?? []).length >= 9) return { type: "contains_phone", message: "Bitte keine Telefonnummern im Thema." };
+    if ((run.match(/\d/g) ?? []).length >= 9) return { type: "contains_phone", message: translate("Bitte keine Telefonnummern im Thema.") };
   }
   return null;
 }
@@ -27,10 +28,10 @@ export function validateTopic(value) {
 export function validateExamDate(dateIso, todayIso) {
   const day = Date.parse(`${dateIso}T00:00:00Z`);
   const today = Date.parse(`${todayIso}T00:00:00Z`);
-  if (Number.isNaN(day)) return { type: "invalid", message: "Bitte ein Datum wählen." };
+  if (Number.isNaN(day)) return { type: "invalid", message: translate("Bitte ein Datum wählen.") };
   const days = Math.round((day - today) / 86400000);
-  if (days > 365) return { type: "too_far", message: "Das Datum liegt mehr als ein Jahr in der Zukunft." };
-  if (days < -14) return { type: "too_old", message: "Das Datum liegt mehr als 14 Tage in der Vergangenheit." };
+  if (days > 365) return { type: "too_far", message: translate("Das Datum liegt mehr als ein Jahr in der Zukunft.") };
+  if (days < -14) return { type: "too_old", message: translate("Das Datum liegt mehr als 14 Tage in der Vergangenheit.") };
   return null;
 }
 
@@ -38,7 +39,7 @@ export function validateExamDate(dateIso, todayIso) {
 // Стара дата при правці не перевіряється: сервер її приймає, інакше не виправити тему в минулій записі
 export function validateExamForm(form, today, originalDate = null) {
   const errors = {};
-  if (!form.subject) errors.subject = "Bitte ein Fach wählen.";
+  if (!form.subject) errors.subject = translate("Bitte ein Fach wählen.");
   const dateError = form.date === originalDate ? null : validateExamDate(form.date, today);
   if (dateError) errors.date = dateError.message;
   const topicError = validateTopic(form.topic);
@@ -117,7 +118,7 @@ export function addHomeworkTarget(me) {
 export function unlockErrorText(error, retryText) {
   if (error.code === "locked") return retryText(error);
   const left = error.details?.attemptsLeft;
-  if (error.code === "code_invalid" && left != null) return `${error.message} Noch ${left} ${left === 1 ? "Versuch" : "Versuche"}.`;
+  if (error.code === "code_invalid" && left != null) return `${error.message} Noch ${left} ${left === 1 ? translate("Versuch") : translate("Versuche")}.`;
   return error.message;
 }
 
@@ -126,6 +127,6 @@ export const fullDate = (iso) => iso.split("-").reverse().join(".");
 
 // Рядок над заголовком форми: хто записує («Lehrkraft · Mü», «Editor · Code A»)
 export function formEyebrow(me, fallback) {
-  if (me?.teacher?.short) return `Lehrkraft · ${me.teacher.short}`;
+  if (me?.teacher?.short) return translate("Lehrkraft · {short}", { short: me.teacher.short });
   return me?.editor?.label ? `Editor · ${me.editor.label}` : fallback;
 }

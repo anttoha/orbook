@@ -13,6 +13,7 @@ import { cn } from "../shared/utils/cn";
 import { visibleSubjects } from "../shared/utils/courses";
 import { fachDotClass, paletteOf } from "../shared/utils/lessons";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // Рядок предмета: натискання вибирає його, і палітра зверху змінює саме його колір.
 // Вибраний виділено фоном, жирною назвою і галочкою — щоб було видно, що зараз фарбуємо
@@ -60,7 +61,7 @@ const SubjectColors = () => {
   const resetAll = () => {
     const before = overrides; // для «Rückgängig»
     setColorOverrides({});
-    toast("Standardfarben wiederhergestellt", { duration: 6000, action: { label: "Rückgängig", onClick: () => setColorOverrides(before) } });
+    toast("Standardfarben wiederhergestellt", { duration: 6000, action: { label: translate("Rückgängig"), onClick: () => setColorOverrides(before) } });
   };
 
   return (

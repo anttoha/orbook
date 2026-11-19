@@ -6,30 +6,31 @@ import { Undo2 } from "lucide-react";
 import DangerDialog from "../DangerDialog";
 import PillButton from "../../ui/PillButton";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // Три дії «Gefahrenzone»: заголовок і текст вікна для кожної
 const dangers = (counts) => [
   {
     action: "deleteExams",
-    label: "Alle Tests löschen",
+    label: translate("Alle Tests löschen"),
     icon: TrashIcon,
-    title: "Alle Tests löschen?",
-    text: `${counts?.examsUpcoming ?? 0} kommende und alle vergangenen Tests verschwinden für die ganze Klasse, auch bereits gelöschte.`,
+    title: translate("Alle Tests löschen?"),
+    text: translate("{v1} kommende und alle vergangenen Tests verschwinden für die ganze Klasse, auch bereits gelöschte.", { v1: counts?.examsUpcoming ?? 0 }),
   },
   {
     action: "deleteSync",
-    label: "Alle Sync-Daten löschen",
+    label: translate("Alle Sync-Daten löschen"),
     icon: TrashIcon,
-    title: "Alle Sync-Daten löschen?",
-    text: `Alle ${counts?.syncBlocks ?? 0} verschlüsselten Sync-Speicher auf dem Server werden gelöscht. Die Notizen auf den Geräten selbst bleiben.`,
+    title: translate("Alle Sync-Daten löschen?"),
+    text: translate("Alle {v1} verschlüsselten Sync-Speicher auf dem Server werden gelöscht. Die Notizen auf den Geräten selbst bleiben.", { v1: counts?.syncBlocks ?? 0 }),
   },
   {
     action: "resetStats",
-    label: "Statistik zurücksetzen",
+    label: translate("Statistik zurücksetzen"),
     icon: Undo2,
-    title: "Statistik zurücksetzen?",
-    text: "Die Statistik zählt ab heute neu. Gespeicherte Pläne bleiben erhalten.",
-    confirmLabel: "Zurücksetzen",
+    title: translate("Statistik zurücksetzen?"),
+    text: translate("Die Statistik zählt ab heute neu. Gespeicherte Pläne bleiben erhalten."),
+    confirmLabel: translate("Zurücksetzen"),
   },
 ];
 

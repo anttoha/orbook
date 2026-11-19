@@ -8,6 +8,7 @@ import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import Liquid from "../ui/Liquid";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Карточка «Telegram» в Mitteilungen (макет 27b handy-01/03):
 // не подключено — «Mit Telegram verbinden» (шторка ?sheet=telegram), подключено — «Bot öffnen» и «Trennen».
@@ -32,7 +33,7 @@ const TelegramCard = () => {
       await disconnect();
       toast.success("Telegram getrennt");
     } catch (error) {
-      toast.error(error?.message || "Hat nicht geklappt");
+      toast.error(error?.message || translate("Hat nicht geklappt"));
     } finally {
       setBusy(false);
     }

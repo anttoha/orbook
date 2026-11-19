@@ -3,6 +3,7 @@ import { cn } from "../../../shared/utils/cn";
 import { examWhen, subjectName } from "../../../shared/utils/format";
 import ExamBadge from "../../exams/ExamBadge";
 import ExamDateTile from "../../exams/ExamDateTile";
+import { translate } from "../../../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Картка Klausur у правій колонці (макет «Nächste Klausuren»):
@@ -24,7 +25,7 @@ const ExamCard = ({ exam, overrides, highlight }) => {
           <ExamBadge type={exam.type} />
           <span className="truncate text-caption font-semibold text-faint">
             {subjectName(exam.subject)}
-            {exam.lesson && ` · ${exam.lesson}. Std`}
+            {exam.lesson && translate(" · {period}. Std", { period: exam.lesson })}
           </span>
         </span>
         {/* тема (може бути порожньою) */}

@@ -10,11 +10,12 @@ import Sheet from "../../ui/Sheet";
 import TextField from "../../ui/TextField";
 import { TestResult } from "../settings/SchoolCard";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 const DEFAULT_SERVER = "https://www.stundenplan24.de";
 
 // Ошибки полей с сервера (422 details.fields) → тексты под полями
-const FIELD_TEXT = { name: "Bitte einen Namen eingeben.", number: "Nur Ziffern (4 bis 12).", password: "Bitte das Passwort der Schule eingeben.", baseUrl: "Nur https://, ohne Pfad, keine lokalen Adressen." };
+const FIELD_TEXT = { get name() { return translate("Bitte einen Namen eingeben."); }, get number() { return translate("Nur Ziffern (4 bis 12)."); }, get password() { return translate("Bitte das Passwort der Schule eingeben."); }, get baseUrl() { return translate("Nur https://, ohne Pfad, keine lokalen Adressen."); } };
 function fieldErrors(error) {
   const fields = error?.details?.fields ?? [];
   return Object.fromEntries(fields.map((item) => [item.field, FIELD_TEXT[item.field] ?? error.message]));
@@ -24,7 +25,7 @@ function fieldErrors(error) {
 const bodyOf = (form) => ({ name: form.name.trim(), number: form.number.trim(), baseUrl: form.baseUrl.trim() || DEFAULT_SERVER, ...(form.password ? { password: form.password } : {}) });
 
 // «Verbindung testen» → плашка «Verbindung steht · 24 Klassen im Plan» или текст ошибки
-const testText = (answer) => (answer.ok ? { ok: true, text: `Verbindung steht · ${answer.classesFound} Klassen im Plan` } : { ok: false, text: answer.message || "Verbindung fehlgeschlagen" });
+const testText = (answer) => (answer.ok ? { ok: true, text: translate("Verbindung steht · {classesFound} Klassen im Plan", { classesFound: answer.classesFound }) } : { ok: false, text: answer.message || "Verbindung fehlgeschlagen" });
 
 // Форма школы. school = null — новая школа
 const SchoolForm = ({ school, onDone }) => {
@@ -61,7 +62,7 @@ const SchoolForm = ({ school, onDone }) => {
       // Сохранённая школа: проверка заодно запоминает список классов (нужен полю «Klasse» у кодов)
       await admin.testSchool(saved?.id ?? school?.id).catch(() => null);
       await reloadSchools();
-      toast.success(school ? "Schule gespeichert" : `${form.name.trim()} hinzugefügt`);
+      toast.success(school ? translate("Schule gespeichert") : translate("{v1} hinzugefügt", { v1: form.name.trim() }));
       onDone();
     } catch (error) {
       const found = fieldErrors(error);
@@ -78,7 +79,7 @@ const SchoolForm = ({ school, onDone }) => {
     try {
       await admin.deleteSchool(school.id);
       await reloadSchools();
-      toast.success("Schule entfernt");
+      toast.success(translate("Schule entfernt"));
       onDone();
     } catch (error) {
       setErrors({ form: error.message });

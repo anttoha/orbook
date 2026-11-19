@@ -8,6 +8,7 @@ import ClassSheet from "./ClassSheet";
 import { usePrint } from "../../shared/hooks/usePrint";
 import Liquid from "../ui/Liquid";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Строка «Blatt für die Klasse drucken» в окне «Einladen» (макет 25 handy-10)
 export const PrintRow = ({ onClick }) => {
@@ -25,8 +26,8 @@ export const PrintRow = ({ onClick }) => {
 };
 
 const KINDS = [
-  { kind: "aushang", title: "Aushang", hint: "1 großer QR" },
-  { kind: "kaertchen", title: "Kärtchen", hint: "8 zum Ausschneiden" },
+  { kind: "aushang", title: "Aushang", get hint() { return translate("1 großer QR"); } },
+  { kind: "kaertchen", get title() { return translate("Kärtchen"); }, hint: "8 zum Ausschneiden" },
 ];
 
 // Маленький схематичный лист в карточке выбора

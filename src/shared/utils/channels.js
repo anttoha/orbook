@@ -1,3 +1,4 @@
+import { translate } from "../i18n/translate";
 // ─────────────────────────────────────────────────────────────
 // channels.js — подписи для «Admin → Kanäle» (часть 27). Чистые функции, без React.
 // Все поля группы с сервера могут быть null (docs/API.md «Kanäle»).
@@ -5,13 +6,13 @@
 
 // Какое сообщение показать: новый план или «Für morgen»
 export const KINDS = [
-  { value: "plan", label: "Neuer Plan" },
-  { value: "tomorrow", label: "Für morgen" },
+  { value: "plan", get label() { return translate("Neuer Plan"); } },
+  { value: "tomorrow", get label() { return translate("Für morgen"); } },
 ];
 
 // Через сколько минут после уроков уходит «Für morgen» (сервер принимает только эти)
 export const MINUTES = [15, 30, 45, 60, 90];
-export const minutesOptions = MINUTES.map((m) => ({ value: m, label: `${m} Min.` }));
+export const minutesOptions = MINUTES.map((m) => ({ value: m, get label() { return translate("{m} Min.", { m }); } }));
 
 // «„9b Klasse“ · 27 Mitglieder»; без числа — только название
 export function groupLine(group) {
@@ -20,7 +21,7 @@ export function groupLine(group) {
 }
 
 // Подпись под «„Für morgen“ nach Schulschluss»
-export const tomorrowHint = (tomorrowAt) => (tomorrowAt ? `Heute um ${tomorrowAt}` : "Heute keine Stunden");
+export const tomorrowHint = (tomorrowAt) => (tomorrowAt ? `Heute um ${tomorrowAt}` : translate("Heute keine Stunden"));
 
 // Когда отправлено: «Heute 13:35», «Gestern 13:50», «Di 10.11. 07:14»
 const DAYS = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
@@ -37,4 +38,4 @@ export function sentLabel(iso, now = new Date()) {
 }
 
 // Красная карточка: почему не дошло
-export const errorLine = (error) => (error === "removed" ? "Bot wurde aus der Gruppe entfernt" : "Letzte Nachricht kam nicht an");
+export const errorLine = (error) => (error === "removed" ? translate("Bot wurde aus der Gruppe entfernt") : translate("Letzte Nachricht kam nicht an"));

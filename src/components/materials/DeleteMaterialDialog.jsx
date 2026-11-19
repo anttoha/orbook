@@ -3,9 +3,10 @@ import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import { TrashIcon } from "../ui/icons";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // «Der Ordner in Google Drive», «Die Datei in OneDrive» — що саме лишається недоторканим
-const whatStays = (item) => `${item.kind === "folder" ? "Der Ordner" : "Die Datei"} in ${PROVIDER_LABEL[item.provider] ?? "Drive"}`;
+const whatStays = (item) => translate("{v1} in {v2}", { v1: item.kind === "folder" ? "Der Ordner" : "Die Datei", v2: PROVIDER_LABEL[item.provider] ?? "Drive" });
 
 // Питання перед видаленням (макет handy-06): зникає лише посилання, файл у Drive лишається
 const DeleteMaterialDialog = ({ item, actions }) => {

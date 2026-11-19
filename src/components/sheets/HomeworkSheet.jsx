@@ -17,6 +17,7 @@ import { Skeleton } from "../ui/PlanState";
 import Sheet from "../ui/Sheet";
 import SubjectBadge from "../ui/SubjectBadge";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Вікно без запису: вантажиться, не знайдена або помилка
 const Placeholder = ({ open, onClose, status, error }) => {
@@ -53,7 +54,7 @@ const HomeworkSheet = ({ open, onClose, sheet }) => {
           <span className="truncate text-hint font-normal">{subjectName(item.subject)}</span>
         </span>
       }
-      title={`${dueTitle(item.due, today)}${item.lesson ? ` · ${item.lesson}. Std` : ""}`}
+      title={`${dueTitle(item.due, today)}${item.lesson ? translate(" · {period}. Std", { period: item.lesson }) : ""}`}
       titleClassName="text-brand"
       hideClose
       icon={<SubjectBadge subject={item.subject} size="lg" />}

@@ -4,6 +4,7 @@ import { retryText } from "../api/api";
 import { linkCodeOf, useLinkCode } from "../store/linkCodeStore";
 import { usePlanStore } from "../store/planStore";
 import { unlockErrorText } from "../utils/examRules";
+import { translate } from "../i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Поле Editor-Code: і для сторінки, і для вікна.
@@ -25,7 +26,7 @@ export const useEditorUnlock = (onUnlocked) => {
       await unlockEditor(code);
       setCode("");
       useLinkCode.getState().clear(); // код из ссылки больше не нужен
-      toast.success("Editor-Code freigeschaltet", { duration: 3000 });
+      toast.success(translate("Editor-Code freigeschaltet"), { duration: 3000 });
       onUnlocked();
     } catch (e) {
       setError(unlockErrorText(e, retryText));

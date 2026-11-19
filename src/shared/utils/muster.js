@@ -6,6 +6,7 @@
 // Тут — чисті функції: перетворити такі дні, буква тижня A/B, що перевірити, коли прийшов справжній план.
 // ─────────────────────────────────────────────────────────────
 import { daysBetween } from "./format";
+import { translate } from "../i18n/translate";
 
 // Номер тижня циклу школи → буква: 1 → «A», 2 → «B», невідомо → null (тоді букву не показуємо)
 export const abLetter = (week) => (week === 1 ? "A" : week === 2 ? "B" : null);
@@ -78,7 +79,7 @@ export function planChecks(day, notes, dismissed = [], today = "") {
 export function checkReason(item, lessons, subjectLabel) {
   const period = item.kind === "exam" ? item.exam.lesson : item.note.period;
   const code = item.kind === "exam" ? item.exam.subject?.code : item.note.subject;
-  if (item.kind === "note" && item.target) return `${subjectLabel} in der ${item.target}. Stunde.`;
+  if (item.kind === "note" && item.target) return translate("{subjectLabel} in der {target}. Stunde.", { subjectLabel, target: item.target });
   const cancelled = lessons.some((l) => l.period === period && l.subject?.code === code && l.status === "cancelled");
-  return cancelled ? `${subjectLabel} fällt aus.` : `${subjectLabel} steht nicht mehr in der ${period}. Stunde.`;
+  return cancelled ? translate("{subjectLabel} fällt aus.", { subjectLabel }) : translate("{subjectLabel} steht nicht mehr in der {period}. Stunde.", { subjectLabel, period });
 }

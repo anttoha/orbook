@@ -18,6 +18,7 @@ import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { loadChannels, saveSettings, telegramDisconnect, telegramTest } from "../shared/api/admin";
 import { useAdminStore } from "../shared/store/adminStore";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // Настройки по умолчанию, пока /admin/settings не ответил (как на сервере)
 const DEFAULTS = { plan: true, tomorrow: true, exam: false, bot: true, minutesAfter: 30 };
@@ -66,8 +67,8 @@ const AdminChannels = () => {
     setBusy(true);
     try {
       const { ok } = await telegramTest();
-      if (ok) toast.success("Test gesendet");
-      else toast.error("Nicht angekommen – bitte neu verbinden");
+      if (ok) toast.success(translate("Test gesendet"));
+      else toast.error(translate("Nicht angekommen – bitte neu verbinden"));
       reload();
     } catch (error) {
       toast.error(error.message);
@@ -138,7 +139,7 @@ const AdminChannels = () => {
         onClose={() => setOpen(null)}
         icon={<X className="size-6.5 text-danger" />}
         title={t("Telegram trennen?")}
-        text={`Der Bot verlässt „${state.data?.group?.title ?? "die Gruppe"}“.`}
+        text={t("Der Bot verlässt „{title}“.", { title: state.data?.group?.title ?? t("die Gruppe") })}
       >
         <Button onClick={() => setOpen(null)}>{t("Abbrechen")}</Button>
         <Button variant="danger" onClick={disconnect} disabled={busy}>

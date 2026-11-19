@@ -1,5 +1,6 @@
 import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
+import { translate } from "../../shared/i18n/translate";
 
 // Дві смужки-«текст» у мініатюрі теми
 const Lines = ({ className }) => (
@@ -10,11 +11,11 @@ const Lines = ({ className }) => (
 );
 
 const THEMES = [
-  { value: "light", label: "Hell", preview: <div className="h-full bg-preview-light"><Lines className="bg-preview-light-line" /></div> },
-  { value: "dark", label: "Dunkel", preview: <div className="h-full bg-preview-dark"><Lines className="bg-preview-dark-line" /></div> },
+  { value: "light", get label() { return translate("Hell"); }, preview: <div className="h-full bg-preview-light"><Lines className="bg-preview-light-line" /></div> },
+  { value: "dark", get label() { return translate("Dunkel"); }, preview: <div className="h-full bg-preview-dark"><Lines className="bg-preview-dark-line" /></div> },
   {
     value: "system",
-    label: "System",
+    get label() { return translate("System"); },
     preview: (
       <div className="flex h-full">
         <span className="flex-1 bg-preview-light" />

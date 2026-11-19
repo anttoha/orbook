@@ -9,6 +9,7 @@ import { agoText } from "../../shared/utils/liveText";
 import LiveDot from "../live/LiveDot";
 import Liquid from "../ui/Liquid";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 const rowClass = "flex w-full items-center gap-3 px-3.5 py-3 text-left transition-colors hover:bg-paper";
 
@@ -25,9 +26,9 @@ const DayHistoryCard = ({ day }) => {
   const live = usePlanStore((s) => s.live) === "live";
   const { state, data } = useDayVersions(day.date);
   const count = data?.versions?.length ?? 0;
-  const checked = agoText(day.checkedAt ?? day.fetchedAt, now) ?? "noch nie";
-  const changed = day.changedAt ? `zuletzt geändert ${planMomentText(day.changedAt, today)}` : "noch nicht geändert";
-  const sub = state === "loading" ? "…" : state === "error" ? changed : `${count} ${count === 1 ? "Fassung" : "Fassungen"} · ${changed}`;
+  const checked = agoText(day.checkedAt ?? day.fetchedAt, now) ?? translate("noch nie");
+  const changed = day.changedAt ? translate("zuletzt geändert {v1}", { v1: planMomentText(day.changedAt, today) }) : translate("noch nicht geändert");
+  const sub = state === "loading" ? "…" : state === "error" ? changed : `${count} ${count === 1 ? translate("Fassung") : translate("Fassungen")} · ${changed}`;
 
   return (
     <Liquid as="div" refract press={false} className="divide-y divide-hair overflow-hidden rounded-card bg-card">

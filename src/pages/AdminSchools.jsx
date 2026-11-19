@@ -89,7 +89,7 @@ const AdminSchools = () => {
       />
       {isDesktop && (
         <p className="flex items-center gap-2.5 rounded-card bg-sand px-4 py-2.5 text-label text-muted">
-          <Info className="size-4 shrink-0" /> {NOTE}
+          <Info className="size-4 shrink-0" /> {t(NOTE)}
         </p>
       )}
       {renderBody()}
@@ -98,7 +98,7 @@ const AdminSchools = () => {
         <p className="text-label text-faint">{t("Klasse löschen: im Menü ⋮ — mit dem Wort LÖSCHEN und Admin-Passwort. Die Daten der anderen Klassen bleiben.")}</p>
       ) : (
         <p className="flex gap-3 rounded-card bg-sand px-4 py-3.5 text-body-sm text-muted">
-          <Info className="mt-0.5 size-4.5 shrink-0" /> {NOTE_SHORT}
+          <Info className="mt-0.5 size-4.5 shrink-0" /> {t(NOTE_SHORT)}
         </p>
       )}
 

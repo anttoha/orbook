@@ -2,6 +2,7 @@ import { useNow } from "../../shared/hooks/useNow";
 import { lessonName, subjectName } from "../../shared/utils/format";
 import { afterText, lessonProgress } from "../../shared/utils/lessonClock";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Фіолетова картка «Jetzt · Physik · 301 · noch 27 min».
@@ -17,7 +18,7 @@ const CurrentLessonCard = ({ live, onOpen }) => {
   const lesson = live.current ?? live.next; // про який урок картка
 
   // Нижній рядок
-  const footer = isRunning ? afterText(live.current, live.next, subjectName) : `Beginn ${lesson.start} · bis ${lesson.end}`;
+  const footer = isRunning ? afterText(live.current, live.next, subjectName) : translate("Beginn {start} · bis {end}", { start: lesson.start, end: lesson.end });
 
   return (
     <button type="button" onClick={() => onOpen(lesson)} className="flex flex-col gap-1.5 rounded-card bg-accent px-3.5 py-3 text-left text-on-accent">
@@ -28,7 +29,7 @@ const CurrentLessonCard = ({ live, onOpen }) => {
           {lessonName(lesson)}
           {lesson.room && ` · ${lesson.room}`}
         </span>
-        <span className="shrink-0 text-label font-bold">{isRunning ? `noch ${live.minutesLeft} min` : `in ${live.breakMinutes} min`}</span>
+        <span className="shrink-0 text-label font-bold">{isRunning ? translate("noch {n} min", { n: live.minutesLeft }) : translate("in {n} min", { n: live.breakMinutes })}</span>
       </div>
 
       {/* смужка прогресу уроку (тільки коли урок іде); фон у макеті білий 22% в обох темах */}

@@ -6,11 +6,12 @@ import ConfirmDialog from "../ui/ConfirmDialog";
 import { TrashIcon, WarningIcon } from "../ui/icons";
 import TextField from "../ui/TextField";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Текст після невдалої спроби
 function failText(result) {
-  if (result.status === "wrong_password") return result.attemptsLeft > 0 ? `Passwort stimmt nicht. Noch ${result.attemptsLeft} ${result.attemptsLeft === 1 ? "Versuch" : "Versuche"}.` : "Passwort stimmt nicht.";
-  if (result.status === "locked") return `Zu viele Fehlversuche. Bitte in ${Math.ceil(result.retryAfter / 60)} Minuten erneut versuchen.`;
+  if (result.status === "wrong_password") return result.attemptsLeft > 0 ? translate("Passwort stimmt nicht. Noch {attemptsLeft} {v2}.", { attemptsLeft: result.attemptsLeft, v2: result.attemptsLeft === 1 ? translate("Versuch") : translate("Versuche") }) : translate("Passwort stimmt nicht.");
+  if (result.status === "locked") return translate("Zu viele Fehlversuche. Bitte in {v1} Minuten erneut versuchen.", { v1: Math.ceil(result.retryAfter / 60) });
   return result.message;
 }
 

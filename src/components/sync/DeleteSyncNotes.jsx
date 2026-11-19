@@ -8,6 +8,7 @@ import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import { TrashIcon } from "../ui/icons";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // «Meine Sync-Daten löschen» (Datenschutz, макет 27): DELETE /api/sync і забути код.
 // Нотатки на цьому пристрої лишаються. Видно тільки після входу і коли код є.
@@ -26,7 +27,7 @@ const DeleteSyncNotes = () => {
     setBusy(true);
     try {
       await forget();
-      toast.success("Sync-Daten gelöscht");
+      toast.success(translate("Sync-Daten gelöscht"));
     } catch (error) {
       toast.error(syncErrorText(error)); // наприклад, немає мережі: код лишається, можна повторити
     } finally {

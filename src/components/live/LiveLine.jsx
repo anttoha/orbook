@@ -8,6 +8,7 @@ import { agoText } from "../../shared/utils/liveText";
 import RefreshButton from "../week/RefreshButton";
 import LiveDot from "./LiveDot";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Строка под заголовком недели (часть 26, макет handy-07): «● Live · geprüft vor 20 Sek. ›» + «Neu laden».
@@ -34,7 +35,7 @@ const LiveLine = ({ days, monday }) => {
         <LiveDot on={live && !stale} />
         <span className="truncate text-faint">
           <span className={cn("font-extrabold", stale ? "text-danger" : live ? "text-ok" : "text-muted")}>{stale ? t("Veraltet") : live ? t("Live") : t("Nicht live")}</span>
-          {ago && ` · geprüft ${ago}`}
+          {ago && translate(" · geprüft {ago}", { ago })}
         </span>
         <ChevronRight className="size-3 shrink-0 text-faint2" />
       </button>

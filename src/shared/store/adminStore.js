@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { setAdminClassHandler, setAdminUnauthorizedHandler } from "../api/api";
 import * as admin from "../api/admin";
 import { adminClassList, mergeClassCodes } from "../utils/adminClasses";
+import { translate } from "../i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Стан адмінки, спільний для кількох екранів:
@@ -123,5 +124,5 @@ setAdminClassHandler(() => useAdminStore.getState().classId);
 
 // Будь-який 401 у /admin/... — сесія адміна закінчилась (12 годин або 60 хвилин без дій)
 setAdminUnauthorizedHandler(() => {
-  if (useAdminStore.getState().authed) useAdminStore.setState({ authed: false, loginNotice: "Bitte erneut anmelden." });
+  if (useAdminStore.getState().authed) useAdminStore.setState({ authed: false, get loginNotice() { return translate("Bitte erneut anmelden."); } });
 });

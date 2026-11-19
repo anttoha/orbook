@@ -8,6 +8,7 @@ import { WhatsappIcon } from "../ui/icons";
 import QrCode from "../ui/QrCode";
 import Liquid from "../ui/Liquid";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Скелет, поки посилання вантажиться (макет handy-07)
 export const InviteCardSkeleton = () => (
@@ -24,7 +25,7 @@ export const InviteCardSkeleton = () => (
 //   off       — посилання вимкнене: QR блідий, кнопки неактивні (handy-06)
 //   onBig     — «QR groß zeigen» кнопкою (учень і ПК); адмін на телефоні має окремий рядок
 // ─────────────────────────────────────────────────────────────
-const InviteCard = ({ url, className, off = false, onBig, caption = "Mit der Handy-Kamera scannen oder Link senden" }) => {
+const InviteCard = ({ url, className, off = false, onBig, caption = translate("Mit der Handy-Kamera scannen oder Link senden") }) => {
   const t = useT();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const short = shortUrl(url);

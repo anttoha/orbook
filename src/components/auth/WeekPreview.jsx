@@ -1,6 +1,7 @@
 import { cn } from "../../shared/utils/cn";
 import { fachClasses } from "../../shared/utils/lessons";
 import { FlagIcon } from "../ui/icons";
+import { translate } from "../../shared/i18n/translate";
 import Liquid from "../ui/Liquid";
 
 // Картинка-приклад на екрані входу (ПК): тиждень із макета. Це не дані школи:
@@ -33,7 +34,7 @@ const Cell = ({ cell, past }) => {
     return (
       <span className={cn("flex flex-col justify-between rounded-cell border border-dashed border-faint2 px-2 py-2", past && "opacity-45")}>
         <span className="text-hint font-semibold text-faint line-through">{code}</span>
-        <span className="text-nano font-bold text-muted">{room}</span>
+        <span className="text-nano font-bold text-muted">{translate(room)}</span>
       </span>
     );
   }
@@ -42,7 +43,7 @@ const Cell = ({ cell, past }) => {
   return (
     <span className={cn("relative flex flex-col justify-between rounded-cell px-2 py-2", fachClasses(subject, {}), kind === "changed" && "ring-2 ring-accent ring-inset", past && "opacity-45")}>
       <span className="text-hint font-black">{code}</span>
-      <span className={cn(special ? "font-extrabold text-accent-ink" : "font-semibold", kind === "exam" ? "text-nano" : "text-room")}>{room}</span>
+      <span className={cn(special ? "font-extrabold text-accent-ink" : "font-semibold", kind === "exam" ? "text-nano" : "text-room")}>{translate(room)}</span>
       {kind === "exam" && (
         <span className="absolute top-0 right-0 grid size-4.5 place-items-center rounded-tr-cell rounded-bl-chip bg-accent text-on-accent">
           <FlagIcon className="size-2.5" strokeWidth={3} />

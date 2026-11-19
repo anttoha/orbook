@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import * as admin from "../api/admin";
 import { signedOutText } from "../utils/accessCodes";
 import { useAccessScope } from "./useAccessScope";
+import { translate } from "../i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Дії з Zugangscodes (частина 14c). Кожна: запит → оновити список → сповіщення
@@ -27,18 +28,18 @@ export function useAccessActions() {
   const update = (code, changes, title) => run(() => api.update(code.id, changes, code.classId), title);
 
   return {
-    toggle: (code) => update(code, { active: !code.active }, `${name(code)} ${code.active ? "gesperrt" : "entsperrt"}`),
+    toggle: (code) => update(code, { active: !code.active }, `${name(code)} ${code.active ? translate("gesperrt") : translate("entsperrt")}`),
     rename: (code, label) => update(code, { label: label.trim() }, "Umbenannt"),
-    setLimit: (code, maxDevices) => update(code, { maxDevices }, "Geräte-Limit geändert"),
-    setValidUntil: (code, validUntil) => update(code, { validUntil }, "Gültigkeit geändert"),
+    setLimit: (code, maxDevices) => update(code, { maxDevices }, translate("Geräte-Limit geändert")),
+    setValidUntil: (code, validUntil) => update(code, { validUntil }, translate("Gültigkeit geändert")),
     signOut: (code) => run(() => api.signOut(code.id, code.classId), name(code)),
     regenerate: (code) => run(() => api.regenerate(code.id, code.classId)), // → { code, item, signedOut }: показати новий код
-    remove: (code) => run(() => api.remove(code.id, code.classId), `${name(code)} gelöscht`),
+    remove: (code) => run(() => api.remove(code.id, code.classId), translate("{v1} gelöscht", { v1: name(code) })),
     setPassword: (enabled) => run(() => admin.setClassPasswordEnabled(enabled, passwordClass), enabled ? "Klassenpasswort eingeschaltet" : "Klassenpasswort ausgeschaltet"),
-    signOutPassword: () => run(() => admin.signOutClassPassword(passwordClass), "Klassenpasswort"),
+    signOutPassword: () => run(() => admin.signOutClassPassword(passwordClass), translate("Klassenpasswort")),
     // Посилання-запрошення (частина 16). Перше створюємо мовчки — людина просто відкрила «Einladen»
     createInvite: (code) => run(() => api.renewInvite(code.id, code.classId)),
-    renewInvite: (code) => run(() => api.renewInvite(code.id, code.classId), "Neuer Link erstellt · der alte geht nicht mehr"),
+    renewInvite: (code) => run(() => api.renewInvite(code.id, code.classId), translate("Neuer Link erstellt · der alte geht nicht mehr")),
     setInvite: (code, changes, title) => run(() => api.updateInvite(code.id, changes, code.classId), title),
   };
 }

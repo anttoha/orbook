@@ -2,14 +2,15 @@ import { Check } from "lucide-react";
 import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
 import Liquid from "../ui/Liquid";
+import { translate } from "../../shared/i18n/translate";
 
 const ACCENTS = [
-  { value: "violett", label: "Violett" },
-  { value: "blau", label: "Blau" },
-  { value: "gruen", label: "Grün" },
-  { value: "orange", label: "Orange" },
-  { value: "pink", label: "Pink" },
-  { value: "grafit", label: "Grafit" },
+  { value: "violett", get label() { return translate("Violett"); } },
+  { value: "blau", get label() { return translate("Blau"); } },
+  { value: "gruen", get label() { return translate("Grün"); } },
+  { value: "orange", get label() { return translate("Orange"); } },
+  { value: "pink", get label() { return translate("Pink"); } },
+  { value: "grafit", get label() { return translate("Grafit"); } },
 ];
 
 // Akzentfarbe: шесть кружков. data-accent на кружке включает токены этого цвета только в нём,

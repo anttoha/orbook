@@ -65,7 +65,7 @@ const ConnectBody = ({ onClose, onConnected }) => {
   const done = Boolean(group);
   return (
     <>
-      <Step n={1} done={done} title={t("Telegram öffnen")} text={link.bot ? `Der Bot @${link.bot}` : "…"}>
+      <Step n={1} done={done} title={t("Telegram öffnen")} text={link.bot ? t("Der Bot @{bot}", { bot: link.bot }) : "…"}>
         {!done && (
           <Button variant="primary" className="flex-none" href={link.url ?? undefined} target="_blank" rel="noreferrer" disabled={!link.url}>
             <Send className="size-4" /> {t("In Telegram öffnen")}

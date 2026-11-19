@@ -6,10 +6,11 @@ import { useUserStore } from "../../../shared/store/userStore";
 import { cn } from "../../../shared/utils/cn";
 import Segmented from "../../ui/Segmented";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 const CHOICES = [
-  { value: "pflicht", label: "Pflicht" },
-  { value: "wahl", label: "Wahl" },
+  { value: "pflicht", get label() { return translate("Pflicht"); } },
+  { value: "wahl", get label() { return translate("Wahl"); } },
 ];
 
 // ─────────────────────────────────────────────────────────────

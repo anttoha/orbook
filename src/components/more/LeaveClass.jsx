@@ -6,6 +6,7 @@ import { isTeacher } from "../../shared/utils/examRules";
 import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import { LeaveIcon } from "../ui/icons";
+import { translate } from "../../shared/i18n/translate";
 
 // Рядок «Klasse verlassen» і діалог підтвердження (макет 28).
 // Вихід стирає кеш плану, нотатки й налаштування лишаються (docs/frontend/02-zugang.md).
@@ -13,8 +14,8 @@ import { LeaveIcon } from "../ui/icons";
 // Учитель не «покидає клас», а виходить: «Abmelden» і текст на «Sie».
 // Частина 29: класів кілька — виходимо лише з відкритого (POST /auth/leave), решта лишаються
 const TEXTS = {
-  class: { label: "Klasse verlassen", title: "Klasse verlassen?", text: "Du musst das Klassenpasswort erneut eingeben. Deine Notizen bleiben auf dem Gerät, solange du den Sync-Code hast.", stay: "Bleiben", go: "Verlassen" },
-  teacher: { label: "Abmelden", title: "Abmelden?", text: "Danach müssen Sie den Lehrer-Code erneut eingeben.", stay: "Abbrechen", go: "Abmelden" },
+  class: { get label() { return translate("Klasse verlassen"); }, get title() { return translate("Klasse verlassen?"); }, get text() { return translate("Du musst das Klassenpasswort erneut eingeben. Deine Notizen bleiben auf dem Gerät, solange du den Sync-Code hast."); }, get stay() { return translate("Bleiben"); }, go: "Verlassen" },
+  teacher: { get label() { return translate("Abmelden"); }, title: "Abmelden?", get text() { return translate("Danach müssen Sie den Lehrer-Code erneut eingeben."); }, get stay() { return translate("Abbrechen"); }, get go() { return translate("Abmelden"); } },
 };
 
 const LeaveClass = ({ className }) => {

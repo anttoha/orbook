@@ -23,6 +23,7 @@ import { addHomeworkTarget } from "../shared/utils/examRules";
 import { subjectChips, toggleSubject } from "../shared/utils/exams";
 import { aufgabenList } from "../shared/utils/tasks";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // Фильтр: чипы предметов и поиск на ПК (по тексту и предмету)
 function matches(row, subjects, query, names) {
@@ -151,8 +152,8 @@ const Aufgaben = () => {
 
 // «Ab heute · 4 offen» (на ПК ещё «· 3 erledigt»)
 function eyebrowText(open, done, wide) {
-  const head = open > 0 ? `Ab heute · ${open} offen` : "Ab heute · nichts offen";
-  return wide && done > 0 ? `${head} · ${done} erledigt` : head;
+  const head = open > 0 ? translate("Ab heute · {open} offen", { open }) : translate("Ab heute · nichts offen");
+  return wide && done > 0 ? translate("{head} · {done} erledigt", { head, done }) : head;
 }
 
 // Строки появляются по очереди, с маленькой задержкой (не больше ~0,3 с на весь список)

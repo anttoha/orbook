@@ -3,11 +3,12 @@ import { shortUrl } from "../../shared/utils/invite";
 import QrCode from "../ui/QrCode";
 import { PrintFoot, PrintHead, PrintLogo, StepDot } from "./PrintBits";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 const STEPS = [
-  { title: "Kamera öffnen und QR scannen", text: "Oder den Link oben eintippen." },
-  { title: "Deine Kurse antippen", text: "Nur einmal — ändern geht unter Mehr." },
-  { title: "Fertig: Plan, Tests, Aufgaben", text: "Tipp: auf den Home-Bildschirm legen." },
+  { get title() { return translate("Kamera öffnen und QR scannen"); }, get text() { return translate("Oder den Link oben eintippen."); } },
+  { get title() { return translate("Deine Kurse antippen"); }, get text() { return translate("Nur einmal — ändern geht unter Mehr."); } },
+  { get title() { return translate("Fertig: Plan, Tests, Aufgaben"); }, get text() { return translate("Tipp: auf den Home-Bildschirm legen."); } },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -41,7 +42,7 @@ const Poster = ({ url, className, steps }) => {
         ))}
       </ol>
     )}
-    <PrintFoot lines={["Fragen? Admin der Klasse."]} />
+    <PrintFoot lines={[t("Fragen? Admin der Klasse.")]} />
   </article>
 );
 };
@@ -61,7 +62,7 @@ const Cards = ({ url, className }) => {
           <p className="mt-2 text-heading font-black">{className ? t("Klasse {className}", { className }) : t("Unsere Klasse")}</p>
           <p className="text-label text-qr-ink/70">{t("Plan, Tests, Aufgaben")}</p>
           <ol className="mt-3 space-y-0.5 text-label font-bold">
-            {["Scannen", "Kurse antippen", "Fertig"].map((text, n) => (
+            {[t("Scannen"), t("Kurse antippen"), t("Fertig")].map((text, n) => (
               <li key={text}>
                 <span className="font-black text-qr-eye">{n + 1}</span> {text}
               </li>

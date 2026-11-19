@@ -12,6 +12,7 @@ import { useT } from "../../shared/hooks/useT";
 import Kbd from "../ui/Kbd";
 import Switch from "../ui/Switch";
 import { menuContentClass, menuIconClass, menuItemClass, menuSeparatorClass } from "../ui/menuStyles";
+import { translate } from "../../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Меню «⋮» у тижня.
@@ -46,7 +47,7 @@ const WeekMenu = ({ monday, onToday, onPickWeek }) => {
     const items = [
       !isDesktop && { label: t("Woche wählen"), icon: icon(Calendar), onSelect: onPickWeek },
       { label: t("Zu heute springen"), icon: icon(CalendarCheck), onSelect: onToday },
-      { label: t(isDesktop ? "Tagesansicht" : "Heute öffnen"), icon: icon(List), onSelect: () => navigate("/heute") },
+      { label: t(isDesktop ? translate("Tagesansicht") : translate("Heute öffnen")), icon: icon(List), onSelect: () => navigate("/heute") },
       { label: t("Wochenende anzeigen"), icon: icon(CalendarRange), checked: showWeekend, onSelect: toggleWeekend },
       { label: t("Alle Kurse zeigen"), icon: icon(Layers), checked: allCourses, onSelect: () => setAllCourses(!allCourses) },
       { label: t("Plan neu laden"), icon: icon(RefreshCw), onSelect: refreshPlan },

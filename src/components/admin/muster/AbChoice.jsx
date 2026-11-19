@@ -4,12 +4,13 @@ import { kwStrip, weekForMode } from "../../../shared/utils/musterEditor";
 import { abLetter } from "../../../shared/utils/muster";
 import { CheckIcon } from "../../ui/icons";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // Варіанти muster.abMode (сервер: school | swap | none)
 const MODES = [
-  { value: "school", icon: Info, title: "Laut Plan der Schule", hint: (letter) => (letter ? `Diese Woche ist ${letter}` : "Der Plan sagt nichts über A/B") },
-  { value: "swap", icon: ArrowLeftRight, title: "A und B tauschen", hint: (letter) => `Falls der Plan falsch zählt: diese Woche ist ${letter ?? "B"}` },
-  { value: "none", icon: Layers, title: "Keine Wochen A und B", hint: () => "Jede Woche gleich · ein Muster für alle" },
+  { value: "school", icon: Info, get title() { return translate("Laut Plan der Schule"); }, hint: (letter) => (letter ? translate("Diese Woche ist {letter}", { letter }) : translate("Der Plan sagt nichts über A/B")) },
+  { value: "swap", icon: ArrowLeftRight, get title() { return translate("A und B tauschen"); }, hint: (letter) => translate("Falls der Plan falsch zählt: diese Woche ist {v1}", { v1: letter ?? "B" }) },
+  { value: "none", icon: Layers, get title() { return translate("Keine Wochen A und B"); }, hint: () => translate("Jede Woche gleich · ein Muster für alle") },
 ];
 
 // ─────────────────────────────────────────────────────────────

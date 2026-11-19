@@ -10,6 +10,7 @@ import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { lockDuration, teacherLoginErrorText } from "../../shared/utils/authErrors";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Вхід учителя Lehrer-Code (макети handy-02/03, pc-01): POST /api/auth/teacher.
@@ -55,7 +56,7 @@ const TeacherLoginForm = ({ schoolClass }) => {
     }
   };
 
-  const classText = schoolClass ? `der ${schoolClass}` : "der Klasse";
+  const classText = schoolClass ? translate("der {schoolClass}", { schoolClass }) : translate("der Klasse");
 
   return (
     <form onSubmit={submit} className="flex flex-1 flex-col">

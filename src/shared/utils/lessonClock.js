@@ -1,3 +1,4 @@
+import { translate } from "../i18n/translate";
 // ─────────────────────────────────────────────────────────────
 // lessonClock.js — «Jetzt», «noch 27 min», «Pause · 20 min» за часом ШКОЛИ (Europe/Berlin).
 // З гайду orbook-be (docs/frontend/03-plan.md).
@@ -51,11 +52,11 @@ export function lessonState(lessons, now) {
 
 // «Danach 20 min Pause · 11:35 Geschichte, Raum 108» — після уроку, що йде
 export function afterText(current, next, subjectName) {
-  if (!next) return "Danach ist Schulschluss";
+  if (!next) return translate("Danach ist Schulschluss");
   const pause = toMinutes(next.start) - toMinutes(current.end);
-  const room = next.room ? `, Raum ${next.room}` : "";
+  const room = next.room ? translate(", Raum {room}", { room: next.room }) : "";
   const what = `${next.start} ${subjectName(next.subject)}${room}`;
-  return pause > 0 ? `Danach ${pause} min Pause · ${what}` : `Danach · ${what}`;
+  return pause > 0 ? translate("Danach {pause} min Pause · {what}", { pause, what }) : translate("Danach · {what}", { what });
 }
 
 // Яка частина уроку вже пройшла (0…1) — для смужки прогресу

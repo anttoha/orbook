@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { deleteMaterial, recreateMaterial } from "../api/materials";
 import { useMaterials } from "../store/materialsStore";
 import { copyText, shareText } from "../utils/share";
+import { translate } from "../i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Дії з посиланням — однакові для шторки (телефон) і меню правої кнопки (ПК):
@@ -29,7 +30,7 @@ export function useMaterialActions(item, { onDone } = {}) {
       onDone?.();
       reload();
       // на сервері посилання видалене остаточно — «Rückgängig» створює його знову
-      toast("Link gelöscht", { duration: 8000, action: { label: "Rückgängig", onClick: () => recreateMaterial(item).then(reload, (error) => toast.error(error.message)) } });
+      toast(translate("Link gelöscht"), { duration: 8000, action: { label: translate("Rückgängig"), onClick: () => recreateMaterial(item).then(reload, (error) => toast.error(error.message)) } });
     } catch (error) {
       setConfirm(false);
       toast.error(error.message); // 409: хтось змінив посилання; 403: немає права

@@ -1,9 +1,10 @@
 import { Search } from "lucide-react";
 import { cn } from "../../shared/utils/cn";
 import GlassSearch from "../ui/GlassSearch";
+import { translate } from "../../shared/i18n/translate";
 
 // Поле пошуку в шапці (ПК): «Code suchen», «Suchen»
-const SearchField = ({ value, onChange, placeholder = "Suchen", className }) => (
+const SearchField = ({ value, onChange, placeholder = translate("Suchen"), className }) => (
   <GlassSearch value={value} onValue={onChange} placeholder={placeholder} className={className}>
     <label className={cn("flex h-10.5 items-center gap-2 rounded-full border border-rule bg-card px-3.5 text-faint focus-within:ring-2 focus-within:ring-accent/30", className)}>
       <Search className="size-3.75 shrink-0" />

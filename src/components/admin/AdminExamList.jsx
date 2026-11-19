@@ -9,8 +9,9 @@ import ExamDateTile from "../exams/ExamDateTile";
 import { PencilIcon, TrashIcon } from "../ui/icons";
 import Liquid from "../ui/Liquid";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
-const lessonText = (exam) => (exam.lesson ? `${exam.lesson}. Std` : "—");
+const lessonText = (exam) => (exam.lesson ? translate("{lesson}. Std", { lesson: exam.lesson }) : "—");
 const iconButton = "grid size-9 shrink-0 place-items-center rounded-full text-ink hover:bg-sand";
 
 // Олівець і кошик у рядку

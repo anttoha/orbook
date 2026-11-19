@@ -6,6 +6,7 @@
 import { isTeacher } from "./examRules";
 import { addDays, daysBetween, daysLeftText, isIsoDate, longDate, mondayOf, shortDate, subjectName, weekdayLong, weekdayShort } from "./format";
 import { validateHomeworkText } from "./homework";
+import { translate } from "../i18n/translate";
 
 export const TITLE_MAX = 60;
 export const PLACE_MAX = 80;
@@ -16,8 +17,8 @@ export const MAX_DAYS = 100; // найдовший термін (Sommerferien)
 export const KINDS = [
   { value: "trip", label: "Ausflug", badge: "Ausflug", until: "zum Ausflug" },
   { value: "parents", label: "Elternabend", badge: "Elternabend", until: "zum Elternabend" },
-  { value: "free", label: "Frei", badge: "Frei", until: "zum freien Tag" },
-  { value: "other", label: "Sonstiges", badge: "Termin", until: "zum Termin" },
+  { value: "free", label: "Frei", badge: "Frei", get until() { return translate("zum freien Tag"); } },
+  { value: "other", label: "Sonstiges", get badge() { return translate("Termin"); }, get until() { return translate("zum Termin"); } },
 ];
 export const kindInfo = (kind) => KINDS.find((k) => k.value === kind) ?? KINDS[3];
 
@@ -56,9 +57,9 @@ export function groupAppointments(items, today) {
   const afterNext = addDays(nextMonday, 7);
   const start = (item) => (item.dateFrom < today ? today : item.dateFrom);
   const groups = [
-    { title: "Diese Woche", items: items.filter((item) => start(item) < nextMonday) },
-    { title: "Nächste Woche", items: items.filter((item) => start(item) >= nextMonday && start(item) < afterNext) },
-    { title: "Später", items: items.filter((item) => start(item) >= afterNext) },
+    { title: translate("Diese Woche"), items: items.filter((item) => start(item) < nextMonday) },
+    { title: translate("Nächste Woche"), items: items.filter((item) => start(item) >= nextMonday && start(item) < afterNext) },
+    { title: translate("Später"), items: items.filter((item) => start(item) >= afterNext) },
   ];
   return groups.filter((group) => group.items.length > 0);
 }
@@ -72,14 +73,14 @@ export function timeText(item) {
 }
 
 // Хто вніс, коротко для рядка списку: «von Ric». Школа й Editor-Code — без імені
-export const byText = (item) => (item.author?.short ? `von ${item.author.short}` : null);
+export const byText = (item) => (item.author?.short ? translate("von {short}", { short: item.author.short }) : null);
 
 // Рядок над назвою: «Physik · 07:45–15:00 · von Ric». Для всього класу предмет не пишемо.
 // Багатоденний — «bis Sa, 24. Okt», бо час там не головне
 export function metaText(item) {
   const parts = [];
   if (item.subject) parts.push(subjectName(item.subject));
-  if (item.dateTo) parts.push(`bis ${weekdayShort(item.dateTo)}, ${shortDate(item.dateTo)}`);
+  if (item.dateTo) parts.push(translate("bis {v1}, {v2}", { v1: weekdayShort(item.dateTo), v2: shortDate(item.dateTo) }));
   const time = timeText(item);
   if (time) parts.push(time);
   if (item.place) parts.push(item.place);
@@ -106,23 +107,23 @@ export function countdown(item, today) {
   const until = kindInfo(item.kind).until;
   if (item.dateFrom > today) {
     const days = daysBetween(today, item.dateFrom);
-    return { number: days, label: `${days === 1 ? "Tag" : "Tage"} bis ${until}` };
+    return { number: days, label: translate("{v1} bis {until}", { v1: days === 1 ? translate("Tag") : "Tage", until }) };
   }
-  if (lastDay(item) === today) return { number: null, label: item.dateFrom === today ? "Heute" : "Letzter Tag heute" };
+  if (lastDay(item) === today) return { number: null, label: item.dateFrom === today ? translate("Heute") : translate("Letzter Tag heute") };
   const left = daysBetween(today, lastDay(item));
-  return { number: null, label: `Läuft · noch ${left} ${left === 1 ? "Tag" : "Tage"}` };
+  return { number: null, label: translate("Läuft · noch {left} {v2}", { left, v2: left === 1 ? translate("Tag") : "Tage" }) };
 }
 
 // Плашка «Eingetragen von …» у вікні
 export function sourceText(item, me) {
-  if (item.source === "admin") return { name: "der Schule", role: null };
+  if (item.source === "admin") return { name: translate("der Schule"), role: null };
   const short = item.author?.short;
-  if (short) return me?.teacher?.short === short ? { name: `Ihnen (${short})`, role: null } : { name: short, role: "Lehrkraft" };
-  return { name: null, role: "mit Editor-Code" };
+  if (short) return me?.teacher?.short === short ? { name: translate("Ihnen ({short})", { short }), role: null } : { name: short, role: translate("Lehrkraft") };
+  return { name: null, role: translate("mit Editor-Code") };
 }
 
 // Для кого: «Gilt für alle mit dem Kurs Physik.» / «Gilt für die ganze Klasse.»
-export const audienceText = (item) => (item.subject ? `Gilt für alle mit dem Kurs ${subjectName(item.subject)}.` : "Gilt für die ganze Klasse.");
+export const audienceText = (item) => (item.subject ? translate("Gilt für alle mit dem Kurs {v1}.", { v1: subjectName(item.subject) }) : translate("Gilt für die ganze Klasse."));
 
 // Текст для «Teilen» — без автора
 export function appointmentText(item) {
@@ -186,27 +187,27 @@ export function formToBody(form) {
 export function validateAppointmentForm(form, today, originalDates = null) {
   const errors = {};
   const title = form.title.trim();
-  if (!title) errors.title = "Bitte einen Titel eingeben.";
-  else if (title.length > TITLE_MAX) errors.title = `Der Titel darf höchstens ${TITLE_MAX} Zeichen lang sein.`;
-  if (!isIsoDate(form.dateFrom)) errors.dateFrom = "Bitte ein Datum wählen.";
+  if (!title) errors.title = translate("Bitte einen Titel eingeben.");
+  else if (title.length > TITLE_MAX) errors.title = translate("Der Titel darf höchstens {TITLE_MAX} Zeichen lang sein.", { TITLE_MAX });
+  if (!isIsoDate(form.dateFrom)) errors.dateFrom = translate("Bitte ein Datum wählen.");
   const to = form.dateTo?.trim() ? form.dateTo : null;
-  if (to && !isIsoDate(to)) errors.dateTo = "Bitte ein gültiges Datum wählen.";
+  if (to && !isIsoDate(to)) errors.dateTo = translate("Bitte ein gültiges Datum wählen.");
   if (!errors.dateFrom && to && !errors.dateTo) {
-    if (to < form.dateFrom) errors.dateTo = "Das Ende liegt vor dem Anfang.";
-    else if (daysBetween(form.dateFrom, to) >= MAX_DAYS) errors.dateTo = `Ein Termin darf höchstens ${MAX_DAYS} Tage dauern.`;
+    if (to < form.dateFrom) errors.dateTo = translate("Das Ende liegt vor dem Anfang.");
+    else if (daysBetween(form.dateFrom, to) >= MAX_DAYS) errors.dateTo = translate("Ein Termin darf höchstens {MAX_DAYS} Tage dauern.", { MAX_DAYS });
   }
   const changed = !originalDates || originalDates.from !== form.dateFrom || (originalDates.to ?? "") !== (to ?? "");
-  if (!errors.dateFrom && !errors.dateTo && changed && (to ?? form.dateFrom) < today) errors.dateFrom = "Der Termin liegt in der Vergangenheit.";
+  if (!errors.dateFrom && !errors.dateTo && changed && (to ?? form.dateFrom) < today) errors.dateFrom = translate("Der Termin liegt in der Vergangenheit.");
   const from = form.timeFrom?.trim();
   const until = form.timeTo?.trim();
-  if (from && !TIME.test(from)) errors.timeFrom = "Bitte die Uhrzeit als HH:MM eingeben.";
-  if (until && !TIME.test(until)) errors.timeTo = "Bitte die Uhrzeit als HH:MM eingeben.";
-  else if (until && !from) errors.timeTo = "Bitte zuerst die Anfangszeit eingeben.";
-  else if (until && from && !to && !errors.timeFrom && until <= from) errors.timeTo = "Das Ende liegt vor dem Anfang.";
-  if (form.place.trim().length > PLACE_MAX) errors.place = `Der Ort darf höchstens ${PLACE_MAX} Zeichen lang sein.`;
+  if (from && !TIME.test(from)) errors.timeFrom = translate("Bitte die Uhrzeit als HH:MM eingeben.");
+  if (until && !TIME.test(until)) errors.timeTo = translate("Bitte die Uhrzeit als HH:MM eingeben.");
+  else if (until && !from) errors.timeTo = translate("Bitte zuerst die Anfangszeit eingeben.");
+  else if (until && from && !to && !errors.timeFrom && until <= from) errors.timeTo = translate("Das Ende liegt vor dem Anfang.");
+  if (form.place.trim().length > PLACE_MAX) errors.place = translate("Der Ort darf höchstens {PLACE_MAX} Zeichen lang sein.", { PLACE_MAX });
   if (form.note.trim()) {
     const noteError = validateHomeworkText(form.note);
-    if (noteError) errors.note = noteError.replace("Die Aufgabe", "Der Hinweis").replace("in der Aufgabe", "im Hinweis");
+    if (noteError) errors.note = noteError.replace(translate("Die Aufgabe"), translate("Der Hinweis")).replace(translate("in der Aufgabe"), translate("im Hinweis"));
   }
   return errors;
 }

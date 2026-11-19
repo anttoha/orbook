@@ -1,3 +1,4 @@
+import { translate } from "../../shared/i18n/translate";
 // Неделя для тестов: все случаи, которые встречаются в настоящем плане.
 // Данные выдуманные: настоящий план школы в репозиторий не кладём.
 const base = { start: "08:30", end: "09:15", status: "normal", subject: { code: "Ma", name: "Mathe" }, teacher: "T03", room: "102", course: { nr: "131", label: "Ma" }, changes: {}, moved: null, info: null, examId: null };
@@ -5,7 +6,7 @@ const base = { start: "08:30", end: "09:15", status: "normal", subject: { code: 
 export const hardLessons = [
   { ...base, period: 0, start: "06:40", end: "07:25", subject: { code: "AGTan", name: null } },
   { ...base, period: 1 },
-  { ...base, period: 2, status: "substitution", subject: null, course: null, changes: { room: { old: null, new: "305" }, teacher: { old: "T25", new: "T26" } }, info: "En (T25) fällt aus" },
+  { ...base, period: 2, status: "substitution", subject: null, course: null, changes: { room: { old: null, new: "305" }, teacher: { old: "T25", new: "T26" } }, get info() { return translate("En (T25) fällt aus"); } },
   { ...base, period: 3, status: "added", subject: null, course: null, changes: {}, info: "Klassensprecherkonferenz" },
   { ...base, period: 4, status: "cancelled", teacher: null, room: null, moved: { from: null, to: { period: 1, date: "2026-10-02" } }, info: "Ma (T03) verlegt nach Fr (02.10.) St.1" },
   { ...base, period: 5, status: "moved", course: null, moved: { from: { period: 7, date: null }, to: null }, changes: { subject: { old: "Ma", new: "WR" } }, subject: { code: "WR", name: null } },

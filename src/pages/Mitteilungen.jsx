@@ -22,6 +22,7 @@ import { useUserStore } from "../shared/store/userStore";
 import { courseCount } from "../shared/utils/courses";
 import { useClassEyebrow } from "../shared/hooks/useClassEyebrow";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // «Mitteilungen» (Soft 26 + макеты части 17). Что приходит и когда — docs/API.md «Mitteilungen».
@@ -30,7 +31,7 @@ import { useT } from "../shared/hooks/useT";
 // ─────────────────────────────────────────────────────────────
 const Mitteilungen = () => {
   const t = useT();
-  const eyebrow = useClassEyebrow("Mehr"); // несколько классов — «Klasse 8b»: Mitteilungen у каждого класса свои (часть 29)
+  const eyebrow = useClassEyebrow(translate("Mehr")); // несколько классов — «Klasse 8b»: Mitteilungen у каждого класса свои (часть 29)
   const me = usePlanStore((s) => s.me);
   const courses = usePlanStore((s) => s.courses);
   const picked = useUserStore((s) => s.picked);
@@ -46,7 +47,7 @@ const Mitteilungen = () => {
 
   const turnOn = async () => {
     try {
-      if (await enable()) toast.success("Mitteilungen sind an");
+      if (await enable()) toast.success(translate("Mitteilungen sind an"));
     } catch (error) {
       toast.error(pushErrorText(error));
     }
@@ -54,7 +55,7 @@ const Mitteilungen = () => {
 
   const turnOff = async () => {
     await disable().catch((error) => toast.error(pushErrorText(error)));
-    toast.success("Mitteilungen auf diesem Gerät aus");
+    toast.success(translate("Mitteilungen auf diesem Gerät aus"));
   };
 
   if (me?.features?.push === false) {

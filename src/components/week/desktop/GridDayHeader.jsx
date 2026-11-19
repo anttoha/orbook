@@ -6,6 +6,7 @@ import ChangedLine from "../ChangedLine";
 import { dayNumber, longDate, weekdayLong } from "../../../shared/utils/format";
 import RoundButton from "../../ui/RoundButton";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Шапка дня в сітці тижня на ПК: «15 MO» (сьогодні — фіолетова «пігулка»).
@@ -28,7 +29,7 @@ const GridDayHeader = ({ as: Component = "button", day, isToday, className, styl
       >
         <span className="flex items-center gap-2">
           <span className="text-heading leading-none">{dayNumber(day.date)}</span>
-          <span className={cn("text-small font-extrabold uppercase", isToday ? "text-today-sub" : "text-faint")}>{day.weekday}</span>
+          <span className={cn("text-small font-extrabold uppercase", isToday ? "text-today-sub" : "text-faint")}>{translate(day.weekday)}</span>
         </span>
         <ChangedLine day={day} isToday={isToday} className="h-3.5 text-note leading-none" />
       </Component>

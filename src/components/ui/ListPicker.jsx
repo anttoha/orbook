@@ -8,6 +8,7 @@ import Button from "./Button";
 import PickerList, { PickerBadge } from "./PickerList";
 import Sheet from "./Sheet";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Що показує саме поле: вибраний пункт (кружечок, назва, підпис), кілька — «Mathe, Deutsch +2», нічого — placeholder
 const FieldFace = ({ items, values, placeholder }) => {
@@ -39,7 +40,7 @@ const FieldFace = ({ items, values, placeholder }) => {
 //   inline        — поле вже в шторці: на телефоні розгортати на місці
 //   title         — заголовок шторки на телефоні, error — червона рамка
 // ─────────────────────────────────────────────────────────────
-const ListPicker = ({ id, label, items, value, onChange, multiple = false, clearable = false, clearLabel = "Ohne Fach", inline = false, title = "Fach wählen", placeholder = "Fach wählen", error = false, className }) => {
+const ListPicker = ({ id, label, items, value, onChange, multiple = false, clearable = false, clearLabel = translate("Ohne Fach"), inline = false, title = translate("Fach wählen"), placeholder = translate("Fach wählen"), error = false, className }) => {
   const t = useT();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const [open, setOpen] = useState(false);

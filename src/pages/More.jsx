@@ -24,8 +24,9 @@ import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { courseCount } from "../shared/utils/courses";
 import { isTeacher } from "../shared/utils/examRules";
+import { translate } from "../shared/i18n/translate";
 
-const THEME_LABELS = { light: "Hell", dark: "Dunkel", system: "System" };
+const THEME_LABELS = { get light() { return translate("Hell"); }, get dark() { return translate("Dunkel"); }, get system() { return translate("System"); } };
 
 // Рядок унизу: версія і вхід в адмінку
 const Footer = () => {
@@ -98,13 +99,13 @@ const PhoneMenu = () => {
 
       {/* «Seiten» — просто сторінки й вікна; Statistik переїхала сюди з нижнього меню (частина 22) */}
       <ListCard title={seiten.title} hint={seiten.hint}>
-        {statsEnabled && <MenuRow to="/statistik" icon={StatsIcon} label={t("Statistik")} value="Woche · Monat" />}
+        {statsEnabled && <MenuRow to="/statistik" icon={StatsIcon} label={t("Statistik")} value={t("Woche · Monat")} />}
         <MenuRow to="/mehr/neuigkeiten" icon={Sparkles} label={t("Neuigkeiten")} badge={<NewBadge />} value={changelog[0]?.version} />
         <MenuRow to="/materialien" icon={Folder} label={t("Materialien")} value={links ? `${links} ${t(links === 1 ? "Link" : "Links")}` : null} />
         {/* частина 16: посилання і QR для однокласників; вимкнене — шторка так і скаже */}
         <MenuRow onClick={() => openSheet("einladen")} icon={UserPlus} label={t("Klasse einladen")} value="Link + QR" />
         {/* часть 25: три подсказки с первого входа — открыть ещё раз */}
-        <MenuRow onClick={() => openSheet("tipps")} icon={Info} label={t("Kurz erklärt")} value="3 Tipps" />
+        <MenuRow onClick={() => openSheet("tipps")} icon={Info} label={t("Kurz erklärt")} value={t("3 Tipps")} />
         <MenuRow to="/mehr/datenschutz" icon={ShieldIcon} label={t("Datenschutz")} />
       </ListCard>
 
@@ -115,10 +116,10 @@ const PhoneMenu = () => {
         <MenuRow to="/mehr/fachfarben" icon={Palette} label={t("Fachfarben")} />
         {pushAllowed && <MenuRow to="/mehr/mitteilungen" icon={Bell} label={t("Mitteilungen")} value={prefsSummary(pushOn, pushPrefs)} />}
         {/* праворуч — перша група коду, як у макеті: «K7QM-…» */}
-        {syncAllowed && <MenuRow to="/mehr/sync" icon={SyncIcon} label={t("Synchronisieren")} value={syncCode ? `${syncCode.slice(0, 4)}-…` : "Aus"} />}
+        {syncAllowed && <MenuRow to="/mehr/sync" icon={SyncIcon} label={t("Synchronisieren")} value={syncCode ? `${syncCode.slice(0, 4)}-…` : t("Aus")} />}
         {!isTeacher(me) && <MenuRow to="/mehr/editor-code" icon={KeyIcon} label={t("Tests eintragen")} value={me?.editor?.label ?? "Editor-Code"} />}
         {/* часть 29c: учитель или староста с правом «Klasse verwalten» — Zugangscodes своего класса */}
-        {me?.canManageClass && <MenuRow to="/mehr/klasse-verwalten" icon={UsersRound} label={t("Klasse verwalten")} value="Zugangscodes" />}
+        {me?.canManageClass && <MenuRow to="/mehr/klasse-verwalten" icon={UsersRound} label={t("Klasse verwalten")} value={t("Zugangscodes")} />}
       </ListCard>
 
       <ListCard>

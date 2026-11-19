@@ -36,7 +36,7 @@ const PushStats = () => {
               <li key={index} className="flex items-baseline justify-between gap-3">
                 <span className="min-w-0">
                   <span className="block truncate text-body-sm text-ink">{item.title}</span>
-                  <span className="block text-caption text-faint">{lastSentLabel(item.sentAt).replace("Zuletzt: ", "")}</span>
+                  <span className="block text-caption text-faint">{lastSentLabel(item.sentAt).replace(t("Zuletzt: "), "")}</span>
                 </span>
                 <span className="shrink-0 text-caption text-muted">
                   {item.devices} {item.devices === 1 ? t("Gerät") : t("Geräte")}

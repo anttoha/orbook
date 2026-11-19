@@ -34,7 +34,7 @@ const HistoryList = ({ kind, entry, noun }) => {
           ))}
         </ol>
       )}
-      <p className="text-caption text-faint">{t("Der Verlauf wird mit")} {noun === "Test" ? "dem Test" : `der ${noun}`} {t("gelöscht.")}</p>
+      <p className="text-caption text-faint">{t("Der Verlauf wird mit")} {noun === "Test" ? t("dem Test") : t("der {noun}", { noun })} {t("gelöscht.")}</p>
     </section>
   );
 };

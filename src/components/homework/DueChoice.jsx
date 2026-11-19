@@ -5,6 +5,7 @@ import { CalendarIcon } from "../ui/icons";
 import TextField from "../ui/TextField";
 import Liquid from "../ui/Liquid";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 const row = "flex w-full items-center gap-3 rounded-field px-3.5 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent/50";
 
@@ -27,7 +28,7 @@ const DueChoice = ({ subject, options, value, error, today, onChange }) => {
   const t = useT();
   const name = subjectName(subject);
   const custom = !options.some((slot) => slot.date === value.due && slot.period === value.lesson);
-  const words = ["Nächste {name}-Stunde", "Übernächste {name}-Stunde"];
+  const words = [translate("Nächste {name}-Stunde"), translate("Übernächste {name}-Stunde")];
 
   return (
     <div>

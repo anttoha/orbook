@@ -3,6 +3,7 @@
 // записи конкретного урока. Без React — всё проверяется тестами (entries.test.js).
 // ─────────────────────────────────────────────────────────────
 import { numericDate, weekdayShort } from "./format";
+import { translate } from "../i18n/translate";
 
 export const DETAILS_MAX = 300;
 export const MATERIALS_MAX = 5;
@@ -38,21 +39,21 @@ export const typeShort = (type, list) => list.find((item) => item.name === type)
 export const isMajorType = (type) => type === "Klassenarbeit" || type === "Klausur";
 
 // «Mi 17.09., 3. Std»
-export const slotText = (date, lesson) => `${weekdayShort(date)} ${numericDate(date)}${lesson ? `, ${lesson}. Std` : ""}`;
+export const slotText = (date, lesson) => `${weekdayShort(date)} ${numericDate(date)}${lesson ? translate(", {lesson}. Std", { lesson }) : ""}`;
 
 // «von Mi 17.09., 3. Std» — сервер перенёс запись (movedFrom); обычно null
-export const movedFromText = (entry) => (entry?.movedFrom?.date ? `von ${slotText(entry.movedFrom.date, entry.movedFrom.lesson)}` : null);
+export const movedFromText = (entry) => (entry?.movedFrom?.date ? translate("von {v1}", { v1: slotText(entry.movedFrom.date, entry.movedFrom.lesson) }) : null);
 
 // Описание к Test: несколько строк, без контактов и ссылок (как clean_details на сервере). null — всё хорошо
 export function validateDetails(value) {
   const text = (value ?? "").trim();
-  if (text.length > DETAILS_MAX) return `Die Beschreibung darf höchstens ${DETAILS_MAX} Zeichen lang sein.`;
+  if (text.length > DETAILS_MAX) return translate("Die Beschreibung darf höchstens {DETAILS_MAX} Zeichen lang sein.", { DETAILS_MAX });
   // eslint-disable-next-line no-control-regex -- ищем именно управляющие символы, кроме переноса строки
-  if (/[\u0000-\u0009\u000b-\u001f\u007f-\u009f]/.test(text)) return "Die Beschreibung enthält ungültige Zeichen.";
-  if (/[^\s@]+@[^\s@]+\.[^\s@]+/.test(text)) return "Bitte keine E-Mail-Adressen in der Beschreibung.";
-  if (/(https?:\/\/|www\.|\b[a-z0-9-]+\.(?:de|com|net|org|eu|io|app|info|ru|me|ly)\b)/i.test(text)) return "Links bitte als Material anhängen.";
+  if (/[\u0000-\u0009\u000b-\u001f\u007f-\u009f]/.test(text)) return translate("Die Beschreibung enthält ungültige Zeichen.");
+  if (/[^\s@]+@[^\s@]+\.[^\s@]+/.test(text)) return translate("Bitte keine E-Mail-Adressen in der Beschreibung.");
+  if (/(https?:\/\/|www\.|\b[a-z0-9-]+\.(?:de|com|net|org|eu|io|app|info|ru|me|ly)\b)/i.test(text)) return translate("Links bitte als Material anhängen.");
   for (const run of text.match(/[+\d][\d\s/()-]*/g) ?? []) {
-    if ((run.match(/\d/g) ?? []).length >= 9) return "Bitte keine Telefonnummern in der Beschreibung.";
+    if ((run.match(/\d/g) ?? []).length >= 9) return translate("Bitte keine Telefonnummern in der Beschreibung.");
   }
   return null;
 }
@@ -101,9 +102,9 @@ export function lessonEntries(exams, homework, date, lesson, { allHomework = fal
 
 // Серая подпись у Hausaufgabe в окне урока: к этой Stunde, к другой Stunde того же дня или просто к дню
 export function homeworkWhen(item, lesson) {
-  if (item?.lesson == null) return "bis zu diesem Tag";
-  if (item.lesson === lesson?.period) return "bis zu dieser Stunde";
-  return `bis zur ${item.lesson}. Stunde`;
+  if (item?.lesson == null) return translate("bis zu diesem Tag");
+  if (item.lesson === lesson?.period) return translate("bis zu dieser Stunde");
+  return translate("bis zur {lesson}. Stunde", { lesson: item.lesson });
 }
 
 // Записи, которые сервер увёз с этого (выпавшего) урока: «Test Unit 3 → Fr 19.09., 4. Std»

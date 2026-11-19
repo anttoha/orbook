@@ -11,8 +11,9 @@ import MusterBadge from "../muster/MusterBadge";
 import BlockCard from "./BlockCard";
 import BlockEmpty from "./BlockEmpty";
 import BlockSkeleton from "./BlockSkeleton";
+import { translate } from "../../shared/i18n/translate";
 
-const CHANGE_WORD = { substitution: "Vertretung", moved: "Vertretung", added: "Vertretung", room_change: "Raumänderung" };
+const CHANGE_WORD = { get substitution() { return translate("Vertretung"); }, get moved() { return translate("Vertretung"); }, get added() { return translate("Vertretung"); }, get room_change() { return translate("Raumänderung"); } };
 
 // «Vertretung · Kle · Raum 204»: что изменилось (цветом акцента), учитель, кабинет
 const LessonMeta = ({ lesson }) => {
@@ -55,7 +56,7 @@ const JetztBlock = ({ editing }) => {
 
   if (lesson) {
     const running = Boolean(live.current);
-    const head = `${t(running ? "Jetzt" : "Gleich")} · ${lesson.period}. ${t("Stunde")}`;
+    const head = `${t(running ? translate("Jetzt") : translate("Gleich"))} · ${lesson.period}. ${t("Stunde")}`;
     const timeLeft = running ? t("noch {n} min").replace("{n}", live.minutesLeft) : t("in {n} min").replace("{n}", live.breakMinutes);
     // урок из Muster (плана ещё нет) — с меткой, чтобы не принять за настоящий
     const aside = lesson.muster ? (

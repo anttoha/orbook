@@ -8,6 +8,7 @@
 // ─────────────────────────────────────────────────────────────
 import { addDays, isoWeek, mondayOf } from "./format";
 import { abLetter } from "./muster";
+import { translate } from "../i18n/translate";
 
 export const WEEKDAYS = ["Mo", "Di", "Mi", "Do", "Fr"];
 export const WEEKDAYS_LONG = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"];
@@ -55,7 +56,7 @@ export function changeCount(base, draft) {
 }
 
 // Текст кнопки збереження
-export const saveLabel = (count) => (count === 0 ? "Speichern" : count === 1 ? "Speichern · 1 Änderung" : `Speichern · ${count} Änderungen`);
+export const saveLabel = (count) => (count === 0 ? translate("Speichern") : count === 1 ? "Speichern · 1 Änderung" : `Speichern · ${count} Änderungen`);
 
 // Рядки сітки: уроки 1…6 завжди, а 0 і 7–10 — лише якщо вони є в одній із сіток.
 // Час — з lessonTimes ([{ period, start, end }]); немає — тільки номер (start/end = null)
@@ -80,8 +81,8 @@ export const lessonFromCourse = (course, room = null) => ({
 
 // «Automatisch war: Mathe · T03 · Raum 305» (кілька курсів — через « / »; порожньо — «frei»)
 export function autoText(entries, names = {}) {
-  if (!entries.length) return "frei";
-  return entries.map((l) => [names[l.subject] ?? l.subject, l.teacher, l.room && `Raum ${l.room}`].filter(Boolean).join(" · ")).join(" / ");
+  if (!entries.length) return translate("frei");
+  return entries.map((l) => [names[l.subject] ?? l.subject, l.teacher, l.room && translate("Raum {room}", { room: l.room })].filter(Boolean).join(" · ")).join(" / ");
 }
 
 // Тиждень A/B, який буде при цьому режимі (schoolWeek — як рахує школа: 1/2/null)

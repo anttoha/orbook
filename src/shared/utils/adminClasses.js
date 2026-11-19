@@ -4,6 +4,7 @@
 //   [{ id, name, number, baseUrl, passwordSet, classesInPlan, classes: [{ id, name, devices, codes, exams }] }]
 // ─────────────────────────────────────────────────────────────
 import { CLASS_COLORS } from "../constants/classColors";
+import { translate } from "../i18n/translate";
 
 const COLOR_KEYS = Object.keys(CLASS_COLORS);
 const byName = (a, b) => a.localeCompare(b, "de", { numeric: true });
@@ -61,7 +62,7 @@ export function mergeClassCodes(parts) {
 // Плашка у школы: «Plan ok» (план скачан, классы известны), «Nicht getestet», «Zugang fehlt»
 export function schoolStatus(school) {
   if (!school?.passwordSet) return { tone: "danger", label: "Zugang fehlt" };
-  if ((school.classesInPlan ?? 0) > 0) return { tone: "ok", label: "Plan ok" };
+  if ((school.classesInPlan ?? 0) > 0) return { tone: "ok", label: translate("Plan ok") };
   return { tone: "muted", label: "Nicht getestet" };
 }
 
@@ -76,13 +77,13 @@ export function schoolLine(school, t = (s) => s) {
 // «27 Geräte · 4 Codes · 5 Tests» (единственное число — «1 Gerät», «1 Code», «1 Test»)
 export function classStats(item, t = (s) => s) {
   const part = (count, one, many) => `${count ?? 0} ${t(count === 1 ? one : many)}`;
-  return [part(item.devices, "Gerät", "Geräte"), part(item.codes, "Code", "Codes"), part(item.exams, "Test", "Tests")].join(" · ");
+  return [part(item.devices, translate("Gerät"), translate("Geräte")), part(item.codes, translate("Code"), translate("Codes")), part(item.exams, translate("Test"), translate("Tests"))].join(" · ");
 }
 
 // Einstellungen → «Klassen pro Gerät» (сервер принимает null, 1, 2, 3, 5, 10). В списке 0 = «Unbegrenzt»
 // (список сравнивает значения строками, null там не выбрать); на сервер уходит null
 export const CLASS_LIMITS = [
   { value: 0, label: "Unbegrenzt" },
-  { value: 1, label: "1 Klasse" },
-  ...[2, 3, 5, 10].map((value) => ({ value, label: `${value} Klassen` })),
+  { value: 1, get label() { return translate("1 Klasse"); } },
+  ...[2, 3, 5, 10].map((value) => ({ value, get label() { return translate("{value} Klassen", { value }); } })),
 ];

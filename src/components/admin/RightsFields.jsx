@@ -3,27 +3,28 @@ import Badge from "../ui/Badge";
 import Checkbox from "../ui/Checkbox";
 import Field from "../ui/Field";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Часть 29: «Klasse verwalten» — Zugangscodes и приглашения своего класса (у Editor- и Lehrer-Code, по умолчанию выкл.)
-const MANAGE_CLASS = { key: "manageClass", label: "Klasse verwalten", isNew: true, hint: "Zugangscodes und Einladungen dieser Klasse" };
+const MANAGE_CLASS = { key: "manageClass", get label() { return translate("Klasse verwalten"); }, isNew: true, get hint() { return translate("Zugangscodes und Einladungen dieser Klasse"); } };
 
 // isNew — бейдж «NEU» (права частини 14), hint — сірий рядок під галочкою
 const EDITOR_RIGHTS = [
-  { key: "create", label: "Tests eintragen" },
-  { key: "editOwn", label: "Eigene bearbeiten und löschen" },
-  { key: "editAll", label: "Alle Tests bearbeiten" },
-  { key: "homework", label: "Hausaufgaben eintragen", isNew: true },
-  { key: "editTeacher", label: "Lehrer-Einträge ändern", isNew: true, hint: "nur wenn die Lehrkraft es beim Eintrag erlaubt" },
+  { key: "create", get label() { return translate("Tests eintragen"); } },
+  { key: "editOwn", get label() { return translate("Eigene bearbeiten und löschen"); } },
+  { key: "editAll", get label() { return translate("Alle Tests bearbeiten"); } },
+  { key: "homework", get label() { return translate("Hausaufgaben eintragen"); }, isNew: true },
+  { key: "editTeacher", get label() { return translate("Lehrer-Einträge ändern"); }, isNew: true, get hint() { return translate("nur wenn die Lehrkraft es beim Eintrag erlaubt"); } },
   { key: "materials", label: "Materialien teilen", isNew: true }, // частина 15
-  { key: "appointments", label: "Termine eintragen", isNew: true, hint: "Ausflüge, Elternabende, freie Tage" }, // частина 18
+  { key: "appointments", get label() { return translate("Termine eintragen"); }, isNew: true, get hint() { return translate("Ausflüge, Elternabende, freie Tage"); } }, // частина 18
   MANAGE_CLASS,
 ];
 // Lehrer-Code: міняти й видаляти — завжди лише свої, тому тут лише такі галочки (макет handy-11)
 const TEACHER_RIGHTS = [
-  { key: "create", label: "Tests eintragen" },
-  { key: "homework", label: "Hausaufgaben eintragen" },
-  { key: "materials", label: "Materialien teilen", isNew: true, hint: "nur für die eigenen Fächer" },
-  { key: "appointments", label: "Termine eintragen", isNew: true, hint: "Kurs-Termine nur für die eigenen Fächer" },
+  { key: "create", get label() { return translate("Tests eintragen"); } },
+  { key: "homework", get label() { return translate("Hausaufgaben eintragen"); } },
+  { key: "materials", label: "Materialien teilen", isNew: true, get hint() { return translate("nur für die eigenen Fächer"); } },
+  { key: "appointments", get label() { return translate("Termine eintragen"); }, isNew: true, get hint() { return translate("Kurs-Termine nur für die eigenen Fächer"); } },
   MANAGE_CLASS,
 ];
 

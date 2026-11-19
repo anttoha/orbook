@@ -3,6 +3,7 @@ import { pushErrorText, usePushStore } from "../../shared/store/pushStore";
 import { cn } from "../../shared/utils/cn";
 import Segmented from "../ui/Segmented";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // «Für welche Kurse»: как в «Meine Kurse» или всё, что есть в классе
 const PushCourses = ({ courseCount, disabled = false }) => {
@@ -10,8 +11,8 @@ const PushCourses = ({ courseCount, disabled = false }) => {
   const mine = usePushStore((s) => s.mine);
   const update = usePushStore((s) => s.update);
   const options = [
-    { value: "mine", label: courseCount ? `Meine Kurse · ${courseCount}` : "Meine Kurse" },
-    { value: "all", label: "Ganze Klasse" },
+    { value: "mine", label: courseCount ? translate("Meine Kurse · {courseCount}", { courseCount }) : translate("Meine Kurse") },
+    { value: "all", label: translate("Ganze Klasse") },
   ];
 
   const change = (value) => update({ mine: value === "mine" }).catch((error) => toast.error(pushErrorText(error)));

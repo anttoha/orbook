@@ -3,13 +3,14 @@
 // Без React и без браузерных API внутри функций — всё приходит параметрами, поэтому легко тестировать.
 // ─────────────────────────────────────────────────────────────
 import { NO_OPTIONAL } from "./courses";
+import { translate } from "../i18n/translate";
 
 // Четыре пункта: ключ сервера → текст как в макете 17 (handy-01)
 export const PUSH_PREFS = [
-  { key: "planTomorrow", title: "Plan für morgen geändert", hint: "Sobald die Schule was ändert" },
-  { key: "cancelledToday", title: "Stunde fällt heute aus", hint: "Sofort, wenn es im Plan steht" },
-  { key: "reminder", title: "Erinnerung für morgen", hint: (time) => `Tests und Hausaufgaben · um ${time}` },
-  { key: "newExam", title: "Neuer Test eingetragen", hint: "Wenn jemand einen Test einträgt" },
+  { key: "planTomorrow", get title() { return translate("Plan für morgen geändert"); }, get hint() { return translate("Sobald die Schule was ändert"); } },
+  { key: "cancelledToday", get title() { return translate("Stunde fällt heute aus"); }, get hint() { return translate("Sofort, wenn es im Plan steht"); } },
+  { key: "reminder", get title() { return translate("Erinnerung für morgen"); }, hint: (time) => translate("Tests und Hausaufgaben · um {time}", { time }) },
+  { key: "newExam", get title() { return translate("Neuer Test eingetragen"); }, get hint() { return translate("Wenn jemand einen Test einträgt"); } },
 ];
 
 // Что стоит на новом устройстве: три пункта из четырёх, свои курсы, ночью тихо
@@ -53,9 +54,9 @@ export const isStandalone = (win = globalThis) =>
 
 // «3 von 4 an» в Mehr; выключено на устройстве — «Aus»
 export function prefsSummary(enabled, prefs) {
-  if (!enabled) return "Aus";
+  if (!enabled) return translate("Aus");
   const on = PUSH_PREFS.filter((p) => prefs?.[p.key]).length;
-  return on === 0 ? "nichts an" : `${on} von ${PUSH_PREFS.length} an`;
+  return on === 0 ? "nichts an" : translate("{on} von {length} an", { on, length: PUSH_PREFS.length });
 }
 
 // Номера курсов для сервера. null — «Ganze Klasse» (или в «Meine Kurse» видны все курсы).
@@ -76,7 +77,7 @@ export function subscriptionBody(subscription, settings, picked) {
 }
 
 // «Zwischen 21:00 und 06:30 still»
-export const quietLabel = (quiet) => (quiet?.on ? `Zwischen ${quiet.start} und ${quiet.end} still` : "Aus – Mitteilungen kommen immer");
+export const quietLabel = (quiet) => (quiet?.on ? translate("Zwischen {start} und {end} still", { start: quiet.start, end: quiet.end }) : translate("Aus – Mitteilungen kommen immer"));
 
 // «Zuletzt: heute 07:14» / «gestern 18:00» / «Mo 06:30»; null — ещё ничего не приходило
 const DAYS = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
@@ -87,7 +88,7 @@ export function lastSentLabel(iso, now = new Date()) {
   const time = at.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
   const dayStart = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
   const days = Math.round((dayStart(now) - dayStart(at)) / 86400000);
-  if (days === 0) return `Zuletzt: heute ${time}`;
+  if (days === 0) return translate("Zuletzt: heute {time}", { time });
   if (days === 1) return `Zuletzt: gestern ${time}`;
   if (days < 7) return `Zuletzt: ${DAYS[at.getDay()]} ${time}`;
   return `Zuletzt: ${at.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })}`;

@@ -5,12 +5,13 @@
 // ─────────────────────────────────────────────────────────────
 import { daysLeftText, longDate, subjectName, weekdayLong, weekdayShort } from "./format";
 import { visibleNotes } from "./notes";
+import { translate } from "../i18n/translate";
 
 // Скільки рядків у кожній групі, щоб вікно не ставало вищим за екран
 const LIMITS = { Stunden: 4, Tests: 3, Notizen: 3, Einstellungen: 3 };
 
 // Статус уроку словами — перший шматок другого рядка: «Vertretung · Kle · Raum 204»
-const STATUS_WORDS = { substitution: "Vertretung", moved: "Verlegt", added: "Zusatzstunde", cancelled: "Fällt aus", room_change: "Raumänderung" };
+const STATUS_WORDS = { get substitution() { return translate("Vertretung"); }, moved: "Verlegt", added: "Zusatzstunde", get cancelled() { return translate("Fällt aus"); }, get room_change() { return translate("Raumänderung"); } };
 
 // «19.09.» — дата з нулями, як на макеті
 const dottedDate = (iso) => `${iso.slice(8, 10)}.${iso.slice(5, 7)}.`;
@@ -31,8 +32,8 @@ const lessonItems = (days) =>
       return {
         id: `l-${day.date}-${lesson.period}-${lesson.subject?.code ?? ""}-${lesson.course?.nr ?? ""}`,
         subject: lesson.subject ?? null,
-        title: `${name} · ${weekdayShort(day.date)}, ${lesson.period}. Stunde`,
-        subtitle: [STATUS_WORDS[lesson.status], lesson.teacher, lesson.room && `Raum ${lesson.room}`].filter(Boolean).join(" · "),
+        title: translate("{name} · {v2}, {period}. Stunde", { name, v2: weekdayShort(day.date), period: lesson.period }),
+        subtitle: [STATUS_WORDS[lesson.status], lesson.teacher, lesson.room && translate("Raum {room}", { room: lesson.room })].filter(Boolean).join(" · "),
         haystack: [name, lesson.subject?.code, lesson.teacher, lesson.room, lesson.course?.label, weekdayLong(day.date), STATUS_WORDS[lesson.status]],
         target: { sheet: "stunde", params: { datum: day.date, stunde: lesson.period, fach: lesson.subject?.code } },
       };
@@ -47,7 +48,7 @@ const examItems = (exams) =>
       subject: exam.subject ?? null,
       title: `${exam.type} ${name} · ${weekdayShort(exam.date)} ${dottedDate(exam.date)}`,
       subtitle: [exam.topic, daysLeftText(exam.daysLeft)].filter(Boolean).join(" · "),
-      haystack: [exam.type, name, exam.subject?.code, exam.topic, "Test"],
+      haystack: [exam.type, name, exam.subject?.code, exam.topic, translate("Test")],
       target: { sheet: "klausur", params: { id: exam.id } },
     };
   });
@@ -57,8 +58,8 @@ const noteItems = (notes) =>
     id: `n-${note.id}`,
     icon: "note",
     title: note.text.split("\n")[0], // перший рядок нотатки
-    subtitle: `Notiz · ${weekdayShort(note.date)}, ${longDate(note.date)}`,
-    haystack: [note.text, "Notiz"],
+    subtitle: translate("Notiz · {v1}, {v2}", { v1: weekdayShort(note.date), v2: longDate(note.date) }),
+    haystack: [note.text, translate("Notiz")],
     target: { sheet: "notiz", params: note.period ? { datum: note.date, stunde: note.period } : { datum: note.date, id: note.id } },
   }));
 
@@ -67,8 +68,8 @@ const settingItems = (sections) =>
     id: `s-${section.to}`,
     icon: "settings",
     title: section.label,
-    subtitle: "Einstellungen",
-    haystack: [section.label, "Einstellungen"],
+    subtitle: translate("Einstellungen"),
+    haystack: [section.label, translate("Einstellungen")],
     target: { path: section.to },
   }));
 
@@ -78,10 +79,10 @@ export function searchGroups(query, { days = [], exams = [], notes = [], section
   const words = queryWords(query);
   if (words.length === 0) return [];
   const groups = [
-    { title: "Stunden", items: lessonItems(days) },
-    { title: "Tests", items: examItems(exams) },
-    { title: "Notizen", items: noteItems(notes) },
-    { title: "Einstellungen", items: settingItems(sections) },
+    { title: translate("Stunden"), items: lessonItems(days) },
+    { title: translate("Tests"), items: examItems(exams) },
+    { title: translate("Notizen"), items: noteItems(notes) },
+    { title: translate("Einstellungen"), items: settingItems(sections) },
   ];
   return groups
     .map((group) => ({ ...group, items: group.items.filter((item) => matches(item.haystack, words)).slice(0, LIMITS[group.title]) }))
@@ -90,10 +91,10 @@ export function searchGroups(query, { days = [], exams = [], notes = [], section
 
 // «Aktionen» — завжди внизу вікна. canCreate — є право записувати Klausur; dark — тема зараз темна
 export const searchActions = ({ canCreate, today, dark }) => ({
-  title: "Aktionen",
+  title: translate("Aktionen"),
   items: [
-    { id: "a-exam", icon: "plus", title: "Test eintragen", subtitle: canCreate ? "Für die ganze Klasse" : "braucht Editor-Code", kbd: "K", target: { action: "exam" } },
-    { id: "a-today", icon: "calendar", title: "Zu heute springen", subtitle: `${weekdayLong(today)}, ${longDate(today)}`, kbd: "T", target: { path: "/heute" } },
+    { id: "a-exam", icon: "plus", title: translate("Test eintragen"), subtitle: canCreate ? translate("Für die ganze Klasse") : translate("braucht Editor-Code"), kbd: "K", target: { action: "exam" } },
+    { id: "a-today", icon: "calendar", title: translate("Zu heute springen"), subtitle: `${weekdayLong(today)}, ${longDate(today)}`, kbd: "T", target: { path: "/heute" } },
     { id: "a-theme", icon: dark ? "sun" : "moon", title: dark ? "Helles Design" : "Dunkles Design", subtitle: "Darstellung umschalten", target: { action: "theme" } },
   ],
 });

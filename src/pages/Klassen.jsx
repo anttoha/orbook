@@ -16,10 +16,11 @@ import { isWeekend, longDate, mondayOf, weekdayLong } from "../shared/utils/form
 import { currentMonday } from "../shared/utils/lessons";
 import RoundButton from "../components/ui/RoundButton";
 import PillButton from "../components/ui/PillButton";
+import { translate } from "../shared/i18n/translate";
 
 const VIEWS = [
-  { value: "karten", label: "Karten" },
-  { value: "nebeneinander", label: "Nebeneinander" },
+  { value: "karten", get label() { return translate("Karten"); } },
+  { value: "nebeneinander", get label() { return translate("Nebeneinander"); } },
 ];
 
 // ─────────────────────────────────────────────────────────────

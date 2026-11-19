@@ -6,6 +6,7 @@ import MovedLine from "../entries/MovedLine";
 import ExamBadge from "./ExamBadge";
 import ExamDateTile from "./ExamDateTile";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Рядок списку Tests (часть 24: перенесённый — VERSCHOBEN и «von Mi 17.09., 3. Std – fiel aus»):
@@ -29,7 +30,7 @@ const ExamRow = ({ exam, overrides, highlight, onClick }) => {
         {exam.movedFrom && <Badge variant="changed">{t("Verschoben")}</Badge>}
         <span className="truncate text-note text-faint">
           {subjectName(exam.subject)}
-          {exam.lesson && ` · ${exam.lesson}. Std`}
+          {exam.lesson && translate(" · {period}. Std", { period: exam.lesson })}
         </span>
       </span>
       {/* тема буває порожньою: тоді назва предмета */}

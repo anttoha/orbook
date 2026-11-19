@@ -12,6 +12,7 @@ import { fullDate } from "../shared/utils/examRules";
 import { useClassEyebrow } from "../shared/hooks/useClassEyebrow";
 import Liquid from "../components/ui/Liquid";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // Куди після коду (?weiter=…): лише наші адреси, не з параметра
 const NEXT = { neu: "/testen/neu", hausaufgabe: "/testen/hausaufgaben/neu", material: "/materialien/neu", termin: "/testen/termine/neu" };
@@ -47,7 +48,7 @@ const ActiveCode = ({ editor }) => {
     setBusy(true);
     try {
       await lockEditor();
-      toast("Code entfernt", { duration: 3000 });
+      toast(translate("Code entfernt"), { duration: 3000 });
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -75,7 +76,7 @@ const ActiveCode = ({ editor }) => {
 // ─────────────────────────────────────────────────────────────
 const EditorCode = () => {
   const t = useT();
-  const eyebrow = useClassEyebrow("Bearbeiten"); // Editor-Code действует в одном классе (часть 29)
+  const eyebrow = useClassEyebrow(translate("Bearbeiten")); // Editor-Code действует в одном классе (часть 29)
   const editor = usePlanStore((s) => s.me?.editor);
   const location = useLocation();
   // /mehr/editor-code — розділ «Einstellungen», /editor-code — з «Klausuren»: туди й повертаємось

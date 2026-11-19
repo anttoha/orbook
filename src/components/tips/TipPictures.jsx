@@ -5,6 +5,7 @@ import { fachClasses } from "../../shared/utils/lessons";
 import { CheckIcon, FlagIcon, SyncIcon } from "../ui/icons";
 import Liquid from "../ui/Liquid";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Картинки к «Kurz erklärt» (макеты 25 handy-13…15): не скриншоты, а простые схемы из тех же токенов
 
@@ -44,10 +45,10 @@ export const WeekPicture = () => {
 };
 
 const MENU = [
-  { icon: FileText, text: "Notiz zur Stunde" },
-  { icon: BookOpen, text: "Hausaufgabe geben", accent: true },
-  { icon: FlagIcon, text: "Test eintragen", accent: true },
-  { icon: Palette, text: "Fachfarbe ändern" },
+  { icon: FileText, get text() { return translate("Notiz zur Stunde"); } },
+  { icon: BookOpen, get text() { return translate("Hausaufgabe geben"); }, accent: true },
+  { icon: FlagIcon, get text() { return translate("Test eintragen"); }, accent: true },
+  { icon: Palette, get text() { return translate("Fachfarbe ändern"); } },
 ];
 
 // 2 — урок и его меню

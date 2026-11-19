@@ -10,6 +10,7 @@ import MusterBadge from "../muster/MusterBadge";
 import BlockCard from "./BlockCard";
 import BlockEmpty from "./BlockEmpty";
 import BlockSkeleton from "./BlockSkeleton";
+import { translate } from "../../shared/i18n/translate";
 
 // Справа в строке: «fällt aus», «Vertretung · Kle · 204» или просто «Web · 102»
 function rowAside(lesson, t) {
@@ -30,7 +31,7 @@ const HeuteBlock = ({ block, editing }) => {
   const overrides = useUserStore((s) => s.colorOverrides);
   const { day } = useDay(today);
   const lessons = day?.status === "ok" ? mineOnly(filter(day.lessons)) : [];
-  const title = lessons.length ? `${t("Heute")} · ${lessons.length} ${t(lessons.length === 1 ? "Stunde" : "Stunden")}` : t("Heute");
+  const title = lessons.length ? `${t("Heute")} · ${lessons.length} ${t(lessons.length === 1 ? translate("Stunde") : translate("Stunden"))}` : t("Heute");
 
   const body = () => {
     if (!day) return <BlockSkeleton />;

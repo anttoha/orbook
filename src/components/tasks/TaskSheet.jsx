@@ -15,6 +15,7 @@ import Sheet from "../ui/Sheet";
 import TextField from "../ui/TextField";
 import DueChips from "./DueChips";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Шторка «Eigene Aufgabe» (макет 25 handy-03). Своя задача живёт только на устройстве (tasksStore).
@@ -54,16 +55,16 @@ const TaskForm = ({ task, onDone }) => {
       if (task) updateTask(task.id, { text: text.trim(), due, subject });
       else addTask({ text, due, subject });
     } catch {
-      return toast.error("Aufgabe konnte nicht gespeichert werden"); // localStorage переполнен или запрещён
+      return toast.error(translate("Aufgabe konnte nicht gespeichert werden")); // localStorage переполнен или запрещён
     }
-    toast.success("Aufgabe gespeichert");
+    toast.success(translate("Aufgabe gespeichert"));
     onDone();
   };
 
   // Удаление без вопроса: в уведомлении есть «Rückgängig»
   const handleDelete = () => {
     const old = deleteTask(task.id);
-    toast("Aufgabe gelöscht", { duration: 6000, action: { label: "Rückgängig", onClick: () => restoreTask(old) } });
+    toast(translate("Aufgabe gelöscht"), { duration: 6000, action: { label: translate("Rückgängig"), onClick: () => restoreTask(old) } });
     onDone();
   };
 

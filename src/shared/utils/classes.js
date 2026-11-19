@@ -10,6 +10,7 @@
 // ─────────────────────────────────────────────────────────────
 import { CLASS_COLORS } from "../constants/classColors";
 import { daysBetween, numericDate, subjectName, visibleLessons, weekdayShort } from "./format";
+import { translate } from "../i18n/translate";
 
 // Свободный цвет для нового класса: первый, которого ещё нет в списке (все заняты — по кругу)
 export function nextClassColor(list) {
@@ -153,7 +154,7 @@ export function nextClassExam(exams, subjects, today) {
   const exam = mine.sort((a, b) => a.date.localeCompare(b.date))[0];
   if (!exam) return null;
   const when = daysBetween(today, exam.date) <= 6 ? weekdayShort(exam.date) : numericDate(exam.date);
-  return { id: exam.id, text: `${when} · ${subjectName(exam.subject)}-${exam.type ?? "Test"}` };
+  return { id: exam.id, text: `${when} · ${subjectName(exam.subject)}-${exam.type ?? translate("Test")}` };
 }
 
 // Коды предметов моих курсов (выбранные курсы по выбору + обязательные, не скрытые). Ничего не выбрано — пусто (= все)

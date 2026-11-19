@@ -12,23 +12,24 @@ import { useUserStore } from "../shared/store/userStore";
 import { changedFormatLabel } from "../shared/utils/planView";
 import { CalendarClock } from "lucide-react";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 const LABELS = [
-  { value: "kuerzel", label: "Kürzel" },
-  { value: "name", label: "Name" },
+  { value: "kuerzel", get label() { return translate("Kürzel"); } },
+  { value: "name", get label() { return translate("Name"); } },
 ];
 const STYLES = [
-  { value: "flaeche", label: "Fläche" },
-  { value: "streifen", label: "Streifen" },
-  { value: "aus", label: "Aus" },
+  { value: "flaeche", get label() { return translate("Fläche"); } },
+  { value: "streifen", get label() { return translate("Streifen"); } },
+  { value: "aus", get label() { return translate("Aus"); } },
 ];
 const CANCELLED = [
-  { value: "durchstreichen", label: "Durchstreichen" },
-  { value: "ausblenden", label: "Ausblenden" },
+  { value: "durchstreichen", get label() { return translate("Durchstreichen"); } },
+  { value: "ausblenden", get label() { return translate("Ausblenden"); } },
 ];
 const DAY_VIEWS = [
-  { value: "liste", label: "Liste" },
-  { value: "zeitleiste", label: "Zeit" },
+  { value: "liste", get label() { return translate("Liste"); } },
+  { value: "zeitleiste", get label() { return translate("Zeit"); } },
 ];
 
 // ─────────────────────────────────────────────────────────────

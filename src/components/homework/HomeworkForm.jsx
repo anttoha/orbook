@@ -20,9 +20,10 @@ import LessonCard from "../entries/LessonCard";
 import DueChoice from "./DueChoice";
 import { useNextLessons } from "../../shared/hooks/useNextLessons";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 const quick = "h-8.5 rounded-full border border-rule px-3.5 text-hint font-bold text-muted outline-none focus-visible:ring-2 focus-visible:ring-accent/50";
-const label = (item) => `${subjectName(item.subject)} · bis ${weekdayShort(item.due)} ${numericDate(item.due)}`;
+const label = (item) => translate("{v1} · bis {v2} {v3}", { v1: subjectName(item.subject), v2: weekdayShort(item.due), v3: numericDate(item.due) });
 
 // Швидкі дати під полем: «Nächste Stunde · Do» (якщо урок предмета є в завантажених тижнях) і «In 1 Woche»
 const QuickDates = ({ subject, today, onPick }) => {

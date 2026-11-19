@@ -4,6 +4,7 @@ import { versionLabel } from "../../shared/utils/dayHistory";
 import Badge from "../ui/Badge";
 import ChangeLine from "./ChangeLine";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Что показать под временем Fassung
 const Changes = ({ entry }) => {
@@ -11,7 +12,7 @@ const Changes = ({ entry }) => {
   if (entry.first) return <p className="text-label text-muted">{entry.summary}</p>;
   const { items, hidden, infoChanged } = entry.changes;
   const lines = [...items];
-  if (infoChanged) lines.push({ key: "info", kind: "info", title: "Info zum Tag", text: "Neuer Text von der Schule" });
+  if (infoChanged) lines.push({ key: "info", kind: "info", title: translate("Info zum Tag"), text: translate("Neuer Text von der Schule") });
   return (
     <>
       {lines.length > 0 && (

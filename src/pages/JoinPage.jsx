@@ -223,7 +223,7 @@ const JoinPage = () => {
               {busy
                 ? t("Wird geprüft…")
                 : {
-                    join: "Beitreten",
+                    join: t("Beitreten"),
                     add: t("Klasse hinzufügen"),
                     known: t("Öffnen"),
                   }[mode]}

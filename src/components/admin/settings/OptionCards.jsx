@@ -9,6 +9,7 @@ import { abLetter } from "../../../shared/utils/muster";
 import SettingsCard from "./SettingsCard";
 import PillButton from "../../ui/PillButton";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // Варіанти списків (межі — як перевіряє сервер, appsettings.py)
 const minutes = (values) => values.map((value) => ({ value, label: `${value} min` }));
@@ -24,13 +25,13 @@ const KEEP = [
 // Часть 26: как часто 06–16 Uhr смотреть два ближайших дня (чаще минуты нельзя — не грузим сервер школы)
 const FAST = [
   { value: 60, label: "jede Minute" },
-  { value: 120, label: "alle 2 min" },
-  { value: 300, label: "alle 5 min" },
-  { value: 0, label: "Aus" },
+  { value: 120, get label() { return translate("alle 2 min"); } },
+  { value: 300, get label() { return translate("alle 5 min"); } },
+  { value: 0, get label() { return translate("Aus"); } },
 ];
 // Часть 26: сколько дней хранить прошлые Fassungen («Verlauf des Tages»)
-const VERSIONS = [7, 14, 30, 90].map((value) => ({ value, label: `${value} Tage` }));
-const SESSION = [1, 7, 14, 30, 90, 180, 365].map((value) => ({ value, label: value === 1 ? "1 Tag" : `${value} Tage` }));
+const VERSIONS = [7, 14, 30, 90].map((value) => ({ value, get label() { return translate("{value} Tage", { value }); } }));
+const SESSION = [1, 7, 14, 30, 90, 180, 365].map((value) => ({ value, get label() { return value === 1 ? translate("1 Tag") : translate("{value} Tage", { value }); } }));
 const ATTEMPTS = [3, 5, 10, 20].map((value) => ({ value, label: String(value) }));
 // Часть 17: когда приходит «Für morgen» (сервер принимает 14:00–21:59)
 const REMINDER = ["16:00", "17:00", "18:00", "19:00", "20:00"].map((value) => ({ value, label: value }));
@@ -119,10 +120,10 @@ export const SecurityCard = ({ className, ...props }) => {
 
 // «Hausaufgaben» (частина 14, макет handy-12): коли видаляти після строку здачі. 0 — у кінці навчального року
 const HOMEWORK_KEEP = [
-  { value: 7, label: "nach 7 Tagen" },
-  { value: 14, label: "nach 14 Tagen" },
-  { value: 30, label: "nach 30 Tagen" },
-  { value: 90, label: "nach 90 Tagen" },
+  { value: 7, get label() { return translate("nach 7 Tagen"); } },
+  { value: 14, get label() { return translate("nach 14 Tagen"); } },
+  { value: 30, get label() { return translate("nach 30 Tagen"); } },
+  { value: 90, get label() { return translate("nach 90 Tagen"); } },
   { value: 0, label: "zum Schuljahresende" },
 ];
 
@@ -141,16 +142,16 @@ export const AppointmentsCard = ({ className, ...props }) =>
 
 // «Muster-Stundenplan» (частина 19, макет 19 handy-11): до якого дня показувати Muster у днях без плану
 const MUSTER_UNTIL = [
-  { value: "2w", label: "2 Wochen" },
-  { value: "4w", label: "4 Wochen" },
-  { value: "8w", label: "8 Wochen" },
+  { value: "2w", get label() { return translate("2 Wochen"); } },
+  { value: "4w", get label() { return translate("4 Wochen"); } },
+  { value: "8w", get label() { return translate("8 Wochen"); } },
   { value: "yearEnd", label: "Schuljahresende" },
-  { value: "off", label: "Aus" },
+  { value: "off", get label() { return translate("Aus"); } },
 ];
 
 // Звідки Muster і як рахуються тижні — з ЗБЕРЕЖЕНИХ налаштувань (міняються на сторінці «Muster», частина 19b)
-const MUSTER_SOURCE = { auto: "Automatisch · aus den Plänen", admin: "Vom Admin · Woche A und B" };
-const AB_MODE = { school: "aus dem Plan der Schule", swap: "getauscht" };
+const MUSTER_SOURCE = { get auto() { return translate("Automatisch · aus den Plänen"); }, get admin() { return translate("Vom Admin · Woche A und B"); } };
+const AB_MODE = { get school() { return translate("aus dem Plan der Schule"); }, swap: "getauscht" };
 
 // Рядок-посилання на сторінку «Muster»: назва, підказка, праворуч бейдж і стрілка
 const LinkRow = ({ to, label, hint, children }) => (
@@ -170,7 +171,7 @@ export const MusterCard = ({ className, abWeek, saved, ...props }) => {
   const letter = saved?.abMode === "none" ? null : abLetter(abWeek);
   const mode = saved?.abMode ?? "school";
   // Букву знаємо, лише якщо цей браузер увійшов і в клас (meta.abWeek)
-  const abHint = mode === "none" ? "Jede Woche gleich" : letter ? `Diese Woche ist ${letter} · ${AB_MODE[mode]}` : mode === "swap" ? "A und B getauscht" : "Kommt aus dem Plan der Schule";
+  const abHint = mode === "none" ? translate("Jede Woche gleich") : letter ? translate("Diese Woche ist {letter} · {v2}", { letter, v2: AB_MODE[mode] }) : mode === "swap" ? translate("A und B getauscht") : translate("Kommt aus dem Plan der Schule");
   return (
     <SettingsCard title={t("Muster-Stundenplan")} className={className}>
       <div className={divided}>

@@ -13,11 +13,12 @@ import DoneText from "../tasks/DoneText";
 import SubjectBadge from "../ui/SubjectBadge";
 import Liquid from "../ui/Liquid";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Вторая строка: «Mathe · von Mü» у домашки, «Eigene Aufgabe» у своей
 function subline(row, names) {
-  if (row.kind === "own") return [ "Eigene Aufgabe", row.subject ? (names?.[row.subject] ?? row.subject) : null].filter(Boolean).join(" · ");
-  return [subjectName(row.item.subject), authorShort(row.item) && `von ${authorShort(row.item)}`].filter(Boolean).join(" · ");
+  if (row.kind === "own") return [ translate("Eigene Aufgabe"), row.subject ? (names?.[row.subject] ?? row.subject) : null].filter(Boolean).join(" · ");
+  return [subjectName(row.item.subject), authorShort(row.item) && translate("von {v1}", { v1: authorShort(row.item) })].filter(Boolean).join(" · ");
 }
 
 // ─────────────────────────────────────────────────────────────

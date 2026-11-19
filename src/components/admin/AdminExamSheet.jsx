@@ -9,6 +9,7 @@ import ChoiceChips from "../ui/ChoiceChips";
 import Sheet from "../ui/Sheet";
 import TextField from "../ui/TextField";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 const LESSONS = [null, 1, 2, 3, 4, 5, 6, 7, 8]; // null — «—» (без уроку)
 
@@ -25,15 +26,15 @@ const ExamEditForm = ({ exam, types, onSaved }) => {
     event.preventDefault();
     const topicError = validateTopic(form.topic);
     if (topicError) return setError(topicError.message);
-    if (!form.date) return setError("Bitte ein Datum wählen.");
+    if (!form.date) return setError(translate("Bitte ein Datum wählen."));
     setBusy(true);
     setError(null);
     try {
       await updateAdminExam(exam, { ...form, topic: form.topic.trim() });
-      onSaved("Test gespeichert");
+      onSaved(translate("Test gespeichert"));
     } catch (err) {
       // 409: хтось змінив запис, поки вікно було відкрите — показуємо і перезавантажуємо список
-      if (err.code === "conflict") onSaved(null, "Der Test wurde inzwischen geändert. Die Liste ist jetzt aktuell.");
+      if (err.code === "conflict") onSaved(null, translate("Der Test wurde inzwischen geändert. Die Liste ist jetzt aktuell."));
       else setError(err.message);
     } finally {
       setBusy(false);

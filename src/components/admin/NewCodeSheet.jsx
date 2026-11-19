@@ -18,6 +18,7 @@ import SchoolClassField from "./schools/SchoolClassField";
 import ValidFields from "./ValidFields";
 import ChipButton from "../ui/ChipButton";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Нові права частини 14 за замовчуванням вимкнені; у Lehrer-Code обидва права одразу ввімкнені (рішення власника)
 // Lehrer-Code — одразу з «Materialien teilen» (рішення власника: учителі діляться матеріалами своїх предметів)
@@ -98,10 +99,10 @@ const NewCodeForm = ({ yearEnd, onDone, kind }) => {
   const create = async (event) => {
     event.preventDefault();
     const found = {
-      label: teacherCode ? (label.trim() ? null : "Bitte eine Lehrkraft wählen.") : labelError(label),
-      rights: hasRight(rights) ? null : "Mindestens ein Recht auswählen.",
-      valid: valid.choice === "date" && !(valid.date > today) ? "Bitte ein Datum in der Zukunft wählen." : null,
-      target: target && !target.className ? "Bitte eine Klasse wählen." : null,
+      label: teacherCode ? (label.trim() ? null : translate("Bitte eine Lehrkraft wählen.")) : labelError(label),
+      rights: hasRight(rights) ? null : translate("Mindestens ein Recht auswählen."),
+      valid: valid.choice === "date" && !(valid.date > today) ? translate("Bitte ein Datum in der Zukunft wählen.") : null,
+      target: target && !target.className ? translate("Bitte eine Klasse wählen.") : null,
     };
     setErrors(found);
     if (Object.values(found).some(Boolean) || busy) return;

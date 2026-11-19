@@ -18,6 +18,7 @@ import RightsFields from "./RightsFields";
 import ValidFields from "./ValidFields";
 import Liquid from "../ui/Liquid";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Значення праворуч у шторці телефона: «Eintragen, eigene», «31. Juli»
 const hintOf = (kind, code) => ({ rights: rightsText(code.rights, code.kind), validity: validText(code) })[kind];
@@ -27,7 +28,7 @@ const ActionsSheet = ({ code, onAction, onClose }) => {
   const t = useT();
   const { today } = useNow();
   return (
-    <Sheet open onClose={onClose} desktop="dialog" eyebrow={`${code.masked} · ${code.active ? "aktiv" : "gesperrt"}`} title={code.label}>
+    <Sheet open onClose={onClose} desktop="dialog" eyebrow={`${code.masked} · ${code.active ? t("aktiv") : t("gesperrt")}`} title={code.label}>
       <p className="-mt-2 text-body-sm text-muted">
         {entriesCount(code)} {t("Einträge ·")} {lastUsedText(code.lastUsedAt, today)}
       </p>
@@ -94,7 +95,7 @@ const RightsSheet = ({ code, actions, onClose }) => {
   const [rights, setRights] = useState(code.rights);
   const [error, setError] = useState(null);
   const save = () => {
-    setError(hasRight(rights) ? null : "Mindestens ein Recht auswählen.");
+    setError(hasRight(rights) ? null : translate("Mindestens ein Recht auswählen."));
     return hasRight(rights) ? actions.setRights(code, editableRights(code, rights)) : false;
   };
   return (
@@ -112,7 +113,7 @@ const ValiditySheet = ({ code, actions, onClose }) => {
   const [error, setError] = useState(null);
   const save = () => {
     const date = validUntilFor(valid.choice, { todayIso: today, yearEnd, date: valid.date });
-    const found = !date || date < today ? "Bitte ein Datum ab heute wählen." : null;
+    const found = !date || date < today ? translate("Bitte ein Datum ab heute wählen.") : null;
     setError(found);
     return found ? false : actions.setValidUntil(code, date);
   };
@@ -155,7 +156,7 @@ const CodeDialogs = ({ action, onChange }) => {
   if (kind === "menu") return <ActionsSheet code={code} onAction={choose} onClose={close} />;
   if (kind === "show") {
     const qr = (full) => <CodeQr code={full} kind={code.kind} teacher={code.kind === "teacher" ? code.label : null} rights={code.rights} />;
-    const eyebrow = `${code.kind === "teacher" ? "Lehrer-Code" : "Editor-Code"} · ${code.label}`;
+    const eyebrow = `${code.kind === "teacher" ? translate("Lehrer-Code") : translate("Editor-Code")} · ${code.label}`;
     return <ShowCodeSheet code={code} source="editor" eyebrow={eyebrow} extra={qr} onClose={close} onRegenerate={() => onChange({ kind: "regenerate", code })} />;
   }
   if (kind === "rename") return <RenameSheet code={code} actions={actions} onClose={close} />;

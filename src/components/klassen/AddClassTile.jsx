@@ -1,10 +1,11 @@
 import { Plus } from "lucide-react";
 import { useSheet } from "../../shared/hooks/useSheet";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Пунктирная карточка «Klasse hinzufügen» под классами (телефон).
 // schoolId — на странице школы (часть 29d): шторка знает школу и подскажет, если код от другой
-const AddClassTile = ({ schoolId = null, hint = "Mit Zugangscode, QR oder Einladungslink" }) => {
+const AddClassTile = ({ schoolId = null, hint = translate("Mit Zugangscode, QR oder Einladungslink") }) => {
   const t = useT();
   const { openSheet } = useSheet();
   return (

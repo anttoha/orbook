@@ -9,8 +9,9 @@ import { visibleNotes } from "../../shared/utils/notes";
 import { cn } from "../../shared/utils/cn";
 import RowSwitch from "../ui/RowSwitch";
 import Liquid from "../ui/Liquid";
+import { translate } from "../../shared/i18n/translate";
 
-const THEME = { light: "Hell", dark: "Dunkel", system: "System" };
+const THEME = { get light() { return translate("Hell"); }, get dark() { return translate("Dunkel"); }, get system() { return translate("System"); } };
 
 // ─────────────────────────────────────────────────────────────
 // «Was wird synchronisiert» (макет 25 handy-07): четыре-пять переключателей, у каждого устройства свои.
@@ -26,10 +27,10 @@ const SyncParts = () => {
   const classCount = useClasses((s) => s.list.length);
   const t = useT();
   const rows = [
-    { key: "notes", icon: FileText, title: "Notizen", hint: `${notes} ${notes === 1 ? "Notiz" : "Notizen"}` },
-    { key: "aufgaben", icon: ListChecks, title: "Aufgaben", hint: tasks > 0 ? `erledigt + ${tasks} eigene` : "erledigt + eigene" },
-    { key: "kurse", icon: Table2, title: "Meine Kurse", hint: "welche Kurse du siehst" },
-    { key: "darstellung", icon: Sun, title: "Darstellung & Fachfarben", hint: `${THEME[theme] ?? "System"} · A${"+".repeat(Math.max(0, fontScale - 1))}` },
+    { key: "notes", icon: FileText, title: translate("Notizen"), hint: `${notes} ${notes === 1 ? translate("Notiz") : translate("Notizen")}` },
+    { key: "aufgaben", icon: ListChecks, title: translate("Aufgaben"), hint: tasks > 0 ? translate("erledigt + {tasks} eigene", { tasks }) : translate("erledigt + eigene") },
+    { key: "kurse", icon: Table2, title: translate("Meine Kurse"), hint: translate("welche Kurse du siehst") },
+    { key: "darstellung", icon: Sun, title: "Darstellung & Fachfarben", hint: `${THEME[theme] ?? translate("System")} · A${"+".repeat(Math.max(0, fontScale - 1))}` },
     // Часть 29d: имя, цвет и порядок классов (без Zugangscodes — класс на новом устройстве добавляется своим кодом)
     ...(classCount > 0 ? [{ key: "klassen", icon: LayoutGrid, title: t("Meine Klassen"), hint: t("Name, Farbe, Reihenfolge – ohne Zugangscodes") }] : []),
   ];
@@ -50,7 +51,7 @@ const SyncParts = () => {
               <row.icon className={cn("size-5 shrink-0 transition-colors duration-200", parts[row.key] === false ? "text-faint2" : "text-muted")} />
               <span className="min-w-0 flex-1">
                 <span className={cn("block text-row transition-colors duration-200", parts[row.key] === false ? "text-muted" : "text-ink")}>{row.title}</span>
-                <span className="block text-caption text-faint">{parts[row.key] === false ? "aus" : row.hint}</span>
+                <span className="block text-caption text-faint">{parts[row.key] === false ? translate("aus") : row.hint}</span>
               </span>
             </RowSwitch>
           </li>

@@ -1,11 +1,12 @@
 import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
+import { translate } from "../../shared/i18n/translate";
 
 // Название каждого оформления; значения — DESIGNS в shared/utils/appearance.js
 const DESIGNS = [
-  { value: "soft", label: "Soft" },
-  { value: "glas", label: "Glas" },
-  { value: "klar", label: "Klar" },
+  { value: "soft", get label() { return translate("Soft"); } },
+  { value: "glas", get label() { return translate("Glas"); } },
+  { value: "klar", get label() { return translate("Klar"); } },
 ];
 
 // Три клетки урока в превью: фон и текст — токены предметов

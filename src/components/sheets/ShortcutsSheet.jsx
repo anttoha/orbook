@@ -1,6 +1,7 @@
 import Kbd from "../ui/Kbd";
 import Sheet from "../ui/Sheet";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Клавіші з макету 52. Кожна клавіша — окрема плашка: «⌘» і «K» поруч.
 const NAVIGATION = [
@@ -29,7 +30,7 @@ const Column = ({ title, rows }) => (
     <ul className="mt-1.5">
       {rows.map(([label, keys]) => (
         <li key={label} className="flex h-10.25 items-center justify-between gap-3 border-b border-hair last:border-0">
-          <span className="text-body-sm text-ink">{label}</span>
+          <span className="text-body-sm text-ink">{translate(label)}</span>
           <span className="flex gap-1">
             {keys.map((key) => (
               <Kbd key={key}>{key}</Kbd>

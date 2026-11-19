@@ -6,6 +6,7 @@
 import { PALETTES } from "../constants/fachColors";
 import { lessonCode, lessonName } from "./format";
 import { fachClasses, paletteOf } from "./lessons";
+import { translate } from "../i18n/translate";
 
 export const PLAN_DEFAULTS = {
   lessonLabel: "kuerzel", // у клітинці тижня на телефоні: "kuerzel" «Ma» | "name" «Mathe»
@@ -54,8 +55,8 @@ export const shownLessons = (lessons, plan) => (plan.cancelled === "ausblenden" 
 // Значення праворуч від «Stundenplan» у Darstellung: слова того, що увімкнено («Raum», «Uhrzeit»).
 // Масив, а не рядок: екран перекладає кожне слово через t()
 export const planSummary = (plan) => {
-  const words = [plan.lessonLabel === "name" && "Name", plan.showRoom && "Raum", plan.showTeacher && "Lehrkraft", plan.showTimes && "Uhrzeit"].filter(Boolean);
-  return words.length ? words : ["Nur Fach"];
+  const words = [plan.lessonLabel === "name" && translate("Name"), plan.showRoom && translate("Raum"), plan.showTeacher && translate("Lehrkraft"), plan.showTimes && translate("Uhrzeit")].filter(Boolean);
+  return words.length ? words : [translate("Nur Fach")];
 };
 
 // «Änderung unter dem Tag» (частина 22): підписи самі вже приклад формату

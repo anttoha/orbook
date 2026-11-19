@@ -9,12 +9,13 @@ import Segmented from "../ui/Segmented";
 import Sheet from "../ui/Sheet";
 import PillButton from "../ui/PillButton";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Варіанти перемикача: значення в адресі → range для сервера
 const RANGES = [
-  { value: "heute", label: "Heute", range: "today" },
-  { value: "morgen", label: "Morgen", range: "tomorrow" },
-  { value: "woche", label: "Woche", range: "week" },
+  { value: "heute", get label() { return translate("Heute"); }, range: "today" },
+  { value: "morgen", get label() { return translate("Morgen"); }, range: "tomorrow" },
+  { value: "woche", get label() { return translate("Woche"); }, range: "week" },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -45,7 +46,7 @@ const ShareSheet = ({ open, onClose, sheet }) => {
 const ShareOptions = ({ sheet }) => {
   const t = useT();
   const [range, setRange] = useState(
-    RANGES.some((r) => r.value === sheet.bereich) ? sheet.bereich : "heute",
+    RANGES.some((r) => r.value === sheet.bereich) ? sheet.bereich : translate("heute"),
   ); // період
   const [includeChanges, setIncludeChanges] = useState(true); // галочка «Vertretungen»
   const [includeExams, setIncludeExams] = useState(true); // галочка «Klausuren»

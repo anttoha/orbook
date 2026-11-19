@@ -10,11 +10,12 @@ import PasswordField from "../../ui/PasswordField";
 import CodeReveal from "../CodeReveal";
 import PasswordSection from "./PasswordSection";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // Тексти вікна-питання: «ändern» (свій пароль) або «erzeugen» (придумує сервер). who — «der 9b» або «der Klasse»
 const questions = (who) => ({
-  change: { title: "Klassenpasswort ändern?", text: `Alle Geräte ${who} werden sofort abgemeldet und brauchen das neue Passwort. Sag es der Klasse vorher.`, button: "Ändern", Icon: KeyIcon },
-  generate: { title: "Passwort erzeugen?", text: `Alle Geräte ${who} werden sofort abgemeldet. Das neue Passwort siehst du nur einmal — direkt danach.`, button: "Erzeugen", Icon: SparkIcon },
+  change: { title: translate("Klassenpasswort ändern?"), text: translate("Alle Geräte {who} werden sofort abgemeldet und brauchen das neue Passwort. Sag es der Klasse vorher.", { who }), button: translate("Ändern"), Icon: KeyIcon },
+  generate: { title: "Passwort erzeugen?", text: translate("Alle Geräte {who} werden sofort abgemeldet. Das neue Passwort siehst du nur einmal — direkt danach.", { who }), button: translate("Erzeugen"), Icon: SparkIcon },
 });
 
 // Після «Erzeugen»: пароль один раз, кнопки «Für die Klassengruppe kopieren» і «Fertig»
@@ -72,7 +73,7 @@ const ClassPasswordForm = ({ since, schoolClass, onChanged }) => {
         setGenerated(await generateClassPassword());
       } else {
         const result = await changeClassPassword(password);
-        toast.success(changedText("Passwort geändert", result.devicesSignedOut));
+        toast.success(changedText(translate("Passwort geändert"), result.devicesSignedOut));
         setPassword("");
       }
       onChanged(); // дата «Seit …» тепер сьогоднішня
@@ -84,7 +85,7 @@ const ClassPasswordForm = ({ since, schoolClass, onChanged }) => {
     }
   };
 
-  const ask = questions(schoolClass ? `der ${schoolClass}` : "der Klasse")[question];
+  const ask = questions(schoolClass ? translate("der {schoolClass}", { schoolClass }) : translate("der Klasse"))[question];
   return (
     <PasswordSection title={t("Klassenpasswort")} note={generated ? t("seit heute") : since}>
       {generated ? (

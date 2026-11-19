@@ -9,6 +9,7 @@ import { CheckIcon } from "./icons";
 import Kbd from "./Kbd";
 import GlassSearch from "./GlassSearch";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Кружечок предмета з кодом (як SubjectBadge, але з кодом пункту списку)
 export const PickerBadge = ({ code, className }) => {
@@ -38,7 +39,7 @@ const Row = ({ item, selected, active, onHover, onChoose }) => (
 //   keys       — підказка «↑↓ wählen» внизу (ПК)
 // Клавіші в полі пошуку: ↑ ↓ — вибір рядка, Enter — взяти
 // ─────────────────────────────────────────────────────────────
-const PickerList = ({ items, selected, onChoose, autoFocus = false, keys = false, searchPlaceholder = "Fach, Kürzel oder Lehrer", className }) => {
+const PickerList = ({ items, selected, onChoose, autoFocus = false, keys = false, searchPlaceholder = translate("Fach, Kürzel oder Lehrer"), className }) => {
   const t = useT();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(-1); // рядок під стрілками (-1 — жоден)

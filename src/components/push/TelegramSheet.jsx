@@ -58,7 +58,7 @@ const ConnectBody = ({ onClose }) => {
   const bot = link.url?.split("/")[3]?.split("?")[0];
   return (
     <>
-      <Step n={1} title={t("Telegram öffnen")} text={bot ? `Der Bot @${bot}` : "…"}>
+      <Step n={1} title={t("Telegram öffnen")} text={bot ? t("Der Bot @{bot}", { bot }) : "…"}>
         <Button variant="primary" className="flex-none" href={link.url ?? undefined} target="_blank" rel="noreferrer" disabled={!link.url}>
           <Send className="size-4" /> {t("In Telegram öffnen")}
         </Button>

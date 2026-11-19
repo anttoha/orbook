@@ -5,6 +5,7 @@
 // ─────────────────────────────────────────────────────────────
 import { isTeacher } from "./examRules";
 import { shortDate, subjectName } from "./format";
+import { translate } from "../i18n/translate";
 
 export const TITLE_MAX = 80;
 const URL_MAX = 500;
@@ -18,15 +19,15 @@ const HOSTS = { "drive.google.com": "google", "docs.google.com": "google", "oned
 const SHAREPOINT = ".sharepoint.com";
 
 export const PROVIDER_LABEL = { google: "Google Drive", onedrive: "OneDrive" };
-export const KIND_LABEL = { folder: "Ordner", document: "Dokument", sheet: "Tabelle", slides: "Präsentation", pdf: "PDF", file: "Datei" };
+export const KIND_LABEL = { folder: "Ordner", document: "Dokument", sheet: "Tabelle", get slides() { return translate("Präsentation"); }, pdf: "PDF", file: "Datei" };
 
 // Тексти помилок поля «Link» (як на сервері)
 export const LINK_ERRORS = {
-  required: "Bitte einen Link einfügen.",
-  too_long: `Der Link darf höchstens ${URL_MAX} Zeichen lang sein.`,
-  invalid: "Der Link darf keine Leerzeichen enthalten.",
-  not_allowed: "Nur Links von Google Drive oder OneDrive.",
-  incomplete: "Bitte den Link zur Datei oder zum Ordner einfügen.",
+  get required() { return translate("Bitte einen Link einfügen."); },
+  get too_long() { return translate("Der Link darf höchstens {URL_MAX} Zeichen lang sein.", { URL_MAX }); },
+  get invalid() { return translate("Der Link darf keine Leerzeichen enthalten."); },
+  get not_allowed() { return translate("Nur Links von Google Drive oder OneDrive."); },
+  get incomplete() { return translate("Bitte den Link zur Datei oder zum Ordner einfügen."); },
 };
 
 const providerOf = (host) => HOSTS[host] ?? (host.endsWith(SHAREPOINT) && host.length > SHAREPOINT.length ? "onedrive" : null);
@@ -73,15 +74,15 @@ export function checkLink(value) {
 
 // «Google Drive · Ordner · von Mü». Посилання за Editor-Code — без імені (author: null)
 export function materialMeta(item) {
-  const parts = [PROVIDER_LABEL[item.provider] ?? "Link", KIND_LABEL[item.kind] ?? KIND_LABEL.file];
-  if (item.author?.short) parts.push(`von ${item.author.short}`);
+  const parts = [PROVIDER_LABEL[item.provider] ?? translate("Link"), KIND_LABEL[item.kind] ?? KIND_LABEL.file];
+  if (item.author?.short) parts.push(translate("von {short}", { short: item.author.short }));
   return parts.join(" · ");
 }
 
 // Рядок унизу шторки: «Eingetragen von Mü · 12. Sept»; за Editor-Code — без імені
 export function addedText(item) {
   const date = item.createdAt ? shortDate(item.createdAt.slice(0, 10)) : null;
-  const who = item.author?.short ? `Eingetragen von ${item.author.short}` : "Geteilt";
+  const who = item.author?.short ? translate("Eingetragen von {short}", { short: item.author.short }) : "Geteilt";
   if (!date) return who;
   return item.author?.short ? `${who} · ${date}` : `${who} am ${date}`;
 }
@@ -125,10 +126,10 @@ export function materialSubjects(me, allSubjects) {
 // Перевірка форми перед відправкою: { subject?, title?, url? } — тексти помилок
 export function validateMaterialForm(form) {
   const errors = {};
-  if (!form.subject) errors.subject = "Bitte ein Fach wählen.";
+  if (!form.subject) errors.subject = translate("Bitte ein Fach wählen.");
   const title = form.title.trim();
-  if (!title) errors.title = "Bitte einen Titel eingeben.";
-  else if (title.length > TITLE_MAX) errors.title = `Der Titel darf höchstens ${TITLE_MAX} Zeichen lang sein.`;
+  if (!title) errors.title = translate("Bitte einen Titel eingeben.");
+  else if (title.length > TITLE_MAX) errors.title = translate("Der Titel darf höchstens {TITLE_MAX} Zeichen lang sein.", { TITLE_MAX });
   const link = checkLink(form.url);
   if (!link.ok) errors.url = LINK_ERRORS[link.error];
   return errors;

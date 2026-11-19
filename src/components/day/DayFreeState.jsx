@@ -8,11 +8,12 @@ import { PlanDown } from "../ui/PlanState";
 import StateScreen from "../ui/StateScreen";
 import PillButton from "../ui/PillButton";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Заголовок вільного дня. Назви свята в даних немає, тому пишемо загальне «Schulfrei».
 const freeTitle = (day, isToday) => {
   if (day.freeReason === "weekend") return "Wochenende";
-  return isToday ? "Heute ist frei" : "Schulfrei";
+  return isToday ? translate("Heute ist frei") : "Schulfrei";
 };
 
 // ─────────────────────────────────────────────────────────────

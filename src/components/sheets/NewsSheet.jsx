@@ -70,7 +70,7 @@ const NewsSheet = ({ open, onClose, sheet }) => {
         ))}
         {action && (
           <ul className="rounded-card bg-card px-3.5">
-            <MenuRow to="/mehr/darstellung" icon={SlidersHorizontal} label={t("Startansicht")} value={{ heute: "Heute" }[startView] ?? "Woche"} />
+            <MenuRow to="/mehr/darstellung" icon={SlidersHorizontal} label={t("Startansicht")} value={t({ heute: "Heute" }[startView] ?? "Woche")} />
           </ul>
         )}
       </div>

@@ -2,6 +2,7 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import { lessonBadge, lessonName } from "../../shared/utils/format";
 import { lessonNote } from "../../shared/utils/lessons";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Підказка при наведенні мишкою на урок (тільки ПК — на телефоні
@@ -17,7 +18,7 @@ const LessonTooltip = ({ lesson, children, ...props }) => {
   // Рядок про вчителя і кабінет: при заміні — «T26 statt T25 · Raum 305»
   const oldTeacher = lesson.changes?.teacher?.old;
   const teacher = oldTeacher ? `${lesson.teacher} statt ${oldTeacher}` : lesson.teacher;
-  const details = [lesson.start && `${lesson.start}–${lesson.end}`, teacher, lesson.room && `Raum ${lesson.room}`].filter(Boolean).join(" · ");
+  const details = [lesson.start && `${lesson.start}–${lesson.end}`, teacher, lesson.room && translate("Raum {room}", { room: lesson.room })].filter(Boolean).join(" · ");
 
   return (
     <Tooltip.Root>

@@ -5,6 +5,7 @@ import { pushErrorText, usePushStore } from "../../shared/store/pushStore";
 import { lastSentLabel } from "../../shared/utils/push";
 import PillButton from "../ui/PillButton";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Зелёная карточка «An auf diesem Gerät» + «Test senden» (макет 17 handy-01)
 const PushStatus = () => {
@@ -17,8 +18,8 @@ const PushStatus = () => {
     setSending(true);
     try {
       const { sent } = await test();
-      if (sent) toast.success("Test geschickt – kommt gleich an");
-      else toast.error("Der Browser-Dienst hat den Test nicht angenommen");
+      if (sent) toast.success(translate("Test geschickt – kommt gleich an"));
+      else toast.error(translate("Der Browser-Dienst hat den Test nicht angenommen"));
     } catch (error) {
       toast.error(pushErrorText(error));
     } finally {

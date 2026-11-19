@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { cn } from "../../shared/utils/cn";
 import { qrFor } from "../../shared/utils/qr";
+import { translate } from "../../shared/i18n/translate";
 
 const QUIET = 3; // тихий край навколо коду (у клітинках): без нього камера гірше знаходить код
 
@@ -9,7 +10,7 @@ const QUIET = 3; // тихий край навколо коду (у клітин
 // Кольори — токени qr-*: однакові в обох темах, бо камера читає темне на білому.
 // Розмір задається ззовні: className="size-42"
 // ─────────────────────────────────────────────────────────────
-const QrCode = ({ value, className, dim = false, label = "QR-Code zum Einladungslink" }) => {
+const QrCode = ({ value, className, dim = false, label = translate("QR-Code zum Einladungslink") }) => {
   const { size, dots, eyes, logo } = useMemo(() => qrFor(value), [value]); // рахуємо лише при новому посиланні
   const box = size + QUIET * 2;
   const at = (n) => n + QUIET; // клітинка → координата в SVG

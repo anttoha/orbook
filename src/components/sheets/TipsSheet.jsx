@@ -8,12 +8,13 @@ import Button from "../ui/Button";
 import { CheckIcon } from "../ui/icons";
 import Sheet from "../ui/Sheet";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Три подсказки: коротко и по делу. На ПК вместо «lange drücken» — правый клик
 const TIPS = [
-  { picture: WeekPicture, title: "Tippe auf einen Tag", text: "Oben die Woche, darunter der Tag. Ausfälle und Vertretungen sind farbig markiert." },
-  { picture: MenuPicture, title: "Stunde lange drücken", pcTitle: "Rechtsklick auf eine Stunde", text: "Notiz schreiben, Hausaufgabe oder Test eintragen, Fachfarbe ändern." },
-  { picture: TasksPicture, title: "Aufgaben abhaken", text: "Hausaufgaben und eigene Aufgaben in einer Liste. Mit Sync-Code auch auf dem PC." },
+  { picture: WeekPicture, get title() { return translate("Tippe auf einen Tag"); }, get text() { return translate("Oben die Woche, darunter der Tag. Ausfälle und Vertretungen sind farbig markiert."); } },
+  { picture: MenuPicture, get title() { return translate("Stunde lange drücken"); }, get pcTitle() { return translate("Rechtsklick auf eine Stunde"); }, get text() { return translate("Notiz schreiben, Hausaufgabe oder Test eintragen, Fachfarbe ändern."); } },
+  { picture: TasksPicture, title: "Aufgaben abhaken", get text() { return translate("Hausaufgaben und eigene Aufgaben in einer Liste. Mit Sync-Code auch auf dem PC."); } },
 ];
 
 // ─────────────────────────────────────────────────────────────

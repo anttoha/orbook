@@ -9,9 +9,10 @@ import Switch from "../ui/Switch";
 import ListPicker from "../ui/ListPicker";
 import { subjectItems } from "../../shared/utils/picker";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 const RANGES = [
-  { value: "2w", label: "2 Wochen" },
+  { value: "2w", get label() { return translate("2 Wochen"); } },
   { value: "month", label: "Monat" },
   { value: "half", label: "Halbjahr" },
 ];

@@ -11,6 +11,7 @@ import ExamDateTile from "../exams/ExamDateTile";
 import CheckCircle from "./CheckCircle";
 import DoneText from "./DoneText";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Плашка своей задачи без предмета: песочная, с днём или (без даты) со значком человека
 const OwnTile = ({ due }) => (
@@ -35,8 +36,8 @@ function metaParts({ own, done, subject, lesson, author, when, soon }) {
   return [
     own && { text: "Eigene", className: cn("font-extrabold", !done && "text-accent-ink") },
     subject && { text: subject },
-    lesson && { text: `${lesson}. Std` },
-    author && { text: `von ${author}` },
+    lesson && { text: translate("{lesson}. Std", { lesson }) },
+    author && { text: translate("von {author}", { author }) },
     when && { text: when, className: cn(soon && "font-bold text-accent-ink") },
   ].filter(Boolean);
 }
@@ -68,7 +69,7 @@ const AufgabeRow = ({ row, today, overrides, subjectNames, highlight, onOpen, st
     setLeaving(true);
     setTimeout(() => {
       flip();
-      if (!row.done) toast("Erledigt", { duration: 5000, action: { label: "Rückgängig", onClick: flip } });
+      if (!row.done) toast(translate("Erledigt"), { duration: 5000, action: { label: translate("Rückgängig"), onClick: flip } });
     }, MOVE_AFTER_MS);
   };
 

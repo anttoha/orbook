@@ -15,6 +15,7 @@ import { useAdminStore } from "../shared/store/adminStore";
 import { authorText } from "../shared/utils/admin";
 import { subjectName } from "../shared/utils/format";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 const DEFAULT_TYPES = ["Klassenarbeit", "Leistungskontrolle", "Test", "Abgabe"];
 
@@ -57,9 +58,9 @@ const AdminExams = () => {
     try {
       await deleteAdminExam(exam);
       changed();
-      toast("Test gelöscht", {
+      toast(translate("Test gelöscht"), {
         duration: 8000,
-        action: { label: "Rückgängig", onClick: () => restoreAdminExam(exam).then(changed, (error) => toast.error(error.message)) },
+        action: { label: translate("Rückgängig"), onClick: () => restoreAdminExam(exam).then(changed, (error) => toast.error(error.message)) },
       });
     } catch (error) {
       toast.error(error.message);

@@ -2,14 +2,15 @@ import { CheckIcon } from "../ui/icons";
 import QrCode from "../ui/QrCode";
 import { PrintFoot, PrintHead, StepDot } from "./PrintBits";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Что учитель может делать — по правам кода (part 14: create, homework, materials)
 function abilities({ className, subjects, rights }) {
-  const own = subjects?.length > 0 ? `für ${subjects.join(", ")}` : "für Ihre Fächer";
+  const own = subjects?.length > 0 ? translate("für {v1}", { v1: subjects.join(", ") }) : translate("für Ihre Fächer");
   return [
-    { title: `Den Plan ${className ? `der ${className}` : "der Klasse"} sehen`, text: "wie die Schülerinnen und Schüler, mit allen Kursen" },
-    (rights?.create || rights?.homework) && { title: "Tests und Hausaufgaben eintragen", text: `${own} — die Klasse sieht sie sofort` },
-    rights?.materials && { title: "Materialien teilen", text: "Links von Google Drive oder OneDrive" },
+    { title: translate("Den Plan {v1} sehen", { v1: className ? translate("der {className}", { className }) : translate("der Klasse") }), text: translate("wie die Schülerinnen und Schüler, mit allen Kursen") },
+    (rights?.create || rights?.homework) && { title: translate("Tests und Hausaufgaben eintragen"), text: translate("{own} — die Klasse sieht sie sofort", { own }) },
+    rights?.materials && { title: "Materialien teilen", text: translate("Links von Google Drive oder OneDrive") },
   ].filter(Boolean);
 }
 
@@ -36,9 +37,9 @@ const TeacherSheet = ({ code, url, className, teacher, subjects, rights, printed
         <p className="mt-1 text-title font-black tracking-code break-all">{code}</p>
         <ol className="mt-6 space-y-4">
           {[
-            ["QR scannen", "Der Code ist dann schon eingetragen."],
+            [t("QR scannen"), t("Der Code ist dann schon eingetragen.")],
             [t("Oder: {host}", { host: new URL(url).host }), "„Lehrkraft? Mit Lehrer-Code anmelden“"],
-            ["„Anmelden“ tippen", "Gilt auf diesem Gerät bis Schuljahresende."],
+            [t("„Anmelden“ tippen"), t("Gilt auf diesem Gerät bis Schuljahresende.")],
           ].map(([title, text], i) => (
             <li key={title} className="flex gap-3">
               <StepDot n={i + 1} className="size-7 text-label" />
@@ -62,7 +63,7 @@ const TeacherSheet = ({ code, url, className, teacher, subjects, rights, printed
         </li>
       ))}
     </ul>
-    <PrintFoot lines={["Code verloren? Der Admin sperrt ihn und gibt Ihnen einen neuen.", t("Ausgedruckt am {printedOn}", { printedOn })]} />
+    <PrintFoot lines={[t("Code verloren? Der Admin sperrt ihn und gibt Ihnen einen neuen."), t("Ausgedruckt am {printedOn}", { printedOn })]} />
   </article>
 );
 };

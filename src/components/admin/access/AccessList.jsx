@@ -9,7 +9,7 @@ import { useT } from "../../../shared/hooks/useT";
 // Рядок «Klassenpasswort · ALT» — старий спільний пароль, завжди останній (макет handy-01)
 export const PasswordCard = ({ password, today, onToggle, onMenu }) => {
   const t = useT();
-  const since = classPasswordText(password.changedAt, today)?.since?.replace("Seit", "seit"); // дата невідома — без неї
+  const since = classPasswordText(password.changedAt, today)?.since?.replace(t("Seit"), t("seit")); // дата невідома — без неї
   return (
     <AccessCard
       title={t("Klassenpasswort")}

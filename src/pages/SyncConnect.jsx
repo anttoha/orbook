@@ -9,14 +9,15 @@ import { useLinkCode } from "../shared/store/linkCodeStore";
 import { useSyncStore } from "../shared/store/syncStore";
 import Liquid from "../components/ui/Liquid";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // Что и как придёт на это устройство (только включённые части)
 const PARTS = [
-  { key: "notes", icon: FileText, title: "Notizen", hint: "werden zusammengeführt" },
-  { key: "aufgaben", icon: ListChecks, title: "Aufgaben", hint: "Häkchen und eigene — zusammengeführt" },
-  { key: "kurse", icon: Table2, title: "Meine Kurse", hint: "vom anderen Gerät übernommen" },
-  { key: "darstellung", icon: Sun, title: "Darstellung & Fachfarben", hint: "vom anderen Gerät übernommen" },
-  { key: "klassen", icon: LayoutGrid, title: "Meine Klassen", hint: "Notizen und Kurse je Klasse – Zugangscodes nicht" },
+  { key: "notes", icon: FileText, get title() { return translate("Notizen"); }, get hint() { return translate("werden zusammengeführt"); } },
+  { key: "aufgaben", icon: ListChecks, get title() { return translate("Aufgaben"); }, get hint() { return translate("Häkchen und eigene — zusammengeführt"); } },
+  { key: "kurse", icon: Table2, get title() { return translate("Meine Kurse"); }, get hint() { return translate("vom anderen Gerät übernommen"); } },
+  { key: "darstellung", icon: Sun, title: "Darstellung & Fachfarben", get hint() { return translate("vom anderen Gerät übernommen"); } },
+  { key: "klassen", icon: LayoutGrid, get title() { return translate("Meine Klassen"); }, get hint() { return translate("Notizen und Kurse je Klasse – Zugangscodes nicht"); } },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -39,7 +40,7 @@ const SyncConnect = ({ code }) => {
     try {
       const res = await connect(code);
       if (res.status === "empty") await switchCode(res.code); // по QR код точно верный: пусто — значит, там ещё ничего не было
-      toast.success("Gerät verbunden");
+      toast.success(translate("Gerät verbunden"));
       clear();
     } catch (err) {
       setError(connectError(err));

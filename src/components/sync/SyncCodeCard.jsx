@@ -9,6 +9,7 @@ import { CheckIcon, CopyIcon, SyncIcon, WarningIcon } from "../ui/icons";
 import RoundButton from "../ui/RoundButton";
 import Liquid from "../ui/Liquid";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Карточка «Dein Sync-Code» (макет 21, часть 25 handy-07): код, «QR» и «Kopieren», строка состояния под ним.
@@ -27,9 +28,9 @@ const SyncCodeCard = ({ code }) => {
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
-      toast.success("Code kopiert");
+      toast.success(translate("Code kopiert"));
     } catch {
-      toast.error("Kopieren nicht möglich"); // браузер запретил доступ к буферу
+      toast.error(translate("Kopieren nicht möglich")); // браузер запретил доступ к буферу
     }
   };
 

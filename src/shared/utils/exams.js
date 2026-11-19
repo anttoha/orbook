@@ -3,6 +3,7 @@
 // Основа — гайд orbook-be, docs/frontend/04-klausuren.md.
 // ─────────────────────────────────────────────────────────────
 import { addDays, mondayOf, shortDate, subjectName, weekdayShort } from "./format";
+import { translate } from "../i18n/translate";
 
 // Фільтр за замовчуванням: показати все, що попереду
 export const EMPTY_FILTER = { type: null, subjects: [], range: null, past: false };
@@ -15,9 +16,9 @@ export function groupExams(exams, today) {
   const nextMonday = addDays(mondayOf(today), 7);
   const afterNext = addDays(nextMonday, 7);
   const groups = [
-    { title: "Diese Woche", exams: exams.filter((exam) => exam.date < nextMonday) },
-    { title: "Nächste Woche", exams: exams.filter((exam) => exam.date >= nextMonday && exam.date < afterNext) },
-    { title: "Später", exams: exams.filter((exam) => exam.date >= afterNext) },
+    { title: translate("Diese Woche"), exams: exams.filter((exam) => exam.date < nextMonday) },
+    { title: translate("Nächste Woche"), exams: exams.filter((exam) => exam.date >= nextMonday && exam.date < afterNext) },
+    { title: translate("Später"), exams: exams.filter((exam) => exam.date >= afterNext) },
   ];
   return groups.filter((group) => group.exams.length > 0);
 }
@@ -66,24 +67,24 @@ export const withDaysLeft = (exams, daysPassed) => exams.map((exam) => ({ ...exa
 export const freshenExams = (exams, daysPassed) => withDaysLeft(exams, daysPassed).filter((exam) => exam.daysLeft >= 0);
 
 // Вид запису в давальному відмінку: види задає адмін, тому для незнайомого є запасний текст
-const UNTIL = { Klausur: "zur Klausur", Klassenarbeit: "zur Klassenarbeit", Leistungskontrolle: "zur Leistungskontrolle", Test: "zum Test", Abgabe: "zur Abgabe" };
+const UNTIL = { Klausur: "zur Klausur", Klassenarbeit: "zur Klassenarbeit", Leistungskontrolle: "zur Leistungskontrolle", get Test() { return translate("zum Test"); }, Abgabe: "zur Abgabe" };
 
 // Картка відліку у вікні: велике число і підпис. Сьогодні й минуле — без числа
 export function examCountdown(exam) {
   const n = exam.daysLeft;
-  if (n === 0) return { number: null, label: "Heute" };
-  if (n < 0) return { number: null, label: `vor ${-n} ${n === -1 ? "Tag" : "Tagen"}` };
-  return { number: n, label: `${n === 1 ? "Tag" : "Tage"} bis ${UNTIL[exam.type] ?? "zum Termin"}` };
+  if (n === 0) return { number: null, label: translate("Heute") };
+  if (n < 0) return { number: null, label: translate("vor {v1} {v2}", { v1: -n, v2: n === -1 ? translate("Tag") : translate("Tagen") }) };
+  return { number: n, label: translate("{v1} bis {v2}", { v1: n === 1 ? translate("Tag") : "Tage", v2: UNTIL[exam.type] ?? translate("zum Termin") }) };
 }
 
 // Картка «2 Tage bis · Klausur Mathe · Fr, 19. Sept · 1. Stunde» над календарем на ПК (макет 14).
 // Сьогодні — без числа: «Heute». subject буває null — тоді «Ohne Fach»
 export function nextExamCard(exam) {
   const n = exam.daysLeft;
-  const lesson = exam.lesson ? ` · ${exam.lesson}. Stunde` : "";
+  const lesson = exam.lesson ? translate(" · {lesson}. Stunde", { lesson: exam.lesson }) : "";
   return {
     number: n > 0 ? n : null,
-    eyebrow: n > 0 ? `${n === 1 ? "Tag" : "Tage"} bis` : "Heute",
+    eyebrow: n > 0 ? translate("{v1} bis", { v1: n === 1 ? translate("Tag") : "Tage" }) : translate("Heute"),
     title: `${exam.type} ${subjectName(exam.subject)}`,
     when: `${weekdayShort(exam.date)}, ${shortDate(exam.date)}${lesson}`,
   };

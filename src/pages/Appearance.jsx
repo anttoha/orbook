@@ -18,16 +18,17 @@ import { effectiveMotion } from "../shared/utils/appearance";
 import { planOf, planSummary } from "../shared/utils/planView";
 import { useMediaQuery } from "../shared/hooks/useMediaQuery";
 import PillButton from "../components/ui/PillButton";
+import { translate } from "../shared/i18n/translate";
 
 const START_VIEWS = [
-  { value: "start", label: "Start" },
-  { value: "woche", label: "Woche" },
-  { value: "heute", label: "Heute" },
+  { value: "start", get label() { return translate("Start"); } },
+  { value: "woche", get label() { return translate("Woche"); } },
+  { value: "heute", get label() { return translate("Heute"); } },
 ];
 const MOTIONS = [
-  { value: "voll", label: "Voll" },
-  { value: "weniger", label: "Weniger" },
-  { value: "aus", label: "Aus" },
+  { value: "voll", get label() { return translate("Voll"); } },
+  { value: "weniger", get label() { return translate("Weniger"); } },
+  { value: "aus", get label() { return translate("Aus"); } },
 ];
 const FONT_SIZES = [
   { value: 1, label: "A" },

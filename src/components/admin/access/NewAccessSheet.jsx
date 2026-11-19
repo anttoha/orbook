@@ -18,6 +18,7 @@ import CodeReveal from "../CodeReveal";
 import SchoolClassField from "../schools/SchoolClassField";
 import DevicesField from "./DevicesField";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // Поле-перемикач з підписом і сірою підказкою під ним (Für wen, Geräte, Gültig bis)
 const Choice = ({ label, hint, options, value, onChange, disabled }) => (
@@ -27,7 +28,7 @@ const Choice = ({ label, hint, options, value, onChange, disabled }) => (
   </Field>
 );
 
-const REVEAL_NOTE = () => "Gib ihn nur an die Person oder Gruppe weiter, für die er ist. Du siehst ihn später wieder: ⋮ → »Code anzeigen«.";
+const REVEAL_NOTE = () => translate("Gib ihn nur an die Person oder Gruppe weiter, für die er ist. Du siehst ihn später wieder: ⋮ → »Code anzeigen«.");
 
 // Форма: поки код не створено — поля і «Code erstellen»; після — поля лише для читання, код, «Kopieren», «Fertig»
 const NewAccessForm = ({ yearEnd, schoolId, onDone }) => {
@@ -52,7 +53,7 @@ const NewAccessForm = ({ yearEnd, schoolId, onDone }) => {
 
   const create = async (event) => {
     event.preventDefault();
-    const found = { label: labelError(label), devices: customDevicesError(devices.choice, devices.custom), target: target && !target.className ? "Bitte eine Klasse wählen." : null };
+    const found = { label: labelError(label), devices: customDevicesError(devices.choice, devices.custom), target: target && !target.className ? translate("Bitte eine Klasse wählen.") : null };
     setErrors(found);
     if (found.label || found.devices || found.target || busy) return;
     setBusy(true);

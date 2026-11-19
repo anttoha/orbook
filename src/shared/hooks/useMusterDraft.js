@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { saveMuster } from "../api/admin";
 import { badSlot, changeCount, copyWeeks, setSlot } from "../utils/musterEditor";
+import { translate } from "../i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Чернетка сітки Muster (частина 19b). Правки копляться тут, «Speichern» шле обидва тижні (PUT /admin/muster).
@@ -32,7 +33,7 @@ export function useMusterDraft(data, onSaved) {
     setBusy(true);
     try {
       await saveMuster(weeks);
-      toast.success("Muster gespeichert · gilt sofort für alle");
+      toast.success(translate("Muster gespeichert · gilt sofort für alle"));
       onSaved();
     } catch (error) {
       if (error.status === 422) {
@@ -40,7 +41,7 @@ export function useMusterDraft(data, onSaved) {
         toast.error(error.message);
       } else {
         // правки лишаються на екрані — можна спробувати ще раз
-        toast.error(error.code === "offline" ? "Nicht gespeichert · offline" : error.message, { duration: Infinity, action: { label: "Nochmal", onClick: save } });
+        toast.error(error.code === "offline" ? translate("Nicht gespeichert · offline") : error.message, { duration: Infinity, action: { label: translate("Nochmal"), onClick: save } });
       }
     } finally {
       setBusy(false);

@@ -7,6 +7,7 @@ import Field from "../../ui/Field";
 import ListPicker from "../../ui/ListPicker";
 import Select from "../../ui/Select";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // Классы из плана школы (GET /admin/schools/{id}/classes). null — ещё грузим или не получилось
 function usePlanClasses(schoolId) {
@@ -39,7 +40,7 @@ const SchoolClassField = ({ value, onChange, disabled, error }) => {
 
   const school = schools.find((item) => item.id === value.schoolId);
   const options = schoolClassOptions(school, plan);
-  const items = options.map((option) => ({ value: option.value, code: option.value, title: `Klasse ${option.value}`, subtitle: option.isNew ? "neu" : null }));
+  const items = options.map((option) => ({ value: option.value, code: option.value, title: translate("Klasse {value}", { value: option.value }), subtitle: option.isNew ? "neu" : null }));
   const pickSchool = (id) => !disabled && onChange(targetOf(Number(id), null));
   const pickClass = (name) => !disabled && onChange(targetOf(value.schoolId, options.find((option) => option.value === name)));
 

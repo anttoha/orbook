@@ -19,6 +19,7 @@ import { useSettingsForm } from "../shared/hooks/useSettingsForm";
 import { useAdminStore } from "../shared/store/adminStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // Колонки ПК: ліва (пароль, школа, контакт) і права (оновлення, функції, безпека).
 // На телефоні колонок немає (max-lg:contents), і блоки стають в один ряд у порядку order-* з макета 45
@@ -41,7 +42,7 @@ const SettingsForm = ({ data }) => {
     setPurging(true);
     try {
       const { removed } = await purgeHomework();
-      toast.success(removed === 1 ? "1 Hausaufgabe gelöscht" : `${removed} Hausaufgaben gelöscht`);
+      toast.success(removed === 1 ? translate("1 Hausaufgabe gelöscht") : translate("{removed} Hausaufgaben gelöscht", { removed }));
     } catch (error) {
       toast.error(error.message);
     } finally {

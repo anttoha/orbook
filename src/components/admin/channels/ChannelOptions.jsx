@@ -5,12 +5,13 @@ import Switch from "../../ui/Switch";
 import OptionRow from "../settings/OptionRow";
 import Liquid from "../../ui/Liquid";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // Что слать в группу (макет 27 handy-01): три переключателя и «через сколько минут»
 const ROWS = [
-  { key: "plan", label: "Neuer Plan", hint: "Sofort, nur die Änderungen" },
-  { key: "tomorrow", label: "Für morgen", hint: "Tests, Aufgaben, erste Stunde" },
-  { key: "exam", label: "Neuer Test eingetragen", hint: "Sobald er eingetragen ist" },
+  { key: "plan", get label() { return translate("Neuer Plan"); }, get hint() { return translate("Sofort, nur die Änderungen"); } },
+  { key: "tomorrow", get label() { return translate("Für morgen"); }, get hint() { return translate("Tests, Aufgaben, erste Stunde"); } },
+  { key: "exam", get label() { return translate("Neuer Test eingetragen"); }, get hint() { return translate("Sobald er eingetragen ist"); } },
 ];
 
 // dim — группа ещё не подключена: видно, что будет приходить, но серым

@@ -14,10 +14,11 @@ import { useStats } from "../shared/hooks/useStats";
 import { byWeekTitle, cancelRateText, changedCount, compareWith, lessonsText, statsEyebrow, tooLittleText, untilText, weekBars, weekdayBars } from "../shared/utils/stats";
 import RoundButton from "../components/ui/RoundButton";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // «Halbjahr» є тільки на ПК (макет 20); на телефоні — два періоди, як у макеті 19
 const RANGES = [
-  { value: "week", label: "Woche" },
+  { value: "week", get label() { return translate("Woche"); } },
   { value: "month", label: "Monat" },
 ];
 const RANGES_DESKTOP = [...RANGES, { value: "halfyear", label: "Halbjahr" }];
@@ -96,7 +97,7 @@ const Statistic = () => {
             <ChevronLeft className="size-4.5" />
           </RoundButton>
           <div className="min-w-0 space-y-1">
-            <p className="truncate text-hint font-extrabold text-faint">{["Mehr", statsEyebrow(null, main)].filter(Boolean).join(" · ")}</p>
+            <p className="truncate text-hint font-extrabold text-faint">{[t("Mehr"), statsEyebrow(null, main)].filter(Boolean).join(" · ")}</p>
             <h1 className="text-title text-ink lg:text-hero">{t("Statistik")}</h1>
           </div>
         </div>

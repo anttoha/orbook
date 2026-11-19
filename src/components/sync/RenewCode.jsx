@@ -6,6 +6,7 @@ import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import { RenewIcon } from "../ui/icons";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // «Neuen Code erzeugen»: нотатки переїжджають під новий код, старий блок на сервері видаляється.
 // Старий код на інших пристроях після цього не працює — тому спершу питаємо
@@ -19,7 +20,7 @@ const RenewCode = () => {
     setBusy(true);
     try {
       await renewCode();
-      toast.success("Neuer Code erzeugt");
+      toast.success(translate("Neuer Code erzeugt"));
     } catch (error) {
       toast.error(syncErrorText(error)); // старий код лишається
     } finally {

@@ -1,6 +1,7 @@
 import { cn } from "../../shared/utils/cn";
 import { periodBars } from "../../shared/utils/stats";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // «Ausfall nach Stunde» (ПК, макет 20): фіолетові стовпчики 1.–8. урок, число відмін над кожним.
@@ -11,7 +12,7 @@ const PeriodChart = ({ byPeriod, className }) => {
   // className — місце в сітці сторінки
   const bars = periodBars(byPeriod);
   if (bars.length === 0) return null;
-  const summary = bars.map((b) => `${b.label} Stunde: ${b.value} fällt aus`).join("; ");
+  const summary = bars.map((b) => translate("{label} Stunde: {value} fällt aus", { label: b.label, value: b.value })).join("; ");
 
   return (
     <section className={cn("flex flex-col rounded-card bg-card px-4.5 pt-4.5 pb-4", className)}>

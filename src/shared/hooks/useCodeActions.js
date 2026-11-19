@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 import * as admin from "../api/admin";
 import { useAdminStore } from "../store/adminStore";
+import { translate } from "../i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Дії з Editor-Codes (Code-Aktionen). Кожна: запит → оновити список і огляд → сповіщення.
@@ -27,9 +28,9 @@ export function useCodeActions() {
   return {
     toggle: (code) => run(() => admin.updateCode(code.id, { active: !code.active }, code.classId), code.active ? `${code.label} gesperrt` : `${code.label} entsperrt`),
     rename: (code, label) => run(() => admin.updateCode(code.id, { label: label.trim() }, code.classId), "Umbenannt"),
-    setRights: (code, rights) => run(() => admin.updateCode(code.id, { rights }, code.classId), "Rechte geändert"),
-    setValidUntil: (code, validUntil) => run(() => admin.updateCode(code.id, { validUntil }, code.classId), "Gültigkeit geändert"),
+    setRights: (code, rights) => run(() => admin.updateCode(code.id, { rights }, code.classId), translate("Rechte geändert")),
+    setValidUntil: (code, validUntil) => run(() => admin.updateCode(code.id, { validUntil }, code.classId), translate("Gültigkeit geändert")),
     regenerate: (code) => run(() => admin.regenerateCode(code.id, code.classId)), // → { code, item }: показати новий код
-    remove: (code) => run(() => admin.deleteCode(code.id, code.classId), `${code.label} gelöscht`),
+    remove: (code) => run(() => admin.deleteCode(code.id, code.classId), translate("{label} gelöscht", { label: code.label })),
   };
 }

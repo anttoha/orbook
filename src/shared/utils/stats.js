@@ -3,6 +3,7 @@
 // Без React, тому легко тестувати.
 // ─────────────────────────────────────────────────────────────
 import { isoWeek, longDate, monthLong, shortDate } from "./format";
+import { translate } from "../i18n/translate";
 
 // Адреса запиту. picked — «Meine Kurse»: [] — рахувати всі уроки, інакше тільки вибрані курси.
 // NO_OPTIONAL («keine») іде як є: сервер такого курсу не знає і рахує лише обов'язкові уроки
@@ -42,9 +43,9 @@ export function compareWith(now, before, data, { long = false } = {}) {
   if (!previous?.daysCounted) return null;
   const diff = now - before;
   const label = previousLabel(data.range, previous.from, long);
-  if (diff === 0) return { text: `±0 ggü. ${label}`, tone: "same" };
+  if (diff === 0) return { text: translate("±0 ggü. {label}", { label }), tone: "same" };
   // справжній мінус «−», як у дизайні, а не дефіс
-  return { text: `${diff > 0 ? "+" : "−"}${Math.abs(diff)} ggü. ${label}`, tone: diff > 0 ? "up" : "down" };
+  return { text: translate("{v1}{v2} ggü. {label}", { v1: diff > 0 ? "+" : "−", v2: Math.abs(diff), label }), tone: diff > 0 ? "up" : "down" };
 }
 
 // «Aug» з "2026-08-01": беремо місяць із короткої дати «1. Aug»
@@ -54,22 +55,22 @@ const shortMonth = (iso) => shortDate(iso).split(" ")[1];
 export function untilText(data, { long = false } = {}) {
   const to = data?.period?.to;
   if (!to) return "";
-  return `bis ${long ? longDate(to) : shortDate(to)}`;
+  return translate("bis {v1}", { v1: long ? longDate(to) : shortDate(to) });
 }
 
 // «6 %» — частка уроків, що випали (cancelRate 0…1). Нема даних — «0 %»
 export const cancelRateText = (rate) => `${Math.round((rate ?? 0) * 100)} %`;
 
 // «von 186 Stunden» під часткою
-export const lessonsText = (lessons) => `von ${lessons ?? 0} ${lessons === 1 ? "Stunde" : "Stunden"}`;
+export const lessonsText = (lessons) => translate("von {v1} {v2}", { v1: lessons ?? 0, v2: lessons === 1 ? translate("Stunde") : translate("Stunden") });
 
 // Заголовок графіка по тижнях: «September nach Woche» або «Halbjahr nach Woche»
-export const byWeekTitle = (data) => `${data.range === "halfyear" ? "Halbjahr" : monthLong(data.period.from)} nach Woche`;
+export const byWeekTitle = (data) => translate("{v1} nach Woche", { v1: data.range === "halfyear" ? "Halbjahr" : monthLong(data.period.from) });
 
 // Текст екрана «Noch zu wenig Daten». Без trackingSince — без дати
 export function tooLittleText(trackingSince) {
-  const base = "Die Statistik füllt sich, sobald ORBook ein paar Schultage mitgeschrieben hat.";
-  return trackingSince ? `${base} Gezählt wird ab ${longDate(trackingSince)}.` : base;
+  const base = translate("Die Statistik füllt sich, sobald ORBook ein paar Schultage mitgeschrieben hat.");
+  return trackingSince ? translate("{base} Gezählt wird ab {v2}.", { base, v2: longDate(trackingSince) }) : base;
 }
 
 // Двоколірні стовпчики: cancelled — сірий низ, substitutions — фіолетовий верх.

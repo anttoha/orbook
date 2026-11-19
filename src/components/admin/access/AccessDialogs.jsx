@@ -20,6 +20,7 @@ import InviteSheet from "./InviteSheet";
 import ShowCodeSheet from "./ShowCodeSheet";
 import Liquid from "../../ui/Liquid";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // Значення праворуч у шторці: «30», «Schuljahresende», «9 angemeldet»
 const hintOf = (item, code) =>
@@ -30,7 +31,7 @@ const ActionsSheet = ({ code, onAction, onClose }) => {
   const t = useT();
   const { today } = useNow();
   return (
-    <Sheet open onClose={onClose} desktop="dialog" eyebrow={`${code.masked} · ${code.active ? "aktiv" : "gesperrt"} · ${audienceChip(code.audience)}`} title={code.label}>
+    <Sheet open onClose={onClose} desktop="dialog" eyebrow={`${code.masked} · ${code.active ? t("aktiv") : t("gesperrt")} · ${audienceChip(code.audience)}`} title={code.label}>
       <p className="-mt-2 text-body-sm text-muted">
         {devicesText(code.devices, code.maxDevices)} · {lastUsedText(code.lastUsedAt, today)}
       </p>
@@ -58,7 +59,7 @@ const PasswordSheet = ({ password, onAction, onClose }) => {
   const t = useT();
   const { today } = useNow();
   return (
-    <Sheet open onClose={onClose} desktop="dialog" eyebrow={t("Gemeinsames Passwort · {1}", { "1": password.enabled ? "aktiv" : "aus" })} title={t("Klassenpasswort")}>
+    <Sheet open onClose={onClose} desktop="dialog" eyebrow={t("Gemeinsames Passwort · {1}", { "1": password.enabled ? t("aktiv") : t("aus") })} title={t("Klassenpasswort")}>
       <p className="-mt-2 text-body-sm text-muted">
         {password.devices} {password.devices === 1 ? t("Gerät") : t("Geräte")} · {lastUsedText(password.lastUsedAt, today)}
       </p>
@@ -170,46 +171,46 @@ const Confirm = ({ icon, title, text, button, variant = "danger", onClose, onCon
 };
 
 // «9 Geräte werden sofort abgemeldet.» / «Niemand ist gerade angemeldet.»
-const devicesLine = (n) => (n ? `${n} ${n === 1 ? "Gerät wird" : "Geräte werden"} sofort abgemeldet.` : "Gerade ist kein Gerät angemeldet.");
+const devicesLine = (n) => (n ? `${n} ${n === 1 ? translate("Gerät wird") : translate("Geräte werden")} sofort abgemeldet.` : translate("Gerade ist kein Gerät angemeldet."));
 
 // Вікна-підтвердження для коду: lock, signout, regenerate, delete
 const CONFIRMS = {
   lock: (code, a) => ({
     icon: <LockIcon className="size-6.5 text-danger" />,
     title: `»${code.label}« sperren?`,
-    text: `${devicesLine(code.devices)} Später wieder einschalten geht — dann melden sie sich mit dem gleichen Code neu an.`,
-    button: "Sperren",
+    text: translate("{v1} Später wieder einschalten geht — dann melden sie sich mit dem gleichen Code neu an.", { v1: devicesLine(code.devices) }),
+    button: translate("Sperren"),
     run: () => a.toggle(code),
   }),
   signout: (code, a) => ({
     icon: <LockIcon className="size-6.5 text-danger" />,
-    title: "Geräte abmelden?",
-    text: `${devicesLine(code.devices)} Der Code bleibt gültig — z. B. wenn jemand ein neues Handy hat.`,
-    button: "Abmelden",
+    title: translate("Geräte abmelden?"),
+    text: translate("{v1} Der Code bleibt gültig — z. B. wenn jemand ein neues Handy hat.", { v1: devicesLine(code.devices) }),
+    button: translate("Abmelden"),
     run: () => a.signOut(code),
   }),
   regenerate: (code, a) => ({
     icon: <RenewIcon className="size-6.5 text-accent" />,
     title: `»${code.label}« neu erzeugen?`,
-    text: `Der alte Code geht sofort nicht mehr. ${devicesLine(code.devices)}`,
-    button: "Neu erzeugen",
+    text: translate("Der alte Code geht sofort nicht mehr. {v1}", { v1: devicesLine(code.devices) }),
+    button: translate("Neu erzeugen"),
     variant: "primary",
     run: () => a.regenerate(code),
   }),
   // Посилання-запрошення (частина 16): нове замість старого; хто вже увійшов — лишається
   "invite-renew": (code, a) => ({
     icon: <RenewIcon className="size-6.5 text-accent" />,
-    title: "Neuen Link erzeugen?",
-    text: "Der alte Link und der alte QR gehen dann nicht mehr. Wer schon drin ist, bleibt angemeldet.",
-    button: "Neuer Link",
+    title: translate("Neuen Link erzeugen?"),
+    text: translate("Der alte Link und der alte QR gehen dann nicht mehr. Wer schon drin ist, bleibt angemeldet."),
+    button: translate("Neuer Link"),
     variant: "primary",
     run: () => a.renewInvite(code),
   }),
   delete: (code, a) => ({
     icon: <TrashIcon className="size-6.5 text-danger" />,
     title: `»${code.label}« löschen?`,
-    text: `Der Code geht sofort nicht mehr. ${devicesLine(code.devices)}`,
-    button: "Löschen",
+    text: translate("Der Code geht sofort nicht mehr. {v1}", { v1: devicesLine(code.devices) }),
+    button: translate("Löschen"),
     run: () => a.remove(code),
   }),
 };
@@ -219,15 +220,15 @@ const PASSWORD_CONFIRMS = {
   "password-off": (password, a) => ({
     icon: <LockIcon className="size-6.5 text-danger" />,
     title: "Klassenpasswort ausschalten?",
-    text: `${devicesLine(password.devices)} Danach kommt man nur noch mit Zugangscode rein.`,
+    text: translate("{v1} Danach kommt man nur noch mit Zugangscode rein.", { v1: devicesLine(password.devices) }),
     button: "Ausschalten",
     run: () => a.setPassword(false),
   }),
   "password-signout": (password, a) => ({
     icon: <LockIcon className="size-6.5 text-danger" />,
-    title: "Geräte abmelden?",
+    title: translate("Geräte abmelden?"),
     text: `${devicesLine(password.devices)} Mit dem Klassenpasswort kann man sich wieder anmelden.`,
-    button: "Abmelden",
+    button: translate("Abmelden"),
     run: () => a.signOutPassword(),
   }),
 };

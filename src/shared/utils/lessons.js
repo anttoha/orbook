@@ -10,6 +10,7 @@
 // ─────────────────────────────────────────────────────────────
 import { DEFAULT_PALETTE, PALETTES } from "../constants/fachColors";
 import { addDays, isWeekend, lessonCaption, mondayOf, movedText, weekdayShort } from "./format";
+import { translate } from "../i18n/translate";
 
 const PALETTE_KEYS = Object.keys(PALETTES); // ["deutsch", "mathe", …]
 
@@ -98,8 +99,8 @@ export const weekDays = (week, showWeekend) =>
 //   not_published → «Plan fehlt noch», unavailable → «Nicht erreichbar»
 export function freeText(day) {
   if (day.status === "holiday") return day.freeReason === "weekend" ? "Wochenende" : "Schulfrei";
-  if (day.status === "not_published") return "Plan fehlt noch";
-  if (day.status === "unavailable") return "Nicht erreichbar";
+  if (day.status === "not_published") return translate("Plan fehlt noch");
+  if (day.status === "unavailable") return translate("Nicht erreichbar");
   return null;
 }
 

@@ -8,6 +8,7 @@ import { usePlanStore } from "../store/planStore";
 import { examToForm } from "../utils/examRules";
 import { homeworkToForm } from "../utils/homework";
 import { useSheet } from "./useSheet";
+import { translate } from "../i18n/translate";
 
 // Одне сповіщення запису на екрані: «Nochmal» висить без кінця, і наступне має замінити його, а не сховатись під ним.
 // Спільне id тут не годиться: кнопка в сповіщенні закриває його, і оновлення з тим самим id вже не з'явиться
@@ -27,9 +28,9 @@ const FORM_FIELDS = ["type", "subject", "date", "lesson", "topic", "due", "text"
 // тому одна логіка на обидва. changed — ім'я дії planStore, що перечитує списки;
 // onChanged(saved) — замість неї, якщо список живе не в planStore (Materialien, частина 15).
 // savedText / deletedText — свій текст сповіщення замість «<noun> gespeichert / gelöscht»
-export const EXAM_OPS = { noun: "Test", listPath: "/testen", save: saveExam, remove: deleteExam, restore: undoDelete, toForm: examToForm, changed: "examsChanged" };
+export const EXAM_OPS = { get noun() { return translate("Test"); }, listPath: "/testen", save: saveExam, remove: deleteExam, restore: undoDelete, toForm: examToForm, changed: "examsChanged" };
 export const HOMEWORK_OPS = {
-  noun: "Hausaufgabe",
+  get noun() { return translate("Hausaufgabe"); },
   listPath: "/testen?liste=hausaufgaben",
   // «exam» у відповіді — щоб решта коду не розрізняла види
   save: async (form, against) => {
@@ -70,7 +71,7 @@ export const useExamSave = (original, ops = EXAM_OPS) => {
   const showError = (error, retry) => {
     if (error.code === "offline" || error.code === "timeout") {
       // без мережі форму не закриваємо і нічого не ставимо в чергу
-      notify(toast.error, "Konnte nicht speichern — keine Verbindung", { duration: Infinity, action: { label: "Nochmal", onClick: retry } });
+      notify(toast.error, translate("Konnte nicht speichern — keine Verbindung"), { duration: Infinity, action: { label: translate("Nochmal"), onClick: retry } });
     } else if (error.code === "editor_required" || error.code === "code_expired") {
       dismissLast(); // старе сповіщення закрило б підказку у вікні
       dropEditor();
@@ -98,7 +99,7 @@ export const useExamSave = (original, ops = EXAM_OPS) => {
 
   const finishSave = (saved) => {
     examsChanged(saved);
-    notify(toast.success, ops.savedText ?? `${ops.noun} gespeichert`, { duration: 6000, action: { label: "Rückgängig", onClick: () => undoSave(saved) } });
+    notify(toast.success, ops.savedText ?? translate("{noun} gespeichert", { noun: ops.noun }), { duration: 6000, action: { label: translate("Rückgängig"), onClick: () => undoSave(saved) } });
     leave();
   };
 
@@ -126,9 +127,9 @@ export const useExamSave = (original, ops = EXAM_OPS) => {
     try {
       await ops.remove(base);
       examsChanged();
-      notify(toast, ops.deletedText ?? `${ops.noun} gelöscht`, {
+      notify(toast, ops.deletedText ?? translate("{noun} gelöscht", { noun: ops.noun }), {
         duration: 8000,
-        action: { label: "Rückgängig", onClick: () => ops.restore(base).then(examsChanged, (error) => notify(toast.error, error.message)) },
+        action: { label: translate("Rückgängig"), onClick: () => ops.restore(base).then(examsChanged, (error) => notify(toast.error, error.message)) },
       });
       leave();
     } catch (error) {

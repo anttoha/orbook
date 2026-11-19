@@ -10,6 +10,7 @@ import QrFullscreen from "../invite/QrFullscreen";
 import PrintChooser, { PrintRow } from "../print/PrintChooser";
 import PillButton from "../ui/PillButton";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // «Einladen ist gerade aus» (макет handy-10): адмін не дав посилання для учнів
 const Off = ({ onClose }) => {
@@ -57,7 +58,7 @@ const ClassInviteSheet = ({ open, onClose }) => {
   };
   const url = state.status === "ready" ? inviteUrl(state.token) : null;
   const className = state.className ?? myClass;
-  const intro = state.status === "off" ? null : "Zeig den QR deinen Mitschülern oder schick den Link in die Klassengruppe.";
+  const intro = state.status === "off" ? null : translate("Zeig den QR deinen Mitschülern oder schick den Link in die Klassengruppe.");
 
   return (
     <Sheet open={open} onClose={() => { setPrinting(false); onClose(); }} desktop="qr" eyebrow={className ? t("{className} · Meine Schule", { className }) : t("Meine Schule")} title={printing && url ? t("Blatt drucken") : t("Klasse einladen")}>

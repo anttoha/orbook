@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { saveSettings } from "../api/admin";
 import { useAdminStore } from "../store/adminStore";
 import { invalidKeys, settingsPatch } from "../utils/admin";
+import { translate } from "../i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Чернетка налаштувань адміна: правки копляться тут, «Änderungen speichern» шле тільки змінене.
@@ -31,13 +32,13 @@ export function useSettingsForm(initial) {
     setBusy(true);
     try {
       await saveSettings(patch, schoolPassword);
-      toast.success("Änderungen gespeichert");
+      toast.success(translate("Änderungen gespeichert"));
       setSchoolPassword("");
       reloadSettings(); // нові дані → сторінка покаже свіжу форму
       reloadOverview();
     } catch (error) {
       setBad(new Set(invalidKeys(error)));
-      toast.error(error.status === 422 ? "Nichts gespeichert: ein Wert ist nicht erlaubt." : error.message);
+      toast.error(error.status === 422 ? translate("Nichts gespeichert: ein Wert ist nicht erlaubt.") : error.message);
     } finally {
       setBusy(false);
     }

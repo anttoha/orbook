@@ -8,12 +8,13 @@ import NavigationLink from "../navbar/NavigationLink";
 import Logo from "../ui/Logo";
 import Liquid from "../ui/Liquid";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Карточка «Plan läuft · 16:40 · nächster Abruf 16:45» під меню
 const PlanCard = ({ plan }) => {
   const t = useT();
   const health = HEALTH[planHealth(plan)];
-  const last = clock(plan.status?.lastOkAt) ?? "noch nie";
+  const last = clock(plan.status?.lastOkAt) ?? translate("noch nie");
   const next = clock(plan.status?.nextFetchAt);
 
   return (

@@ -10,6 +10,7 @@ import { useAdminLoad } from "../shared/hooks/useAdminLoad";
 import { groupMaterials } from "../shared/utils/materials";
 import RoundButton from "../components/ui/RoundButton";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // Рядок адмінки: той самий рядок посилання + кошик праворуч і мітка коду («Code B»), хто додав
 const AdminRow = ({ item, onDelete }) => (
@@ -37,7 +38,7 @@ const AdminMaterials = () => {
     setBusy(true);
     try {
       await deleteAdminMaterial(pending);
-      toast("Link gelöscht");
+      toast(translate("Link gelöscht"));
       list.reload();
     } catch (error) {
       toast.error(error.message);

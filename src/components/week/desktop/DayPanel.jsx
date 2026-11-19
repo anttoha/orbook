@@ -18,10 +18,11 @@ import WeekLetter from "../../muster/WeekLetter";
 import { abLetter } from "../../../shared/utils/muster";
 import Liquid from "../../ui/Liquid";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // Перемикач «Liste / Zeitleiste» (тільки іконки, як на макеті)
 const VIEWS = [
-  { value: "liste", label: "Liste", icon: List },
+  { value: "liste", get label() { return translate("Liste"); }, icon: List },
   { value: "zeitleiste", label: "Zeitleiste", icon: TimelineIcon },
 ];
 

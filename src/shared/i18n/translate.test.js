@@ -35,3 +35,19 @@ describe("translate", () => {
     for (const text of [...Object.values(en), ...Object.values(uk)]) expect(text).not.toMatch(/[ыэъё]/i);
   });
 });
+
+// Все тексты из кода (t("…") и translate("…")) есть в словарях — новый текст без перевода тест заметит
+const sources = import.meta.glob(["/src/**/*.{js,jsx}", "!/src/**/*.test.js", "!/src/shared/i18n/**"], { query: "?raw", import: "default", eager: true });
+
+describe("словари покрывают код", () => {
+  it("у каждого t(\"…\") и translate(\"…\") есть перевод", () => {
+    const missing = [];
+    for (const [file, text] of Object.entries(sources)) {
+      for (const [, raw] of text.matchAll(/\b(?:t|translate)\(\s*"((?:[^"\\]|\\.)*)"/g)) {
+        const key = JSON.parse(`"${raw}"`);
+        if (!(key in en)) missing.push(`${file}: ${key}`);
+      }
+    }
+    expect(missing).toEqual([]);
+  });
+});

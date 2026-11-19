@@ -14,6 +14,7 @@ import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useAdminStore } from "../shared/store/adminStore";
 import { coursesPatch, courseState, settingsPatch, subjectNamesPatch } from "../shared/utils/admin";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // Підпис під заголовком блоку
 const Lead = ({ children }) => <p className="-mt-1 mb-1 text-caption text-faint">{children}</p>;
@@ -53,10 +54,10 @@ const CoursesForm = ({ data, settings, onSaved }) => {
     setBusy(true);
     try {
       await saveSettings(patch);
-      toast.success("Änderungen gespeichert");
+      toast.success(translate("Änderungen gespeichert"));
       onSaved();
     } catch (error) {
-      toast.error(error.status === 422 ? "Nichts gespeichert: ein Wert ist nicht erlaubt." : error.message);
+      toast.error(error.status === 422 ? translate("Nichts gespeichert: ein Wert ist nicht erlaubt.") : error.message);
     } finally {
       setBusy(false);
     }

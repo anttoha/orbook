@@ -10,6 +10,7 @@ import OptionRow from "./OptionRow";
 import SettingsCard from "./SettingsCard";
 import PillButton from "../../ui/PillButton";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // Результат «Verbindung testen»: зелена або червона плашка
 export const TestResult = ({ result }) => (
@@ -22,8 +23,8 @@ export const TestResult = ({ result }) => (
 // Текст відповіді test-connection
 function resultText(answer) {
   if (!answer.ok) return { ok: false, text: answer.message || "Verbindung fehlgeschlagen" };
-  if (answer.classFound === false) return { ok: false, text: `Klasse nicht gefunden · ${answer.classesFound} Klassen gefunden` };
-  return { ok: true, text: `Verbindung ok · ${answer.classesFound} Klassen gefunden · ${berlinClock()}` };
+  if (answer.classFound === false) return { ok: false, text: translate("Klasse nicht gefunden · {classesFound} Klassen gefunden", { classesFound: answer.classesFound }) };
+  return { ok: true, text: translate("Verbindung ok · {classesFound} Klassen gefunden · {v2}", { classesFound: answer.classesFound, v2: berlinClock() }) };
 }
 
 // ─────────────────────────────────────────────────────────────

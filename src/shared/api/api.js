@@ -1,3 +1,4 @@
+import { translate } from "../i18n/translate";
 // ─────────────────────────────────────────────────────────────
 // api.js — єдина обгортка над fetch (з гайду orbook-be, docs/frontend/01-start.md).
 // • надсилає і приймає JSON, передає cookies (вхід класу живе в cookie);
@@ -87,7 +88,7 @@ export async function api(path, { method = "GET", body, signal, headers = {}, ti
   } catch (e) {
     if (signal?.aborted) throw e; // скасували ми самі — це не помилка мережі
     if (timer.signal.aborted) throw new ApiError(0, "timeout", "Die Anfrage hat zu lange gedauert.");
-    throw new ApiError(0, "offline", "Keine Verbindung. Bitte später erneut versuchen.");
+    throw new ApiError(0, "offline", translate("Keine Verbindung. Bitte später erneut versuchen."));
   } finally {
     clearTimeout(timeoutId);
     signal?.removeEventListener("abort", onAbort);
@@ -116,7 +117,7 @@ export async function api(path, { method = "GET", body, signal, headers = {}, ti
 export function retryText(error) {
   if (!error.retryAfter) return error.message;
   const min = Math.ceil(error.retryAfter / 60);
-  return `Bitte in ${min} ${min === 1 ? "Minute" : "Minuten"} erneut versuchen.`;
+  return translate("Bitte in {min} {v2} erneut versuchen.", { min, v2: min === 1 ? translate("Minute") : translate("Minuten") });
 }
 
 // Немає мережі, таймаут або 5xx — можна показати збережений «letzter Stand»

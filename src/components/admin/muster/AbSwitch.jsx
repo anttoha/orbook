@@ -7,9 +7,10 @@ import WeekLetter from "../../muster/WeekLetter";
 import Sheet from "../../ui/Sheet";
 import Liquid from "../../ui/Liquid";
 import { useT } from "../../../shared/hooks/useT";
+import { translate } from "../../../shared/i18n/translate";
 
 // Як зараз рахуються тижні (muster.abMode) — підпис під «Diese Woche · KW 45»
-const MODE_TEXT = { school: "Laut Plan der Schule", swap: "A und B getauscht", none: "Keine Wochen A und B" };
+const MODE_TEXT = { get school() { return translate("Laut Plan der Schule"); }, get swap() { return translate("A und B getauscht"); }, get none() { return translate("Keine Wochen A und B"); } };
 
 // ─────────────────────────────────────────────────────────────
 // «Diese Woche · KW 45 · WOCHE A» (макет 19b): натиснули → вибір «Woche A oder B?».

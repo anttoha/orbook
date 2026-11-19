@@ -4,6 +4,7 @@ import { deleteSubscription, getPushKey, getSubscription, putSubscription, sendT
 import { swapFields } from "../utils/classes";
 import { DEFAULT_PUSH, keyToBytes, needsRefresh, pushSupport, readEnvironment, subscriptionBody } from "../utils/push";
 import { useUserStore } from "./userStore";
+import { translate } from "../i18n/translate";
 
 // Часть 29: у каждого класса свои Mitteilungen. Сверху — открытый класс, остальные — в byClass[id]
 // (как в userStore). Подписка браузера одна на устройство, сервер хранит её отдельно для каждого класса
@@ -29,11 +30,11 @@ const settingsOf = (state) => ({ prefs: state.prefs, mine: state.mine, quiet: st
 
 // Понятные тексты ошибок (немецкие, для тоста)
 export function pushErrorText(error) {
-  if (error?.code === "offline" || error?.status === 0) return "Nicht gespeichert – keine Verbindung";
-  if (error?.code === "feature_disabled") return "Deine Schule hat Mitteilungen ausgeschaltet";
+  if (error?.code === "offline" || error?.status === 0) return translate("Nicht gespeichert – keine Verbindung");
+  if (error?.code === "feature_disabled") return translate("Deine Schule hat Mitteilungen ausgeschaltet");
   if (error?.status === 429) return "Gerade erst gesendet. Kurz warten";
-  if (error?.name === "NotAllowedError") return "Der Browser hat es nicht erlaubt";
-  return error?.message || "Hat nicht geklappt. Später nochmal versuchen";
+  if (error?.name === "NotAllowedError") return translate("Der Browser hat es nicht erlaubt");
+  return error?.message || translate("Hat nicht geklappt. Später nochmal versuchen");
 }
 
 export const usePushStore = create(
@@ -137,7 +138,7 @@ export const usePushStore = create(
 
       test: async () => {
         const sub = await browserSubscription();
-        if (!sub) throw new Error("Mitteilungen sind auf diesem Gerät aus");
+        if (!sub) throw new Error(translate("Mitteilungen sind auf diesem Gerät aus"));
         return sendTestPush(sub.endpoint);
       },
 

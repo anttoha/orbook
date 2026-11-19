@@ -58,10 +58,10 @@ export function shortDate(iso) {
 
 // «in 2 Tagen», «morgen», «heute», «vor 3 Tagen» — за кількістю днів (поле daysLeft з API)
 export function daysLeftText(n) {
-  if (n === 0) return "heute";
-  if (n === 1) return "morgen";
-  if (n === -1) return "gestern";
-  return n > 0 ? `in ${n} Tagen` : `vor ${-n} Tagen`;
+  if (n === 0) return translate("heute");
+  if (n === 1) return translate("morgen");
+  if (n === -1) return translate("gestern");
+  return n > 0 ? translate("in {n} Tagen", { n }) : translate("vor {v1} Tagen", { v1: -n });
 }
 
 // «heute» / «morgen» / «gestern» або null (для «Mittwoch · heute»)
@@ -83,9 +83,9 @@ export function weekTitle(from, to) {
 // Великий заголовок тижня: «Diese Woche», «Nächste Woche», «Letzte Woche» або місяць
 export function weekHeading(monday, todayIso) {
   const diff = daysBetween(mondayOf(todayIso), monday) / 7; // на скільки тижнів від поточного
-  if (diff === 0) return "Diese Woche";
-  if (diff === 1) return "Nächste Woche";
-  if (diff === -1) return "Letzte Woche";
+  if (diff === 0) return translate("Diese Woche");
+  if (diff === 1) return translate("Nächste Woche");
+  if (diff === -1) return translate("Letzte Woche");
   return monthLong(monday);
 }
 
@@ -95,9 +95,9 @@ export function standText(moment, nowIso) {
   if (!moment) return null;
   const day = moment.slice(0, 10);
   const time = moment.slice(11, 16);
-  if (day === nowIso) return `Stand von heute ${time}`;
-  if (day === addDays(nowIso, -1)) return `Stand von gestern ${time}`;
-  return `Stand von ${numericDate(day)} ${time}`;
+  if (day === nowIso) return translate("Stand von heute {time}", { time });
+  if (day === addDays(nowIso, -1)) return translate("Stand von gestern {time}", { time });
+  return translate("Stand von {v1} {time}", { v1: numericDate(day), time });
 }
 
 // Підпис кнопки «Letzten Stand zeigen · 07:12»: сьогодні тільки час, інакше ще й день. moment = null → «—»
@@ -127,7 +127,7 @@ export function planMomentText(moment, today) {
   if (!moment) return "—";
   const date = moment.slice(0, 10);
   const time = moment.slice(11, 16);
-  if (date === today) return `heute ${time}`;
+  if (date === today) return translate("heute {time}", { time });
   if (date === addDays(today, -1)) return `gestern ${time}`;
   return `${weekdayShort(date)}, ${numericDate(date)} ${time}`;
 }
@@ -139,11 +139,11 @@ export function updatedAgoText(fetchedAt, now) {
   if (Number.isNaN(moment)) return null;
   const minutes = Math.floor((now.getTime() - moment) / 60_000);
   if (minutes < 1) return "aktualisiert gerade eben";
-  if (minutes < 60) return `aktualisiert vor ${minutes} Min.`;
+  if (minutes < 60) return translate("aktualisiert vor {minutes} Min.", { minutes });
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `aktualisiert vor ${hours} Std.`;
+  if (hours < 24) return translate("aktualisiert vor {hours} Std.", { hours });
   const days = Math.floor(hours / 24);
-  return `aktualisiert vor ${days} ${days === 1 ? "Tag" : "Tagen"}`;
+  return translate("aktualisiert vor {days} {v2}", { days, v2: days === 1 ? translate("Tag") : translate("Tagen") });
 }
 
 // Наступний (step = 1) або попередній (step = -1) навчальний день: пропускає вихідні і meta.holidays
@@ -160,19 +160,19 @@ export function nextSchoolDay(iso, holidays = [], step = 1) {
 
 // Бейдж уроку за status (moved і added поки малюються як VERTRETUNG — рішення власника)
 const BADGES = {
-  substitution: "VERTRETUNG",
-  moved: "VERTRETUNG",
-  added: "VERTRETUNG",
-  cancelled: "FÄLLT AUS",
-  room_change: "RAUM",
+  get substitution() { return translate("VERTRETUNG"); },
+  get moved() { return translate("VERTRETUNG"); },
+  get added() { return translate("VERTRETUNG"); },
+  get cancelled() { return translate("FÄLLT AUS"); },
+  get room_change() { return translate("RAUM"); },
 };
 export const lessonBadge = (lesson) => (lesson.examId ? "TEST" : BADGES[lesson.status] ?? null);
 
 // Підпис переносу: «verlegt auf Fr (2.10.) 1. Std» / «verlegt von 3. Std»
 export function movedText(moved) {
-  const slot = (s) => (s.date ? `${weekdayShort(s.date)} (${numericDate(s.date)}) ` : "") + `${s.period}. Std`;
-  if (moved?.to) return `verlegt auf ${slot(moved.to)}`;
-  if (moved?.from) return `verlegt von ${slot(moved.from)}`;
+  const slot = (s) => (s.date ? `${weekdayShort(s.date)} (${numericDate(s.date)}) ` : "") + translate("{period}. Std", { period: s.period });
+  if (moved?.to) return translate("verlegt auf {v1}", { v1: slot(moved.to) });
+  if (moved?.from) return translate("verlegt von {v1}", { v1: slot(moved.from) });
   return "";
 }
 
@@ -199,7 +199,7 @@ const NO_SUBJECT_NAME = "Ohne Fach";
 const NO_SUBJECT_CODE = "–";
 
 // Назва предмета: з відповіді, інакше код (так у TW, Spr, SF, HS)
-export const subjectName = (subject) => subject?.name ?? subject?.code ?? NO_SUBJECT_NAME;
+export const subjectName = (subject) => subject?.name ?? subject?.code ?? translate(NO_SUBJECT_NAME);
 
 // Назва уроку: «Sport · Mädchen», якщо курс — група Sport (20b), інакше назва предмета.
 // course буває null («лишній» урок), label теж — тоді просто предмет
@@ -227,9 +227,9 @@ export function weekSummaryText(summary) {
   const parts = [];
   if (summary.cancelled) parts.push(`${summary.cancelled} ${summary.cancelled === 1 ? "fällt" : "fallen"} aus`);
   const changed = summary.substitutions + summary.moved + summary.added;
-  if (changed) parts.push(`${changed} ${changed === 1 ? "Vertretung" : "Vertretungen"}`);
+  if (changed) parts.push(`${changed} ${changed === 1 ? translate("Vertretung") : translate("Vertretungen")}`);
   if (summary.roomChanges) parts.push(`${summary.roomChanges} Raumwechsel`);
-  return parts.length ? parts.join(" · ") : "Keine Änderungen";
+  return parts.length ? parts.join(" · ") : translate("Keine Änderungen");
 }
 
 // Коли Klausur: до 14 днів в обидва боки — «in 2 Tagen», «vor 3 Tagen», далі — «1. Okt»

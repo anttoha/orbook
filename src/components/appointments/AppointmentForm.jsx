@@ -17,12 +17,13 @@ import PageHeader from "../ui/PageHeader";
 import TextField from "../ui/TextField";
 import ChipButton from "../ui/ChipButton";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Як зберігати — для спільного useExamSave (If-Match, 409, «Rückgängig»). admin — шлях адмінки
 const opsFor = (admin) => ({
-  noun: "Termin",
+  noun: translate("Termin"),
   listPath: admin ? "/admin/termine" : "/testen?liste=termine",
-  savedText: "Gespeichert · die Klasse sieht den Termin",
+  savedText: translate("Gespeichert · die Klasse sieht den Termin"),
   save: (form, against) => saveAppointment(form, against, { admin }),
   remove: (item) => deleteAppointment(item, { admin }),
   restore: (item) => recreateAppointment(item, { admin }),

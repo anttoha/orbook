@@ -82,7 +82,7 @@ const PlanStatusBody = ({ monday, compact = false }) => {
             week.days.map((day, i) => {
               const check = dayCheck(day, today, now);
               // в узком окошке на ПК — без повторяющегося начала строки (макет pc-03)
-              const text = compact ? check.text.replace("Plan da · ", "").replace("Noch kein Plan · ", "kein Plan · ") : check.text;
+              const text = compact ? check.text.replace(t("Plan da · "), "").replace(t("Noch kein Plan · "), t("kein Plan · ")) : check.text;
               const isToday = day.date === today;
               return (
                 <li key={day.date} style={{ animationDelay: `${i * 50}ms` }} className={cn("flex items-center gap-3 motion-safe:animate-rise-in", compact ? "h-9.5" : "h-11.5")}>

@@ -17,6 +17,7 @@ import { subjectName } from "../shared/utils/format";
 import { addMaterialTarget, materialChips } from "../shared/utils/materials";
 import RoundButton from "../components/ui/RoundButton";
 import { useT } from "../shared/hooks/useT";
+import { translate } from "../shared/i18n/translate";
 
 // Пошук на ПК: у назві, предметі й Kürzel
 const matches = (item, query) => {
@@ -25,7 +26,7 @@ const matches = (item, query) => {
   return [item.title, subjectName(item.subject), item.subject?.code, item.author?.short].some((value) => value?.toLowerCase().includes(q));
 };
 
-const linksText = (n) => (n === 1 ? "1 Link" : `${n} Links`);
+const linksText = (n) => (n === 1 ? translate("1 Link") : `${n} Links`);
 
 // «+» на телефоні праворуч від заголовка
 const AddButton = ({ to }) => {

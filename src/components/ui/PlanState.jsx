@@ -8,6 +8,7 @@ import Button from "./Button";
 import StateScreen from "./StateScreen";
 import PillButton from "./PillButton";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // Стани завантаження (гайд docs/frontend/08-zustaende.md):
@@ -73,7 +74,7 @@ export const PlanDown = ({ resource, onRetry, fill }) => {
 };
 
 // Даних немає зовсім
-export const PlanError = ({ resource, onRetry, title = "Plan konnte nicht geladen werden" }) => {
+export const PlanError = ({ resource, onRetry, title = translate("Plan konnte nicht geladen werden") }) => {
   const t = useT();
   return (
   <div role="alert" className="flex flex-col items-center gap-3 rounded-card bg-card px-5 py-10 text-center">

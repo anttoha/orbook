@@ -7,6 +7,7 @@ import ConfirmDialog from "../ui/ConfirmDialog";
 import { SyncIcon, WarningIcon } from "../ui/icons";
 import TextField from "../ui/TextField";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 
 // ─────────────────────────────────────────────────────────────
@@ -24,7 +25,7 @@ const ConnectDevice = () => {
 
   const done = () => {
     setText("");
-    toast.success("Gerät verbunden");
+    toast.success(translate("Gerät verbunden"));
   };
 
   const handleSubmit = async (e) => {

@@ -16,6 +16,7 @@ import { useMaterials } from "./materialsStore";
 import { usePushStore } from "./pushStore";
 import { quietly } from "./syncStore";
 import { useUserStore } from "./userStore";
+import { translate } from "../i18n/translate";
 
 // ─────────────────────────────────────────────────────────────
 // planStore — УСІ дані з сервера живуть тут (одне місце, щоб не шукати).
@@ -175,7 +176,7 @@ export const usePlanStore = create((set, get) => ({
     const res = isTeacherCode(code)
       ? await api("/auth/teacher", { method: "POST", body: { code: code.trim(), add: true } })
       : await api("/auth/login", { method: "POST", body: { password: code.trim(), add: true } });
-    if (!res?.class) throw new Error("Der Server kennt noch keine Klassen.");
+    if (!res?.class) throw new Error(translate("Der Server kennt noch keine Klassen."));
     useClasses.getState().addClass(res.class, label);
     return res.class;
   },
@@ -414,9 +415,9 @@ export const usePlanStore = create((set, get) => ({
       const result = await api("/plan/refresh", { method: "POST", body: typeof monday === "string" ? { week: monday } : undefined });
       set({ status: result.status });
       if (!result.refreshed) {
-        toast.error("Plan konnte nicht geladen werden", { duration: 6000, action: { label: "Nochmal", onClick: () => get().refreshPlan() } });
+        toast.error(translate("Plan konnte nicht geladen werden"), { duration: 6000, action: { label: translate("Nochmal"), onClick: () => get().refreshPlan() } });
       } else {
-        toast.success(result.changed ? "Plan aktualisiert" : "Plan ist aktuell", { duration: 3000 });
+        toast.success(result.changed ? translate("Plan aktualisiert") : translate("Plan ist aktuell"), { duration: 3000 });
         // учень сам оновив план і зараз його побачить: плашка «Neuer Plan» уже зайва
         seenChange.save(result.status?.lastChangeAt);
         set({ newPlan: null });

@@ -2,6 +2,7 @@
 // Сервер каже тільки «план змінився» (plan/status.lastChangeAt), а що саме — рахує клієнт.
 // Основа — гайд orbook-be (docs/frontend/08-zustaende.md).
 import { addDays, subjectName } from "./format";
+import { translate } from "../i18n/translate";
 
 const signature = (lesson) => [lesson.period, lesson.status, lesson.subject?.code, lesson.teacher, lesson.room].join("|");
 
@@ -21,7 +22,7 @@ export function planChanges(prevWeek, nextWeek, todayIso) {
 
 // «Morgen: 4. Std Geschichte → Vertretung», «Heute: 3. Std Englisch fällt aus», «Do: 2. Std Mathe → Raum 204»
 export function changeText({ date, weekday, lesson }, todayIso) {
-  const when = date === todayIso ? "Heute" : date === addDays(todayIso, 1) ? "Morgen" : weekday;
-  const what = lesson.status === "cancelled" ? "fällt aus" : lesson.status === "room_change" ? `→ Raum ${lesson.room ?? "?"}` : "→ Vertretung";
-  return `${when}: ${lesson.period}. Std ${subjectName(lesson.subject)} ${what}`;
+  const when = date === todayIso ? translate("Heute") : date === addDays(todayIso, 1) ? translate("Morgen") : weekday;
+  const what = lesson.status === "cancelled" ? translate("fällt aus") : lesson.status === "room_change" ? translate("→ Raum {v1}", { v1: lesson.room ?? "?" }) : translate("→ Vertretung");
+  return translate("{when}: {period}. Std {v3} {what}", { when, period: lesson.period, v3: subjectName(lesson.subject), what });
 }

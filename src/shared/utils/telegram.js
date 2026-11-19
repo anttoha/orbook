@@ -3,6 +3,7 @@
 // Поля ответа /api/telegram могут прийти null — всё с запасным значением.
 // ─────────────────────────────────────────────────────────────
 import { coursesForPush } from "./push";
+import { translate } from "../i18n/translate";
 
 // Что показать в «Mitteilungen»: hidden — бота нет/выключен, off — подключить, on — подключён
 export function telegramState(status) {
@@ -18,7 +19,7 @@ export const botUrl = (username) => (username ? `https://t.me/${username}` : "ht
 
 // «Zuletzt gesendet» в админке: для личных чатов — «18 Chats», для группы — «Telegram»
 export function sentWhere(item) {
-  if (!item?.ok) return "nicht angekommen";
+  if (!item?.ok) return translate("nicht angekommen");
   if (item.kind === "bot") return item.chats === 1 ? "1 Chat" : `${item.chats ?? 0} Chats`;
   return "Telegram";
 }

@@ -4,12 +4,13 @@ import { useSheet } from "../../shared/hooks/useSheet";
 import { sourceText, timeText } from "../../shared/utils/appointments";
 import { cn } from "../../shared/utils/cn";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // «ab 09:25, Aula. Eingetragen von der Schule.» — після назви в плашці
 const details = (item) => {
   const where = [timeText(item), item.place].filter(Boolean).join(", ");
   const source = sourceText(item, null);
-  const by = source.name ? `Eingetragen von ${source.name}.` : "";
+  const by = source.name ? translate("Eingetragen von {name}.", { name: source.name }) : "";
   return [where && `${where}.`, by].filter(Boolean).join(" ");
 };
 

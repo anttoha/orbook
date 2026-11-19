@@ -14,6 +14,7 @@ import Sheet from "../ui/Sheet";
 import SubjectBadge from "../ui/SubjectBadge";
 import Liquid from "../ui/Liquid";
 import { useT } from "../../shared/hooks/useT";
+import { translate } from "../../shared/i18n/translate";
 
 // Одна картка: що стояло в уроці → що каже справжній план → кнопки
 const CheckCard = ({ item, lessons, onDone }) => {
@@ -29,7 +30,7 @@ const CheckCard = ({ item, lessons, onDone }) => {
   const reason = checkReason(item, lessons, subjectName(subject));
   const move = () => {
     moveNote(item.note.id, item.target);
-    toast.success(`Notiz hängt jetzt an der ${item.target}. Stunde`);
+    toast.success(translate("Notiz hängt jetzt an der {target}. Stunde", { target: item.target }));
     onDone();
   };
   const keep = () => {
