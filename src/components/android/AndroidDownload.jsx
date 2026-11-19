@@ -17,15 +17,11 @@ import Step from "./Step";
 // Значок ORBook в кружке шага 3 (Step ждёт компонент-иконку с className)
 const AppIcon = () => <OrbitMark className="size-6" />;
 
-// Скачать APK. Сначала тихо спрашиваем сервер (HEAD): нет сети — тост (макет 31 handy-09), иначе браузер сам качает файл
-const download = async () => {
-  try {
-    const answer = await fetch(APK_PATH, { method: "HEAD" });
-    if (!answer.ok) throw new Error("apk");
-    window.location.assign(APK_PATH);
-  } catch (error) {
-    toast.error(updateErrorText(error.message === "apk" ? "missing" : "network"));
-  }
+// Скачать APK: браузер сам качает файл. Что APK на сервере есть, мы уже знаем из /api/public/android.
+// Нет сети — тост (макет 31 handy-09). Без HEAD-проверки: сервер отдаёт файл только на GET (HEAD → 405)
+const download = () => {
+  if (navigator.onLine === false) return toast.error(updateErrorText("network"));
+  window.location.assign(APK_PATH);
 };
 
 const DownloadButton = ({ variant }) => {
