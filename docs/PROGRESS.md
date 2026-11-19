@@ -598,3 +598,9 @@ Android: виджет на Glance (9 видов, размеры, состоян�
 
 ## Часть 31c «Сайт: Android-App» — готово на демо (2026-11-19)
 Страница `/mehr/android` в браузере (`AndroidDownload`): APK (HEAD-проверка → иначе тост «Download fehlgeschlagen – keine Verbindung»), три шага, как добавить виджет, «Lieber als Web-App» (только если браузер умеет ставить PWA); на ПК — QR «Mit dem Handy scannen» + картинка виджета. Карточка «ORBook für Android» в Mehr — только в браузере на Android, закрывается ✕ (заменяет «ORBook als App»); строка «Android-App» с «Neu» (гаснет после первого открытия) — в Mehr и в меню ПК. Всё показывается, только если `/api/public/android` отдаёт APK (на проде пока нет — ничего не видно). Хуки `useAndroidOffer`, `useAndroidCard`; `Step` — одна строка с `*жирным*`. Datenschutz: абзац про APK и ежедневную проверку; EN/UK; тесты `isAndroidBrowser`, `releaseLabel`. Снимки: `/root/work/orbook-compare/31c-site/` (`_tools/p31c.mjs`). Changelog — при релизе «на прод» вместе с прод-APK.
+
+## Часть 31d «Widgets: Design, Inhalt, Einstellungen» — макеты, ждёт «ок дизайн» (2026-11-19)
+Макеты: `design/neu/31d-widget-design/` (`gen.py` — виджеты по правилу содержания, `build.py` — обзор `index.html`), артефакт https://claude.ai/artifact/AGWKiqZRaduHAd4bAE1QZG, PNG с Nunito — `/root/work/orbook-compare/31d-widget-design/png/`.
+Листы: 9 видов × 5 размеров (2×1 … 4×5, светлая); Soft/Glas/Klar на рабочем столе (светлая и тёмная); 6 акцентов и прозрачность фона; «Widget einstellen» (светлая и тёмная) + настройки отдельных видов.
+Правило содержания (в `gen.py`, функция `fit`): важность (идёт сейчас → изменения → остальное → прошедшее) → плотность (2 строки → 1 → мельче; узко — Kürzel или две строки) → «+ N weitere». Glas в виджете — без размытия (полупрозрачность, кромка, блик).
+**Дальше:** «ок дизайн» → spec и код на Opus · effort high (`/orb 31d`).
