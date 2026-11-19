@@ -53,3 +53,19 @@ install -o root -g orbook -m 640 "$tmp/android.json" "$out/android.json.new"
 mv "$out/app.apk.new" "$out/app.apk"
 mv "$out/android.json.new" "$out/android.json"
 echo "== Fertig: $out ($((size / 1024)) KB)"
+
+# Только для прода: тот же подписанный APK — в GitHub Release (вкладка «Assets»). Токен — /root/.orbook-android/gh-token.
+# Нет токена, тега или Release — только предупреждение: сайт уже обновлён, сборка не падает.
+if [[ "$flavor" == prod ]]; then
+  token_file="$keys/gh-token"
+  tag="v$version_name"
+  asset="$tmp/orbook-$version_name.apk"
+  cp "$tmp/app.apk" "$asset"
+  if [[ ! -s "$token_file" ]]; then
+    echo "== Release: kein Token ($token_file) – APK nicht hochgeladen"
+  elif GH_TOKEN="$(cat "$token_file")" gh release upload "$tag" "$asset" --clobber --repo anttoha/orbook; then
+    echo "== Release $tag: orbook-$version_name.apk hochgeladen"
+  else
+    echo "== Release $tag: Upload fehlgeschlagen (Release schon da? Token abgelaufen?)" >&2
+  fi
+fi
