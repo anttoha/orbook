@@ -26,6 +26,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- Ссылка-приглашение (и QR на неё) открывается в приложении, если оно стоит.
+                 autoVerify: Android сверяет приложение с /.well-known/assetlinks.json сайта -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="${siteHost}" android:pathPrefix="/i/" />
+            </intent-filter>
         </activity>
 
         <!-- Виджет на рабочем столе (часть 31b) и его экран «Widget einstellen» -->

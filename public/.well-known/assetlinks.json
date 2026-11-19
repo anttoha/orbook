@@ -1,0 +1,18 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "net.orbitium.orbook",
+      "sha256_cert_fingerprints": ["E1:2D:10:16:CD:EF:2B:DC:95:92:A9:00:F1:67:47:61:A3:4A:48:17:80:47:1A:B1:CF:90:4A:CC:03:29:B2:6F"]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "net.orbitium.orbook.demo",
+      "sha256_cert_fingerprints": ["E1:2D:10:16:CD:EF:2B:DC:95:92:A9:00:F1:67:47:61:A3:4A:48:17:80:47:1A:B1:CF:90:4A:CC:03:29:B2:6F"]
+    }
+  }
+]

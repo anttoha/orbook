@@ -44,6 +44,7 @@ android {
             dimension = "site"
             buildConfigField("String", "SITE_URL", "\"https://orbook.orbitium.net\"")
             buildConfigField("String", "SITE", "\"orbook\"")
+            manifestPlaceholders["siteHost"] = "orbook.orbitium.net"
             resValue("string", "app_name", "ORBook")
         }
         create("demo") {
@@ -51,6 +52,7 @@ android {
             applicationIdSuffix = ".demo"
             buildConfigField("String", "SITE_URL", "\"https://orbook-demo.orbitium.net\"")
             buildConfigField("String", "SITE", "\"orbook-demo\"")
+            manifestPlaceholders["siteHost"] = "orbook-demo.orbitium.net"
             resValue("string", "app_name", "ORBook Demo")
         }
     }
