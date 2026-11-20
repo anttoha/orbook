@@ -188,7 +188,7 @@ def rechner(st, x, y, w, small=False):
     y += 116 + 14
     out.append(R(x, y, w, 110, st.rc, c["tint"]) + T(x + 18, y + 30, "DU BRAUCHST", 10.5, 800, c["accink"], ls=0.5)
                + T(x + 18, y + 74, "1,6", 40, 900, c["accink"], ls=-0.6) + T(x + 100, y + 73, "oder besser", 15, 700, c["ink"])
-               + T(x + 18, y + 96, "Dann steht Mathe auf 2,0.", 12.5, 400, c["muted"]))
+               + T(x + 18, y + 96, "Dann ist dein Schnitt in Mathe 2,0.", 12.5, 400, c["muted"]))
     return "".join(out), y + 110
 
 def p_rechner(st):

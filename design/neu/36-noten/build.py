@@ -100,13 +100,14 @@ def page():
         out += [shot(nm, cap, "pc") for nm, cap in pcs]
         out.append('</div></section>')
     out.append('</div>')
-    out.append('''<div class="box"><h2>Решил сам (скажите, если не так)</h2><ul style="margin:0;padding-left:20px">
+    out.append('''<div class="box"><h2>Решения (дизайн ок 2026-11-20)</h2><ul style="margin:0;padding-left:20px">
 <li>«Abmelden» стирает логин <b>и</b> забранные оценки с устройства (и из Sync) — чтобы на чужом телефоне ничего не осталось;</li>
 <li>оценки с «+» и «−» считаем как 1,7 / 2,3 и т. п.; средний — с весами из InfoPoint;</li>
+<li>«Schnitt» — только расчёт для себя: оценку в Zeugnis ставит учитель, она не обязана совпадать со средним. Поэтому вкладка «Zeugnis» показывает только оценки, которые выставила школа (из InfoPoint), без нашего расчёта, а Notenrechner пишет «Dann ist dein Schnitt …», а не «Zeugnisnote»;</li>
 <li>цвета: до 2,5 зелёный, хуже 3,5 красный, между — нейтральный;</li>
 <li>«Fehlzeiten» — отдельная страница, открывается с плитки; её можно поставить и в группу «Leistung» (часть 35);</li>
 <li>админ: в «Schule» — переключатель «Noten» и поле «InfoPoint-Adresse» (макет не рисую — одна строка и поле, как остальные настройки школы).</li>
-</ul><p style="margin-top:12px">Ответ: «ок дизайн» или что поменять.</p></div>''')
+</ul><p style="margin-top:12px">Владелец: «ок дизайн», «Abmelden» стирает всё — да, цвета — да.</p></div>''')
     out.append(f'</div><script>{JS}</script>')
     return "\n".join(out)
 

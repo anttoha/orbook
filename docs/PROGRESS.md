@@ -667,3 +667,9 @@ Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница �
 Экраны: вход в InfoPoint (и неверный пароль), обзор «Noten» (полугодие/Zeugnis, Schnitt, Fehlzeiten, предметы со средним, «neu», логин и «Abmelden»), загрузка, «nicht erreichbar», «zu oft», вопрос «Abmelden?», предмет с оценками и весами, Notenrechner (шторка), Fehlzeiten, блок «Noten» на Start, ПК (предметы слева, предмет и Notenrechner справа).
 Открытые решения для владельца: «Abmelden» стирает логин и забранные оценки с устройства и из Sync; цвета оценок (≤2,5 зелёный, >3,5 красный); «+/−» = ∓0,3.
 **Дальше:** «ок дизайн» → 36a (бэкенд, Opus · effort high), затем 36b (экран).
+
+## Часть 36 — дизайн ок (2026-11-20)
+Владелец: «ок дизайн»; «Abmelden» стирает логин и забранные оценки с устройства и из Sync — да; цвета (≤2,5 зелёный, >3,5 красный) и «+/−» = ∓0,3 — да.
+Уточнение владельца: средний балл **не обязателен** для оценки в Zeugnis (её ставит учитель). Поэтому «Schnitt» — только расчёт; вкладка «Zeugnis» показывает только оценки школы из InfoPoint (`getdata.php?mode=summary`), без нашего расчёта; Notenrechner пишет «Dann ist dein Schnitt in Mathe 2,0.». Макеты и артефакт обновлены.
+Исходники для 36a: HAR владельца в `/root/.cloudcli/assets/*petrischule-th*.har` (`login.php`, `getdata.php`, `getdata.php?mode=summary`, `default.php`). В них **личные оценки и пароль** — в репозиторий только обезличенный образец HTML, HAR не коммитить.
+**Дальше:** 36a — бэкенд и парсер (новый чат, Opus · effort high, `/orb 36a`).
