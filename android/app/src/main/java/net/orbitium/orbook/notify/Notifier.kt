@@ -18,12 +18,13 @@ import net.orbitium.orbook.Site
 import net.orbitium.orbook.widget.Texts
 
 /**
- * Часть 31e. Показ уведомлений: два канала (их видно в настройках Android — можно выключить по отдельности):
- * «Plan und Tests» и «Vor der Stunde». Нажатие открывает нужную страницу сайта в приложении.
+ * Часть 31e. Показ уведомлений: каналы (их видно в настройках Android — можно выключить по отдельности):
+ * «Plan und Tests» и «Vor der Stunde» (и «Noten», часть 36c). Нажатие открывает нужную страницу сайта в приложении.
  */
 object Notifier {
     const val PLAN = "plan"
     const val LESSON = "lesson"
+    const val NOTEN = "noten" // часть 36c
 
     /** granted — можно; denied — запрещено (нужны настройки Android); ask — ещё не спрашивали. */
     fun permission(context: Context): String {
@@ -41,6 +42,7 @@ object Notifier {
         val manager = context.getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(NotificationChannel(PLAN, texts.t("Plan und Tests"), NotificationManager.IMPORTANCE_DEFAULT))
         manager.createNotificationChannel(NotificationChannel(LESSON, texts.t("Vor der Stunde"), NotificationManager.IMPORTANCE_HIGH))
+        manager.createNotificationChannel(NotificationChannel(NOTEN, texts.t("Noten"), NotificationManager.IMPORTANCE_DEFAULT))
     }
 
     fun post(context: Context, note: Note, channel: String, texts: Texts) {

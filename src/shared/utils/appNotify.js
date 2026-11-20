@@ -10,6 +10,9 @@ import { DEFAULT_PUSH } from "./push";
 export const BEFORE_MINUTES = [5, 10, 15];
 export const DEFAULT_BEFORE = { on: false, minutes: 10 };
 
+// Пункты приложения: те же, что у Web Push, и «Neue Note» из InfoPoint (часть 36c, по умолчанию выключено)
+export const APP_PREFS = { ...DEFAULT_PUSH.prefs, newGrade: false };
+
 const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
 const time = (value, fallback) => (typeof value === "string" && TIME.test(value) ? value : fallback);
 
@@ -19,7 +22,7 @@ export function parseAppNotify(json) {
   try {
     const raw = typeof json === "string" ? JSON.parse(json) : null;
     if (!raw || typeof raw !== "object") return null;
-    const prefs = { ...DEFAULT_PUSH.prefs };
+    const prefs = { ...APP_PREFS };
     for (const key of Object.keys(prefs)) if (typeof raw.prefs?.[key] === "boolean") prefs[key] = raw.prefs[key];
     const quiet = {
       on: typeof raw.quiet?.on === "boolean" ? raw.quiet.on : DEFAULT_PUSH.quiet.on,
@@ -50,7 +53,7 @@ export const appSupport = (state) => (state?.permission === "denied" ? "app-deni
 // Что отправить приложению (ORBookAndroid.saveNotify)
 export const appSettingsOf = ({ enabled, prefs, quiet, before, reminderTime }) => ({
   on: Boolean(enabled),
-  prefs: { ...DEFAULT_PUSH.prefs, ...prefs },
+  prefs: { ...APP_PREFS, ...prefs },
   quiet: { ...DEFAULT_PUSH.quiet, ...quiet },
   before: { ...DEFAULT_BEFORE, ...before },
   reminderTime: time(reminderTime, "18:00"),

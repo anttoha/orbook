@@ -1,0 +1,157 @@
+{
+ "updatedAt": "2026-11-16",
+ "subjects": [
+  {
+   "code": "de",
+   "name": "Deutsch",
+   "grades": [
+    {
+     "date": "2026-08-26",
+     "grade": "1",
+     "value": 1.0,
+     "note": "Vortrag ,,Mein Buch“",
+     "kind": "Standard",
+     "weightLabel": "Einfach",
+     "weight": 1.0,
+     "half": 1
+    },
+    {
+     "date": "2026-10-14",
+     "grade": "3",
+     "value": 3.0,
+     "note": "Klassenarbeit Erörterung",
+     "kind": "Standard",
+     "weightLabel": "Doppelt",
+     "weight": 2.0,
+     "half": 1
+    }
+   ],
+   "finals": [
+    {
+     "half": 1,
+     "grade": "2",
+     "value": 2.0,
+     "note": "gut mitgearbeitet"
+    },
+    {
+     "half": 2,
+     "grade": null,
+     "value": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "code": "ma",
+   "name": "Mathematik",
+   "grades": [
+    {
+     "date": "2026-08-26",
+     "grade": "2",
+     "value": 2.0,
+     "note": "Umgang mit dem Taschenrechner",
+     "kind": "Standard",
+     "weightLabel": "Einfach",
+     "weight": 1.0,
+     "half": 1
+    },
+    {
+     "date": "2026-09-09",
+     "grade": "2-",
+     "value": 2.3,
+     "note": "Test Winkel",
+     "kind": "Standard",
+     "weightLabel": "Einfach",
+     "weight": 1.0,
+     "half": 1
+    },
+    {
+     "date": "2026-11-03",
+     "grade": "1+",
+     "value": 0.7,
+     "note": "Klassenarbeit Winkelsätze",
+     "kind": "Standard",
+     "weightLabel": "Doppelt",
+     "weight": 2.0,
+     "half": 1
+    },
+    {
+     "date": "2026-11-05",
+     "grade": "m.E.",
+     "value": null,
+     "note": "Mitarbeit",
+     "kind": "Standard",
+     "weightLabel": "Irgendwie",
+     "weight": null,
+     "half": 1
+    }
+   ],
+   "finals": [
+    {
+     "half": 1,
+     "grade": null,
+     "value": null,
+     "note": null
+    },
+    {
+     "half": 2,
+     "grade": null,
+     "value": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "code": "wpf",
+   "name": "Wahlpflichtfach",
+   "grades": [],
+   "finals": [
+    {
+     "half": 1,
+     "grade": null,
+     "value": null,
+     "note": null
+    },
+    {
+     "half": 2,
+     "grade": null,
+     "value": null,
+     "note": null
+    }
+   ]
+  }
+ ],
+ "absences": {
+  "days": [
+   {
+    "date": "2026-09-11",
+    "reason": "Krankheit",
+    "excused": true,
+    "half": 1
+   },
+   {
+    "date": "2026-08-25",
+    "reason": null,
+    "excused": false,
+    "half": 1
+   }
+  ],
+  "hours": [
+   {
+    "date": "2026-10-02",
+    "subject": "Mathematik",
+    "amount": "2 Stunden",
+    "hours": 2,
+    "reason": "Arzttermin",
+    "excused": true,
+    "half": 1
+   }
+  ],
+  "summary": {
+   "days": 2,
+   "daysUnexcused": 1,
+   "hours": 2,
+   "hoursUnexcused": 0
+  }
+ }
+}

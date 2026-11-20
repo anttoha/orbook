@@ -107,6 +107,16 @@ export function freshKeys(before, after) {
   return (after?.subjects ?? []).flatMap((s) => (s.grades ?? []).map((g) => gradeKey(s.code, g))).filter((key) => !known.has(key));
 }
 
+// Часть 36c: оценки, которые Android-App забрала в фоне ({ data, fetchedAt }), — если они новее наших; иначе null
+export function newerAppData(ours, app) {
+  const theirs = app?.data;
+  if (!theirs?.fetchedAt || !Array.isArray(theirs.subjects)) return null;
+  const at = Date.parse(theirs.fetchedAt);
+  if (!Number.isFinite(at)) return null;
+  const mine = Date.parse(ours?.fetchedAt ?? "");
+  return Number.isFinite(mine) && mine >= at ? null : theirs;
+}
+
 // Самая новая оценка: сперва среди «neu», иначе вообще (блок на Start)
 export function latestGrade(data, fresh = []) {
   const all = (data?.subjects ?? []).flatMap((s) => (s.grades ?? []).filter((g) => g.grade).map((g) => ({ subject: s, grade: g, fresh: fresh.includes(gradeKey(s.code, g)) })));

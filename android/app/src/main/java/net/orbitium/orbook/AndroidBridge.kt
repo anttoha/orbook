@@ -6,6 +6,9 @@ import android.os.Build
 import android.provider.Settings
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import net.orbitium.orbook.noten.NotenCheck
+import net.orbitium.orbook.noten.NotenStore
+import net.orbitium.orbook.noten.NotenWorker
 import net.orbitium.orbook.notify.Notifications
 import net.orbitium.orbook.notify.Notifier
 import net.orbitium.orbook.widget.WidgetStore
@@ -140,6 +143,51 @@ class AndroidBridge(private val web: WebView, private val host: WidgetHost? = nu
     @JavascriptInterface
     fun testNotify() {
         if (allowed()) Notifications.test(context)
+    }
+
+    // ── Noten прямо из InfoPoint (часть 36c) — src/shared/api/noten.js ──
+
+    /** {"saved": true, "username": "max.muster"} — сохранён ли логин («Angemeldet bleiben»). Пароль сайт не получает. */
+    @JavascriptInterface
+    fun notenState(): String? {
+        if (!allowed()) return null
+        val store = NotenStore(context)
+        return JSONObject().put("saved", store.login() != null).put("username", store.username() ?: JSONObject.NULL).toString()
+    }
+
+    /**
+     * {"id", "url", "username", "password", "remember"} → событие {type: "noten", id, ok, data | error: {code, retryAfter}}.
+     * url null — через сервер ORBook (демо); password null — сохранённый. Сеть — не в потоке страницы.
+     */
+    @JavascriptInterface
+    fun notenFetch(json: String) {
+        if (!allowed()) return
+        val request = try { JSONObject(json) } catch (e: JSONException) { return }
+        fun text(name: String) = if (request.isNull(name)) null else request.optString(name).ifEmpty { null }
+        Thread {
+            val outcome = NotenCheck.fetch(context, text("url"), text("username"), text("password"), request.optBoolean("remember", true))
+            val detail = JSONObject().put("type", "noten").put("id", request.opt("id")).put("ok", outcome.data != null)
+            if (outcome.data != null) detail.put("data", JSONObject(outcome.data))
+            else detail.put("error", JSONObject().put("code", outcome.code).put("retryAfter", outcome.retryAfter ?: JSONObject.NULL))
+            send(detail)
+        }.start()
+    }
+
+    /** Последние оценки, которые приложение забрало само (фон): {"data": {…}, "fetchedAt": ms} или null. */
+    @JavascriptInterface
+    fun notenData(): String? {
+        if (!allowed()) return null
+        val store = NotenStore(context)
+        val data = store.data() ?: return null
+        return JSONObject().put("data", JSONObject(data)).put("fetchedAt", store.fetchedAt()).toString()
+    }
+
+    /** «Abmelden»: логин и оценки из приложения стираются, фон останавливается. */
+    @JavascriptInterface
+    fun notenLogout() {
+        if (!allowed()) return
+        NotenStore(context).clear()
+        NotenWorker.schedule(context)
     }
 
     /** Ответ на окно разрешения — сайту. */

@@ -25,6 +25,8 @@ export const WIDGET_TEXTS = [
   // часть 31e: уведомления самого приложения и виджет без сети
   "In {n} min", "{n}. Std", "Neuer Test", "Hausaufgabe", "Test", "Test: Mitteilungen kommen an", "Keine Verbindung",
   "Plan und Tests", "Vor der Stunde", "{n} Änderungen im Plan",
+  // часть 36c: уведомление о новой оценке (канал «Noten»)
+  "Noten", "Neue Note in {n}", "Neue Noten in {n}",
 ];
 
 const NOTES_IN_WIDGET = 5;

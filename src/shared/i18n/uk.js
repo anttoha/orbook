@@ -2163,4 +2163,11 @@ export const uk = {
   "Mit Sync kommen die geholten Noten verschlüsselt mit, solange „Noten“ dort eingeschaltet ist.": "Із Sync отримані оцінки теж синхронізуються, зашифровано, поки там увімкнено «Оцінки».",
   "„Abmelden“ löscht Login und Noten auf diesem Gerät und im Sync.": "«Вийти» видаляє логін і оцінки на цьому пристрої та в Sync.",
   "Gerade nicht möglich – wieder in {n} Min.": "Зараз не вийде – спробуй через {n} хв.",
+  "Neue Note in {n}": "Нова оцінка: {n}",
+  "Neue Noten in {n}": "Нові оцінки: {n}",
+  "Neue Note": "Нова оцінка",
+  "Wenn im InfoPoint eine Note dazukommt": "Коли в InfoPoint з’являється оцінка",
+  "Erst bei Noten mit „Angemeldet bleiben“ anmelden": "Спершу увійди в «Оцінках» із «Залишатися в системі»",
+  "In der Android-App geht die Anfrage direkt vom Handy an den InfoPoint deiner Schule – Benutzername, Passwort und Noten kommen beim ORBook-Server gar nicht an. Mit „Angemeldet bleiben“ speichert die App Login und zuletzt geholte Noten verschlüsselt (Schlüssel im Android-Keystore, ohne Backup).": "В Android-застосунку запит іде з телефона напряму до InfoPoint твоєї школи – ім’я користувача, пароль і оцінки на сервер ORBook взагалі не потрапляють. З «Залишатися в системі» застосунок зберігає логін і останні отримані оцінки зашифрованими (ключ у Android Keystore, без резервної копії).",
+  "Schaltest du in den Mitteilungen der App „Neue Note“ ein, schaut die App selbst etwa alle 3 Stunden im InfoPoint nach (nicht in der Ruhezeit) und meldet neue Noten. Standardmäßig ist das aus.": "Якщо в сповіщеннях застосунку увімкнути «Нова оцінка», застосунок сам приблизно кожні 3 години перевіряє InfoPoint (не в тихі години) і повідомляє про нові оцінки. Типово це вимкнено.",
 };

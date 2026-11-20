@@ -2163,4 +2163,11 @@ export const en = {
   "Mit Sync kommen die geholten Noten verschlüsselt mit, solange „Noten“ dort eingeschaltet ist.": "With Sync, the fetched grades are included, encrypted, as long as “Grades” is switched on there.",
   "„Abmelden“ löscht Login und Noten auf diesem Gerät und im Sync.": "“Sign out” deletes the login and grades on this device and in Sync.",
   "Gerade nicht möglich – wieder in {n} Min.": "Not possible right now – try again in {n} min.",
+  "Neue Note in {n}": "New grade in {n}",
+  "Neue Noten in {n}": "New grades in {n}",
+  "Neue Note": "New grade",
+  "Wenn im InfoPoint eine Note dazukommt": "When a grade is added in InfoPoint",
+  "Erst bei Noten mit „Angemeldet bleiben“ anmelden": "First sign in under Grades with “Stay signed in”",
+  "In der Android-App geht die Anfrage direkt vom Handy an den InfoPoint deiner Schule – Benutzername, Passwort und Noten kommen beim ORBook-Server gar nicht an. Mit „Angemeldet bleiben“ speichert die App Login und zuletzt geholte Noten verschlüsselt (Schlüssel im Android-Keystore, ohne Backup).": "In the Android app, the request goes straight from your phone to your school’s InfoPoint – your username, password and grades never reach the ORBook server. With “Stay signed in”, the app stores the login and the last fetched grades encrypted (key in the Android Keystore, no backup).",
+  "Schaltest du in den Mitteilungen der App „Neue Note“ ein, schaut die App selbst etwa alle 3 Stunden im InfoPoint nach (nicht in der Ruhezeit) und meldet neue Noten. Standardmäßig ist das aus.": "If you switch on “New grade” in the app’s notifications, the app itself checks InfoPoint about every 3 hours (not during quiet hours) and tells you about new grades. It is off by default.",
 };

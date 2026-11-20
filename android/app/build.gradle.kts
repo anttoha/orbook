@@ -87,4 +87,6 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.10.0")
     // Тесты чистых функций виджета (правило содержания 31d) — обычный JUnit на компьютере, без телефона
     testImplementation("junit:junit:4.13.2")
+    // настоящий org.json для тестов на компьютере (в Android он встроен) — сверка разбора Noten с сервером
+    testImplementation("org.json:json:20240303")
 }

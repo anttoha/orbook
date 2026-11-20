@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { fetchNoten } from "../api/noten";
-import { freshKeys } from "../utils/noten";
+import { appNotenData, appNotenLogout, appNotenState, fetchNoten, fetchNotenApp, hasAppNoten } from "../api/noten";
+import { freshKeys, newerAppData } from "../utils/noten";
+import { usePlanStore } from "./planStore";
 
 // ─────────────────────────────────────────────────────────────
 // notenStore — Noten aus Home.InfoPoint (часть 36b).
@@ -9,6 +10,8 @@ import { freshKeys } from "../utils/noten";
 // (загрузка или «Abmelden») — по нему Sync понимает, что новее.
 // Логин InfoPoint: «Angemeldet bleiben» — имя и пароль в localStorage этого устройства, иначе — только
 // в памяти до перезагрузки. В Sync логин никогда не попадает (решение владельца 2026-11-20).
+// Android-App (часть 36c): запрос идёт из приложения прямо в InfoPoint, пароль с «Angemeldet bleiben»
+// приложение хранит само (зашифрованно) — здесь он только в памяти.
 // ─────────────────────────────────────────────────────────────
 export const useNotenStore = create(
   persist(
@@ -31,28 +34,47 @@ export const useNotenStore = create(
 
       // Обновить. Нет пароля — открываем вход. Возвращает код ошибки или null
       refresh: async () => {
-        const { username, password, busy } = get();
+        const { username, password, remember, busy } = get();
         if (busy) return null;
-        if (!username || !password) {
+        const app = hasAppNoten();
+        if (!username || (!password && !(app && appNotenState()?.saved))) {
           set({ loginOpen: true });
           return "no_login";
         }
         set({ busy: true });
         try {
-          const data = await fetchNoten(username, password);
-          set({ data, stamp: new Date().toISOString(), fresh: [...new Set([...get().fresh, ...freshKeys(get().data, data)])], error: null, loginOpen: false });
+          const data = app ? await fetchNotenApp({ url: usePlanStore.getState().meta?.infopointUrl, username, password, remember }) : await fetchNoten(username, password);
+          get().take(data);
+          set({ error: null, loginOpen: false });
           return null;
         } catch (error) {
           const code = errorCode(error);
-          set({ error: { code, retryAfter: error?.retryAfter ?? error?.details?.retryAfter ?? null }, ...(code === "denied" ? { password: "", loginOpen: true } : {}) });
+          const loginAgain = code === "denied" || code === "no_login";
+          const shown = code === "no_login" ? null : { code, retryAfter: error?.retryAfter ?? error?.details?.retryAfter ?? null };
+          set({ error: shown, ...(loginAgain ? { password: "", loginOpen: true } : {}) });
           return code;
         } finally {
           set({ busy: false });
         }
       },
 
+      // Новый ответ InfoPoint: «neu» — оценки, которых раньше не было
+      take: (data) => set({ data, stamp: new Date().toISOString(), fresh: [...new Set([...get().fresh, ...freshKeys(get().data, data)])] }),
+
+      // Android-App проверяла InfoPoint в фоне (часть 36c) — взять её оценки, если они новее наших
+      pullApp: () => {
+        if (!hasAppNoten()) return;
+        const fresh = newerAppData(get().data, appNotenData());
+        if (fresh) get().take(fresh);
+        const saved = appNotenState();
+        if (saved?.saved && !get().username && saved.username) set({ username: saved.username });
+      },
+
       // «Abmelden»: логин и оценки стираются здесь, а через Sync — и на других устройствах
-      logout: () => set({ data: null, stamp: new Date().toISOString(), fresh: [], username: "", password: "", error: null, loginOpen: false }),
+      logout: () => {
+        appNotenLogout();
+        set({ data: null, stamp: new Date().toISOString(), fresh: [], username: "", password: "", error: null, loginOpen: false });
+      },
 
       closeLogin: () => set({ loginOpen: false, error: null }),
       clearError: () => set({ error: null }),
@@ -65,8 +87,9 @@ export const useNotenStore = create(
     }),
     {
       name: "orbook.noten",
-      // пароль и имя — только с «Angemeldet bleiben»
-      partialize: (s) => ({ data: s.data, stamp: s.stamp, fresh: s.fresh, remember: s.remember, username: s.remember ? s.username : "", password: s.remember ? s.password : "" }),
+      // пароль и имя — только с «Angemeldet bleiben»; в приложении пароль хранит само приложение
+      partialize: (s) => ({ data: s.data, stamp: s.stamp, fresh: s.fresh, remember: s.remember, username: s.remember ? s.username : "", password: s.remember && !hasAppNoten() ? s.password : "" }),
+      onRehydrateStorage: () => (state) => state?.pullApp(),
     },
   ),
 );
@@ -82,7 +105,14 @@ function errorCode(error) {
       return "rate_limited";
     case "feature_disabled":
       return "disabled";
+    case "no_login":
+      return "no_login"; // в приложении нет сохранённого пароля — снова вход
     default:
       return "unreachable"; // 502, сеть, таймаут, офлайн
   }
+}
+
+// Вернулись в открытое приложение — может, фон уже принёс новые оценки
+if (typeof document !== "undefined") {
+  document.addEventListener("visibilitychange", () => document.visibilityState === "visible" && useNotenStore.getState().pullApp());
 }

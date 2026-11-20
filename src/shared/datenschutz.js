@@ -82,6 +82,8 @@ export const SECTIONS = [
       "Der Server reicht Benutzername und Passwort in diesem Moment an den InfoPoint deiner Schule weiter und speichert nichts davon: keinen Login, keine Noten, keine Fehlzeiten, nichts im Protokoll. Deinen Namen und die Namen der Lehrkräfte gibt er nicht weiter.",
       "Auf deinem Gerät liegen die geholten Noten und Fehlzeiten. Mit „Angemeldet bleiben“ auch Benutzername und Passwort – nur in diesem Browser, nie im Sync.",
       "Mit Sync kommen die geholten Noten verschlüsselt mit, solange „Noten“ dort eingeschaltet ist.",
+      "In der Android-App geht die Anfrage direkt vom Handy an den InfoPoint deiner Schule – Benutzername, Passwort und Noten kommen beim ORBook-Server gar nicht an. Mit „Angemeldet bleiben“ speichert die App Login und zuletzt geholte Noten verschlüsselt (Schlüssel im Android-Keystore, ohne Backup).",
+      "Schaltest du in den Mitteilungen der App „Neue Note“ ein, schaut die App selbst etwa alle 3 Stunden im InfoPoint nach (nicht in der Ruhezeit) und meldet neue Noten. Standardmäßig ist das aus.",
       "„Abmelden“ löscht Login und Noten auf diesem Gerät und im Sync.",
     ],
   },

@@ -14,6 +14,7 @@ data class NotifySettings(
     val cancelledToday: Boolean = true,
     val reminder: Boolean = true,
     val newExam: Boolean = false,
+    val newGrade: Boolean = false, // часть 36c: «Neue Note» из InfoPoint, по умолчанию выключено
     val quietOn: Boolean = true,
     val quietStart: LocalTime = LocalTime.of(21, 0),
     val quietEnd: LocalTime = LocalTime.of(6, 30),
@@ -23,7 +24,7 @@ data class NotifySettings(
 ) {
     fun toJson(): JSONObject = JSONObject()
         .put("on", on)
-        .put("prefs", JSONObject().put("planTomorrow", planTomorrow).put("cancelledToday", cancelledToday).put("reminder", reminder).put("newExam", newExam))
+        .put("prefs", JSONObject().put("planTomorrow", planTomorrow).put("cancelledToday", cancelledToday).put("reminder", reminder).put("newExam", newExam).put("newGrade", newGrade))
         .put("quiet", JSONObject().put("on", quietOn).put("start", hhmm(quietStart)).put("end", hhmm(quietEnd)))
         .put("before", JSONObject().put("on", beforeOn).put("minutes", beforeMinutes))
         .put("reminderTime", hhmm(reminderTime))
@@ -52,6 +53,7 @@ data class NotifySettings(
                 cancelledToday = bool(prefs, "cancelledToday", d.cancelledToday),
                 reminder = bool(prefs, "reminder", d.reminder),
                 newExam = bool(prefs, "newExam", d.newExam),
+                newGrade = bool(prefs, "newGrade", d.newGrade),
                 quietOn = bool(quiet, "on", d.quietOn),
                 quietStart = time(quiet?.optString("start"), d.quietStart),
                 quietEnd = time(quiet?.optString("end"), d.quietEnd),

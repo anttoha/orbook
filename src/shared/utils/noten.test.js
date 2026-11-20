@@ -13,6 +13,7 @@ import {
   gradeTone,
   latestGrade,
   neededGrade,
+  newerAppData,
   noteNumber,
   overviewOf,
   sameSubject,
@@ -121,5 +122,16 @@ describe("noten", () => {
     expect(examGrade({ date: "2026-09-16", subject: null }, data)).toBeNull();
     expect(waitMinutes(200)).toBe(4);
     expect(waitMinutes(null)).toBe(1);
+  });
+
+  it("newerAppData: оценки из фона приложения — только если они новее (и без мусора)", () => {
+    const ours = { fetchedAt: "2026-11-20T07:00:00Z", subjects: [] };
+    const later = { fetchedAt: "2026-11-20T10:00:00Z", subjects: [] };
+    expect(newerAppData(ours, { data: later })).toBe(later);
+    expect(newerAppData(later, { data: ours })).toBeNull();
+    expect(newerAppData(null, { data: ours })).toBe(ours);
+    expect(newerAppData(ours, null)).toBeNull();
+    expect(newerAppData(ours, { data: { fetchedAt: "kaputt", subjects: [] } })).toBeNull();
+    expect(newerAppData(ours, { data: { fetchedAt: "2026-11-21T00:00:00Z" } })).toBeNull();
   });
 });

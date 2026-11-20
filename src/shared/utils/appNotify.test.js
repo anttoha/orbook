@@ -6,7 +6,7 @@ describe("parseAppNotify", () => {
   it("читает ответ приложения", () => {
     const s = parseAppNotify(JSON.stringify({ permission: "granted", on: true, prefs: { newExam: true }, quiet: { on: false, start: "22:00", end: "07:00" }, before: { on: true, minutes: 5 }, reminderTime: "19:30", lastCheckAt: 1700000000000 }));
     expect(s).toMatchObject({ permission: "granted", on: true, quiet: { on: false, start: "22:00", end: "07:00" }, before: { on: true, minutes: 5 }, reminderTime: "19:30", lastCheckAt: 1700000000000 });
-    expect(s.prefs).toEqual({ ...DEFAULT_PUSH.prefs, newExam: true });
+    expect(s.prefs).toEqual({ ...DEFAULT_PUSH.prefs, newExam: true, newGrade: false }); // «Neue Note» (36c) по умолчанию выкл.
   });
 
   it("по умолчанию: «Vor der Stunde» выключено, 10 минут; ещё не спрашивали", () => {
@@ -33,7 +33,7 @@ it("запрещено в Android → app-denied, иначе app", () => {
 
 it("настройки для приложения — полные, даже если в сторе чего-то нет", () => {
   const out = appSettingsOf({ enabled: true, prefs: { reminder: false }, quiet: { on: false }, before: { on: true } });
-  expect(out).toEqual({ on: true, prefs: { ...DEFAULT_PUSH.prefs, reminder: false }, quiet: { ...DEFAULT_PUSH.quiet, on: false }, before: { on: true, minutes: 10 }, reminderTime: "18:00" });
+  expect(out).toEqual({ on: true, prefs: { ...DEFAULT_PUSH.prefs, newGrade: false, reminder: false }, quiet: { ...DEFAULT_PUSH.quiet, on: false }, before: { on: true, minutes: 10 }, reminderTime: "18:00" });
 });
 
 it("«Zuletzt geprüft»: сегодня — время, раньше — дата и время, нет — null", () => {

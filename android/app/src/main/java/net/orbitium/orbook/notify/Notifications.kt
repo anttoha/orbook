@@ -1,6 +1,7 @@
 package net.orbitium.orbook.notify
 
 import android.content.Context
+import net.orbitium.orbook.noten.NotenWorker
 import net.orbitium.orbook.widget.WidgetData
 import net.orbitium.orbook.widget.WidgetStore
 import net.orbitium.orbook.widget.WidgetWorker
@@ -84,6 +85,7 @@ object Notifications {
         WidgetWorker.schedule(context)
         if (settings.on) WidgetWorker.refreshNow(context)
         Alarms.schedule(context)
+        NotenWorker.schedule(context) // часть 36c: «Neue Note» включили или выключили
         Widgets.redraw(context)
     }
 

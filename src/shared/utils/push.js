@@ -13,6 +13,10 @@ export const PUSH_PREFS = [
   { key: "newExam", get title() { return translate("Neuer Test eingetragen"); }, get hint() { return translate("Wenn jemand einen Test einträgt"); } },
 ];
 
+// Часть 36c: только в Android-App и только со школьным InfoPoint — приложение само проверяет оценки
+export const NOTEN_PREF = { key: "newGrade", get title() { return translate("Neue Note"); }, get hint() { return translate("Wenn im InfoPoint eine Note dazukommt"); } };
+export const NOTEN_LOCKED_HINT = "Erst bei Noten mit „Angemeldet bleiben“ anmelden";
+
 // Что стоит на новом устройстве: три пункта из четырёх, свои курсы, ночью тихо
 export const DEFAULT_PUSH = {
   prefs: { planTomorrow: true, cancelledToday: true, reminder: true, newExam: false },

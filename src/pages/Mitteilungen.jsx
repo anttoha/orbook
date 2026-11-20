@@ -18,6 +18,7 @@ import PageHeader from "../components/ui/PageHeader";
 import StateScreen from "../components/ui/StateScreen";
 import { useSheet } from "../shared/hooks/useSheet";
 import { hasAppNotify, openAppNotifySettings } from "../shared/api/android";
+import { appNotenState, hasAppNoten } from "../shared/api/noten";
 import { usePlanStore } from "../shared/store/planStore";
 import { pushErrorText, usePushStore } from "../shared/store/pushStore";
 import { useUserStore } from "../shared/store/userStore";
@@ -44,6 +45,9 @@ const Mitteilungen = () => {
   const app = hasAppNotify();
   const on = enabled && (support === "ok" || support === "app");
   const count = courseCount(courses, picked, hiddenRequired);
+  // Часть 36c: «Neue Note» — приложение само ходит в InfoPoint, нужен сохранённый логин
+  const noten = app && hasAppNoten() && me?.features?.noten === true;
+  const notenLocked = noten && !appNotenState()?.saved;
 
   // При открытии: что умеет браузер и знает ли сервер это устройство.
   // Вернулись из настроек Android (разрешили уведомления) — проверить ещё раз
@@ -84,7 +88,7 @@ const Mitteilungen = () => {
       <TelegramCard />
       {!app && !on && support !== "ios-install" && <InstallCard />}
       <PushPreview app={app} />
-      <PushPrefs reminderTime={reminderTime} disabled={!on} />
+      <PushPrefs reminderTime={reminderTime} disabled={!on} noten={noten} notenLocked={notenLocked} />
       {app ? <BeforeCard disabled={!on} /> : <PushCourses courseCount={count.all > 0 ? count.on : null} disabled={!on} />}
       <div className="flex flex-col gap-3">
         <QuietCard disabled={!on} />
