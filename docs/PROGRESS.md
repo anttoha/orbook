@@ -655,3 +655,6 @@ Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница �
 
 ## Часть 35 «Untere Leiste» — макеты, ждёт «ок дизайн» (2026-11-20)
 Макеты: `design/neu/35-untere-leiste/` (gen.py на кирпичиках части 30). Вкладка-группа «Leistung» (меню над панелью, внутри группы вкладка показывает раздел), Darstellung → «Untere Leiste» (порядок, группы перетаскиванием, максимум 5 мест вместе с «Mehr», остальное — в «Mehr»), шторка группы (имя, значок, состав, «Gruppe auflösen»), ПК: группы в боковом меню, свой набор с переключателем Computer | Handy. Noten — после части 36.
+
+## Часть 35 — готово на демо (2026-11-20)
+Дизайн ок с правками владельца: меню группы компактнее (настройка «Gruppenmenü: Kompakt | Groß»), жест «зажал вкладку → провёл вверх → отпустил на разделе». Код: `shared/utils/navLayout.js` (+тесты), `TabBar`/`GroupMenu`/`useGroupPress`, `NavGroup` в сайдбаре, страница `/mehr/darstellung/leiste` (`NavSettings`, `components/leiste/`), «Mehr» показывает разделы не из панели, `nav` в Sync (Darstellung). По умолчанию «Leistung» = Tests, Noten, Aufgaben (Noten — с частью 36). В «Glas» группа открывается нажатием, без жеста. Скриншоты: `/root/work/orbook-compare/35-untere-leiste/shots/`.

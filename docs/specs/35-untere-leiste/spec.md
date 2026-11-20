@@ -33,8 +33,8 @@
 
 ## Данные
 - `userStore.nav = { phone, pc, menu }` (null-поля — по умолчанию). `phone`/`pc` — список: ключ раздела (`"start"`) или группа `{ id, name, icon, items: ["tests", "noten"] }`. `menu`: `"kompakt" | "gross"`.
-- Разделы (`shared/utils/navLayout.js`): start, woche, heute, tests, aufgaben (`/testen?liste=hausaufgaben`), termine (`/testen?liste=termine`), materialien, statistik (feature `statistics`), noten и fehlzeiten — **появятся в части 36**: в реестре есть, но `ready: false` — нигде не показываются (группа «Leistung» пока = Tests → обычная вкладка Tests, как сейчас).
-- По умолчанию: телефон `start, woche, Leistung(tests, noten)`; ПК `start, woche, heute, Leistung(tests, noten), materialien`.
+- Разделы (`shared/utils/navLayout.js`): start, woche, heute, tests, aufgaben (`/testen?liste=hausaufgaben`), termine (`/testen?liste=termine`), materialien, statistik (feature `statistics`), noten и fehlzeiten — **появятся в части 36**: в реестре есть, но `ready: false` — нигде не показываются (пока «Leistung» = Tests и Aufgaben).
+- По умолчанию: телефон `start, woche, Leistung(tests, noten, aufgaben)`; ПК `start, woche, heute, Leistung(tests, noten, aufgaben), materialien`. Aufgaben добавлены, чтобы группа была видна, пока Noten нет (часть 36); убираются минусом.
 - Неизвестные ключи из Sync (новая версия) пропускаются; дубликаты убираются; при неправильных данных — по умолчанию (`cleanNav`).
 - Sync: `nav` добавляется в `darstellungOf` — едет вместе с Darstellung, старая версия поле просто хранит.
 - Datenschutz: отдельной строки не нужно — новое поле входит в «Darstellung», которая уже описана; сервер ничего нового не получает.
@@ -45,7 +45,7 @@
 
 ## Нет в этой части
 - Noten, Fehlzeiten (часть 36). Перетаскивания внутри самого меню группы. Своих значков сверх шести.
-- В «Glas» меню группы — та же карточка (стеклянный фон через токены Glas); жест работает и там.
+- В «Glas» вкладка группы открывает меню нажатием; жест «провёл вверх» там не работает — палец забирает стеклянная панель библиотеки.
 
 ## Отличия от дизайна
 - Нет. Строка «Untere Leiste» справа показывает «N Plätze».

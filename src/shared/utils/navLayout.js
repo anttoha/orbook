@@ -32,7 +32,8 @@ export const LIMITS = { phone: 4, pc: 8 };
 export const GROUP_LIMIT = 6;
 export const MENU_STYLES = ["kompakt", "gross"];
 
-const leistung = () => ({ id: "leistung", name: "Leistung", icon: "award", items: ["tests", "noten"] });
+// «Leistung»: Tests и Noten (владелец); Aufgaben — чтобы группа была группой, пока Noten нет (часть 36)
+const leistung = () => ({ id: "leistung", name: "Leistung", icon: "award", items: ["tests", "noten", "aufgaben"] });
 export const defaultNav = (device) =>
   device === "pc" ? ["start", "woche", "heute", leistung(), "materialien"] : ["start", "woche", leistung()];
 
@@ -140,11 +141,11 @@ export function fromContainers(c, list) {
   return c.top.map((key) => (isGroupKey(key) ? { ...groups[key], items: c[key] ?? [] } : key));
 }
 
-const containerOf = (c, id) => Object.keys(c).find((k) => c[k].includes(id));
+export const containerOf = (c, id) => Object.keys(c).find((k) => c[k].includes(id));
 const topCount = (c) => c.top.length;
 // Пустое место в конце списка: «top», «rest» или «in:g:id» (внутри группы — id группы занят её строкой наверху)
 export const dropZone = (key) => (isGroupKey(key) ? `in:${key}` : key);
-const zoneTarget = (over) => (over === "top" || over === "rest" ? over : over.startsWith("in:") ? over.slice(3) : null);
+export const zoneTarget = (over) => (over === "top" || over === "rest" ? over : over.startsWith("in:") ? over.slice(3) : null);
 
 // Перенести пункт active на место over (пункт или сам контейнер). Возвращает { c, error }:
 // error = "voll" — наверху нет места, "gruppe-voll" — в группе уже 6, "nein" — так нельзя (группу в группу)

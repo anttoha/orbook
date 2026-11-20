@@ -1,4 +1,4 @@
-import { Bell, Folder, Info, Palette, Smartphone, Sparkles, Sun, Table2, UserPlus, UsersRound } from "lucide-react";
+import { Bell, Info, Palette, Smartphone, Sparkles, Sun, Table2, UserPlus, UsersRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { version } from "../../package.json";
@@ -9,7 +9,7 @@ import MenuRow from "../components/more/MenuRow";
 import InstallCard from "../components/push/InstallCard";
 import { usePushStore } from "../shared/store/pushStore";
 import { prefsSummary } from "../shared/utils/push";
-import { KeyIcon, ShieldIcon, StatsIcon, SyncIcon } from "../components/ui/icons";
+import { KeyIcon, ShieldIcon, SyncIcon } from "../components/ui/icons";
 import { changelog } from "../shared/changelog";
 import { androidApp } from "../shared/api/android";
 import AndroidCard from "../components/android/AndroidCard";
@@ -32,6 +32,8 @@ import { courseCount } from "../shared/utils/courses";
 import { isTeacher } from "../shared/utils/examRules";
 import { hasAppNotify } from "../shared/api/android";
 import { translate } from "../shared/i18n/translate";
+import { navOf, restOf, SECTIONS } from "../shared/utils/navLayout";
+import { SECTION_ICONS } from "../components/navbar/navIcons";
 
 const THEME_LABELS = { get light() { return translate("Hell"); }, get dark() { return translate("Dunkel"); }, get system() { return translate("System"); } };
 
@@ -92,7 +94,9 @@ const PhoneMenu = () => {
   const links = useMaterials((s) => (s.status === "idle" ? null : s.items.length));
   const ensureMaterials = useMaterials((s) => s.ensure);
   const { openSheet } = useSheet();
-  const statsEnabled = me?.features?.statistics !== false; // школа могла вимкнути статистику
+  const nav = useUserStore((s) => s.nav);
+  const rest = restOf(navOf(nav, "phone"), me?.features); // школа могла вимкнути статистику — її тоді немає
+  const restValues = { statistik: t("Woche · Monat"), materialien: links ? `${links} ${t(links === 1 ? "Link" : "Links")}` : null };
   const [seiten, einstellungen] = settingsGroups;
   // «6 Links» праворуч: список питаємо один раз за сесію (далі його оновлює сторінка Materialien)
   useEffect(() => {
@@ -110,9 +114,11 @@ const PhoneMenu = () => {
 
       {/* «Seiten» — просто сторінки й вікна; Statistik переїхала сюди з нижнього меню (частина 22) */}
       <ListCard title={seiten.title} hint={seiten.hint}>
-        {statsEnabled && <MenuRow to="/statistik" icon={StatsIcon} label={t("Statistik")} value={t("Woche · Monat")} />}
+        {/* часть 35: разделы, которых нет в нижней панели (Statistik, Materialien … — что выбрал пользователь) */}
+        {rest.map((key) => (
+          <MenuRow key={key} to={SECTIONS[key].to} icon={SECTION_ICONS[key]} label={SECTIONS[key].label} value={restValues[key]} />
+        ))}
         <MenuRow to="/mehr/neuigkeiten" icon={Sparkles} label={t("Neuigkeiten")} badge={<NewBadge />} value={changelog[0]?.version} />
-        <MenuRow to="/materialien" icon={Folder} label={t("Materialien")} value={links ? `${links} ${t(links === 1 ? "Link" : "Links")}` : null} />
         {/* частина 16: посилання і QR для однокласників; вимкнене — шторка так і скаже */}
         <MenuRow onClick={() => openSheet("einladen")} icon={UserPlus} label={t("Klasse einladen")} value="Link + QR" />
         {/* часть 31a/31c: в APK — версия и обновление, в браузере — скачать (пока на сервере есть APK) */}

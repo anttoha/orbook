@@ -23,10 +23,15 @@ describe("cleanNav", () => {
 });
 
 describe("visibleNav", () => {
-  it("Noten ещё нет (часть 36): «Leistung» с одним Tests — обычная вкладка", () => {
+  it("Noten ещё нет (часть 36): в «Leistung» по умолчанию Tests и Aufgaben", () => {
     const nav = visibleNav(defaultNav("phone"), {});
-    expect(nav.map((n) => n.type)).toEqual(["link", "link", "link"]);
-    expect(nav[2].tab.to).toBe("/testen");
+    expect(nav.map((n) => n.type)).toEqual(["link", "link", "group"]);
+    expect(nav[2].tabs.map((t) => t.key)).toEqual(["tests", "aufgaben"]);
+  });
+  it("группа из одного доступного раздела — обычная вкладка", () => {
+    const nav = visibleNav(["start", { ...leistung, items: ["tests", "noten"] }], {});
+    expect(nav[1]).toMatchObject({ type: "link" });
+    expect(nav[1].tab.to).toBe("/testen");
   });
   it("группа из двух доступных разделов остаётся группой", () => {
     const nav = visibleNav(["start", { ...leistung, items: ["tests", "statistik"] }], {});
@@ -46,7 +51,7 @@ describe("visibleNav", () => {
 
 describe("restOf", () => {
   it("всё доступное, чего нет в панели", () => {
-    expect(restOf(defaultNav("phone"), {})).toEqual(["heute", "aufgaben", "termine", "materialien", "statistik"]);
+    expect(restOf(defaultNav("phone"), {})).toEqual(["heute", "termine", "materialien", "statistik"]);
   });
 });
 

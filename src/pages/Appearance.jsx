@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { House, RotateCcw, Table } from "lucide-react";
+import { Award, House, RotateCcw, Table } from "lucide-react";
 import Badge from "../components/ui/Badge";
 import AccentPicker from "../components/more/AccentPicker";
 import DesignPicker from "../components/more/DesignPicker";
@@ -16,6 +16,7 @@ import { useTheme } from "../shared/hooks/useTheme";
 import { useUserStore } from "../shared/store/userStore";
 import { effectiveMotion } from "../shared/utils/appearance";
 import { planOf, planSummary } from "../shared/utils/planView";
+import { navOf, placesUsed } from "../shared/utils/navLayout";
 import { useMediaQuery } from "../shared/hooks/useMediaQuery";
 import PillButton from "../components/ui/PillButton";
 import { translate } from "../shared/i18n/translate";
@@ -93,6 +94,8 @@ const Appearance = () => {
       <ListCard title={t("Anpassen")}>
         <MenuRow to="/start/anpassen" icon={House} label={t("Start")} badge={!user.startSeen && <Badge variant="live">{t("Neu")}</Badge>} />
         <MenuRow to="/mehr/darstellung/stundenplan" icon={Table} label={t("Stundenplan")} value={planSummary(planOf(user.plan)).map(t).join(" · ")} />
+        {/* часть 35: что в нижней панели (на ПК — в боковом меню) и группы */}
+        <MenuRow to="/mehr/darstellung/leiste" icon={Award} label={t("Untere Leiste")} value={`${placesUsed(navOf(user.nav, "phone"))} ${t("Plätze")}`} />
       </ListCard>
 
       <PillButton glass="glass" size="lg" onClick={reset} className="flex h-12 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink transition-opacity active:opacity-80">
