@@ -2162,4 +2162,5 @@ export const uk = {
   "Auf deinem Gerät liegen die geholten Noten und Fehlzeiten. Mit „Angemeldet bleiben“ auch Benutzername und Passwort – nur in diesem Browser, nie im Sync.": "На твоєму пристрої зберігаються отримані оцінки й пропуски. З «Залишатися в системі» — також ім’я користувача й пароль, лише в цьому браузері, ніколи не в Sync.",
   "Mit Sync kommen die geholten Noten verschlüsselt mit, solange „Noten“ dort eingeschaltet ist.": "Із Sync отримані оцінки теж синхронізуються, зашифровано, поки там увімкнено «Оцінки».",
   "„Abmelden“ löscht Login und Noten auf diesem Gerät und im Sync.": "«Вийти» видаляє логін і оцінки на цьому пристрої та в Sync.",
+  "Gerade nicht möglich – wieder in {n} Min.": "Зараз не вийде – спробуй через {n} хв.",
 };

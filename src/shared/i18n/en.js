@@ -2162,4 +2162,5 @@ export const en = {
   "Auf deinem Gerät liegen die geholten Noten und Fehlzeiten. Mit „Angemeldet bleiben“ auch Benutzername und Passwort – nur in diesem Browser, nie im Sync.": "The fetched grades and absences are stored on your device. With “Stay signed in” also your username and password – only in this browser, never in Sync.",
   "Mit Sync kommen die geholten Noten verschlüsselt mit, solange „Noten“ dort eingeschaltet ist.": "With Sync, the fetched grades are included, encrypted, as long as “Grades” is switched on there.",
   "„Abmelden“ löscht Login und Noten auf diesem Gerät und im Sync.": "“Sign out” deletes the login and grades on this device and in Sync.",
+  "Gerade nicht möglich – wieder in {n} Min.": "Not possible right now – try again in {n} min.",
 };

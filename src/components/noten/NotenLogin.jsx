@@ -1,4 +1,4 @@
-import { ClipboardCheck } from "lucide-react";
+import { ClipboardCheck, TriangleAlert } from "lucide-react";
 import { useState } from "react";
 import { useT } from "../../shared/hooks/useT";
 import { usePlanStore } from "../../shared/store/planStore";
@@ -8,6 +8,24 @@ import { KeyIcon } from "../ui/icons";
 import PasswordField from "../ui/PasswordField";
 import RowSwitch from "../ui/RowSwitch";
 import TextField from "../ui/TextField";
+import { translate } from "../../shared/i18n/translate";
+import { waitMinutes } from "../../shared/utils/noten";
+
+// Почему вход не получился (кроме неверного пароля — он у поля, и «nicht erreichbar» — плашка сверху).
+// Сервер пускает удачную загрузку раз в 5 минут и 5 попыток за 10 минут с устройства: после «Abmelden»
+// и сразу нового входа приходит too_often — без этого текста форма выглядела бы так, будто ничего не происходит
+function loginErrorText(error) {
+  switch (error?.code) {
+    case "too_often":
+      return translate("Gerade nicht möglich – wieder in {n} Min.", { n: waitMinutes(error.retryAfter) });
+    case "rate_limited":
+      return translate("Gerade zu viele Anfragen – versuch es gleich nochmal");
+    case "disabled":
+      return translate("Noten sind für deine Klasse ausgeschaltet");
+    default:
+      return null;
+  }
+}
 
 // ─────────────────────────────────────────────────────────────
 // Вход в Home.InfoPoint (макеты handy-04, 05): свой логин школы, «Angemeldet bleiben», «Anmelden».
@@ -17,9 +35,11 @@ import TextField from "../ui/TextField";
 const NotenLogin = ({ canCancel }) => {
   const t = useT();
   const school = usePlanStore((s) => s.me?.schoolName);
-  const { username: savedName, remember: savedRemember, busy, error, login, closeLogin } = useNotenStore();
+  const { username: savedName, password: savedPassword, remember: savedRemember, busy, error, login, closeLogin } = useNotenStore();
+  // Пока идёт вход, вместо формы серые плашки — после ошибки форма рисуется заново и берёт набранное из store
+  // (неверный пароль store стирает сам)
   const [username, setUsername] = useState(savedName);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState(savedPassword);
   const [remember, setRemember] = useState(savedRemember);
   const denied = error?.code === "denied";
 
@@ -61,6 +81,12 @@ const NotenLogin = ({ canCancel }) => {
         <KeyIcon className="size-4.5" />
         {busy ? t("Wird geprüft …") : t("Anmelden")}
       </Button>
+      {loginErrorText(error) && (
+        <p role="alert" className="-mt-1.5 flex items-center gap-1.5 text-body-sm text-danger">
+          <TriangleAlert className="size-4 shrink-0" />
+          {loginErrorText(error)}
+        </p>
+      )}
       {canCancel && (
         <Button onClick={closeLogin} className="flex-none">
           {t("Abbrechen")}
