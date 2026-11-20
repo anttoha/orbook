@@ -1,8 +1,13 @@
 package net.orbitium.orbook
 
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import net.orbitium.orbook.notify.Notifications
+import net.orbitium.orbook.notify.Notifier
 import net.orbitium.orbook.widget.WidgetStore
 import net.orbitium.orbook.widget.WidgetWorker
 import net.orbitium.orbook.widget.Widgets
@@ -14,7 +19,12 @@ import org.json.JSONObject
  * Отвечает только нашему сайту: на чужой странице методы ничего не делают.
  * Обёртка во фронте — src/shared/api/android.js.
  */
-class AndroidBridge(private val web: WebView, private val host: WidgetHost? = null) {
+class AndroidBridge(private val web: WebView, private val host: WidgetHost? = null, private val notifyHost: NotifyHost? = null) {
+    /** Часть 31e: окно разрешения Android показывает экран приложения (MainActivity). */
+    fun interface NotifyHost {
+        fun requestNotifyPermission()
+    }
+
     /** Экран «Widget einstellen» (WidgetConfigActivity) узнаёт, что виджет сохранили или закрыли. */
     interface WidgetHost {
         fun widgetSaved(id: Int)
@@ -92,6 +102,48 @@ class AndroidBridge(private val web: WebView, private val host: WidgetHost? = nu
     fun refreshWidgets() {
         if (allowed()) WidgetWorker.refreshNow(context)
     }
+
+    // ── уведомления самого приложения (часть 31e) ──
+
+    /** {"on", "prefs", "quiet", "before", "reminderTime", "permission", "lastCheckAt"} — src/shared/utils/appNotify.js */
+    @JavascriptInterface
+    fun notifyState(): String? = if (allowed()) Notifications.state(context).toString() else null
+
+    @JavascriptInterface
+    fun saveNotify(json: String) {
+        if (!allowed()) return
+        try {
+            Notifications.save(context, JSONObject(json))
+        } catch (e: JSONException) {
+            return
+        }
+    }
+
+    /** «Einschalten»: окно разрешения Android; ответ — событием {type: "notify", permission}. */
+    @JavascriptInterface
+    fun requestNotify() {
+        if (!allowed()) return
+        val host = notifyHost
+        if (host == null || Build.VERSION.SDK_INT < 33) notifyPermission() else web.post { host.requestNotifyPermission() }
+    }
+
+    /** «Einstellungen öffnen»: настройки уведомлений ORBook в Android. */
+    @JavascriptInterface
+    fun openNotifySettings() {
+        if (!allowed()) return
+        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+            .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+    }
+
+    @JavascriptInterface
+    fun testNotify() {
+        if (allowed()) Notifications.test(context)
+    }
+
+    /** Ответ на окно разрешения — сайту. */
+    fun notifyPermission() = send(JSONObject().put("type", "notify").put("permission", Notifier.permission(context)))
 
     /** Событие для сайта: window.addEventListener("orbook-android", e => e.detail) */
     private fun send(detail: JSONObject) {

@@ -102,6 +102,7 @@ data class Snapshot(
     val design: String = "soft", // часть 31d: оформление приложения — «Wie App» у виджета
     val accent: String = "violett",
     val plan: PlanView = PlanView(),
+    val activeId: Int? = null, // часть 31e: открытый класс — о его уроках напоминает «Vor der Stunde»
 )
 
 /** «Stundenplan» приложения (src/shared/utils/planView.js) — то, что нужно виджету. */
@@ -118,6 +119,10 @@ data class PlanView(
  */
 class WidgetStore(context: Context) {
     private val prefs = context.getSharedPreferences("orbook-widget", Context.MODE_PRIVATE)
+
+    /** Часть 31e: какой ответ сервера уже «показан» уведомлениями — с ним сравнивается новый. */
+    fun seen(key: String): String? = prefs.getString("seen-$key", null)
+    fun saveSeen(key: String, json: String) = prefs.edit().putString("seen-$key", json).apply()
 
     fun saveSnapshot(json: String) = prefs.edit().putString("snapshot", json).apply()
 
@@ -143,6 +148,7 @@ class WidgetStore(context: Context) {
             texts = Texts(texts.toMap(), o.optString("lang", "de")),
             design = look?.optString("design")?.takeIf { it in setOf("soft", "glas", "klar") } ?: "soft",
             accent = look?.optString("accent")?.ifEmpty { null } ?: "violett",
+            activeId = if (o.isNull("activeId") || !o.has("activeId")) null else o.optInt("activeId"),
             plan = PlanView(
                 lessonLabel = if (plan?.optString("lessonLabel") == "name") "name" else "kuerzel",
                 showRoom = plan?.optBoolean("showRoom", true) ?: true,

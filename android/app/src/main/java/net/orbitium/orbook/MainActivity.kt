@@ -1,5 +1,6 @@
 package net.orbitium.orbook
 
+import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
@@ -8,13 +9,16 @@ import android.os.Bundle
 import android.webkit.CookieManager
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import net.orbitium.orbook.notify.NotifySettings
 import net.orbitium.orbook.widget.WidgetWorker
 
 /**
@@ -32,6 +36,12 @@ class MainActivity : ComponentActivity() {
         fileCallback = null
     }
 
+    // Часть 31e: окно «ORBook darf Benachrichtigungen senden?» (Android 13+); ответ — сайту
+    private val askNotify = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        NotifySettings.markAsked(this)
+        bridge.notifyPermission()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -40,7 +50,7 @@ class MainActivity : ComponentActivity() {
         setContentView(withSystemBarPadding(this, web))
 
         setUpWebView()
-        bridge = AndroidBridge(web)
+        bridge = AndroidBridge(web, notifyHost = { askNotify.launch(Manifest.permission.POST_NOTIFICATIONS) })
         web.addJavascriptInterface(bridge, AndroidBridge.NAME)
         onBackPressedDispatcher.addCallback(this, backCallback)
 
@@ -60,6 +70,7 @@ class MainActivity : ComponentActivity() {
     // Приложение открыли — заодно освежить виджеты (новый вход, новый план)
     override fun onResume() {
         super.onResume()
+        web.settings.cacheMode = WebSettings.LOAD_DEFAULT // сеть снова может быть — обычный режим
         WidgetWorker.refreshNow(this)
     }
 
@@ -87,6 +98,14 @@ class MainActivity : ComponentActivity() {
             if (Site.isOwn(request.url)) return false
             openOutside(request.url)
             return true
+        }
+
+        // Часть 31e: страница не открылась (нет сети) — показать сохранённую. Обычно это делает service worker
+        // сайта; если его ещё нет (первый запуск новой версии), выручает кэш самого WebView
+        override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
+            if (!request.isForMainFrame || view.settings.cacheMode == WebSettings.LOAD_CACHE_ELSE_NETWORK) return
+            view.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+            view.reload()
         }
 
         override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {

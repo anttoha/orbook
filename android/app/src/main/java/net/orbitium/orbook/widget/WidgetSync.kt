@@ -7,16 +7,15 @@ import android.net.Uri
 import android.webkit.CookieManager
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.updateAll
-import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import net.orbitium.orbook.Site
+import net.orbitium.orbook.notify.Notifications
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -33,10 +32,13 @@ object WidgetSync {
         val manager = GlanceAppWidgetManager(context)
         val configs = manager.getGlanceIds(OrbWidget::class.java)
             .mapNotNull { store.config(manager.getAppWidgetId(it)) }
-        for ((classId, mine) in configs.map { it.classId to it.mine }.distinct()) {
+        // часть 31e: включены уведомления — загружаем и классы без виджета («Meine Kurse»)
+        val notify = if (Notifications.active(context)) Notifications.classIds(context).map { it to true } else emptyList()
+        for ((classId, mine) in (configs.map { it.classId to it.mine } + notify).distinct()) {
             val own = snapshot.classes.firstOrNull { it.id == classId }
             fetch(store, classId, mine, own)
         }
+        Notifications.afterSync(context)
         OrbWidget().updateAll(context)
     }
 
@@ -64,7 +66,8 @@ object WidgetSync {
                 // остальное (сервер занят, 5xx) — оставляем последние данные, виджет покажет «Stand …»
             }
         } catch (e: IOException) {
-            // нет сети — тоже последние данные и «Stand …»
+            // нет сети — последние данные и «Stand …»; данных ещё нет совсем — «Keine Verbindung», а не вечная загрузка
+            if (store.data(key) == null) store.saveState(key, "offline")
         } finally {
             connection.disconnect()
         }
@@ -88,10 +91,12 @@ class WidgetWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         fun schedule(context: Context) {
             val store = WidgetStore(context)
             val ids = AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, OrbWidgetReceiver::class.java))
+            // нет ни виджетов, ни уведомлений — фоновые запросы не нужны
+            if (ids.isEmpty() && !Notifications.active(context)) { stop(context); return }
             val minutes = ids.toList().mapNotNull { id -> store.config(id)?.refresh }.minOrNull() ?: 30
-            val request = PeriodicWorkRequestBuilder<WidgetWorker>(minutes.toLong(), TimeUnit.MINUTES)
-                .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
-                .build()
+            // Без условия «есть сеть» (часть 31e): без интернета задача всё равно перерисует виджеты
+            // по сохранённым данным («Jetzt» идёт дальше), а загрузка тихо не удастся
+            val request = PeriodicWorkRequestBuilder<WidgetWorker>(minutes.toLong(), TimeUnit.MINUTES).build()
             // UPDATE: новая частота сразу, без потери уже запланированного запуска
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(PERIODIC, ExistingPeriodicWorkPolicy.UPDATE, request)
         }

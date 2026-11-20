@@ -25,6 +25,8 @@ object Widgets {
         return count(width) to count(height)
     }
 
+    fun count(context: Context): Int = ids(context).size
+
     fun describe(context: Context, id: Int): JSONObject {
         val (cols, rows) = cells(context, id)
         return (WidgetStore(context).config(id) ?: WidgetConfig()).toJson().put("id", id).put("cols", cols).put("rows", rows)

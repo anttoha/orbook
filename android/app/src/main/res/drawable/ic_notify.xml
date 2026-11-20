@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Значок уведомления в строке состояния (часть 31e): орбита ORBook, одноцветный — Android красит его сам -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M12 12m-3.5 0a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0"
+        android:fillColor="#FFFFFFFF" />
+    <path
+        android:pathData="M3.2 15.6C1.9 13 6 8.6 12.3 5.6c6.3-3 11.2-3.2 11.9-0.6"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M19.5 7.5m-1.6 0a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0 -3.2 0"
+        android:fillColor="#FFFFFFFF" />
+</vector>

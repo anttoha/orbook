@@ -66,7 +66,8 @@ class OrbWidget : GlanceAppWidget() {
         val config = store.config(appWidgetId) ?: WidgetConfig()
         val snapshot = store.snapshot()
         val key = WidgetStore.key(config.classId, config.mine)
-        val json = store.data(key)
+        // часть 31e: своего ответа ещё нет (только что положили, а сети нет) — берём тот же класс с другим «Nur meine Kurse»
+        val json = store.data(key) ?: store.data(WidgetStore.key(config.classId, !config.mine))
         val state = WidgetState(
             config = config,
             snapshot = snapshot,
@@ -150,6 +151,7 @@ private fun WidgetContent(context: Context, s: WidgetState) {
             when {
                 s.status == "auth" -> Locked(s, look)
                 s.status == "ended" -> Ended(s, look)
+                data == null && s.status == "offline" -> NoConnection(s, look)
                 data == null -> Loading(look)
                 else -> Kind(s, data, look)
             }
@@ -307,6 +309,15 @@ private fun ColumnScope.Ended(s: WidgetState, look: Look) {
     Box(GlanceModifier.fillMaxWidth().height(36.dp).cornerRadius(18.dp).background(look.of(look.p.sand)), contentAlignment = Alignment.Center) {
         Label(t.t("Neuer Code"), look.of(look.p.ink), 13, heavy = true)
     }
+}
+
+/** Ни разу не загрузили, а сети нет: честно сказать, а не крутить загрузку вечно. */
+@Composable
+private fun ColumnScope.NoConnection(s: WidgetState, look: Look) {
+    Header(s, look, "ORBook", R.drawable.w_wifi_off)
+    Fill()
+    Label(s.texts.t("Keine Verbindung"), look.of(look.p.faint), 15, heavy = true)
+    Fill()
 }
 
 /** Только что положили на рабочий стол — данные ещё грузятся: серые полоски, как скелет на сайте. */

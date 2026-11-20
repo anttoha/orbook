@@ -21,9 +21,9 @@ class OrbWidgetReceiver : GlanceAppWidgetReceiver() {
         appWidgetIds.forEach(store::removeConfig)
     }
 
-    // Последний виджет убрали — фоновые запросы больше не нужны
+    // Последний виджет убрали — фоновые запросы нужны, только если включены уведомления (часть 31e)
     override fun onDisabled(context: Context) {
         super.onDisabled(context)
-        WidgetWorker.stop(context)
+        WidgetWorker.schedule(context)
     }
 }

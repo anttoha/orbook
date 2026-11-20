@@ -4,6 +4,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Обновление APK с нашего сайта: Android сам спросит разрешение «Unbekannte Apps installieren» -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- Часть 31e: уведомления самого приложения (без Google) и напоминание «Vor der Stunde» точно ко времени -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <!-- после перезагрузки телефона будильники надо поставить заново -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="false"
@@ -60,6 +66,16 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+
+        <!-- Часть 31e: будильники уведомлений и перезапуск после перезагрузки или обновления -->
+        <receiver
+            android:name=".notify.AlarmReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
 
         <!-- Отдаёт скачанный APK системному установщику (без доступа к остальным файлам) -->
         <provider
