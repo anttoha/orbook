@@ -2096,4 +2096,6 @@ export const en = {
   "Im Menü ist kein Platz mehr – zieh es in eine Gruppe": "The menu is full – drag it into a group",
   "In einer Gruppe sind höchstens 6": "A group holds at most 6",
   "Eine Gruppe passt nicht in eine Gruppe": "A group can’t go inside a group",
+  "Unten in der Leiste gibt es jetzt Gruppen: „Leistung“ hat Tests und Aufgaben (bald auch Noten). Antippen – oder draufdrücken und den Finger nach oben ziehen, dann bist du sofort da.": "The bottom bar now has groups: “Performance” holds Tests and Homework (grades coming soon). Tap it – or press and slide your finger up to jump straight there.",
+  "Du bestimmst selbst, was unten steht: Darstellung → Untere Leiste. Reihenfolge ziehen, eigene Gruppen bauen, Rest landet in „Mehr“. Am PC gilt das fürs Seitenmenü.": "You decide what’s in the bottom bar: Appearance → Bottom bar. Drag to reorder, build your own groups, the rest goes to “More”. On a computer this works for the sidebar.",
 };

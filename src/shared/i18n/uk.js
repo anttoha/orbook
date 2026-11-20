@@ -2078,7 +2078,7 @@ export const uk = {
   "{name} nach unten": "Додати {name} на панель",
   "{name} bearbeiten": "Змінити {name}",
   "Unten": "Унизу",
-  "In „Mehr“": "У «Більше»",
+  "In „Mehr“": "У «Ще»",
   "Untere Leiste": "Нижня панель",
   "Plätze": "місць",
   "Computer": "Комп’ютер",
@@ -2096,4 +2096,6 @@ export const uk = {
   "Im Menü ist kein Platz mehr – zieh es in eine Gruppe": "У меню немає місця – перетягни в групу",
   "In einer Gruppe sind höchstens 6": "У групі щонайбільше 6",
   "Eine Gruppe passt nicht in eine Gruppe": "Групу не можна вкласти в групу",
+  "Unten in der Leiste gibt es jetzt Gruppen: „Leistung“ hat Tests und Aufgaben (bald auch Noten). Antippen – oder draufdrücken und den Finger nach oben ziehen, dann bist du sofort da.": "Унизу на панелі тепер є групи: «Успішність» містить Тести й Завдання (скоро й Оцінки). Натисни – або затисни й проведи пальцем угору, і ти одразу там.",
+  "Du bestimmst selbst, was unten steht: Darstellung → Untere Leiste. Reihenfolge ziehen, eigene Gruppen bauen, Rest landet in „Mehr“. Am PC gilt das fürs Seitenmenü.": "Ти сам вирішуєш, що буде внизу: Вигляд → Нижня панель. Перетягуй, створюй свої групи, решта – у «Ще». На комп’ютері так само для бічного меню.",
 };

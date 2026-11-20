@@ -658,3 +658,6 @@ Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница �
 
 ## Часть 35 — готово на демо (2026-11-20)
 Дизайн ок с правками владельца: меню группы компактнее (настройка «Gruppenmenü: Kompakt | Groß»), жест «зажал вкладку → провёл вверх → отпустил на разделе». Код: `shared/utils/navLayout.js` (+тесты), `TabBar`/`GroupMenu`/`useGroupPress`, `NavGroup` в сайдбаре, страница `/mehr/darstellung/leiste` (`NavSettings`, `components/leiste/`), «Mehr» показывает разделы не из панели, `nav` в Sync (Darstellung). По умолчанию «Leistung» = Tests, Noten, Aufgaben (Noten — с частью 36). В «Glas» группа открывается нажатием, без жеста. Скриншоты: `/root/work/orbook-compare/35-untere-leiste/shots/`.
+
+## Часть 35 — правки и прод v0.22.0 (2026-11-20)
+Меню группы поверх подсказки «прокрути вниз» (панель z-40, пока меню открыто), анимации: меню вырастает из вкладки, строки поднимаются по очереди, уход вниз, поворот шеврона (`menu-up`/`menu-down`/`item-rise` в index.css, с вариантами для «Weniger»/«Aus»). Changelog 0.22.0 + EN/UK, `docs/releases/v0.22.0.md`, тег v0.22.0.

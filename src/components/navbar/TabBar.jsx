@@ -42,7 +42,8 @@ const TabBar = ({ tabs, look = "kompakt" }) => {
   if (glass) return <GlassBar tabs={tabs} look={look} activeOf={activeOf} openId={openId} setOpenId={setOpenId} bar={bar} />;
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-10 bg-linear-to-t from-paper to-transparent pt-10 pb-5.5 lg:hidden print:hidden">
+    // Открытое меню группы — над подсказкой «прокрути вниз» (PageScrollHint, z-30)
+    <div className={cn("pointer-events-none fixed inset-x-0 bottom-0 bg-linear-to-t from-paper to-transparent pt-10 pb-5.5 lg:hidden print:hidden", openId ? "z-40" : "z-10")}>
       <div className="px-4">
         <nav ref={bar} className="pointer-events-auto flex h-14.5 rounded-full border border-hair bg-card p-1.75">
           {tabs.map((tab, index) =>
@@ -99,6 +100,11 @@ const GroupTab = ({ tab, look, first, open, setOpen }) => {
     navigate(to);
   };
   const { hover, handlers } = useGroupPress({ open, setOpen, onPick: pick });
+  // Меню остаётся на странице, пока доигрывает уход вниз. «Animationen: Aus» — анимаций нет, убираем сразу
+  const [shown, setShown] = useState(open);
+  if (open && !shown) setShown(true);
+  const instant = document.documentElement.dataset.motion === "aus";
+  const visible = open || (shown && !instant);
   const current = tab.current; // відкритий розділ групи або null
   const Icon = current?.icon ?? tab.icon;
   const menuId = `gruppe-${tab.id}`;
@@ -116,9 +122,11 @@ const GroupTab = ({ tab, look, first, open, setOpen }) => {
       >
         <Icon className="size-5 shrink-0" />
         <TabLabel active={tab.active}>{t(current?.label ?? tab.label)}</TabLabel>
-        {tab.active && <ChevronUp className="ml-0.5 size-3.5 shrink-0" strokeWidth={3} />}
+        {tab.active && <ChevronUp className={cn("ml-0.5 size-3.5 shrink-0 transition-transform duration-300 ease-soft", open && "rotate-180")} strokeWidth={3} />}
       </button>
-      {open && <GroupMenu id={menuId} group={tab} look={look} hover={hover} align={first ? "start" : "center"} onPick={() => setOpen(false)} />}
+      {visible && (
+        <GroupMenu id={menuId} group={tab} look={look} hover={hover} align={first ? "start" : "center"} closing={!open} onClosed={() => setShown(false)} onPick={() => setOpen(false)} />
+      )}
     </div>
   );
 };
@@ -136,7 +144,7 @@ const GlassBar = ({ tabs, look, activeOf, openId, setOpenId, bar }) => {
     else navigate(tab.to);
   };
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-10 pb-5.5 lg:hidden print:hidden">
+    <div className={cn("pointer-events-none fixed inset-x-0 bottom-0 pb-5.5 lg:hidden print:hidden", openId ? "z-40" : "z-10")}>
       <div ref={bar} className="relative flex justify-center px-4">
         <GlassNav
           className="pointer-events-auto"

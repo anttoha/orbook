@@ -6,6 +6,14 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.22.0",
+    date: "2026-11-20",
+    neu: [
+      "Unten in der Leiste gibt es jetzt Gruppen: „Leistung“ hat Tests und Aufgaben (bald auch Noten). Antippen – oder draufdrücken und den Finger nach oben ziehen, dann bist du sofort da.",
+      "Du bestimmst selbst, was unten steht: Darstellung → Untere Leiste. Reihenfolge ziehen, eigene Gruppen bauen, Rest landet in „Mehr“. Am PC gilt das fürs Seitenmenü.",
+    ],
+  },
+  {
     version: "0.20.1",
     date: "2026-11-20",
     behoben: ["Das Symbol der Mitteilungen ist jetzt das echte ORBook-Zeichen und steht nicht mehr schief."],
