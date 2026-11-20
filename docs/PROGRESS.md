@@ -626,3 +626,4 @@ Android `4f9b3f5`: правило содержания `WidgetLayout.kt` (+ JUni
 Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница плана, вечер, ближайший урок; JUnit `PlanNotesTest`), `Notifier` (каналы «Plan und Tests», «Vor der Stunde»), `Notifications` (после загрузки сравнить с «seen», Ruhezeit), `Alarms` + `AlarmReceiver` (Vor der Stunde — точный будильник, вечер, граница урока для виджетов, после перезагрузки); мост `notifyState/saveNotify/requestNotify/openNotifySettings/testNotify`; WebView без сети — кэш; виджеты: фоновая задача без условия «есть сеть», чужой ключ как запас, «Keine Verbindung». Lint 0 ошибок, 13 Kotlin-тестов, 627 JS-тестов.
 Снимки: `/root/work/orbook-compare/31e-offline-mitteilungen/` (`vergleich.png`, `_tools/p31e.mjs`).
 **Дальше:** владелец проверяет на телефоне (уведомления, офлайн); потом «на прод».
+**Прод 20.11:** «на прод» → Release v0.20.0 (`7c28207`), прод выложен таймером, прод-APK 0.20.0 (11) на сайте и в Release.
