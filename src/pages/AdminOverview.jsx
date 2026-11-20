@@ -105,10 +105,16 @@ const AdminOverview = () => {
     ensureSettings();
   }, [ensureSettings]);
 
-  const logoutButton = (
-    <RoundButton aria-label={t("Abmelden")} onClick={logout} look="grid size-9.5 place-items-center rounded-full bg-card text-ink lg:hidden">
-      <LogOut className="size-4.25" />
-    </RoundButton>
+  // На телефоне бокового меню нет: «Zur App» (вход в админку сохраняется — вернуться можно без кода) и «Abmelden»
+  const phoneButtons = (
+    <span className="flex gap-2 lg:hidden">
+      <RoundButton to="/" aria-label={t("Zur App")} title={t("Zur App")} look="grid size-9.5 place-items-center rounded-full bg-card text-ink">
+        <Table2 className="size-4.25" />
+      </RoundButton>
+      <RoundButton aria-label={t("Abmelden")} title={t("Abmelden")} onClick={logout} look="grid size-9.5 place-items-center rounded-full bg-card text-ink">
+        <LogOut className="size-4.25" />
+      </RoundButton>
+    </span>
   );
 
   const renderBody = () => {
@@ -140,7 +146,7 @@ const AdminOverview = () => {
 
   return (
     <section className="flex flex-col gap-4 lg:gap-5">
-      <AdminHeader title={t("Übersicht")} accent actions={[<DesktopActions key="desk" />, <span key="out">{logoutButton}</span>]} />
+      <AdminHeader title={t("Übersicht")} accent actions={[<DesktopActions key="desk" />, <span key="out">{phoneButtons}</span>]} />
       {renderBody()}
     </section>
   );
