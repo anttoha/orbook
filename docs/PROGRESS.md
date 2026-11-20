@@ -661,3 +661,9 @@ Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница �
 
 ## Часть 35 — правки и прод v0.22.0 (2026-11-20)
 Меню группы поверх подсказки «прокрути вниз» (панель z-40, пока меню открыто), анимации: меню вырастает из вкладки, строки поднимаются по очереди, уход вниз, поворот шеврона (`menu-up`/`menu-down`/`item-rise` в index.css, с вариантами для «Weniger»/«Aus»). Changelog 0.22.0 + EN/UK, `docs/releases/v0.22.0.md`, тег v0.22.0.
+
+## Часть 36 «Noten» — макеты, ждёт «ок дизайн» (2026-11-20)
+Макеты: `design/neu/36-noten/` (`gen.py` на кирпичиках 30/35, `build.py` → `index.html`), артефакт https://claude.ai/artifact/XPxnYzHSRowWeewRtTcqW3, PNG — `/root/work/orbook-compare/36-noten/png/`.
+Экраны: вход в InfoPoint (и неверный пароль), обзор «Noten» (полугодие/Zeugnis, Schnitt, Fehlzeiten, предметы со средним, «neu», логин и «Abmelden»), загрузка, «nicht erreichbar», «zu oft», вопрос «Abmelden?», предмет с оценками и весами, Notenrechner (шторка), Fehlzeiten, блок «Noten» на Start, ПК (предметы слева, предмет и Notenrechner справа).
+Открытые решения для владельца: «Abmelden» стирает логин и забранные оценки с устройства и из Sync; цвета оценок (≤2,5 зелёный, >3,5 красный); «+/−» = ∓0,3.
+**Дальше:** «ок дизайн» → 36a (бэкенд, Opus · effort high), затем 36b (экран).
