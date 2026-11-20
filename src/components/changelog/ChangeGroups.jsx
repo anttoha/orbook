@@ -1,11 +1,14 @@
 import { groupsOf } from "../../shared/utils/changelog";
+import { useT } from "../../shared/hooks/useT";
 import Badge from "../ui/Badge";
 
 const STEP = 55; // мс между соседними строками
 
 // Группы «NEU / BEHOBEN / ENTFERNT»: бейдж и под ним точки с текстом.
 // Всё выплывает по очереди, начиная с задержки delay (мс): сначала бейдж, потом его строки.
+// Строки — немецкие из changelog.js, показываем на языке приложения (переводы в i18n/en.js, uk.js)
 const ChangeGroups = ({ entry, delay = 0 }) => {
+  const t = useT();
   let n = 0; // порядковый номер элемента для задержки
   const at = () => ({ animationDelay: `${delay + n++ * STEP}ms` });
 
@@ -20,7 +23,7 @@ const ChangeGroups = ({ entry, delay = 0 }) => {
             {group.items.map((item) => (
               <li key={item} className="flex gap-2.5 text-body-sm leading-5 text-ink motion-safe:animate-rise-in" style={at()}>
                 <span aria-hidden="true" className="mt-2 size-1.25 shrink-0 rounded-full bg-faint2" />
-                {item}
+                {t(item)}
               </li>
             ))}
           </ul>

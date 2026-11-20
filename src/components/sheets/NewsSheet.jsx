@@ -34,7 +34,7 @@ const NewsSheet = ({ open, onClose, sheet }) => {
       <Button onClick={onClose}>{t("Später")}</Button>
       <Button variant="primary" onClick={takeAction}>
         <House className="size-4" />
-        {action.label}
+        {t(action.label)}
       </Button>
     </>
   ) : (

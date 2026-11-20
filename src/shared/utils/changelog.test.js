@@ -71,3 +71,17 @@ describe("unseenEntries", () => {
     expect(unseenEntries("0.14.4", list).map((e) => e.version)).toEqual(["0.14.4"]);
   });
 });
+
+// «Was ist neu» показывается на языке приложения: у каждой строки (и кнопки) есть English и Українська
+it("каждая строка changelog переведена на English и Українська", async () => {
+  const { changelog } = await import("../changelog");
+  const { en } = await import("../i18n/en");
+  const { uk } = await import("../i18n/uk");
+  for (const entry of changelog) {
+    const texts = [...(entry.neu ?? []), ...(entry.behoben ?? []), ...(entry.entfernt ?? []), ...(entry.action ? [entry.action.label] : [])];
+    for (const text of texts) {
+      expect(en[text], `en ${entry.version}: ${text}`).toBeTruthy();
+      expect(uk[text], `uk ${entry.version}: ${text}`).toBeTruthy();
+    }
+  }
+});
