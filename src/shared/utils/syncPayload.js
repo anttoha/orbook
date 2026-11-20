@@ -36,6 +36,7 @@ export const darstellungOf = (user, theme) => ({
   // часть 30a: Design, Akzentfarbe, фон Glas, «Animationen». Старая версия приложения эти поля просто сохранит и не тронет
   ...appearanceOf(user),
   plan: user.plan ?? {}, // часть 30b: «Stundenplan» (только изменённые поля)
+  nav: user.nav ?? null, // часть 35: «Untere Leiste» (null — по умолчанию)
 });
 
 // Расшифрованный блок → полный вид (у старого блока есть только notes)

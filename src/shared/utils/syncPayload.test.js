@@ -221,3 +221,10 @@ describe("plan и startBlocks · часть 30d", () => {
     expect(newer.darstellung.value.plan).toBeUndefined();
   });
 });
+
+describe("nav · часть 35", () => {
+  it("«Untere Leiste» едет с Darstellung, по умолчанию — null", () => {
+    expect(darstellungOf({}, "light").nav).toBeNull();
+    expect(darstellungOf({ nav: { phone: ["start"] } }, "light").nav).toEqual({ phone: ["start"] });
+  });
+});

@@ -1,22 +1,10 @@
-import { Bell, CalendarDays, Ellipsis, FileText, Folder, House, Layers, List, Megaphone, Palette, Server, Smartphone, Sparkles, Sun, Table2, UserRound, UsersRound } from "lucide-react";
+import { Bell, CalendarDays, FileText, Folder, House, Layers, Megaphone, Palette, Server, Smartphone, Sparkles, Sun, Table2, UserRound, UsersRound } from "lucide-react";
 import { FlagIcon, KeyIcon, LockIcon, SchoolIcon, ShieldIcon, StatsIcon, SyncIcon } from "../../components/ui/icons";
 import { translate } from "../i18n/translate";
 
 // Масштаб «Schriftgröße» (ті самі відсотки, що в index.css): шкали часу множать на нього пікселі
 export const FONT_SCALES = { 1: 0.9375, 2: 1, 3: 1.125 };
 
-export const navTabs = [
-  // Start (частина 30c): перший пункт і на телефоні, і на ПК
-  { to: "/start", get label() { return translate("Start"); }, icon: House, mobile: true, desktop: true },
-  { to: "/woche", get label() { return translate("Woche"); }, icon: Table2, end: true, mobile: true, activeOn: ["/", "/heute", "/tag"] },
-  { to: "/woche", get label() { return translate("Woche"); }, icon: Table2, end: true, desktop: true, activeOn: ["/", "/tag"] },
-  { to: "/heute", get label() { return translate("Heute"); }, icon: List, desktop: true },
-  { to: "/testen", get label() { return translate("Tests"); }, icon: FlagIcon, mobile: true, desktop: true, },
-  // Materialien (частина 15): на ПК — пункт меню, на телефоні — з «Mehr»
-  { to: "/materialien", get label() { return translate("Materialien"); }, icon: Folder, desktop: true },
-  // Materialien і Statistik (частина 22) відкриваються з «Mehr»
-  { to: "/mehr", get label() { return translate("Mehr"); }, icon: Ellipsis, mobile: true, activeOn: ["/materialien", "/statistik"] },
-];
 // Меню адмінки. mobile — у нижньому меню телефона (4 пункти), desktop — у сайдбарі ПК.
 // count — лічильник праворуч: "codes" (усі Editor-Codes) або "exams" (найближчі Klausuren)
 export const adminTabs = [

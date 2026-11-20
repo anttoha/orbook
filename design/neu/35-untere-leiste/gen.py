@@ -64,25 +64,39 @@ def bar(st, tabs, active, y=764, pressed=None, here=None):
         x += w
     return "".join(out)
 
-def group_menu(st, x_center, items, y_bottom=752, w=212, current=None):
-    """Меню группы над панелью: заголовок группы и разделы. items — [(ключ, число справа)]."""
+def group_menu(st, x_center, items, y_bottom=752, w=None, current=None, compact=True, finger=None):
+    """Меню группы над панелью. items — [(ключ, число справа)].
+    compact (по умолчанию) — узкие строки без заголовка; Groß — как раньше, с заголовком группы и кружками.
+    finger — ключ раздела, на котором сейчас палец (жест «зажал и провёл вверх»)."""
     c = st.c
-    rh = 50
-    h = 40 + rh * len(items) + 8
+    rh, top, pad = (42, 6, 6) if compact else (50, 38, 8)
+    w = w or (156 if compact else 212)
+    h = top + rh * len(items) + pad
     x = min(max(16, x_center - w / 2), 374 - w)
     y = y_bottom - h
-    out = [R(x, y, w, h, 22, c["card"], extra=' filter="url(#nsh0)"'), R(x, y, w, h, 22, c["card"]), R(x + .5, y + .5, w - 1, h - 1, 21.5, "none", c["hair"])]
-    out.append(T(x + 18, y + 27, "LEISTUNG", 10.5, 800, c["faint"], ls=0.6))
+    out = [R(x, y, w, h, 18 if compact else 22, c["card"], extra=' filter="url(#nsh0)"'), R(x, y, w, h, 18 if compact else 22, c["card"]),
+           R(x + .5, y + .5, w - 1, h - 1, (18 if compact else 22) - .5, "none", c["hair"])]
+    if not compact: out.append(T(x + 18, y + 27, "LEISTUNG", 10.5, 800, c["faint"], ls=0.6))
     for i, (key, n) in enumerate(items):
         ic, name = SEC[key]
-        ry = y + 38 + i * rh
-        on = key == current
-        if on: out.append(R(x + 6, ry, w - 12, rh - 4, 16, c["tint"]))
-        out.append(DOT(x + 30, ry + 23, 15, c["tint"] if not on else c["card"]) + ICON(x + 21, ry + 14, 0.75, c["accink"], ic, 2))
-        out.append(T(x + 56, ry + 28, name, 14.5, 800 if on else 700, c["ink"]))
-        if n: out.append(R(x + w - 44, ry + 13, 28, 20, 10, c["sand"]) + T(x + w - 30, ry + 27, n, 11.5, 800, c["muted"], "middle"))
-    # «хвостик» к вкладке
-    out.append(f'<path d="M{x_center - 8} {y + h - .5} L{x_center} {y + h + 7} L{x_center + 8} {y + h - .5} Z" fill="{c["card"]}"/>')
+        ry = y + top + i * rh
+        on = key == current or key == finger
+        if compact:
+            if key == finger: out.append(R(x + 5, ry, w - 10, rh - 2, 14, c["accent"]))
+            elif on: out.append(R(x + 5, ry, w - 10, rh - 2, 14, c["tint"]))
+            col = c["on"] if key == finger else c["accink"]
+            out.append(ICON(x + 16, ry + 11, 0.75, col, ic, 2) + T(x + 44, ry + 26, name, 14, 800, c["on"] if key == finger else c["ink"]))
+            if n: out.append(T(x + w - 18, ry + 26, n, 12, 800, c["on"] if key == finger else c["faint"], "end"))
+        else:
+            if on: out.append(R(x + 6, ry, w - 12, rh - 4, 16, c["tint"]))
+            out.append(DOT(x + 30, ry + 23, 15, c["tint"] if not on else c["card"]) + ICON(x + 21, ry + 14, 0.75, c["accink"], ic, 2))
+            out.append(T(x + 56, ry + 28, name, 14.5, 800 if on else 700, c["ink"]))
+            if n: out.append(R(x + w - 44, ry + 13, 28, 20, 10, c["sand"]) + T(x + w - 30, ry + 27, n, 11.5, 800, c["muted"], "middle"))
+    out.append(f'<path d="M{x_center - 7} {y + h - .5} L{x_center} {y + h + 6} L{x_center + 7} {y + h - .5} Z" fill="{c["card"]}"/>')
+    if finger:   # след пальца: от вкладки вверх к строке
+        fy = y + top + [k for k, _ in items].index(finger) * rh + rh / 2
+        out.append(f'<path d="M{x_center} 793 C{x_center} 770 {x_center + 30} {fy + 30} {x_center + 34} {fy}" fill="none" stroke="{c["accent"]}" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 7" opacity="0.7"/>')
+        out.append(f'<circle cx="{x_center + 34}" cy="{fy}" r="22" fill="{c["ink"]}" fill-opacity="0.14"/><circle cx="{x_center + 34}" cy="{fy}" r="11" fill="{c["ink"]}" fill-opacity="0.22"/>')
     return "".join(out)
 
 TABS = ["start", "woche", "leistung", "mehr"]
@@ -94,7 +108,7 @@ def tab_center(tabs, i, active):
     return x + (aw if i == active else ow) / 2
 
 # 01 · Start, нажали «Leistung» — меню группы
-def p_menu(st):
+def p_menu(st, compact=True, finger=None):
     c = st.c
     s = m.p_start(st)
     inner = s[s.index("</defs>") + 7:s.rindex("</svg>")]
@@ -102,7 +116,7 @@ def p_menu(st):
     col, op = c["overlay"]
     b = [inner, f'<rect x="0" y="0" width="390" height="844" fill="{col}" fill-opacity="{op * 0.45}"/>']
     b.append(bar(st, TABS, 0, pressed=2))
-    b.append(group_menu(st, tab_center(TABS, 2, 0), [("tests", "5"), ("noten", None)]))
+    b.append(group_menu(st, tab_center(TABS, 2, 0), [("tests", "5"), ("noten", None)], compact=compact, finger=finger))
     return st.page(390, 844, "".join(b))
 
 # 02 · Tests открыт через группу: вкладка показывает «Tests» и стрелку вверх
@@ -160,7 +174,8 @@ def leiste_list(st, x, y, w, unten=UNTEN, rest=REST, full=False, ghost_after=Non
         if ghost_after == key:
             out.append(R(x + 36, ry + 6, w - 50, rh - 12, 14, c["tint"], c["accent"], 2, ' stroke-dasharray="6 5"')); ry += rh
     y = ry + 14
-    out.append(st.button(x, y, w, "Gruppe hinzufügen", "sand", PLUS, h=46)); y += 46 + 30
+    out.append(st.button(x, y, w, "Gruppe hinzufügen", "sand", PLUS, h=46)); y += 46 + 14
+    out.append(st.card(x, y, w, 58) + m.set_row(st, x, y, w, "Gruppenmenü", st.seg(x + w - 14 - 176, y + 11, 176, ["Kompakt", "Groß"], 0), True)); y += 58 + 30
     out.append(label(x, y, "In „Mehr“", c)); y += 12
     out.append(st.card(x, y, w, rh * len(rest)))
     for i, key in enumerate(rest):
@@ -314,6 +329,8 @@ def pc_leiste(st):
 
 SCREENS = {   # имя: (функция, темы)
     "handy-01-gruppe-offen": (p_menu, ("hell", "dunkel")),
+    "handy-01b-gruppe-gross": (lambda st: p_menu(st, compact=False), ("hell",)),
+    "handy-08-wischen": (lambda st: p_menu(st, finger="noten"), ("hell", "dunkel")),
     "handy-02-in-der-gruppe": (p_tests, ("hell", "dunkel")),
     "handy-03-untere-leiste": (p_leiste, ("hell", "dunkel")),
     "handy-04-ziehen": (p_ziehen, ("hell",)),

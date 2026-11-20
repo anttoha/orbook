@@ -45,6 +45,9 @@ export const useUserStore = create(
       fontScale: 2, // шрифт: 1 — A, 2 — A+ (як на макетах), 3 — A++
       changedFormat: "weekday", // підпис зміни під днем: "weekday" «Mi 15:15» | "date" «15.09.» | "datetime" «15.09. 15:15»
       plan: {}, // «Stundenplan» (частина 30b): лише змінені поля, решта — PLAN_DEFAULTS у shared/utils/planView.js
+      // «Untere Leiste» (часть 35): { phone, pc, menu } — что в нижней панели и боковом меню, вид меню группы.
+      // null-поля — по умолчанию; проверяет и читает shared/utils/navLayout.js (navOf, menuStyleOf)
+      nav: null,
       allCourses: false, // режим «Alle Kurse»: видно й чужі курси (пунктиром)
       // Оформлення (частина 30a): значення — в shared/utils/appearance.js, кольори — набори токенів у index.css
       design: APPEARANCE_DEFAULTS.design, // "soft" | "glas" | "klar"
@@ -150,6 +153,9 @@ export const useUserStore = create(
       setChangedFormat: (changedFormat) => set({ changedFormat }),
       // Одне поле «Stundenplan»: setPlan("showRoom", false)
       setPlan: (key, value) => set({ plan: { ...get().plan, [key]: value } }),
+      // «Untere Leiste»: раскладка одного устройства ("phone" | "pc") или вид меню группы
+      setNav: (device, list) => set({ nav: { ...get().nav, [device]: list } }),
+      setNavMenu: (menu) => set({ nav: { ...get().nav, menu } }),
 
       // Оформлення: атрибути на <html> ставить підписка нижче (так само й після Sync)
       setDesign: (design) => set({ design }),

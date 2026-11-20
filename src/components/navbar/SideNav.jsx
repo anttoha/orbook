@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
 import { useHotkeys } from "../../shared/hooks/useHotkeys";
-import { usePlanStore } from "../../shared/store/planStore";
+import { useNavTabs } from "../../shared/hooks/useNavTabs";
 import { cn } from "../../shared/utils/cn";
-import { isTabActive, isTabEnabled } from "../../shared/utils/isTabActive";
-import { navTabs } from "../../shared/constants/constants";
+import NavGroup from "./NavGroup";
 import NavigationLink from "./NavigationLink";
 import QuickSearch from "./QuickSearch";
 import SideNavFooter from "./SideNavFooter";
@@ -18,10 +16,8 @@ import SoonList from "./SoonList";
 // Згортається кнопкою в шапці до 71px (тільки іконки).
 // ─────────────────────────────────────────────────────────────
 const SideNav = () => {
-  const { pathname } = useLocation(); // поточна адреса — для підсвічування пунктів
   const [isHidden, setIsHidden] = useState(false); // чи згорнутий сайдбар
-  const examCount = usePlanStore((s) => s.exams.length); // лічильник у «Testen» (найближчі Klausuren)
-  const features = usePlanStore((s) => s.me?.features); // вимкнені школою розділи не показуємо
+  const { tabs } = useNavTabs("pc"); // пункти з «Untere Leiste» (частина 35): розділи і групи
 
   useHotkeys({ "mod+b": () => setIsHidden((prev) => !prev) }); // ⌘B / Ctrl+B — згорнути або розгорнути
 
@@ -41,18 +37,14 @@ const SideNav = () => {
       </div>
 
       <nav className="mt-5 space-y-1">
-        {navTabs
-          .filter((t) => t.desktop && isTabEnabled(t, features))
-          .map((tab, index) => (
-            <NavigationLink
-              key={tab.to}
-              index={index} // підписи ховаються й з'являються по черзі
-              active={isTabActive(tab, pathname)}
-              tab={tab}
-              isHidden={isHidden}
-              badge={tab.to === "/testen" ? examCount : null} // кількість найближчих Klausuren
-            />
-          ))}
+        {tabs.map((tab, index) =>
+          tab.items ? (
+            <NavGroup key={tab.id} group={tab} index={index} isHidden={isHidden} />
+          ) : (
+            // index — підписи ховаються й з'являються по черзі; count — кількість найближчих Klausuren у Tests
+            <NavigationLink key={tab.to} index={index} active={tab.active} tab={tab} isHidden={isHidden} badge={tab.count || null} />
+          ),
+        )}
       </nav>
 
       {/* «Bald» тільки в розгорнутому вигляді: не зникає одразу, а від'їжджає вліво і тане.

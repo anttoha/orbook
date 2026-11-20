@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { navTabs } from "../constants/constants";
+import { defaultNav, restPaths } from "./navLayout";
 import { isFullScreenPage, isTabActive } from "./isTabActive";
 
 describe("isTabActive", () => {
@@ -21,7 +21,7 @@ describe("isTabActive", () => {
   });
 
   it("Materialien: на телефоні світиться «Mehr», форма — на весь екран", () => {
-    const mehr = navTabs.find((tab) => tab.to === "/mehr");
+    const mehr = { to: "/mehr", activeOn: restPaths(defaultNav("phone"), {}) }; // часть 35: «Mehr» светится на разделах не из панели
     expect(isTabActive(mehr, "/materialien")).toBe(true);
     expect(isFullScreenPage("/materialien/neu")).toBe(true);
     expect(isFullScreenPage("/materialien/3/bearbeiten")).toBe(true);
