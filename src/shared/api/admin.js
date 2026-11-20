@@ -38,6 +38,15 @@ export const loadTeachers = (classId) => api("/admin/teachers", classId ? { clas
 // Один Kürzel — один діючий код: другий → 409 teacher_exists. → { code, item }, код ORB-L-… лише тут
 export const createTeacherCode = ({ teacher, rights, valid, schoolId, className }) => api("/admin/codes", { method: "POST", body: { kind: "teacher", teacher, rights, valid, schoolId, className } });
 
+// ── Lehrkräfte verwalten (часть 34) ──
+// loadTeachers теперь отдаёт { short, name | null, subjects, source: "plan" | "angepasst" | "eigen", hidden, codeId }
+// Новый: { short, name?, subjects } → 201. Дубль Kürzel → 409 short_taken
+export const createTeacher = (body) => api("/admin/teachers", { method: "POST", body });
+// Только изменённые поля: name ("" — убрать), subjects, hidden, short (только у «eigen» и без кода: иначе 409 teacher_has_code)
+export const updateTeacher = (short, body) => api(`/admin/teachers/${encodeURIComponent(short)}`, { method: "PATCH", body });
+// «eigen» — убрать совсем; из плана — вернуть к плану («Auf Plan zurücksetzen»)
+export const deleteTeacher = (short) => api(`/admin/teachers/${encodeURIComponent(short)}`, { method: "DELETE" });
+
 // ── Arten von Tests (часть 24) ──
 // → { types: [{ name, short, count }], examsAutoMove, homeworkAutoMove }
 export const loadExamTypes = () => api("/admin/exam-types");

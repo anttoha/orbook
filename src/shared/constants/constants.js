@@ -25,6 +25,8 @@ export const adminTabs = [
   { to: "/admin/schulen", get label() { return translate("Schulen & Klassen"); }, icon: SchoolIcon, desktop: true },
   // Lehrer-Codes: на ПК — окремий пункт, на телефоні — друга половина вкладки «Codes» (перемикач, Admin.jsx)
   { to: "/admin/codes", get label() { return translate("Editor-Codes"); }, get short() { return translate("Codes"); }, icon: KeyIcon, mobile: true, desktop: true, count: "codes" },
+  // Lehrkräfte (часть 34): учителя, их имена и предметы; на телефоне — из Einstellungen («Zugang»)
+  { to: "/admin/lehrkraefte", get label() { return translate("Lehrkräfte"); }, icon: UsersRound, desktop: true, count: "people" },
   { to: "/admin/lehrer", label: "Lehrer-Codes", icon: UserRound, desktop: true, count: "teachers" },
   // Passwörter: на ПК — пункт меню, на телефоні — з Einstellungen і «Übersicht → Schnell» (частина 14b)
   { to: "/admin/zugang", get label() { return translate("Zugangscodes"); }, icon: LockIcon, desktop: true, count: "access", activeOn: ["/admin/passwoerter"] }, // частина 14c; паролі (14b) — підсторінка

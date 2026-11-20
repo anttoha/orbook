@@ -639,3 +639,10 @@ Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница �
 Решения в макете: только Kürzel и предметы (без настоящих имён); источник PLAN / ANGEPASST / EIGEN / AUSGEBLENDET; правка плана-учителя сохраняется поверх плана, «Auf Plan zurücksetzen» её убирает; из плана — «Ausblenden», свои — «Löschen»; пункт меню «Lehrkräfte» на ПК, на телефоне — Einstellungen → «Zugang».
 Бэкенд (план): таблица `teacher_overrides` (class_id, short, subjects, hidden, own), `POST/PATCH/DELETE /api/admin/teachers`, `teachers.py::subjects_by_teacher` учитывает записи; docs/API/FRONTEND/openapi, тесты.
 **Дальше:** «ок дизайн» → spec и код (Opus · effort high, `/orb 34`).
+
+## Часть 34 — код готов, ждёт выкладки (2026-11-20)
+Владелец: «ок дизайн» + полные имена (не только Kürzel): в макеты добавлено поле «Name»; имя необязательное, видно только админу (Datenschutz обновлён: фронт `datenschutz.js`, бэкенд `docs/DATENSCHUTZ.md`).
+Бэкенд (`/opt/orbook-be`, коммиты `16c5369`, `4af05a5`): таблица `teacher_entries` (миграция 0016), `POST/PATCH/DELETE /api/admin/teachers`, права по предметам из правок, `make lint test` — 1063 passed. **Не выложен**: `scripts/update.sh` запуск был отклонён системой — нужен запуск владельцем или явное разрешение.
+Фронт: страница `/admin/lehrkraefte` (`pages/AdminTeachers.jsx`, `components/admin/teachers/*`), пункт меню «Lehrkräfte» на ПК и строка в Einstellungen → «Zugang» на телефоне, `shared/utils/teachers.js` (+ тест), переводы EN/UK. Снимки на подставном API: `/root/work/orbook-compare/34-lehrkraefte-verwalten/shots/` (`_tools/p34.mjs`).
+Фронт ещё **не запушен** в `main`: без нового бэкенда на демо кнопки сохранения вернут 404.
+**Дальше:** выложить бэкенд (`/opt/orbook-be/scripts/update.sh`), затем `git push` фронта → проверить на демо.

@@ -2,7 +2,7 @@
 // Меняется что-то в данных (новая таблица, cookie, срок) — поправь текст здесь и дату STAND.
 // Формат раздела: title, intro — абзацы, rows — пары [что, пояснение] (cookies, сроки).
 
-export const STAND = "2026-11-19";
+export const STAND = "2026-11-20";
 
 // Коротко — первые строки страницы (макет 27). Иконки подставляет страница по id.
 export const FACTS = [
@@ -28,7 +28,7 @@ export const SECTIONS = [
     id: "eintraege",
     title: "Plan und Einträge",
     intro: [
-      "Den Stundenplan holt der Server dort, wo die Schule ihn veröffentlicht (stundenplan24.de): Stunden, Fächer, Räume, Vertretungen, Ausfälle und die Kürzel der Lehrkräfte. Volle Namen von Lehrkräften kommen nicht vor.",
+      "Den Stundenplan holt der Server dort, wo die Schule ihn veröffentlicht (stundenplan24.de): Stunden, Fächer, Räume, Vertretungen, Ausfälle und die Kürzel der Lehrkräfte. Volle Namen von Lehrkräften stehen dort nicht. Der Admin kann sie freiwillig selbst eintragen, zusammen mit den Fächern; sie sind nur für den Admin sichtbar.",
       "Ändert die Schule den Plan eines Tages, hebt der Server die frühere Fassung auf — dafür gibt es den „Verlauf des Tages“. Wie lange, stellt der Admin ein (7 bis 90 Tage, sonst 30).",
       "Solange die App offen ist, hält sie eine Verbindung zum Server offen, damit ein neuer Plan sofort ankommt. Dabei wird nichts über dich gespeichert.",
       "Was ihr eintragt: Tests (Datum, Stunde, Art, Fach, Thema, was man lernen und mitbringen soll, angehängte Links), Hausaufgaben (Fach, bis wann, Stunde, Text, angehängte Links), Termine (Titel, Datum, Uhrzeit, Ort, Notiz) und Links zu Materialien bei Google Drive oder OneDrive. Die Dateien selbst liegen nicht bei uns.",

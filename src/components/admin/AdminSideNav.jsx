@@ -41,6 +41,7 @@ const AdminSideNav = () => {
   const overview = useAdminStore((s) => s.overview.data);
   const codes = useAdminStore((s) => s.codes.data?.codes);
   const access = useAdminStore((s) => s.access.data?.codes); // Zugangscodes — після першого відкриття сторінки
+  const people = useAdminStore((s) => s.teachers.data?.teachers); // Lehrkräfte — nach dem ersten Öffnen der Seite
   const logout = useAdminStore((s) => s.logout);
   // Editor-Codes і Lehrer-Codes лежать в одному списку /admin/codes (поле kind)
   const counts = {
@@ -48,6 +49,7 @@ const AdminSideNav = () => {
     teachers: codes ? codes.filter(isTeacherCode).length : null,
     exams: overview?.counts.examsUpcoming ?? null,
     access: access ? access.length : null,
+    people: people ? people.length : null,
   };
 
   return (

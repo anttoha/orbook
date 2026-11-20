@@ -26,6 +26,7 @@ import Admin from "../../pages/Admin";
 import AdminOverview from "../../pages/AdminOverview";
 import AdminCodes from "../../pages/AdminCodes";
 import AdminTeacherCodes from "../../pages/AdminTeacherCodes";
+import AdminTeachers from "../../pages/AdminTeachers";
 import AdminExamTypes from "../../pages/AdminExamTypes";
 import AdminExams from "../../pages/AdminExams";
 import AdminCourses from "../../pages/AdminCourses";
@@ -72,6 +73,7 @@ export const router = createBrowserRouter([
           page({ index: true, Component: AdminOverview }),
           page({ path: "codes", Component: AdminCodes }),
           page({ path: "lehrer", Component: AdminTeacherCodes }), // Lehrer-Codes (частина 14)
+          page({ path: "lehrkraefte", Component: AdminTeachers }), // Lehrkräfte verwalten (частина 34)
           page({ path: "klausuren", Component: AdminExams }),
           page({ path: "arten", Component: AdminExamTypes }), // Arten von Tests mit Kürzel (часть 24)
           page({ path: "kurse", Component: AdminCourses }),
