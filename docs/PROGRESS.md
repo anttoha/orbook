@@ -632,3 +632,10 @@ Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница �
 
 ## Часть 20d «Roth» — готово (2026-11-20)
 Только проверка, код не менялся: прод-база (чтение) — `Roth → En`, `Göbe → De, Eg, En`, 7 совместных дней 05.10–13.11, чужие классы не затронуты, права на материалы только по английскому, старые дни хранятся 365 дней. Подробности — бэкенд `docs/PROGRESS.md` (`0053d5e`). В `docs/specs/README.md` заодно закрыты строки 29, 30, 31 (все под-части давно готовы). Незаконченных частей в таблице больше нет.
+
+## Часть 34 «Lehrkräfte verwalten» — макеты, ждёт «ок дизайн» (2026-11-20)
+Запрос владельца: в админке самому добавлять учителей, указывать их предметы и всё редактировать. Сейчас список `/api/admin/teachers` строится только из плана.
+Макеты: `design/neu/34-lehrkraefte-verwalten/` (`gen.py` на помощниках 14/14b/14c, `build.py` → `index.html`), артефакт https://claude.ai/artifact/EfNzvVo3isyE9iezXxhxHp, PNG — `/root/work/orbook-compare/34-lehrkraefte-verwalten/png/`.
+Решения в макете: только Kürzel и предметы (без настоящих имён); источник PLAN / ANGEPASST / EIGEN / AUSGEBLENDET; правка плана-учителя сохраняется поверх плана, «Auf Plan zurücksetzen» её убирает; из плана — «Ausblenden», свои — «Löschen»; пункт меню «Lehrkräfte» на ПК, на телефоне — Einstellungen → «Zugang».
+Бэкенд (план): таблица `teacher_overrides` (class_id, short, subjects, hidden, own), `POST/PATCH/DELETE /api/admin/teachers`, `teachers.py::subjects_by_teacher` учитывает записи; docs/API/FRONTEND/openapi, тесты.
+**Дальше:** «ок дизайн» → spec и код (Opus · effort high, `/orb 34`).
