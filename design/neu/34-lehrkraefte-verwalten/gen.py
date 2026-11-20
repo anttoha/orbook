@@ -18,15 +18,15 @@ KEY, CHECK, CHEV_R, BACK, CLOSE, PLUS, SEARCH, USER, PEN, TRASH, LOCK = k.KEY, k
 REDO, INFO, EYE, USERS = k.REDO, k.INFO, p14b.EYE, k.USERS
 EYE_OFF = EYE + P("M4 4l16 16")  # «Ausblenden»
 
-# ── Данные (только Kürzel и предметы, без настоящих имён) ──
-# Kürzel, предметы, источник (plan / angepasst / eigen / aus), Lehrer-Code (конец) или None
+# ── Данные: Kürzel (как в плане, нужен всегда) + необязательное полное имя (видит только админ) ──
+# Kürzel, предметы, источник (plan / angepasst / eigen / aus), Lehrer-Code (конец) или None, полное имя или None
 TEACHERS = [
-    ("Mü", ["Ma", "Ph"], "plan", "K3"),
-    ("Kraus", ["De", "En", "Ge"], "angepasst", "T7"),
-    ("Weber", ["En"], "plan", None),
-    ("Lenz", ["Sp", "Bio"], "eigen", "P2"),
-    ("Haas", ["Ku"], "eigen", None),
-    ("Vogt", ["Ph"], "aus", None),
+    ("Mü", ["Ma", "Ph"], "plan", "K3", "Anna Müller"),
+    ("Kraus", ["De", "En", "Ge"], "angepasst", "T7", "Thomas Kraus"),
+    ("Weber", ["En"], "plan", None, None),
+    ("Lenz", ["Sp", "Bio"], "eigen", "P2", "Sabine Lenz"),
+    ("Haas", ["Ku"], "eigen", None, None),
+    ("Vogt", ["Ph"], "aus", None, None),
 ]
 SOURCE = {"plan": ("PLAN", "sand"), "angepasst": ("ANGEPASST", "tint"), "eigen": ("EIGEN", "accent"), "aus": ("AUSGEBLENDET", "off")}
 ALL_SUBJ = ["Ma", "De", "En", "Ph", "Ge", "Ku", "Sp", "Bio"]
@@ -58,12 +58,16 @@ def head(c, ttl="Lehrkräfte", eb="Admin · Einstellungen", plus=True):
     return "".join(b)
 
 def card(x, y, w, row, c, sub):
-    name, subj, src, code = row
+    short, subj, src, code, full = row
+    name = full or short
     off = src == "aus"
     chips, n = chip_rows(x + 14, y + 52, w - 28, subj, c, sub)
     h = 52 + n * 32 + 32
     b = [R(x, y, w, h, 22, c["card"]), T(x + 14, y + 33, name, 15, 700, c["ink"])]
-    bd, _ = badge(x + 14 + g.tw(name, 15) + 10, y + 18.5, *SOURCE[src][:1], c, SOURCE[src][1]); b.append(bd)
+    bx = x + 14 + g.tw(name, 15) + 10
+    if full:  # рядом с именем — Kürzel из плана
+        b.append(T(bx, y + 33, short, 12.5, 400, c["faint"])); bx += g.tw(short, 12.5) + 10
+    bd, _ = badge(bx, y + 18.5, *SOURCE[src][:1], c, SOURCE[src][1]); b.append(bd)
     b.append(R(x + w - 46, y + 12, 32, 32, 16, c["card"]) + dots(x + w - 38.5, y + 19.5, c))
     b.append(chips)
     b.append(T(x + 14, y + h - 14, code_line(code), 12, 400, c["faint"]))
@@ -91,7 +95,7 @@ def p_list(c, theme, sub, state="normal"):
     for row in [TEACHERS[i] for i in (0, 1, 2, 3, 5)]:
         cd, h = card(18, y, 354, row, c, sub); b.append(cd); y += h + 10
     if state == "gespeichert":
-        b.append(toast(18, 770, 354, "»Kraus« gespeichert", c))
+        b.append(toast(18, 770, 354, "»Thomas Kraus« gespeichert", c))
     return svg(390, 844, c, "".join(b))
 
 def text_field(x, y, w, c, text=None, placeholder=None, error=False, locked=False):
@@ -120,16 +124,14 @@ def link_card(x, y, w, c, text, value):
             + T(x + w - 38, y + 32.5, value, 13, 400, c["faint"], "end") + ICON(x + w - 32, y + 21, 0.58, c["faint"], CHEV_R))
 
 def form_body(x, y, w, c, sub, mode, error=False, pc=False):
-    """mode: neu | plan (Kürzel gesperrt) | eigen. → (svg, Ende-y)"""
-    b = [label(x, y, "Kürzel", c)]
-    if mode == "neu":
-        b.append(text_field(x, y + 12, w, c, "Lenz" if not error else "Mü", None if error else None, error=error))
-        yy = y + 80
-        if error:
-            b.append(error_line(x, y + 84, "»Mü« gibt es schon.", c)); yy = y + 108
-    else:
-        b.append(text_field(x, y + 12, w, c, "Kraus" if mode == "plan" else "Lenz", locked=mode == "plan"))
-        yy = y + 80
+    """mode: neu | plan (Kürzel gesperrt) | eigen. Поля: Name (необязательно) и Kürzel. → (svg, Ende-y)"""
+    nm = {"neu": "Sabine Lenz", "plan": "Thomas Kraus", "eigen": "Sabine Lenz"}[mode] if not error else "Maria Müller"
+    ks = {"neu": "Lenz", "plan": "Kraus", "eigen": "Lenz"}[mode] if not error else "Mü"
+    b = [label(x, y, "Name", c), text_field(x, y + 12, w, c, nm), label(x, y + 80, "Kürzel", c),
+         text_field(x, y + 92, w, c, ks, error=error, locked=mode == "plan")]
+    yy = y + 160
+    if error:
+        b.append(error_line(x, y + 164, "»Mü« gibt es schon.", c)); yy = y + 188
     b.append(label(x, yy, "Fächer", c))
     on = {"neu": ["Sp", "Bio"], "plan": ["De", "En", "Ge"], "eigen": ["Sp", "Bio"]}[mode] if not error else []
     grid, gy = subject_grid(x, yy + 14, w, on, c, sub)
@@ -140,7 +142,7 @@ def form_body(x, y, w, c, sub, mode, error=False, pc=False):
     return "".join(b), yy
 
 def p_form(c, theme, sub, mode="neu", error=False):
-    ttl = {"neu": "Neue Lehrkraft", "plan": "Kraus", "eigen": "Lenz"}[mode]
+    ttl = {"neu": "Neue Lehrkraft", "plan": "Thomas Kraus", "eigen": "Sabine Lenz"}[mode]
     b = [head(c, ttl, "Admin · Lehrkräfte", plus=False)]
     body, y = form_body(18, 101, 354, c, sub, mode, error)
     b.append(body)
@@ -158,7 +160,7 @@ def p_actions(c, theme, sub):
     inner = page[page.index("</defs>") + 7: page.rindex("</svg>")]
     top = 330
     b = [inner, overlay(c, 390, 844), R(0, top, 390, 844 - top + 30, 30, c["paper"]) + R(171, top + 10, 48, 5, 2.5, c["faint2"])]
-    b.append(eyebrow(18, top + 42, "Angepasst · Lehrer-Code ••••-T7", c) + title(18, top + 77, "Kraus", c) + round_btn(334, top + 47, c, CLOSE))
+    b.append(eyebrow(18, top + 42, "Kraus · Angepasst · Lehrer-Code ••••-T7", c) + title(18, top + 77, "Thomas Kraus", c) + round_btn(334, top + 47, c, CLOSE))
     b.append(T(18, top + 105, "Deutsch, Englisch, Geschichte", 14, 400, c["muted"]))
     rows = [(PEN, "Bearbeiten", "", False), (KEY, "Lehrer-Code", "••••-T7", False), (REDO, "Auf Plan zurücksetzen", "", False), (EYE_OFF, "Ausblenden", "", False)]
     b.append(sheet_rows(18, top + 122, 354, c, rows))
@@ -170,9 +172,9 @@ def dialog(c, x, y, w, pc=False):
     b = [R(x, y, w, h, 28, c["paper"], extra=' filter="url(#nsh0)"'), R(x, y, w, h, 28, c["paper"])]
     b.append(ICON(x + 26, y + 26, 0.83, c["danger"], TRASH))
     b.append(R(x + w - 52, y + 22, 30, 30, 15, c["card"]) + ICON(x + w - 44.5, y + 29.5, 0.62, c["ink"], CLOSE))
-    b.append(T(x + 26, y + 80, "»Lenz« löschen?", 25 if pc else 22, 900, c["ink"], ls=-0.35))
-    lines = (["Lenz darf dann keine Materialien und Termine für Sport", "und Biologie mehr eintragen. Bisherige Einträge und der", "Lehrer-Code bleiben."] if pc else
-             ["Lenz darf dann keine Materialien", "und Termine für Sport und Biologie", "mehr eintragen. Bisherige Einträge", "und der Lehrer-Code bleiben."])
+    b.append(T(x + 26, y + 80, "»Sabine Lenz« löschen?", 25 if pc else 22, 900, c["ink"], ls=-0.35))
+    lines = (["Sabine Lenz darf dann keine Materialien und Termine für", "Sport und Biologie mehr eintragen. Bisherige Einträge und", "der Lehrer-Code bleiben."] if pc else
+             ["Sabine Lenz darf dann keine", "Materialien und Termine für Sport", "und Biologie mehr eintragen.", "Einträge und Lehrer-Code bleiben."])
     for i, ln in enumerate(lines): b.append(T(x + 26, y + 112 + i * 21, ln, 14, 400, c["muted"]))
     ly = y + h - 78
     b.append(f'<line x1="{x + 26}" y1="{ly}" x2="{x + w - 26}" y2="{ly}" stroke="{c["hair"]}" stroke-width="1"/>')
@@ -193,7 +195,7 @@ SHIELD_ICON = k.SHIELD
 # ════════════════ Computer ════════════════
 g.ADMIN_NAV.insert(2, ("Lehrkräfte", USERS, "6"))  # vor «Lehrer-Codes»
 
-COLS = [("Kürzel", 304), ("Fächer", 420), ("Quelle", 800), ("Lehrer-Code", 940)]
+COLS = [("Name", 304), ("Kürzel", 480), ("Fächer", 570), ("Quelle", 860), ("Lehrer-Code", 1000)]
 
 def pc_head(c):
     b = [g.admin_sidebar(c, 900, "Lehrkräfte"), eyebrow(284, 39, "Admin · 9b", c), title(284, 80, "Lehrkräfte", c, 38)]
@@ -206,17 +208,17 @@ def pc_table(c, sub, highlight=None):
     ty = 110
     b.append(R(284, ty, 1120, 46 + 57 * len(TEACHERS), 22, c["card"]))
     for name, cx in COLS: b.append(T(cx, ty + 30, name, 12, 800, c["faint"]))
-    for i, (name, subj, src, code) in enumerate(TEACHERS):
+    for i, (short, subj, src, code, full) in enumerate(TEACHERS):
         ry = ty + 46 + i * 57
         b.append(f'<line x1="304" y1="{ry}" x2="1384" y2="{ry}" stroke="{c["hair"]}" stroke-width="1"/>')
         if highlight == i: b.append(R(292, ry + 4, 1104, 49, 16, c["tint"]))
         off = src == "aus"
-        gg = [T(304, ry + 33, name, 14, 800, c["faint"] if off else c["ink"])]
-        cx = 420
+        gg = [T(304, ry + 33, full or short, 14, 800, c["faint"] if off else c["ink"]), T(480, ry + 33, short, 13, 400, c["muted"] if full else c["faint"])]
+        cx = 570
         for cd in subj:
             s, cw = small_chip(cx, ry + 16, cd, c, sub); gg.append(s); cx += cw + 6
-        bd, _ = badge(800, ry + 19, SOURCE[src][0], c, SOURCE[src][1]); gg.append(bd)
-        gg.append(T(940, ry + 33, f"••••-{code} · aktiv" if code else "—", 13, 700 if code else 400, c["muted"] if code else c["faint"]))
+        bd, _ = badge(860, ry + 19, SOURCE[src][0], c, SOURCE[src][1]); gg.append(bd)
+        gg.append(T(1000, ry + 33, f"••••-{code} · aktiv" if code else "—", 13, 700 if code else 400, c["muted"] if code else c["faint"]))
         gg.append(dots(1366, ry + 20, c))
         b.append(f'<g opacity="{0.55 if off else 1}">' + "".join(gg) + "</g>")
     return "".join(b)
@@ -227,7 +229,7 @@ def pc_list(c, theme, sub, state="normal"):
         b.append(R(284, 110, 1120, 46 + 57 * 5, 22, c["card"]))
         for i in range(5):
             ry = 110 + 46 + i * 57
-            b.append(R(304, ry + 22, 70, 12, 6, c["skel"]) + R(420, ry + 16, 80, 26, 13, c["skel"]) + R(506, ry + 16, 80, 26, 13, c["skel"]) + R(800, ry + 20, 60, 18, 9, c["skel"]) + R(940, ry + 22, 120, 12, 6, c["skel"]))
+            b.append(R(304, ry + 22, 110, 12, 6, c["skel"]) + R(480, ry + 22, 40, 12, 6, c["skel"]) + R(570, ry + 16, 80, 26, 13, c["skel"]) + R(656, ry + 16, 80, 26, 13, c["skel"]) + R(860, ry + 20, 60, 18, 9, c["skel"]) + R(1000, ry + 22, 120, 12, 6, c["skel"]))
         return svg(1440, 900, c, "".join(b))
     if state == "leer":
         y = 300
@@ -239,7 +241,7 @@ def pc_list(c, theme, sub, state="normal"):
         return svg(1440, 900, c, "".join(b))
     b.append(pc_table(c, sub))
     if state == "gespeichert":
-        b.append(toast(1044, 830, 360, "»Kraus« gespeichert", c))
+        b.append(toast(1044, 830, 360, "»Thomas Kraus« gespeichert", c))
     return svg(1440, 900, c, "".join(b))
 
 def pc_modal(c, theme, sub, mode="neu", error=False):
@@ -251,7 +253,7 @@ def pc_modal(c, theme, sub, mode="neu", error=False):
     body, yend = form_body(X + 26, Y + 104, W - 52, c, sub, mode, error, pc=True)
     for f in ("nsh0", "nsh1", None):
         b.append(R(X, Y, W, H, 28, c["paper"], extra=f' filter="url(#{f})"' if f else ""))
-    ttl = {"neu": "Neue Lehrkraft", "plan": "Kraus", "eigen": "Lenz"}[mode]
+    ttl = {"neu": "Neue Lehrkraft", "plan": "Thomas Kraus", "eigen": "Sabine Lenz"}[mode]
     b.append(g.modal_head(X, Y, W, "Admin · Lehrkräfte", ttl, c) + body)
     bw = (W - 52 - 10) / 2
     if mode == "neu": b.append(button(X + 26, yend, W - 52, "Hinzufügen", c, icon=PLUS))

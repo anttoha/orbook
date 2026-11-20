@@ -19,10 +19,10 @@ def shot(name, caption, kind="phone"):
             f'<div class="v v-hell">{inline(name + "-hell")}</div><div class="v v-dunkel">{inline(name + "-dunkel")}</div></figure>')
 
 SECTIONS = [
-    ("liste", "Список учителей", "Карточка на каждого: Kürzel, предметы цветными плашками, Lehrer-Code (если есть). Метка источника: PLAN — учитель из плана школы, ANGEPASST — из плана, но предметы поправлены вручную, EIGEN — добавлен вами, AUSGEBLENDET — убран из списка. Три точки — действия.",
+    ("liste", "Список учителей", "Карточка на каждого: полное имя (если есть) и Kürzel, предметы цветными плашками, Lehrer-Code (если есть). Метка источника: PLAN — учитель из плана школы, ANGEPASST — из плана, но предметы поправлены вручную, EIGEN — добавлен вами, AUSGEBLENDET — убран из списка. Три точки — действия.",
      [("handy-01-liste", "Lehrkräfte"), ("handy-09-leer", "Leer (Plan noch nicht da)"), ("handy-10-laden", "Laden")],
      [("pc-01-liste", "Computer · Tabelle (новый пункт меню «Lehrkräfte»)"), ("pc-08-leer", "Computer · Leer"), ("pc-09-laden", "Computer · Laden")]),
-    ("neu", "Добавить учителя", "Kürzel и предметы цветными кнопками (как в форме Hausaufgabe); «Anderes Fach» — если предмета нет в списке. Если Kürzel уже есть — красная строка. Телефон — страница, ПК — окно.",
+    ("neu", "Добавить учителя", "Name (необязательно, можно полное), Kürzel и предметы цветными кнопками (как в форме Hausaufgabe); «Anderes Fach» — если предмета нет в списке. Если Kürzel уже есть — красная строка. Телефон — страница, ПК — окно.",
      [("handy-02-neu", "Neue Lehrkraft"), ("handy-03-neu-doppelt", "Kürzel gibt es schon")],
      [("pc-02-neu", "Computer · Fenster"), ("pc-03-neu-doppelt", "Computer · Kürzel gibt es schon")]),
     ("bearbeiten", "Изменить", "Учитель из плана: Kürzel закрыт замком, предметы можно менять, внизу «Auf Plan zurücksetzen» (вернуть как в плане) и ссылка на Lehrer-Code. Свой учитель: можно менять и Kürzel.",
@@ -92,7 +92,7 @@ def page():
         out.append('</div></section>')
     out.append('</div>')
     out.append('''<div class="box"><h2>Решил сам (скажите, если не так)</h2><ul style="margin:0;padding-left:20px">
-<li>учитель = только Kürzel и предметы, без настоящих имён (как у кодов);</li>
+<li>учитель = Kürzel (как в плане, обязателен, связывает с уроками) + необязательное полное имя («Anna Müller»); имя видит только админ;</li>
 <li>учитель из плана остаётся в списке сам; ваша правка («ANGEPASST») сохраняется поверх плана, «Auf Plan zurücksetzen» её убирает;</li>
 <li>учителя из плана нельзя удалить (план вернёт его) — их можно «Ausblenden»; своих — «Löschen»;</li>
 <li>предметы определяют, для чего учитель может делиться материалами и вносить термины;</li>
