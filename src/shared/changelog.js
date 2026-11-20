@@ -5,6 +5,16 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.20.0",
+    date: "2026-11-20",
+    neu: [
+      "ORBook geht jetzt auch ohne Internet auf: Du siehst den zuletzt geladenen Plan, auch in der Android-App.",
+      "Mitteilungen in der Android-App: Die App sagt dir Bescheid, wenn morgen was anders ist, heute eine Stunde ausfällt oder abends, was morgen ansteht. Einschalten unter Mehr → Mitteilungen.",
+      "Neu: „Vor der Stunde“ – auf Wunsch erinnert dich dein Handy 5, 10 oder 15 Minuten vorher an Fach und Raum. Klappt auch ohne Internet, ist aber erst aus: Mehr → Mitteilungen → Vor der Stunde.",
+    ],
+    behoben: ["Widgets laufen auch ohne Internet weiter: „Jetzt“ springt zur nächsten Stunde, und ein neues Widget ohne Netz zeigt „Keine Verbindung“ statt ewig zu laden."],
+  },
+  {
     version: "0.19.0",
     date: "2026-11-19",
     neu: [
