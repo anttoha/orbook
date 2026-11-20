@@ -627,3 +627,4 @@ Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница �
 Снимки: `/root/work/orbook-compare/31e-offline-mitteilungen/` (`vergleich.png`, `_tools/p31e.mjs`).
 **Дальше:** владелец проверяет на телефоне (уведомления, офлайн); потом «на прод».
 **Прод 20.11:** «на прод» → Release v0.20.0 (`7c28207`), прод выложен таймером, прод-APK 0.20.0 (11) на сайте и в Release.
+**Прод 20.11 (2):** значок уведомлений из favicon (`06beedf`), «Was ist neu» на языке приложения — все 73 строки EN/UK + тест; Release v0.20.1 (`4e96443`), прод-APK 0.20.1 (13).
