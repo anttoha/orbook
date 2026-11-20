@@ -28,7 +28,7 @@ function resultText(answer) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// «Schule & Plan»: номер школи, пароль школи (лише запис), сервер, клас, «Verbindung testen».
+// «Schule & Plan»: номер школи, пароль школи (лише запис), сервер, адреса InfoPoint, клас, «Verbindung testen».
 // Демо-сервер не дає міняти доступ до школи (403 demo_mode) — поля вимкнені.
 // school — form.school; onChange(key, value); bad — ключі, які сервер не прийняв
 // ─────────────────────────────────────────────────────────────
@@ -59,6 +59,8 @@ const SchoolCard = ({ school, onChange, schoolPassword, onSchoolPassword, passwo
         <TextField id="school-number" label={t("Schulnummer")} inputMode="numeric" autoComplete="off" disabled={demo} hint={demoHint} error={bad.has("school.number") ? t("Nur Ziffern (4 bis 12).") : null} value={school.number ?? ""} onChange={(event) => onChange("number", event.target.value || null)} />
         <TextField id="school-password" label={t("Passwort der Schule")} type="password" autoComplete="new-password" disabled={demo} placeholder={passwordSet ? "••••••" : t("Passwort")} hint={passwordSet ? t("Gespeichert · leer lassen = unverändert") : null} value={schoolPassword} onChange={(event) => onSchoolPassword(event.target.value)} />
         <TextField id="school-server" className="lg:col-span-2" label={t("Server")} inputMode="url" autoComplete="off" disabled={demo} error={bad.has("school.baseUrl") ? t("Nur https://, ohne Pfad, keine lokalen Adressen.") : null} value={school.baseUrl} onChange={(event) => onChange("baseUrl", event.target.value)} />
+        {/* Часть 36a: адрес Home.InfoPoint школы — без него раздела «Noten» нет */}
+        <TextField id="school-infopoint" className="lg:col-span-2" label={t("Home.InfoPoint (Noten)")} inputMode="url" autoComplete="off" placeholder="https://schule.de/hip/webapp" error={bad.has("school.infopointUrl") ? t("Nur https://, keine lokalen Adressen.") : null} value={school.infopointUrl ?? ""} onChange={(event) => onChange("infopointUrl", event.target.value || null)} />
       </div>
       <OptionRow label={t("Klasse")} invalid={bad.has("school.className")}>
         <SelectPill label={t("Klasse")} value={school.className} options={classOptions} onChange={(value) => onChange("className", value)} />

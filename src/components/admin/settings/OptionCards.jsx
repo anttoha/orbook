@@ -99,6 +99,7 @@ export const FeaturesCard = ({ className, ...props }) => {
       <SwitchRow label={t("Sync erlauben")} hint={t("Notizen, Aufgaben, Einstellungen")} section="features" field="notesSync" {...props} />
       <SwitchRow label={t("Teilen-Knopf")} hint={t("Text für WhatsApp erzeugen")} section="features" field="share" {...props} />
       <SwitchRow label={t("Tests ohne Editor-Code")} hint={t("Jeder mit Klassenpasswort darf eintragen")} section="features" field="examsWithoutCode" {...props} />
+      <SwitchRow label={t("Noten")} hint={t("Aus Home.InfoPoint der Schule")} section="features" field="noten" {...props} />
     </div>
   </SettingsCard>
 );
