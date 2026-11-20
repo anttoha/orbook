@@ -619,3 +619,10 @@ Android `4f9b3f5`: правило содержания `WidgetLayout.kt` (+ JUni
 Макеты: `design/neu/31e-offline-mitteilungen/` (`gen.py`, `build.py`), артефакт https://claude.ai/artifact/CVDdYMYj19FWZ2jvXQaoKi, PNG — `/root/work/orbook-compare/31e-offline-mitteilungen/png/`.
 План: service worker — network-first для страниц и кэш ассетов; Android — уведомления по разнице ответов `/api/widget` (WidgetSync), вечернее «Morgen», будильники «Vor der Stunde» из сохранённого плана; настройки хранит приложение (мост), экран «Mitteilungen» в APK; 4-й шаг «Kurz erklärt» только в APK; Datenschutz; разрешение POST_NOTIFICATIONS.
 **Дальше:** «ок дизайн» → spec и код (Opus · effort high).
+Владелец 20.11: «ок дизайн». Плюс во время работы: «виджеты чтобы тоже без интернета грузились».
+
+## Часть 31e — готово на демо (2026-11-20)
+Сайт `488ab40`: `public/sw.js` хранит страницы (сначала сеть, без сети — сохранённая) и файлы сборки (до 120 шт.), `/api` не трогает; `pushStore` в приложении работает через мост (`appNotify.js` + тест), экран «Mitteilungen» в APK — «An auf diesem Handy», «Vor der Stunde» (`BeforeCard`), «Auf dem Handy blockiert» + шаги; «Kurz erklärt 4/4» только в APK (`ReminderPicture`), «4 Tipps»; Datenschutz — два абзаца; снимок: `activeId`, тексты уведомлений.
+Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница плана, вечер, ближайший урок; JUnit `PlanNotesTest`), `Notifier` (каналы «Plan und Tests», «Vor der Stunde»), `Notifications` (после загрузки сравнить с «seen», Ruhezeit), `Alarms` + `AlarmReceiver` (Vor der Stunde — точный будильник, вечер, граница урока для виджетов, после перезагрузки); мост `notifyState/saveNotify/requestNotify/openNotifySettings/testNotify`; WebView без сети — кэш; виджеты: фоновая задача без условия «есть сеть», чужой ключ как запас, «Keine Verbindung». Lint 0 ошибок, 13 Kotlin-тестов, 627 JS-тестов.
+Снимки: `/root/work/orbook-compare/31e-offline-mitteilungen/` (`vergleich.png`, `_tools/p31e.mjs`).
+**Дальше:** владелец проверяет на телефоне (уведомления, офлайн); потом «на прод».
