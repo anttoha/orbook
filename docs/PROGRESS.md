@@ -646,3 +646,7 @@ Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница �
 Фронт: страница `/admin/lehrkraefte` (`pages/AdminTeachers.jsx`, `components/admin/teachers/*`), пункт меню «Lehrkräfte» на ПК и строка в Einstellungen → «Zugang» на телефоне, `shared/utils/teachers.js` (+ тест), переводы EN/UK. Снимки на подставном API: `/root/work/orbook-compare/34-lehrkraefte-verwalten/shots/` (`_tools/p34.mjs`).
 Фронт ещё **не запушен** в `main`: без нового бэкенда на демо кнопки сохранения вернут 404.
 **Дальше:** выложить бэкенд (`/opt/orbook-be/scripts/update.sh`), затем `git push` фронта → проверить на демо.
+
+## Часть 34 — выложено на демо (2026-11-20)
+Бэкенд: `scripts/update.sh` (бэкап `orbook-before-update-20261120-105955.db`, тег отката `pre-update-20261120-105954`, миграция 0015 → 0016), health прод/демо 200. Фронт `31f24d3` выложен на демо (`orbook-demo: ausgeliefert 31f24d3e`). Эндпоинты `/api/admin/teachers` (POST/PATCH/DELETE) на демо отвечают 401 без входа. Вживую под админом не проверено (пароль админа у владельца). Прод-фронт — по слову «на прод» (в changelog «Was ist neu» записи не нужно: изменение только для админки, нужен `docs/releases/vX.Y.Z.md`).
+**Дальше:** владелец проверяет на демо: Admin → Lehrkräfte (ПК: пункт меню; телефон: Einstellungen → Zugang), добавить учителя с именем и предметами, поправить учителя из плана, «Auf Plan zurücksetzen»; потом «на прод».
