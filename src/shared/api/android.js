@@ -48,3 +48,28 @@ export const closeWidget = () => androidBridge()?.closeWidget?.();
 // Снимок для виджета (классы, «Meine Kurse», заметки, галочки, тексты) и «освежить сейчас» после нового плана
 export const saveSnapshot = (snapshot) => androidBridge()?.saveSnapshot?.(JSON.stringify(snapshot));
 export const refreshWidgets = () => androidBridge()?.refreshWidgets?.();
+
+// ── Часть 31e: уведомления самого приложения (без Google): состояние, настройки, разрешение Android ──
+
+// Есть ли у приложения уведомления (APK 0.20+); в браузере и в старом APK — false
+export const hasAppNotify = () => typeof androidBridge()?.notifyState === "function";
+// Строка JSON — разбирает shared/utils/appNotify.js
+export const appNotifyState = () => androidBridge()?.notifyState?.() ?? null;
+export const saveAppNotify = (settings) => androidBridge()?.saveNotify?.(JSON.stringify(settings));
+export const openAppNotifySettings = () => androidBridge()?.openNotifySettings?.();
+export const testAppNotify = () => androidBridge()?.testNotify?.();
+
+// Попросить разрешение Android. Ответ приходит событием {type: "notify", permission}; ждём до минуты
+export function requestAppNotify() {
+  return new Promise((resolve) => {
+    let stop = () => {};
+    const timer = setTimeout(() => { stop(); resolve("ask"); }, 60_000);
+    stop = onAndroidEvent((detail) => {
+      if (detail.type !== "notify") return;
+      clearTimeout(timer);
+      stop();
+      resolve(detail.permission);
+    });
+    androidBridge()?.requestNotify?.();
+  });
+}

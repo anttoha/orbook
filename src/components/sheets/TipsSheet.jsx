@@ -3,7 +3,8 @@ import { ArrowRight } from "lucide-react";
 import { DESKTOP_QUERY, useMediaQuery } from "../../shared/hooks/useMediaQuery";
 import { useSwipe } from "../../shared/hooks/useSwipe";
 import { cn } from "../../shared/utils/cn";
-import { MenuPicture, TasksPicture, WeekPicture } from "../tips/TipPictures";
+import { MenuPicture, ReminderPicture, TasksPicture, WeekPicture } from "../tips/TipPictures";
+import { hasAppNotify } from "../../shared/api/android";
 import Button from "../ui/Button";
 import { CheckIcon } from "../ui/icons";
 import Sheet from "../ui/Sheet";
@@ -17,6 +18,9 @@ const TIPS = [
   { picture: TasksPicture, title: "Aufgaben abhaken", get text() { return translate("Hausaufgaben und eigene Aufgaben in einer Liste. Mit Sync-Code auch auf dem PC."); } },
 ];
 
+// Часть 31e: в Android-приложении — четвёртый шаг: напоминание перед уроком (по умолчанию выключено) и где его включить
+const REMINDER_TIP = { picture: ReminderPicture, get title() { return translate("Erinnerung vor der Stunde"); }, get text() { return translate("Das Handy sagt dir kurz vorher, was kommt und wo – auch ohne Internet."); } };
+
 // ─────────────────────────────────────────────────────────────
 // «Kurz erklärt» (макеты 25 handy-13…15, pc-04): один раз после первого входа (useTipsOnStart),
 // потом — из Mehr. Адрес: ?sheet=tipps
@@ -25,9 +29,10 @@ const TipsSheet = ({ open, onClose }) => {
   const t = useT();
   const [{ step, back }, setNav] = useState({ step: 0, back: false }); // back — листаем назад: картинка въезжает слева
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
-  const tip = TIPS[step];
-  const last = step === TIPS.length - 1;
-  const goTo = (next) => next >= 0 && next < TIPS.length && next !== step && setNav({ step: next, back: next < step });
+  const tips = hasAppNotify() ? [...TIPS, REMINDER_TIP] : TIPS;
+  const tip = tips[step];
+  const last = step === tips.length - 1;
+  const goTo = (next) => next >= 0 && next < tips.length && next !== step && setNav({ step: next, back: next < step });
   const swipe = useSwipe({ onLeft: () => goTo(step + 1), onRight: () => goTo(step - 1) }); // на телефоне — листать пальцем
   const close = () => {
     onClose();
@@ -39,7 +44,7 @@ const TipsSheet = ({ open, onClose }) => {
       open={open}
       onClose={close}
       desktop="dialog"
-      eyebrow={t("Kurz erklärt · {1} von {length}", { "1": step + 1, length: TIPS.length })}
+      eyebrow={t("Kurz erklärt · {1} von {length}", { "1": step + 1, length: tips.length })}
       title={isDesktop && tip.pcTitle ? tip.pcTitle : tip.title}
       footer={
         <>
@@ -58,7 +63,7 @@ const TipsSheet = ({ open, onClose }) => {
       <div key={step} {...swipe} className={cn("touch-pan-y", back ? "motion-safe:animate-page-back" : "motion-safe:animate-page-forward")}>
         <tip.picture />
       </div>
-      <Dots count={TIPS.length} active={step} onPick={goTo} />
+      <Dots count={tips.length} active={step} onPick={goTo} />
       <p className="-mt-2 text-center text-caption text-faint lg:hidden">{t("Wischen geht auch")}</p>
     </Sheet>
   );

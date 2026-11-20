@@ -22,6 +22,9 @@ export const WIDGET_TEXTS = [
   "Stand {n}", "Nicht angemeldet", "Öffnen", "Zugang beendet", "Neuer Code", "Klasse {n}",
   // часть 31d: «+ N weitere», «Danach» у большого «Jetzt», Countdown в календарных днях
   "+ {n} weitere", "Danach", "Vertr.", "Tag", "Tage",
+  // часть 31e: уведомления самого приложения и виджет без сети
+  "In {n} min", "{n}. Std", "Neuer Test", "Hausaufgabe", "Test", "Test: Mitteilungen kommen an", "Keine Verbindung",
+  "Plan und Tests", "Vor der Stunde", "{n} Änderungen im Plan",
 ];
 
 const NOTES_IN_WIDGET = 5;
@@ -64,6 +67,7 @@ export function buildSnapshot({ classes = [], activeId = null, user = {}, marks 
     look: lookOf(user), // Design, Akzent, фон Glas, размер шрифта
     plan: planOf(user.plan), // «Stundenplan»: Kürzel/Name, Raum, Lehrkraft, Ausfall …
     showWeekend: Boolean(user.showWeekend),
+    activeId, // часть 31e: «Vor der Stunde» напоминает об уроках открытого класса
     lang,
     texts: Object.fromEntries(WIDGET_TEXTS.map((key) => [key, translateTo(lang, key)])),
   };

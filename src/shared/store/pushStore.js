@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { appNotifyState, hasAppNotify, requestAppNotify, saveAppNotify, testAppNotify } from "../api/android";
 import { deleteSubscription, getPushKey, getSubscription, putSubscription, sendTestPush } from "../api/push";
+import { DEFAULT_BEFORE, appSettingsOf, appSupport, parseAppNotify } from "../utils/appNotify";
 import { swapFields } from "../utils/classes";
 import { DEFAULT_PUSH, keyToBytes, needsRefresh, pushSupport, readEnvironment, subscriptionBody } from "../utils/push";
 import { useUserStore } from "./userStore";
@@ -28,6 +30,10 @@ async function browserSubscription() {
 
 const settingsOf = (state) => ({ prefs: state.prefs, mine: state.mine, quiet: state.quiet });
 
+// Часть 31e: внутри Android-приложения уведомления делает само приложение — тот же экран, другой «мотор».
+// Web Push в WebView не работает, поэтому подписки браузера там нет, а настройки хранит приложение
+const saveApp = (state) => saveAppNotify(appSettingsOf(state));
+
 // Понятные тексты ошибок (немецкие, для тоста)
 export function pushErrorText(error) {
   if (error?.code === "offline" || error?.status === 0) return translate("Nicht gespeichert – keine Verbindung");
@@ -49,6 +55,8 @@ export const usePushStore = create(
       support: "ok", // pushSupport(): ok | ios-install | unsupported | denied (не сохраняется)
       busy: false,
       byClass: {}, // Mitteilungen остальных классов: { [classId]: { enabled, prefs, mine, quiet, … } }
+      before: DEFAULT_BEFORE, // часть 31e, только в приложении: «Vor der Stunde» { on, minutes }
+      lastCheckAt: null, // часть 31e: когда приложение последний раз спрашивало сервер (мс)
 
       // ── классы (часть 29) ──
       swapClass: (from, to) => set(swapFields(get(), from, to, PUSH_CLASS_FIELDS, NEW_CLASS_PUSH)),
@@ -63,6 +71,12 @@ export const usePushStore = create(
 
       // Перечитать, что умеет устройство, и сверить с сервером (открыли «Mitteilungen»)
       check: async () => {
+        if (hasAppNotify()) {
+          const app = parseAppNotify(appNotifyState());
+          if (!app) return;
+          const { on, permission, prefs, quiet, before, reminderTime, lastCheckAt } = app;
+          return set({ support: appSupport(app), enabled: on && permission === "granted", prefs, quiet, before, reminderTime, lastCheckAt });
+        }
         const support = pushSupport(readEnvironment());
         set({ support });
         if (!get().enabled) return;
@@ -80,6 +94,16 @@ export const usePushStore = create(
       enable: async () => {
         set({ busy: true });
         try {
+          if (hasAppNotify()) {
+            const permission = await requestAppNotify();
+            if (permission !== "granted") {
+              set({ support: permission === "denied" ? "app-denied" : "app" });
+              return false;
+            }
+            set({ enabled: true });
+            saveApp(get());
+            return true;
+          }
           const permission = await Notification.requestPermission();
           if (permission !== "granted") {
             set({ support: permission === "denied" ? "denied" : "ok" });
@@ -109,6 +133,7 @@ export const usePushStore = create(
       update: async (patch) => {
         const before = settingsOf(get());
         set(patch);
+        if (hasAppNotify()) return saveApp(get()); // приложение сохраняет у себя — сеть не нужна
         if (!get().enabled) return;
         try {
           const sub = await browserSubscription();
@@ -124,6 +149,10 @@ export const usePushStore = create(
       disable: async () => {
         set({ busy: true });
         try {
+          if (hasAppNotify()) {
+            set({ enabled: false });
+            return saveApp(get());
+          }
           const sub = await browserSubscription();
           if (sub) {
             await deleteSubscription(sub.endpoint).catch(() => {}); // офлайн — сервер сам удалит через 60 дней
@@ -137,6 +166,10 @@ export const usePushStore = create(
       },
 
       test: async () => {
+        if (hasAppNotify()) {
+          testAppNotify();
+          return { sent: true };
+        }
         const sub = await browserSubscription();
         if (!sub) throw new Error(translate("Mitteilungen sind auf diesem Gerät aus"));
         return sendTestPush(sub.endpoint);
@@ -144,6 +177,7 @@ export const usePushStore = create(
 
       // При старте приложения и после смены «Meine Kurse»: раз в сутки (или сразу — force) напомнить серверу о себе
       refresh: async (force = false) => {
+        if (hasAppNotify()) return; // в приложении сервер о Mitteilungen не знает
         if (!get().enabled || (!force && !needsRefresh(get().lastSyncAt))) return;
         const sub = await browserSubscription().catch(() => null);
         if (!sub) return set({ enabled: false });
@@ -152,6 +186,7 @@ export const usePushStore = create(
 
       // Остальные классы: раз в сутки напомнить серверу и о их подписках (иначе через 60 дней тишины он их забудет)
       refreshOthers: async () => {
+        if (hasAppNotify()) return;
         const due = Object.entries(get().byClass).filter(([, other]) => other.enabled && needsRefresh(other.lastSyncAt));
         if (due.length === 0) return;
         const sub = await browserSubscription().catch(() => null);

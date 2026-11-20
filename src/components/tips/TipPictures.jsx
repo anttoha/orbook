@@ -1,9 +1,11 @@
-import { BookOpen, FileText, Monitor, Palette, Pointer, Smartphone, UserRound } from "lucide-react";
+import { Bell, BookOpen, ChevronRight, Clock, FileText, Monitor, Palette, Pointer, Smartphone, UserRound } from "lucide-react";
 import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
 import { fachClasses } from "../../shared/utils/lessons";
 import { CheckIcon, FlagIcon, SyncIcon } from "../ui/icons";
 import Liquid from "../ui/Liquid";
+import OrbitMark from "../ui/OrbitMark";
+import Switch from "../ui/Switch";
 import { useT } from "../../shared/hooks/useT";
 import { translate } from "../../shared/i18n/translate";
 
@@ -101,3 +103,40 @@ export const TasksPicture = () => {
   );
 };
 
+
+// 4 (часть 31e, только в Android-приложении) — напоминание перед уроком и где его включить (макет 31e handy-05)
+export const ReminderPicture = () => {
+  const t = useT();
+  const chip = "flex items-center gap-1.5 rounded-full bg-card px-3 py-2 text-label font-extrabold text-ink";
+  return (
+    <div className={cn(frame, "gap-4")}>
+      <Liquid as="div" refract press={false} className="flex items-center gap-3 rounded-field bg-card px-3 py-3 shadow-menu">
+        <OrbitMark className="size-9 shrink-0" />
+        <div className="min-w-0 flex-1">
+          <p className="flex justify-between text-label font-extrabold text-ink">
+            ORBook <span className="font-normal text-faint">08:20</span>
+          </p>
+          <p className="truncate text-body-sm text-ink">{t("In 10 min: Physik · Raum 301")}</p>
+        </div>
+      </Liquid>
+      <div className="flex flex-col items-center gap-2">
+        <p className="text-label font-bold text-muted">{t("Einschalten unter")}</p>
+        <p className="flex flex-wrap items-center justify-center gap-1 text-faint">
+          <span className={chip}>{t("Mehr")}</span>
+          <ChevronRight className="size-4" />
+          <span className={chip}>
+            <Bell className="size-3.5 text-accent-ink" /> {t("Mitteilungen")}
+          </span>
+          <ChevronRight className="size-4" />
+          <span className={cn(chip, "bg-tint text-accent-ink")}>
+            <Clock className="size-3.5" /> {t("Vor der Stunde")}
+          </span>
+        </p>
+      </div>
+      <Liquid as="div" refract press={false} className="flex items-center justify-between gap-3 rounded-field bg-card px-3.5 py-3">
+        <span className="text-body-sm text-ink">{t("Erinnerung vor jeder Stunde")}</span>
+        <Switch checked />
+      </Liquid>
+    </div>
+  );
+};

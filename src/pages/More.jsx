@@ -30,6 +30,7 @@ import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { courseCount } from "../shared/utils/courses";
 import { isTeacher } from "../shared/utils/examRules";
+import { hasAppNotify } from "../shared/api/android";
 import { translate } from "../shared/i18n/translate";
 
 const THEME_LABELS = { get light() { return translate("Hell"); }, get dark() { return translate("Dunkel"); }, get system() { return translate("System"); } };
@@ -118,7 +119,7 @@ const PhoneMenu = () => {
         {android && <MenuRow to="/mehr/android" icon={Smartphone} label={t("Android-App")} value={android.versionName} />}
         {offer && <MenuRow to="/mehr/android" icon={Smartphone} label={t("Android-App")} value={t("APK · Widget")} badge={androidSeen ? null : <Badge variant="live">{t("Neu")}</Badge>} />}
         {/* часть 25: три подсказки с первого входа — открыть ещё раз */}
-        <MenuRow onClick={() => openSheet("tipps")} icon={Info} label={t("Kurz erklärt")} value={t("3 Tipps")} />
+        <MenuRow onClick={() => openSheet("tipps")} icon={Info} label={t("Kurz erklärt")} value={t(hasAppNotify() ? "4 Tipps" : "3 Tipps")} />
         <MenuRow to="/mehr/datenschutz" icon={ShieldIcon} label={t("Datenschutz")} />
       </ListCard>
 
