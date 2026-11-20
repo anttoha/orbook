@@ -23,13 +23,17 @@ describe("cleanNav", () => {
 });
 
 describe("visibleNav", () => {
-  it("Noten ещё нет (часть 36): в «Leistung» по умолчанию Tests и Aufgaben", () => {
-    const nav = visibleNav(defaultNav("phone"), {});
+  it("школа без InfoPoint (features.noten false): в «Leistung» Tests и Aufgaben", () => {
+    const nav = visibleNav(defaultNav("phone"), { noten: false });
     expect(nav.map((n) => n.type)).toEqual(["link", "link", "group"]);
     expect(nav[2].tabs.map((t) => t.key)).toEqual(["tests", "aufgaben"]);
   });
+  it("с InfoPoint (часть 36b): в «Leistung» Tests, Noten, Aufgaben", () => {
+    const nav = visibleNav(defaultNav("phone"), { noten: true });
+    expect(nav[2].tabs.map((t) => t.key)).toEqual(["tests", "noten", "aufgaben"]);
+  });
   it("группа из одного доступного раздела — обычная вкладка", () => {
-    const nav = visibleNav(["start", { ...leistung, items: ["tests", "noten"] }], {});
+    const nav = visibleNav(["start", { ...leistung, items: ["tests", "noten"] }], { noten: false });
     expect(nav[1]).toMatchObject({ type: "link" });
     expect(nav[1].tab.to).toBe("/testen");
   });
@@ -51,7 +55,11 @@ describe("visibleNav", () => {
 
 describe("restOf", () => {
   it("всё доступное, чего нет в панели", () => {
-    expect(restOf(defaultNav("phone"), {})).toEqual(["heute", "termine", "materialien", "statistik"]);
+    expect(restOf(defaultNav("phone"), { noten: false })).toEqual(["heute", "termine", "materialien", "statistik"]);
+    expect(restOf(defaultNav("phone"), { noten: true })).toEqual(["heute", "termine", "fehlzeiten", "materialien", "statistik"]);
+  });
+  it("Fehlzeiten in «Mehr» светит Noten, а не «Mehr»", () => {
+    expect(restPaths(defaultNav("phone"), { noten: true })).not.toContain("/fehlzeiten");
   });
 });
 

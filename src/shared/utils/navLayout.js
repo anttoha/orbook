@@ -9,7 +9,8 @@ import { isTabActive } from "./isTabActive";
 // ─────────────────────────────────────────────────────────────
 
 // Разделы, которые можно поставить в панель. activeOn — где ещё вкладка светится,
-// feature — раздел, который школа может выключить (me.features), ready: false — раздела ещё нет (Noten — часть 36)
+// feature — раздел, который школа может выключить (me.features), ready: false — раздела ещё нет.
+// Noten и Fehlzeiten (часть 36b) — только если у школы есть InfoPoint (features.noten)
 export const SECTIONS = {
   start: { to: "/start", get label() { return translate("Start"); } },
   woche: { to: "/woche", get label() { return translate("Woche"); }, end: true, activeOn: ["/", "/tag"] },
@@ -17,8 +18,8 @@ export const SECTIONS = {
   tests: { to: "/testen", get label() { return translate("Tests"); }, list: "exams" },
   aufgaben: { to: "/testen?liste=hausaufgaben", get label() { return translate("Aufgaben"); }, list: "homework" },
   termine: { to: "/testen?liste=termine", get label() { return translate("Termine"); }, list: "appointments" },
-  noten: { to: "/noten", get label() { return translate("Noten"); }, ready: false },
-  fehlzeiten: { to: "/fehlzeiten", get label() { return translate("Fehlzeiten"); }, ready: false },
+  noten: { to: "/noten", get label() { return translate("Noten"); }, feature: "noten", activeOn: ["/fehlzeiten"] },
+  fehlzeiten: { to: "/fehlzeiten", get label() { return translate("Fehlzeiten"); }, feature: "noten" },
   materialien: { to: "/materialien", get label() { return translate("Materialien"); } },
   statistik: { to: "/statistik", get label() { return translate("Statistik"); }, feature: "statistics" },
 };
@@ -32,7 +33,7 @@ export const LIMITS = { phone: 4, pc: 8 };
 export const GROUP_LIMIT = 6;
 export const MENU_STYLES = ["kompakt", "gross"];
 
-// «Leistung»: Tests и Noten (владелец); Aufgaben — чтобы группа была группой, пока Noten нет (часть 36)
+// «Leistung»: Tests, Noten (владелец) и Aufgaben — группа остаётся группой и в школе без InfoPoint
 const leistung = () => ({ id: "leistung", name: "Leistung", icon: "award", items: ["tests", "noten", "aufgaben"] });
 export const defaultNav = (device) =>
   device === "pc" ? ["start", "woche", "heute", leistung(), "materialien"] : ["start", "woche", leistung()];
@@ -99,7 +100,11 @@ export const navTabActive = (tab, pathname, search) =>
   tab.lists ? Boolean(matchPath({ path: "/testen", end: false }, pathname)) && tab.lists.includes(listModeOf(search)) : isTabActive(tab, pathname);
 
 // Пути разделов, которые сейчас в «Mehr»: на них светится вкладка «Mehr»
-export const restPaths = (list, features) => restOf(list, features).filter((key) => !SECTIONS[key].list).map((key) => SECTIONS[key].to);
+// (кроме тех, где уже светится вкладка из панели: Fehlzeiten — у Noten)
+export const restPaths = (list, features) => {
+  const covered = new Set(placedKeys(list).flatMap((key) => SECTIONS[key]?.activeOn ?? []));
+  return restOf(list, features).filter((key) => !SECTIONS[key].list).map((key) => SECTIONS[key].to).filter((path) => !covered.has(path));
+};
 
 // Раскладка → то, что рисуют панель и сайдбар: [{ type: "link", tab } | { type: "group", id, name, icon, tabs }].
 // Недоступные разделы пропускаем; пустую группу — тоже; группа из одного раздела становится обычной вкладкой

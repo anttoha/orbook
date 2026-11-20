@@ -7,15 +7,20 @@ import ExamBadge from "./ExamBadge";
 import ExamDateTile from "./ExamDateTile";
 import { useT } from "../../shared/hooks/useT";
 import { translate } from "../../shared/i18n/translate";
+import { useNotenStore } from "../../shared/store/notenStore";
+import { examGrade } from "../../shared/utils/noten";
+import GradePill from "../noten/GradePill";
 
 // ─────────────────────────────────────────────────────────────
 // Рядок списку Tests (часть 24: перенесённый — VERSCHOBEN и «von Mi 17.09., 3. Std – fiel aus»):
 //   [19 FR]  KLAUSUR Mathe · 1. Std           in 2 Tagen
 //            Quadratische Funktionen
 // highlight — найближча: фіолетова рамка і фіолетове «in 2 Tagen»
+// Часть 36b: у прошедшей — оценка из InfoPoint (тот же день, тот же предмет) вместо «vor 3 Tagen»
 // ─────────────────────────────────────────────────────────────
 const ExamRow = ({ exam, overrides, highlight, onClick }) => {
   const t = useT();
+  const grade = useNotenStore((s) => (exam.daysLeft < 0 ? examGrade(exam, s.data) : null));
   return (
   <button
     type="button"
@@ -38,7 +43,11 @@ const ExamRow = ({ exam, overrides, highlight, onClick }) => {
       {movedFromText(exam) && <MovedLine>{movedFromText(exam)} {t("– fiel aus")}</MovedLine>}
     </span>
 
-    <span className={cn("shrink-0 text-caption font-bold", highlight ? "text-accent-ink" : "text-faint")}>{examWhen(exam)}</span>
+    {grade ? (
+      <GradePill text={grade.grade} value={grade.value} />
+    ) : (
+      <span className={cn("shrink-0 text-caption font-bold", highlight ? "text-accent-ink" : "text-faint")}>{examWhen(exam)}</span>
+    )}
   </button>
 );
 };

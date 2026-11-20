@@ -679,3 +679,8 @@ Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница �
 Фронт: в админке поле «Home.InfoPoint (Noten)» (Schule & Plan) и переключатель «Noten» (Funktionen), EN/UK. Экрана «Noten» ещё нет — 36b.
 Не проверено: неверный пароль на настоящем InfoPoint (в HAR его нет) — считаем «не 302 на getdata.php» или форма входа на странице.
 **Дальше:** 36b — экран «Noten» (новый чат, Opus · effort high, `/orb 36b`). Админу: вписать в Einstellungen → Schule & Plan адрес `https://petrischule-th.de/hip/webapp`.
+
+## Часть 36b — экран «Noten» готов, на демо (2026-11-20)
+`/noten` (обзор: 1./2. Halbjahr / Zeugnis, Schnitt, Fehlzeiten, предметы, «neu», InfoPoint · Abmelden), `/noten/:fach` (предмет, Notenrechner в шторке; на ПК — правая колонка с Notenrechner), `/fehlzeiten`, вход в InfoPoint и ошибки (falsch, nicht erreichbar, zu oft), блок «Noten» на Start, оценка у прошедших Tests (тот же день и предмет). Расчёты — `shared/utils/noten.js` (+тесты), кеш и логин — `shared/store/notenStore.js` (localStorage `orbook.noten`, пароль только с «Angemeldet bleiben»), Sync — часть «Noten» (только оценки, «Abmelden» стирает и в Sync). Noten/Fehlzeiten в «Leiste» — по `features.noten`. Datenschutz — раздел «Noten aus InfoPoint», EN/UK.
+Скриншоты: `/root/work/orbook-compare/36-noten/shots/` (скрипт `_tools/p36b.mjs`). Changelog — при «на прод».
+**Дальше:** владелец проверяет на демо; потом «на прод» или 36c (Android, Opus · effort high).

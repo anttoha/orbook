@@ -1,4 +1,4 @@
-import { CalendarDays, Clock, File, Folder, List, ListChecks, RefreshCw, Sun, Table2 } from "lucide-react";
+import { CalendarDays, ClipboardCheck, Clock, File, Folder, List, ListChecks, RefreshCw, Sun, Table2 } from "lucide-react";
 import { FlagIcon, StatsIcon } from "../ui/icons";
 
 // Иконка каждого вида блока — в шапке блока и в списке «Block hinzufügen» (как в макетах 30)
@@ -13,5 +13,6 @@ export const BLOCK_ICONS = {
   notizen: File,
   materialien: Folder,
   statistik: StatsIcon,
+  noten: ClipboardCheck,
   countdown: Sun,
 };

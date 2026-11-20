@@ -75,6 +75,17 @@ export const SECTIONS = [
     ],
   },
   {
+    id: "noten",
+    title: "Noten aus InfoPoint",
+    intro: [
+      "Noten und Fehlzeiten holt ORBook nur, wenn du dich mit deinem eigenen InfoPoint-Login anmeldest, und danach nur, wenn du aktualisierst.",
+      "Der Server reicht Benutzername und Passwort in diesem Moment an den InfoPoint deiner Schule weiter und speichert nichts davon: keinen Login, keine Noten, keine Fehlzeiten, nichts im Protokoll. Deinen Namen und die Namen der Lehrkräfte gibt er nicht weiter.",
+      "Auf deinem Gerät liegen die geholten Noten und Fehlzeiten. Mit „Angemeldet bleiben“ auch Benutzername und Passwort – nur in diesem Browser, nie im Sync.",
+      "Mit Sync kommen die geholten Noten verschlüsselt mit, solange „Noten“ dort eingeschaltet ist.",
+      "„Abmelden“ löscht Login und Noten auf diesem Gerät und im Sync.",
+    ],
+  },
+  {
     id: "geraet",
     title: "Auf deinem Gerät",
     intro: [

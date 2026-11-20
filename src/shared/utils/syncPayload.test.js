@@ -10,7 +10,7 @@ const box = { encryptNotes: async (_k, v) => JSON.stringify(v), decryptNotes: as
 
 describe("readBlock", () => {
   it("старый блок только с заметками → остальное пустое", () => {
-    expect(readBlock({ notes: [note("a", "x")] })).toEqual({ notes: [note("a", "x")], tasks: [], marks: [], kurse: null, darstellung: null, klassen: null });
+    expect(readBlock({ notes: [note("a", "x")] })).toEqual({ notes: [note("a", "x")], tasks: [], marks: [], kurse: null, darstellung: null, noten: null, klassen: null });
   });
 });
 

@@ -7,6 +7,7 @@ import JetztBlock from "./JetztBlock";
 import MaterialienBlock from "./MaterialienBlock";
 import NotizenBlock from "./NotizenBlock";
 import StatistikBlock from "./StatistikBlock";
+import NotenBlock from "./NotenBlock";
 import TermineBlock from "./TermineBlock";
 import TestsBlock from "./TestsBlock";
 import WocheBlock from "./WocheBlock";
@@ -23,6 +24,7 @@ const COMPONENTS = {
   notizen: NotizenBlock,
   materialien: MaterialienBlock,
   statistik: StatistikBlock,
+  noten: NotenBlock,
   countdown: CountdownBlock,
 };
 

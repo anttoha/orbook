@@ -2,7 +2,7 @@
 // Sync-блок целиком (часть 25): не только заметки, а всё, что пользователь выбрал.
 // Блок шифруется как раньше (syncCrypto.js); сервер видит только зашифрованный текст.
 // Блок: { notes, tasks, marks, kurse: { value, updatedAt } | null, darstellung: { value, updatedAt } | null,
-//         klassen: { [classId]: { notes, kurse, info } } | null }
+//         klassen: { [classId]: { notes, kurse, info } } | null, noten: { value, updatedAt } | null }
 // Старый блок { notes } тоже подходит: недостающие части — пустые.
 // Часть 29d: у каждого класса свои заметки и курсы — они в klassen. Верхние notes/kurse — копия
 // «домашнего» класса, чтобы старые версии приложения на других устройствах продолжали работать.
@@ -12,8 +12,9 @@ import { appearanceOf } from "./appearance";
 import { mergeNotes } from "./notes";
 
 // Части, которые можно включать и выключать (по умолчанию все включены)
-export const SYNC_PARTS = ["notes", "aufgaben", "kurse", "darstellung", "klassen"];
-export const ALL_PARTS = { notes: true, aufgaben: true, kurse: true, darstellung: true, klassen: true };
+// noten (часть 36b) — оценки из InfoPoint (без логина и пароля: они только на устройстве)
+export const SYNC_PARTS = ["notes", "aufgaben", "kurse", "darstellung", "klassen", "noten"];
+export const ALL_PARTS = { notes: true, aufgaben: true, kurse: true, darstellung: true, klassen: true, noten: true };
 // Устройство со старой версией хранит parts без klassen — отсутствие значит «включено»
 const isOn = (parts, name) => parts?.[name] !== false;
 
@@ -46,7 +47,8 @@ export const readBlock = (plain) => ({
   marks: plain?.marks ?? [],
   kurse: plain?.kurse ?? null,
   darstellung: plain?.darstellung ?? null,
-  klassen: plain?.klassen ?? null, // null — блок записан до части 29d
+  noten: plain?.noten ?? null, // часть 36b: { value: ответ InfoPoint | null после «Abmelden», updatedAt }
+  klassen: plain?.klassen ?? null, // null — блок записан до части 29d (последним: так же, как в mergeBlock)
 });
 
 // ── Классы (часть 29d) ──
@@ -147,6 +149,8 @@ function mergeTop(local, remote, parts, now) {
     marks: parts.aufgaben ? freshMarks(mergeNotes(local.marks, remote.marks, now), now) : remote.marks,
     kurse: parts.kurse ? newerSetting(local.kurse, remote.kurse) : remote.kurse,
     darstellung: parts.darstellung ? newerSetting(local.darstellung, remote.darstellung) : remote.darstellung,
+    // Оценки: побеждает более новое (загрузка или «Abmelden»). Устройство старой версии parts.noten не знает — значит включено
+    noten: isOn(parts, "noten") ? newerSetting(local.noten ?? null, remote.noten ?? null) : (remote.noten ?? null),
   };
 }
 

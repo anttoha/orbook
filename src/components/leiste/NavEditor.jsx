@@ -26,7 +26,7 @@ const NavEditor = ({ list, features, device, onChange, onError, onRemove, onAdd,
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
   const c = live ?? toContainers(list, features);
-  const shown = (key) => key.startsWith("g:") || sectionAvailable(key, features); // Noten ещё нет (часть 36) — не показываем
+  const shown = (key) => key.startsWith("g:") || sectionAvailable(key, features); // раздел, который школа выключила (Noten без InfoPoint), не предлагаем
   const groups = Object.fromEntries(list.filter(isGroup).map((g) => [groupKey(g.id), g]));
 
   const over = ({ active, over: o }) => {

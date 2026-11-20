@@ -9,6 +9,8 @@ import Materials from "../../pages/Materials";
 import MaterialEdit from "../../pages/MaterialEdit";
 import AppointmentEdit from "../../pages/AppointmentEdit";
 import Statistic from "../../pages/Statistic";
+import Noten from "../../pages/Noten";
+import Fehlzeiten from "../../pages/Fehlzeiten";
 import More from "../../pages/More";
 import MyCourses from "../../pages/MyCourses";
 import Appearance from "../../pages/Appearance";
@@ -112,6 +114,9 @@ export const router = createBrowserRouter([
           page({ path: "testen/termine/:id/bearbeiten", Component: AppointmentEdit }),
           page({ path: "editor-code", Component: EditorCode }),
           page({ path: "statistik", Component: Statistic }),
+          page({ path: "noten", Component: Noten }), // оценки из Home.InfoPoint (часть 36b)
+          page({ path: "noten/:fach", Component: Noten }), // предмет; на ПК — правая колонка той же страницы
+          page({ path: "fehlzeiten", Component: Fehlzeiten }),
           page({ path: "materialien", Component: Materials }), // посилання на Drive за предметами (частина 15)
           page({ path: "materialien/neu", Component: MaterialEdit }),
           page({ path: "materialien/:id/bearbeiten", Component: MaterialEdit }),

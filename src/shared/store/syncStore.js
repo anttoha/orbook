@@ -8,6 +8,7 @@ import { ALL_PARTS, applyInfo, classPatch, darstellungOf, infoOf, kurseOf, local
 import { decryptNotes, deriveSync, encryptNotes, generateSyncCode, normalizeSyncCode } from "../utils/syncCrypto";
 import { useClasses } from "./classesStore";
 import { useTasksStore } from "./tasksStore";
+import { useNotenStore } from "./notenStore";
 import { useUserStore } from "./userStore";
 
 // ─────────────────────────────────────────────────────────────
@@ -166,8 +167,15 @@ function localBlock(stamps) {
     marks,
     kurse: { value: kurseOf(user), updatedAt: stamps.kurse },
     darstellung: { value: darstellungOf(user, useTheme.getState().theme), updatedAt: stamps.darstellung },
+    noten: notenOf(),
     klassen: classList().length > 0 ? localKlassen(user, useClasses.getState().activeId, classList(), classStamps(stamps)) : null,
   };
+}
+
+// Оценки InfoPoint (часть 36b): ни разу не загружали здесь — null, тогда берётся пришедшее
+function notenOf() {
+  const { data, stamp } = useNotenStore.getState();
+  return stamp ? { value: data, updatedAt: stamp } : null;
 }
 
 const differs = (a, b) => JSON.stringify(a) !== JSON.stringify(b);
@@ -192,6 +200,9 @@ function applyBlock(block, parts, set) {
     if (parts.darstellung && block.darstellung) {
       applyDarstellung(defined(block.darstellung.value));
       stamps.darstellung = block.darstellung.updatedAt;
+    }
+    if (parts.noten !== false && block.noten?.updatedAt && block.noten.updatedAt !== useNotenStore.getState().stamp) {
+      useNotenStore.getState().setSynced(block.noten.value ?? null, block.noten.updatedAt);
     }
     set({ stamps });
   } finally {
@@ -283,7 +294,11 @@ export function watchChanges(onChange) {
   const stopTasks = useTasksStore.subscribe((state, prev) => {
     if (!applying && (state.tasks !== prev.tasks || state.marks !== prev.marks)) onChange();
   });
+  const stopNoten = useNotenStore.subscribe((state, prev) => {
+    if (!applying && state.stamp !== prev.stamp) onChange();
+  });
   return () => {
+    stopNoten();
     stopUser();
     stopTheme();
     stopClasses();

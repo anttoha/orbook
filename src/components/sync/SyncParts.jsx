@@ -1,10 +1,11 @@
-import { FileText, LayoutGrid, ListChecks, Sun, Table2 } from "lucide-react";
+import { ClipboardCheck, FileText, LayoutGrid, ListChecks, Sun, Table2 } from "lucide-react";
 import { useT } from "../../shared/hooks/useT";
 import { useTheme } from "../../shared/hooks/useTheme";
 import { useClasses } from "../../shared/store/classesStore";
 import { useSyncStore } from "../../shared/store/syncStore";
 import { useTasksStore } from "../../shared/store/tasksStore";
 import { useUserStore } from "../../shared/store/userStore";
+import { usePlanStore } from "../../shared/store/planStore";
 import { visibleNotes } from "../../shared/utils/notes";
 import { cn } from "../../shared/utils/cn";
 import RowSwitch from "../ui/RowSwitch";
@@ -25,6 +26,7 @@ const SyncParts = () => {
   const fontScale = useUserStore((s) => s.fontScale);
   const theme = useTheme((s) => s.theme);
   const classCount = useClasses((s) => s.list.length);
+  const noten = usePlanStore((s) => s.me?.features?.noten === true);
   const t = useT();
   const rows = [
     { key: "notes", icon: FileText, title: translate("Notizen"), hint: `${notes} ${notes === 1 ? translate("Notiz") : translate("Notizen")}` },
@@ -33,6 +35,8 @@ const SyncParts = () => {
     { key: "darstellung", icon: Sun, title: "Darstellung & Fachfarben", hint: `${THEME[theme] ?? translate("System")} · A${"+".repeat(Math.max(0, fontScale - 1))}` },
     // Часть 29d: имя, цвет и порядок классов (без Zugangscodes — класс на новом устройстве добавляется своим кодом)
     ...(classCount > 0 ? [{ key: "klassen", icon: LayoutGrid, title: t("Meine Klassen"), hint: t("Name, Farbe, Reihenfolge – ohne Zugangscodes") }] : []),
+    // Часть 36b: только оценки — логин InfoPoint остаётся на устройстве
+    ...(noten ? [{ key: "noten", icon: ClipboardCheck, title: t("Noten"), hint: t("geholte Noten, ohne Login") }] : []),
   ];
 
   return (
