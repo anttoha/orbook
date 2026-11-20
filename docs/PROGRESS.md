@@ -612,3 +612,10 @@ Android `4f9b3f5`: правило содержания `WidgetLayout.kt` (+ JUni
 Демо: сайт выложен, демо-APK 0.18.1 (6) на `/api/public/android/apk`. Владелец: в «Woche» клетки без текста — строка без ширины обнуляла место под Kürzel; исправлено `6963f00`, демо-APK 0.18.1 (7). Владелец: на 5×2 всё равно пусто (8–10 уроков в 2 клетки высоты) — широкий низкий виджет показывает неделю «лёжа» (дни строками), в «Einstellen» переключатели под подписью, длинные тексты с «…» (`64ed1f0`, демо-APK 0.18.1 (8)). Снимки экрана: `/root/work/orbook-compare/31d-widget-design/` (`vergleich-einstellen.png`, скрипт `_tools/p31d-einstellen.mjs`).
 **Дальше:** владелец проверяет виджеты на телефоне; потом «на прод» (changelog + релиз + прод-APK).
 **Прод 19.11:** владелец «на прод» → Release v0.19.0 (`134d08d`, changelog + `docs/releases/v0.19.0.md`), прод выложен таймером (`orbook: ausgeliefert 134d08d1`), прод-APK 0.19.0 (9) на `https://orbook.orbitium.net/api/public/android/apk` и в Release.
+
+## Часть 31e «Offline + Mitteilungen in der App» — макеты, ждёт «ок дизайн» (2026-11-20)
+Вопрос владельца: «чтобы без интернета что-то показывалось и уведомления». Сейчас: виджеты офлайн работают (последние данные + «Stand …»); APK без сети не открывается (WebView грузит сайт, `sw.js` страницы не кэширует); Web Push в Android WebView не работает — в APK уведомлений нет.
+Решения владельца 20.11: без Google/Firebase; «Vor der Stunde» по умолчанию выключено, в «Kurz erklärt» показать, где включить.
+Макеты: `design/neu/31e-offline-mitteilungen/` (`gen.py`, `build.py`), артефакт https://claude.ai/artifact/CVDdYMYj19FWZ2jvXQaoKi, PNG — `/root/work/orbook-compare/31e-offline-mitteilungen/png/`.
+План: service worker — network-first для страниц и кэш ассетов; Android — уведомления по разнице ответов `/api/widget` (WidgetSync), вечернее «Morgen», будильники «Vor der Stunde» из сохранённого плана; настройки хранит приложение (мост), экран «Mitteilungen» в APK; 4-й шаг «Kurz erklärt» только в APK; Datenschutz; разрешение POST_NOTIFICATIONS.
+**Дальше:** «ок дизайн» → spec и код (Opus · effort high).
