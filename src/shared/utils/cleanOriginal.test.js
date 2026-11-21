@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cleanBody, cleanCss, cleanOriginal } from "./cleanOriginal";
+import { asPrinted, cleanBody, cleanCss, cleanOriginal, printCss } from "./cleanOriginal";
 
 const EVIL =
   '<html><head><script>alert(1)</script><link rel="stylesheet" href="x.css"></head>' +
@@ -27,5 +27,27 @@ describe("cleanOriginal", () => {
     expect(page.match(/<style>/g)).toHaveLength(1);
     expect(page).toContain("<style>#head{display:none}</style>");
     expect(cleanOriginal(null, null)).toContain("<body></body>");
+  });
+});
+
+describe("printCss / asPrinted (как на бумаге)", () => {
+  const css = "#head{color:red}@media print{#head,#footer{display:none}#content{padding:0}}@media screen{.only{color:blue}}@media (max-width:600px){p{margin:0}}";
+
+  it("правила для печати становятся обычными, только для экрана — выброшены, остальные остаются", () => {
+    expect(printCss(css)).toBe("#head{color:red}#head,#footer{display:none}#content{padding:0}@media (max-width:600px){p{margin:0}}");
+  });
+  it("«screen, print» тоже считается печатью; «not print» — нет", () => {
+    expect(printCss("@media screen, print{a{b:c}}")).toBe("a{b:c}");
+    expect(printCss("@media not print{a{b:c}}")).toBe("@media not print{a{b:c}}");
+  });
+  it("пустой стиль и null не ломаются", () => {
+    expect(printCss("")).toBe("");
+    expect(printCss(null)).toBe("");
+  });
+  it("в странице меняется только <style>, фон убран", () => {
+    const page = asPrinted("<html><head><style>@media print{#head{display:none}}</style></head><body><div id=\"head\">Abmelden</div></body></html>");
+    expect(page).toContain("#head{display:none}");
+    expect(page).toContain("background:transparent!important");
+    expect(page).toContain('<div id="head">Abmelden</div>');
   });
 });

@@ -67,3 +67,45 @@ export const cleanCss = (css) =>
 // Готовая страница для превью и печати
 export const cleanOriginal = (html, css) =>
   `<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>cevex Home.InfoPoint</title><style>${cleanCss(css)}</style></head><body>${cleanBody(html)}</body></html>`;
+
+// ── Как на бумаге (исправление части 37) ──
+// Превью и «Herunterladen» рисуют страницу как экран, а у InfoPoint шапку («Detailansicht … Abmelden»)
+// и подвал («Impressum», «… ist angemeldet») прячет только @media print. Поэтому правила для печати
+// делаем обычными, правила только для экрана выбрасываем, а фон убираем — браузер по умолчанию
+// печатает без фона. Тогда превью = то, что выходит из «Drucken» на сайте школы.
+const NO_BACKGROUND = "\n*{background:transparent!important;box-shadow:none!important}body{background:white!important}";
+
+// Конец блока «{ … }» с вложенными скобками; start — индекс «{»
+function blockEnd(css, start) {
+  let depth = 0;
+  for (let i = start; i < css.length; i++) {
+    if (css[i] === "{") depth++;
+    else if (css[i] === "}" && --depth === 0) return i;
+  }
+  return css.length - 1;
+}
+
+export function printCss(css) {
+  const text = css ?? "";
+  const media = /@media/gi;
+  const out = [];
+  let at = 0; // всё до этого места уже разобрано
+  for (let m = media.exec(text); m; m = media.exec(text)) {
+    const open = text.indexOf("{", m.index);
+    if (open < 0) break;
+    const end = blockEnd(text, open);
+    const query = text.slice(m.index + 6, open).toLowerCase();
+    const forPrint = /\bprint\b/.test(query) && !/\bnot\s+print\b/.test(query);
+    const screenOnly = !forPrint && /\bscreen\b/.test(query);
+    out.push(text.slice(at, m.index));
+    if (forPrint) out.push(printCss(text.slice(open + 1, end))); // правила печати — без обёртки
+    else if (!screenOnly) out.push(text.slice(m.index, end + 1)); // прочие (ширина экрана …) — как есть
+    at = end + 1;
+    media.lastIndex = at;
+  }
+  out.push(text.slice(at));
+  return out.join("");
+}
+
+// Готовая страница (с сервера или из App) → та же страница со стилем «как на бумаге»
+export const asPrinted = (page) => (page ?? "").replace(/<style>([\s\S]*?)<\/style>/i, (_, css) => `<style>${printCss(css)}${NO_BACKGROUND}</style>`);

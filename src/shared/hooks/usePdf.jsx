@@ -4,7 +4,7 @@ import { appNotenState, fetchOriginal, fetchOriginalApp, hasAppNoten, hasAppOrig
 import { translate } from "../i18n/translate";
 import { errorCode, useNotenStore } from "../store/notenStore";
 import { usePlanStore } from "../store/planStore";
-import { cleanOriginal } from "../utils/cleanOriginal";
+import { asPrinted, cleanOriginal } from "../utils/cleanOriginal";
 import { waitMinutes } from "../utils/noten";
 
 // ─────────────────────────────────────────────────────────────
@@ -16,7 +16,7 @@ export const inApp = () => Boolean(androidBridge());
 // Старое APK не умеет ни печать, ни файлы, ни оригинал — тогда тост «App aktualisieren»
 export const appTooOld = () => inApp() && !hasAppOriginal();
 
-// Оригинал InfoPoint (mode "summary" | "detail") → { html } (чистая страница) | { error: код }.
+// Оригинал InfoPoint (mode "summary" | "detail") → { html } (чистая страница, стиль «как на бумаге») | { error: код }.
 // "login" — пароля нет или он неверный: вход уже открыт в notenStore (экран /noten)
 export async function loadOriginal(mode) {
   const notes = useNotenStore.getState();
@@ -28,9 +28,9 @@ export async function loadOriginal(mode) {
   try {
     if (inApp()) {
       const page = await fetchOriginalApp({ url: usePlanStore.getState().meta?.infopointUrl, username, password, mode });
-      return { html: page?.css == null ? page?.html : cleanOriginal(page.html, page.css) };
+      return { html: asPrinted(page?.css == null ? page?.html : cleanOriginal(page.html, page.css)) };
     }
-    return { html: (await fetchOriginal(username, password, mode)).html };
+    return { html: asPrinted((await fetchOriginal(username, password, mode)).html) }; // превью = как на бумаге
   } catch (error) {
     return { error: originalError(error) };
   }
