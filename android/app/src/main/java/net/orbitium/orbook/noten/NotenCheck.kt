@@ -17,6 +17,7 @@ import net.orbitium.orbook.notify.Note
 import net.orbitium.orbook.notify.Notifier
 import net.orbitium.orbook.notify.NotifySettings
 import net.orbitium.orbook.widget.WidgetStore
+import net.orbitium.orbook.widget.Widgets
 import org.json.JSONObject
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -61,6 +62,7 @@ object NotenCheck {
             } else {
                 store.clear()
             }
+            Widgets.redraw(context) // часть 39: виджеты Noten — новые оценки сразу на рабочем столе
         } else if (result.code == "infopoint_denied" && saved != null && saved.username == user) {
             store.forgetPassword()
         }
@@ -76,6 +78,9 @@ object NotenCheck {
         val outcome = fetch(context, login.url, login.username, login.password, remember = true)
         val data = outcome.data ?: return
         if (before == null) return // первый раз — всё «уже было»
+        // часть 39: новые оценки — «neu» и в виджетах, пока сайт их не покажет (он потом пришлёт свой список)
+        val added = gradeKeys(data) - before
+        if (added.isNotEmpty()) { store.saveFresh(store.fresh() + added); Widgets.redraw(context) }
         val fresh = newGrades(data, before)
         if (fresh.isNotEmpty()) notify(context, fresh)
     }

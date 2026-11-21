@@ -48,6 +48,10 @@ class NotenStore(context: Context) {
     fun seen(): Set<String>? = read("seen")?.split('\n')?.filter { it.isNotEmpty() }?.toSet()
     fun saveSeen(keys: Set<String>) = prefs.edit().putString("seen", seal(keys.joinToString("\n"))).apply()
 
+    /** Часть 39: оценки «neu» (gradeKey) — их помечают виджеты. Пишет сайт (мост notenFresh) и фоновая проверка. */
+    fun fresh(): Set<String> = read("fresh")?.split('\n')?.filter { it.isNotEmpty() }?.toSet() ?: emptySet()
+    fun saveFresh(keys: Set<String>) = prefs.edit().putString("fresh", seal(keys.joinToString("\n"))).apply()
+
     // Лимиты (как на сервере): когда была удачная загрузка и последние попытки
     fun lastOk(): Long = prefs.getLong("lastOk", 0)
     fun markOk(at: Long) = prefs.edit().putLong("lastOk", at).apply()
@@ -55,7 +59,7 @@ class NotenStore(context: Context) {
     fun saveTries(list: List<Long>) = prefs.edit().putString("tries", list.joinToString(",")).apply()
 
     /** «Abmelden»: всё, кроме лимитов (иначе выход-вход обходил бы их). */
-    fun clear() = prefs.edit().remove("url").remove("username").remove("password").remove("data").remove("fetchedAt").remove("seen").apply()
+    fun clear() = prefs.edit().remove("url").remove("username").remove("password").remove("data").remove("fetchedAt").remove("seen").remove("fresh").apply()
 
     private fun read(name: String): String? = prefs.getString(name, null)?.let(::open)
 

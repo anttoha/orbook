@@ -32,6 +32,7 @@ object WidgetSync {
         val manager = GlanceAppWidgetManager(context)
         val configs = manager.getGlanceIds(OrbWidget::class.java)
             .mapNotNull { store.config(manager.getAppWidgetId(it)) }
+            .filterNot { it.noten } // часть 39: оценки берутся с телефона, у сервера спрашивать нечего
         // часть 31e: включены уведомления — загружаем и классы без виджета («Meine Kurse»)
         val notify = if (Notifications.active(context)) Notifications.classIds(context).map { it to true } else emptyList()
         for ((classId, mine) in (configs.map { it.classId to it.mine } + notify).distinct()) {

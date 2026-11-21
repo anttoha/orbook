@@ -42,6 +42,7 @@ import androidx.glance.unit.ColorProvider
 import net.orbitium.orbook.MainActivity
 import net.orbitium.orbook.R
 import net.orbitium.orbook.Site
+import net.orbitium.orbook.noten.NotenStore
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
@@ -75,9 +76,17 @@ class OrbWidget : GlanceAppWidget() {
             status = store.state(key),
             fetchedAt = store.fetchedAt(key),
             className = snapshot.classes.firstOrNull { it.id == config.classId }?.name,
+            noten = if (config.noten) notenOf(context) else null,
         )
         provideContent { WidgetContent(context, state) }
     }
+}
+
+/** Часть 39: сохранённые приложением оценки (расшифровать не вышло или их нет — null, «In ORBook bei Noten anmelden»). */
+private fun notenOf(context: Context): NotenView? {
+    val store = NotenStore(context)
+    val json = store.data() ?: return null
+    return runCatching { notenView(json, store.fresh()) }.getOrNull()
 }
 
 /** Всё, что нужно нарисовать один виджет. */
@@ -88,6 +97,7 @@ class WidgetState(
     val status: String,
     val fetchedAt: Long,
     val className: String?,
+    val noten: NotenView? = null, // часть 39: только у видов Noten, Neue Noten, Fehlzeiten
 ) {
     val texts get() = snapshot.texts
     val look: Look
@@ -127,6 +137,7 @@ class WidgetState(
 private val PATHS = mapOf(
     "jetzt" to "/heute", "heute" to "/heute", "aenderungen" to "/heute", "woche" to "/woche",
     "tests" to "/testen", "aufgaben" to "/testen", "termine" to "/testen", "countdown" to "/testen", "notizen" to "/start",
+    "noten" to "/noten", "neueNoten" to "/noten", "fehlzeiten" to "/fehlzeiten",
 )
 
 /** «Beim Tippen öffnen»: Passend (по виду) или своя страница. */
@@ -141,7 +152,12 @@ private fun openApp(context: Context, path: String) =
 @Composable
 private fun WidgetContent(context: Context, s: WidgetState) {
     val look = s.look
-    val path = if (s.status != "ok") "/" else OPEN[s.config.open] ?: PATHS[s.config.kind] ?: "/"
+    // виды с оценками открывают свой раздел всегда: «Beim Tippen öffnen» у них нет
+    val path = when {
+        s.config.noten -> PATHS.getValue(s.config.kind)
+        s.status != "ok" -> "/"
+        else -> OPEN[s.config.open] ?: PATHS[s.config.kind] ?: "/"
+    }
     val click = GlanceModifier.clickable(actionStartActivity(openApp(context, path)))
     val content: @Composable () -> Unit = {
         val bg = look.background
@@ -149,6 +165,7 @@ private fun WidgetContent(context: Context, s: WidgetState) {
         Column((if (bg != null) card.background(bg) else card).padding(14.dp)) {
             val data = s.data
             when {
+                s.config.noten -> NotenKind(s, look) // данные с телефона: вход в ORBook и сеть не важны
                 s.status == "auth" -> Locked(s, look)
                 s.status == "ended" -> Ended(s, look)
                 data == null && s.status == "offline" -> NoConnection(s, look)

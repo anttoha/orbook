@@ -32,19 +32,24 @@ data class WidgetConfig(
     val changes: String = "morgen", // heute | morgen | woche
     val termineDays: Int = 90, // 30 | 90 | 0 (все)
     val count: String = "schultage", // schultage | tage
+    val showGrades: Boolean = false, // часть 39: Noten / Neue Noten / Fehlzeiten — оценки видны, иначе «•••»
     val refresh: Int = 30, // минут: 15 | 30 | 60
     val open: String = "auto", // auto | tag | woche | tests | start
 ) {
+    val noten: Boolean get() = kind in NOTEN_KINDS
+
     fun toJson(): JSONObject = JSONObject()
         .put("kind", kind).put("classId", classId ?: JSONObject.NULL).put("mine", mine)
         .put("look", look).put("design", design).put("accent", accent).put("font", font).put("alpha", alpha)
         .put("onlyChanges", onlyChanges).put("evening", evening).put("subject", subject).put("place", place).put("cancelled", cancelled)
         .put("next", next).put("progress", progress).put("weekend", weekend).put("cell", cell).put("testsDays", testsDays)
         .put("showDone", showDone).put("sort", sort).put("changes", changes).put("termineDays", termineDays).put("count", count)
-        .put("refresh", refresh).put("open", open)
+        .put("showGrades", showGrades).put("refresh", refresh).put("open", open)
 
     companion object {
-        val KINDS = listOf("jetzt", "heute", "woche", "tests", "aufgaben", "aenderungen", "termine", "notizen", "countdown")
+        /** Часть 39: виды с оценками — данные с телефона (NotenStore), сервер для них не спрашиваем. */
+        val NOTEN_KINDS = listOf("noten", "neueNoten", "fehlzeiten")
+        val KINDS = listOf("jetzt", "heute", "woche", "tests", "aufgaben", "aenderungen", "termine", "notizen", "countdown") + NOTEN_KINDS
         private val ACCENTS = listOf("app", "violett", "blau", "gruen", "orange", "pink", "grafit")
 
         fun from(json: JSONObject?): WidgetConfig {
@@ -79,6 +84,7 @@ data class WidgetConfig(
                 changes = pick("changes", setOf("heute", "morgen", "woche"), d.changes),
                 termineDays = pickInt("termineDays", setOf(30, 90, 0), d.termineDays),
                 count = pick("count", setOf("schultage", "tage"), d.count),
+                showGrades = bool("showGrades", d.showGrades),
                 refresh = pickInt("refresh", setOf(15, 30, 60), d.refresh),
                 open = pick("open", setOf("auto", "tag", "woche", "tests", "start"), d.open),
             )

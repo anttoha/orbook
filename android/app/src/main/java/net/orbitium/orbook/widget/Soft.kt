@@ -36,6 +36,7 @@ data class Palette(
     val dangerTint: Tone,
     val ok: Tone,
     val edge: Tone? = null, // рамка карточки: Klar — линия, Glas — светлая кромка; у Soft нет
+    val okTint: Tone = Tone(0xFFE1F5EB, 0xFF163027), // часть 39: плашка хорошей оценки (--color-ok-tint)
 )
 
 object Soft {

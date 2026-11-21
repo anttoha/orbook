@@ -16,6 +16,7 @@ import net.orbitium.orbook.widget.WidgetStore
 import net.orbitium.orbook.widget.WidgetWorker
 import net.orbitium.orbook.widget.Widgets
 import org.json.JSONException
+import org.json.JSONArray
 import org.json.JSONObject
 
 /**
@@ -189,6 +190,19 @@ class AndroidBridge(private val web: WebView, private val host: WidgetHost? = nu
         if (!allowed()) return
         NotenStore(context).clear()
         NotenWorker.schedule(context)
+        Widgets.redraw(context) // часть 39: виджеты Noten — «In ORBook bei Noten anmelden»
+    }
+
+    /** Часть 39: ключи «neu»-оценок с сайта (JSON-массив) — виджеты Noten помечают те же оценки. */
+    @JavascriptInterface
+    fun notenFresh(json: String?) {
+        if (!allowed()) return
+        val list = runCatching { JSONArray(json ?: "[]") }.getOrNull() ?: return
+        val keys = (0 until list.length()).map { list.optString(it) }.filter { it.isNotEmpty() }.toSet()
+        val store = NotenStore(context)
+        if (store.login() == null || keys == store.fresh()) return // без сохранённых оценок виджету нечего помечать
+        store.saveFresh(keys)
+        Widgets.redraw(context)
     }
 
     /** Часть 37: напечатать открытую страницу (лист «Als PDF»). Окно закрыто — событие {type: "printed"}. */
