@@ -752,3 +752,4 @@ Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWi
 **Дальше:** владелец проверяет на демо; потом «на прод» (changelog 41) или 42 (Opus · effort medium).
 **Прод 21.11:** v0.28.0 (changelog 41, EN/UK), `docs/releases/v0.28.0.md`, тег v0.28.0, прод выложен таймером (`orbook: ausgeliefert b3a9c47a`). Бэкенд и APK не менялись.
 **Дальше:** новый чат, Opus · effort medium → `/orb 42`.
+**Прод 21.11:** v0.28.1 — Kalender-Abo: вместо «ORBook · 9b» в превью — бейдж «Beispiel» (владелец: «как будто ошибка»). Только фронт.
