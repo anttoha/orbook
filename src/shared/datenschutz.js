@@ -2,7 +2,7 @@
 // Меняется что-то в данных (новая таблица, cookie, срок) — поправь текст здесь и дату STAND.
 // Формат раздела: title, intro — абзацы, rows — пары [что, пояснение] (cookies, сроки).
 
-export const STAND = "2026-11-20";
+export const STAND = "2026-11-21";
 
 // Коротко — первые строки страницы (макет 27). Иконки подставляет страница по id.
 export const FACTS = [
@@ -82,7 +82,7 @@ export const SECTIONS = [
       "Der Server reicht Benutzername und Passwort in diesem Moment an den InfoPoint deiner Schule weiter und speichert nichts davon: keinen Login, keine Noten, keine Fehlzeiten, nichts im Protokoll. Deinen Namen und die Namen der Lehrkräfte gibt er nicht weiter.",
       "Auf deinem Gerät liegen die geholten Noten und Fehlzeiten. Mit „Angemeldet bleiben“ auch Benutzername und Passwort – nur in diesem Browser, nie im Sync.",
       "Mit Sync kommen die geholten Noten verschlüsselt mit, solange „Noten“ dort eingeschaltet ist.",
-      "In der Android-App geht die Anfrage direkt vom Handy an den InfoPoint deiner Schule – Benutzername, Passwort und Noten kommen beim ORBook-Server gar nicht an. Mit „Angemeldet bleiben“ speichert die App Login und zuletzt geholte Noten verschlüsselt (Schlüssel im Android-Keystore, ohne Backup).",
+      "In der Android-App geht die Anfrage direkt vom Handy an den InfoPoint deiner Schule – Benutzername, Passwort und Noten kommen beim ORBook-Server gar nicht an. Der InfoPoint sieht dabei, wie im Browser, die Internet-Adresse deines Handys. Mit „Angemeldet bleiben“ speichert die App Login und zuletzt geholte Noten verschlüsselt (Schlüssel im Android-Keystore, ohne Backup).",
       "Schaltest du in den Mitteilungen der App „Neue Note“ ein, schaut die App selbst etwa alle 3 Stunden im InfoPoint nach (nicht in der Ruhezeit) und meldet neue Noten. Standardmäßig ist das aus.",
       "„Abmelden“ löscht Login und Noten auf diesem Gerät und im Sync.",
     ],
@@ -97,7 +97,7 @@ export const SECTIONS = [
       "Damit ORBook auch ohne Internet startet, legt die Website ihre eigenen Seiten und Dateien auf dem Gerät ab (Service Worker). Daten deiner Klasse sind darin nicht.",
       "Die App lädst du als Datei (APK) direkt von dieser Website, nicht aus einem App-Store. Der Server gibt sie ohne Anmeldung heraus und merkt nicht, wer sie installiert. Die App fragt einmal am Tag anonym nach, ob es eine neuere Version gibt.",
       "„Klasse verlassen“ oder „Klasse entfernen“ löscht die Kopie der Pläne dieser Klasse. Notizen und Einstellungen bleiben, bis du die Website-Daten im Browser löschst.",
-      "Die App lädt nichts von fremden Servern: keine Schriften von Google, kein CDN, keine Analyse.",
+      "Die App lädt nichts von fremden Servern: keine Schriften von Google, kein CDN, keine Analyse. Einzige Ausnahme: die Android-App fragt für Noten den InfoPoint deiner Schule.",
     ],
   },
   {
@@ -121,6 +121,7 @@ export const SECTIONS = [
       ["Materialien", "bis sie jemand löscht"],
       ["Anmeldung", "bis die Sitzung abläuft: 30 Tage, Admin 12 Stunden"],
       ["Sync-Daten", "365 Tage ohne Zugriff"],
+      ["Noten", "auf dem Server gar nicht; auf deinem Gerät bis „Abmelden“"],
       ["Mitteilungen", "bis du sie ausschaltest, höchstens 60 Tage ohne Zustellung; was schon geschickt wurde: 14 Tage"],
       ["Telegram-Gruppe", "bis der Admin sie trennt; was geschickt wurde: 30 Tage"],
       ["Telegram-Bot", "bis du ihn trennst oder blockierst, höchstens 60 Tage ohne Nachricht; was schon geschickt wurde: 14 Tage"],

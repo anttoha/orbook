@@ -6,6 +6,16 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.23.0",
+    date: "2026-11-21",
+    neu: [
+      "Neu: Noten! Melde dich unter Leistung → Noten mit deinem InfoPoint-Login an und sieh alle Noten, deinen Schnitt pro Fach und die Zeugnisnoten. Neue Noten sind mit „neu“ markiert.",
+      "Notenrechner: Im Fach siehst du, welche Note du in der nächsten Arbeit brauchst, damit dein Schnitt passt.",
+      "Fehlzeiten auf einen Blick: Fehltage und Fehlstunden, entschuldigt oder nicht. Bei vergangenen Tests steht jetzt auch deine Note dabei.",
+      "In der Android-App holt dein Handy die Noten direkt vom InfoPoint – dein Passwort geht nicht über den ORBook-Server. Auf Wunsch meldet die App neue Noten: Mehr → Mitteilungen → Neue Note.",
+    ],
+  },
+  {
     version: "0.22.0",
     date: "2026-11-20",
     neu: [

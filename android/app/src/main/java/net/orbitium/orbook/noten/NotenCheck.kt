@@ -11,6 +11,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import net.orbitium.orbook.BuildConfig
 import net.orbitium.orbook.Site
 import net.orbitium.orbook.notify.Note
 import net.orbitium.orbook.notify.Notifier
@@ -90,7 +91,11 @@ object NotenCheck {
     }
 
     private fun load(context: Context, url: String?, username: String, password: String): Outcome =
-        if (url == null) viaServer(context, username, password) else try {
+        if (url == null) {
+            // Через сервер ORBook — только демо (выдуманный образец). На проде логин к серверу не уходит никогда
+            // (так написано в Datenschutz): нет адреса — значит раздел выключен.
+            if (BuildConfig.SITE == "orbook-demo") viaServer(context, username, password) else Outcome(code = "feature_disabled")
+        } else try {
             val parsed = NotenParser.parse(InfoPoint.fetchPage(url, username, password))
             Outcome(data = Json.write(parsed + ("fetchedAt" to Instant.now().toString())))
         } catch (e: InfoPoint.Denied) {
