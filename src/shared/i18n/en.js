@@ -2207,4 +2207,7 @@ export const en = {
   "Du hast die Wahl: dein ORBook-Blatt fürs 1. oder 2. Halbjahr, das ganze Schuljahr, Zeugnis oder nur Fehlzeiten – oder das Original aus dem InfoPoint, genau wie die Schule es druckt.": "Your choice: your ORBook sheet for term 1 or 2, the whole school year, the report card or just absences – or the original from InfoPoint, exactly as the school prints it.",
   "Am PC scrollt das Seitenmenü jetzt, wenn der Bildschirm zu niedrig ist – unten verschwindet nichts mehr.": "On a computer, the side menu now scrolls when the screen is too short – nothing disappears at the bottom anymore.",
   "Untere Leiste bearbeiten: Ziehen zwischen „Unten“ und „Mehr“ führt nicht mehr zu „Etwas ist schiefgelaufen“.": "Editing the bottom bar: dragging between “Bottom” and “More” no longer ends in “Something went wrong”.",
+  // Was ist neu 0.25.0
+  "Untere Leiste bearbeiten: Die Vorschau oben ist weg – die echte Leiste unten ändert sich sofort, und was du geändert hast, leuchtet kurz auf.": "Editing the bottom bar: the preview at the top is gone – the real bar at the bottom changes right away, and whatever you changed lights up briefly.",
+  "Am PC steht beim „Handy“-Einstellen ein Handy daneben, das zeigt, wie deine Leiste aussieht. Beim Seitenmenü leuchtet der geänderte Punkt direkt im Menü.": "On a computer, setting up the “Handy” bar shows a phone next to the list with your bar. For the side menu, the changed item lights up right in the menu.",
 };

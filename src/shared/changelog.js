@@ -6,6 +6,14 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.25.0",
+    date: "2026-11-21",
+    neu: [
+      "Untere Leiste bearbeiten: Die Vorschau oben ist weg – die echte Leiste unten ändert sich sofort, und was du geändert hast, leuchtet kurz auf.",
+      "Am PC steht beim „Handy“-Einstellen ein Handy daneben, das zeigt, wie deine Leiste aussieht. Beim Seitenmenü leuchtet der geänderte Punkt direkt im Menü.",
+    ],
+  },
+  {
     version: "0.24.0",
     date: "2026-11-21",
     neu: [

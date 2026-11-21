@@ -2207,4 +2207,7 @@ export const uk = {
   "Du hast die Wahl: dein ORBook-Blatt fürs 1. oder 2. Halbjahr, das ganze Schuljahr, Zeugnis oder nur Fehlzeiten – oder das Original aus dem InfoPoint, genau wie die Schule es druckt.": "Обирай сам: аркуш ORBook за 1-е чи 2-ге півріччя, за весь навчальний рік, табель або лише пропуски – або оригінал з InfoPoint, точно як друкує школа.",
   "Am PC scrollt das Seitenmenü jetzt, wenn der Bildschirm zu niedrig ist – unten verschwindet nichts mehr.": "На комп’ютері бічне меню тепер прокручується, якщо екран занизький, – унизу більше нічого не зникає.",
   "Untere Leiste bearbeiten: Ziehen zwischen „Unten“ und „Mehr“ führt nicht mehr zu „Etwas ist schiefgelaufen“.": "Редагування нижньої панелі: перетягування між «Унизу» та «Ще» більше не призводить до «Щось пішло не так».",
+  // Was ist neu 0.25.0
+  "Untere Leiste bearbeiten: Die Vorschau oben ist weg – die echte Leiste unten ändert sich sofort, und was du geändert hast, leuchtet kurz auf.": "Налаштування нижньої панелі: попереднього перегляду зверху більше немає – справжня панель унизу змінюється одразу, а те, що ти змінив, коротко підсвічується.",
+  "Am PC steht beim „Handy“-Einstellen ein Handy daneben, das zeigt, wie deine Leiste aussieht. Beim Seitenmenü leuchtet der geänderte Punkt direkt im Menü.": "На комп'ютері під час налаштування «Handy» поруч зі списком стоїть телефон із твоєю панеллю. Для бічного меню змінений пункт підсвічується просто в меню.",
 };
