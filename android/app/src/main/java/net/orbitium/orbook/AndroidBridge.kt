@@ -7,6 +7,7 @@ import android.provider.Settings
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import net.orbitium.orbook.noten.NotenCheck
+import net.orbitium.orbook.noten.NotenOriginal
 import net.orbitium.orbook.noten.NotenStore
 import net.orbitium.orbook.noten.NotenWorker
 import net.orbitium.orbook.notify.Notifications
@@ -188,6 +189,31 @@ class AndroidBridge(private val web: WebView, private val host: WidgetHost? = nu
         if (!allowed()) return
         NotenStore(context).clear()
         NotenWorker.schedule(context)
+    }
+
+    /** Часть 37: напечатать открытую страницу (лист «Als PDF»). Окно закрыто — событие {type: "printed"}. */
+    @JavascriptInterface
+    fun printPage(title: String?) {
+        if (!allowed()) return
+        web.post { Printer.page(web, title?.ifBlank { null } ?: "ORBook") { send(JSONObject().put("type", "printed")) } }
+    }
+
+    /**
+     * Часть 37: {"id", "url", "username", "password", "mode"} → забрать оригинал InfoPoint и открыть печать.
+     * Событие {type: "notenOriginal", id, ok, error: {code, retryAfter}} — когда окно печати открыто (или ошибка).
+     */
+    @JavascriptInterface
+    fun notenOriginal(json: String) {
+        if (!allowed()) return
+        val request = try { JSONObject(json) } catch (e: JSONException) { return }
+        fun text(name: String) = if (request.isNull(name)) null else request.optString(name).ifEmpty { null }
+        Thread {
+            val page = NotenOriginal.load(context, text("url"), text("username"), text("password"), text("mode") ?: "")
+            val detail = JSONObject().put("type", "notenOriginal").put("id", request.opt("id")).put("ok", page.html != null)
+            if (page.html != null) web.post { Printer.html(web.context, page.html, page.base, "InfoPoint Noten") }
+            else detail.put("error", JSONObject().put("code", page.code).put("retryAfter", page.retryAfter ?: JSONObject.NULL))
+            send(detail)
+        }.start()
     }
 
     /** Ответ на окно разрешения — сайту. */

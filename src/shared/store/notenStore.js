@@ -77,6 +77,8 @@ export const useNotenStore = create(
       },
 
       closeLogin: () => set({ loginOpen: false, error: null }),
+      // Часть 37: для «Original» нужен пароль — открыть вход (wrong — пароль не подошёл)
+      openLogin: (wrong = false) => set({ loginOpen: true, ...(wrong ? { password: "", error: { code: "denied", retryAfter: null } } : {}) }),
       clearError: () => set({ error: null }),
 
       // Предмет открыли — его «neu» больше не «neu»
@@ -95,7 +97,7 @@ export const useNotenStore = create(
 );
 
 // Ошибка сервера → короткий код для экрана
-function errorCode(error) {
+export function errorCode(error) {
   switch (error?.code) {
     case "infopoint_denied":
       return "denied";

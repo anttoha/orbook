@@ -22,7 +22,16 @@ object InfoPoint {
     private val agent = "ORBook-Android/${BuildConfig.VERSION_NAME}"
 
     /** HTML страницы с оценками. Исключения: Denied, Unreachable. */
-    fun fetchPage(baseUrl: String, username: String, password: String): String {
+    fun fetchPage(baseUrl: String, username: String, password: String): String = session(baseUrl, username, password, "getdata.php")
+
+    /** Часть 37: страница для печати «как есть» — mode "summary" («Zusammenfassung») или "detail". */
+    fun fetchOriginal(baseUrl: String, username: String, password: String, mode: String): String {
+        require(mode == "summary" || mode == "detail")
+        return session(baseUrl, username, password, "getdata.php?mode=$mode")
+    }
+
+    // Войти, забрать одну страницу, выйти
+    private fun session(baseUrl: String, username: String, password: String, path: String): String {
         val base = baseUrl.trimEnd('/')
         if (!base.startsWith("https://")) throw Unreachable("nur https")
         val cookies = linkedMapOf<String, String>()
@@ -30,7 +39,7 @@ object InfoPoint {
             get("$base/default.php", cookies)
             login(base, username, password, cookies)
             try {
-                return get("$base/getdata.php", cookies)
+                return get("$base/$path", cookies)
             } finally {
                 runCatching { request("$base/logout.php", cookies).disconnect() }
             }

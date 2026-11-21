@@ -73,3 +73,10 @@ export function requestAppNotify() {
     androidBridge()?.requestNotify?.();
   });
 }
+
+// ── Часть 37: печать («Als PDF») ──
+
+// Умеет ли приложение печатать (APK с частью 37). В WebView window.print() ничего не делает
+export const hasAppPrint = () => typeof androidBridge()?.printPage === "function";
+// Напечатать открытую страницу (на бумаге только лист из PrintArea — @media print). title — имя PDF
+export const appPrintPage = (title) => androidBridge()?.printPage?.(title ?? "ORBook");

@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Navigate, useSearchParams } from "react-router-dom";
 import AbsenceList, { AbsenceTile } from "../components/noten/AbsenceList";
 import NotenHeader from "../components/noten/NotenHeader";
+import PdfSheet, { PdfButton } from "../components/noten/PdfSheet";
 import StandLine from "../components/noten/StandLine";
 import Segmented from "../components/ui/Segmented";
 import { useT } from "../shared/hooks/useT";
@@ -8,6 +10,7 @@ import { translate } from "../shared/i18n/translate";
 import { useNotenStore } from "../shared/store/notenStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { absenceEntries, absenceStats, defaultHalf } from "../shared/utils/noten";
+import { fehlzeitenSheet } from "../shared/utils/notenSheet";
 
 const HALVES = [
   { value: "1", get label() { return translate("1. Halbjahr"); } },
@@ -23,6 +26,7 @@ const Fehlzeiten = () => {
   const [params, setParams] = useSearchParams();
   const enabled = usePlanStore((s) => s.me?.features?.noten !== false);
   const data = useNotenStore((s) => s.data);
+  const [pdfOpen, setPdfOpen] = useState(false);
   if (!enabled || !data) return <Navigate to={enabled ? "/noten" : "/"} replace />;
 
   const tab = ["1", "2"].includes(params.get("hj")) ? params.get("hj") : String(defaultHalf(data));
@@ -30,7 +34,7 @@ const Fehlzeiten = () => {
   const stats = absenceStats(data.absences, half);
   return (
     <section className="flex flex-col gap-4 lg:max-w-exams">
-      <NotenHeader backTo={`/noten?hj=${tab}`} eyebrow={t("Noten")} title={t("Fehlzeiten")} />
+      <NotenHeader backTo={`/noten?hj=${tab}`} eyebrow={t("Noten")} title={t("Fehlzeiten")} aside={<PdfButton onClick={() => setPdfOpen(true)} />} />
       <div className="mt-1.5 flex flex-col gap-3">
         <Segmented options={HALVES} value={tab} onChange={(value) => setParams({ hj: value }, { replace: true })} label={t("Halbjahr")} />
         <StandLine data={data} />
@@ -43,6 +47,14 @@ const Fehlzeiten = () => {
       <div className="mt-2">
         <AbsenceList entries={absenceEntries(data.absences, half)} />
       </div>
+      <PdfSheet
+        open={pdfOpen}
+        onClose={() => setPdfOpen(false)}
+        eyebrow={`${t("Fehlzeiten")} · ${t(`${half}. Halbjahr`)}`}
+        sheet={fehlzeitenSheet(data, half)}
+        sheetHint={t("Nur Fehlzeiten")}
+        data={data}
+      />
     </section>
   );
 };

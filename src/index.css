@@ -328,6 +328,12 @@
     --color-qr-bg: #ffffff;
     --color-qr-ink: #2a2433;
     --color-qr-eye: #6c4df6;
+    /* лист «Noten» для печати (часть 37): цвета оценок как в светлой теме — бумага всегда светлая */
+    --color-print-ok: #1f9d6b;
+    --color-print-ok-tint: #e1f5eb;
+    --color-print-danger: #d6455d;
+    --color-print-danger-tint: #fce7eb;
+    --color-print-sand: #f3ede5;
 
     /* fach */
     --color-deutsch-tint: #f6d7da;
@@ -421,6 +427,12 @@
     --color-qr-bg: #ffffff;
     --color-qr-ink: #2a2433;
     --color-qr-eye: #6c4df6;
+    /* лист «Noten» для печати (часть 37): цвета оценок как в светлой теме — бумага всегда светлая */
+    --color-print-ok: #1f9d6b;
+    --color-print-ok-tint: #e1f5eb;
+    --color-print-danger: #d6455d;
+    --color-print-danger-tint: #fce7eb;
+    --color-print-sand: #f3ede5;
 
     /* fach */
     --color-deutsch-tint: #482836;
@@ -807,6 +819,14 @@ html[data-motion="aus"] *::after {
     @page {
         size: A4;
         margin: 0;
+    }
+    /* лист «Noten» (часть 37) бывает на несколько страниц — поля сверху и снизу на каждой */
+    @page noten {
+        size: A4;
+        margin: 14mm 0;
+    }
+    .print-noten {
+        page: noten;
     }
     body > *:not(.print-area) {
         display: none !important;
