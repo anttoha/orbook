@@ -727,3 +727,5 @@ Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWi
 Сайт: 12 плиток «Inhalt» (без «Noten», если школа выключила раздел), у трёх видов нет «Klasse» и «Verhalten», превью `NotenWidgetCard`. Datenschutz — абзац про виджеты, EN/UK. Демо-APK 0.25.0 (20).
 Скриншоты: `/root/work/orbook-compare/39-widget-noten/` (`_tools/p39.mjs`). Не проверено: сам виджет на телефоне (эмулятора на сервере нет) — проверит владелец.
 **Дальше:** владелец ставит демо-APK и проверяет; потом «на прод» (changelog 39, прод-APK).
+**Прод 21.11:** v0.26.0 (changelog 39, EN/UK), `docs/releases/v0.26.0.md`, тег v0.26.0, прод выложен таймером (`orbook: ausgeliefert 67b60061`), прод-APK 0.26.0 (21) на сайте и в Release. Бэкенд не менялся.
+**Дальше:** все части из `docs/specs/README.md` готовы — новые пожелания владельца → новая строка в README.
