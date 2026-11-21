@@ -750,3 +750,5 @@ Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWi
 Фронт (демо `b1342dc`): `shared/utils/lernplan.js` (+тесты), задачи плана = свои задачи с `plan` в `tasksStore` (Sync сам), `/testen/:id/lernplan` (`pages/Lernplan.jsx`, `components/lernplan/*`), карточка в шторке теста, «Lernplan» в Aufgaben/дне, полоска в блоке Tests на Start, `useLernplanShift` (перенос), `GoneExamCards` (тест удалён), EN/UK. Бэкенд и Datenschutz не менялись.
 Скриншоты: `/root/work/orbook-compare/41-lernplan/shots/` (`_tools/p41.mjs`).
 **Дальше:** владелец проверяет на демо; потом «на прод» (changelog 41) или 42 (Opus · effort medium).
+**Прод 21.11:** v0.28.0 (changelog 41, EN/UK), `docs/releases/v0.28.0.md`, тег v0.28.0, прод выложен таймером (`orbook: ausgeliefert b3a9c47a`). Бэкенд и APK не менялись.
+**Дальше:** новый чат, Opus · effort medium → `/orb 42`.
