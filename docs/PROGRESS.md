@@ -742,3 +742,8 @@ Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWi
 **Дальше:** владелец проверяет на демо; потом «на прод» (changelog 40) или 41.
 **Прод 21.11:** v0.27.0 (changelog 40, EN/UK), `docs/releases/v0.27.0.md`, тег v0.27.0. Бэкенд на проде с 21.11 (`update.sh`, схема 0017). APK не менялся.
 **Дальше:** новый чат, Opus · effort medium → `/orb 41`.
+
+## Часть 41 · Lernplan zum Test (2026-11-21, дизайн)
+Макеты `design/neu/41-lernplan/` (`gen.py`, `build.py`, 15 SVG/PNG, `index.html`), артефакт https://claude.ai/artifact/XjN1yZDvRJj21gynVT12Sx. Ждёт «ок дизайн».
+Решения: план только на устройстве + Sync, кончается накануне теста, по умолчанию 4 дня без выходных; задачи в «Aufgaben» с подписью «Lernplan»; прогресс — шторка теста и блок «Tests» на Start; перенос — сдвиг + тост, удаление теста — вопрос в «Aufgaben».
+**Дальше:** «ок дизайн» → `/orb-spec 41`, `/orb-build`, `/orb-check` (Opus · effort medium).
