@@ -36,7 +36,10 @@ const SideNav = () => {
         <QuickSearch collapsed={isHidden} />
       </div>
 
-      <nav className="mt-5 space-y-1">
+      {/* Меню и «Bald» прокручиваются, если экран низкий (часто, когда группа раскрыта);
+          шапка, поиск и низ (план, тема, Admin) остаются на месте */}
+      <div className="-mx-1 mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain px-1 no-scrollbar">
+      <nav className="space-y-1">
         {tabs.map((tab, index) =>
           tab.items ? (
             <NavGroup key={tab.id} group={tab} index={index} isHidden={isHidden} />
@@ -55,6 +58,7 @@ const SideNav = () => {
         className={cn("w-51 transition-[opacity,translate] ease-soft motion-reduce:transition-none", isHidden ? "pointer-events-none -translate-x-6 opacity-0 duration-200" : "translate-x-0 opacity-100 delay-200 duration-500")}
       >
         <SoonList />
+      </div>
       </div>
 
       <SideNavFooter collapsed={isHidden} />
