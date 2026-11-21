@@ -712,3 +712,9 @@ Android (APK демо 0.23.0 (18)): `notenOriginal` отдаёт {html, css} д�
 **Дальше:** владелец проверяет на демо; потом «на прод» (changelog 37, прод-APK) или 38.
 **Прод 21.11:** v0.24.0 (changelog 37 + правки меню и «Untere Leiste», EN/UK), `docs/releases/v0.24.0.md`, тег v0.24.0, прод-APK 0.24.0 (19) в Release. Бэкенд `/api/noten/original` на проде с 21.11 (update.sh).
 **Дальше:** новый чат → Opus, effort high → `/orb 38`.
+
+## Часть 38 · Untere Leiste: живое превью вместо дубля (2026-11-21, демо)
+Дизайн `design/neu/38-leiste-vorschau/` (ок 21.11), spec `docs/specs/38-leiste-vorschau/spec.md`.
+Телефон: серое превью сверху убрано — превью это настоящая нижняя панель. После правки изменённые вкладки ~1,2 с светятся (`navChanges` в `navLayout.js` + тесты → `navFlashStore` → `NavFlash` в `TabBar`, `NavigationLink`, `NavGroup`, «Mehr»). ПК: «Handy» — телефон справа (sticky, `LeistePreview`), «Computer» — светится само боковое меню. «Animationen: Aus» — без подсветки; в «Glas» на телефоне — без кольца (панель библиотеки).
+Скриншоты: `/root/work/orbook-compare/38-leiste-vorschau/` (`_tools/leiste38.mjs`).
+**Дальше:** владелец проверяет на демо; потом «на прод» (changelog 38).

@@ -1,6 +1,6 @@
 # 38 · Untere Leiste: живое превью вместо дубля
 
-**Статус:** в работе (дизайн ок 2026-11-21)
+**Статус:** готово на демо (2026-11-21)
 **Источники:** `design/neu/38-leiste-vorschau/` (ок владельца 2026-11-21), часть 35 (`docs/specs/35-untere-leiste/spec.md`), код `src/pages/NavSettings.jsx`, `src/components/navbar/*`.
 
 ## Зачем
