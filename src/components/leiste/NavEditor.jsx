@@ -3,7 +3,7 @@ import { closestCenter, DndContext, DragOverlay, KeyboardSensor, MouseSensor, To
 import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useT } from "../../shared/hooks/useT";
-import { containerOf, fromContainers, groupKey, isGroup, moveItem, SECTIONS, sectionAvailable, toContainers, zoneTarget } from "../../shared/utils/navLayout";
+import { fromContainers, groupKey, isGroup, moveItem, SECTIONS, sectionAvailable, toContainers } from "../../shared/utils/navLayout";
 import { cn } from "../../shared/utils/cn";
 import { groupIcon, SECTION_ICONS } from "../navbar/navIcons";
 import LeisteRow from "./LeisteRow";
@@ -11,47 +11,32 @@ import LeisteRow from "./LeisteRow";
 // ─────────────────────────────────────────────────────────────
 // Списки «Unten» и «In „Mehr“» со перетаскиванием (часть 35, макеты handy-03, handy-04).
 // Раскладка на время перетаскивания разложена по «контейнерам» (navLayout.toContainers):
-// top — верхний уровень, у каждой группы своя колонка, rest — «Mehr». Пока тащишь между списками,
-// пункт сразу переезжает (onDragOver), порядок внутри списка — при отпускании (onDragEnd).
+// top — верхний уровень, у каждой группы своя колонка, rest — «Mehr». Пункт переезжает только при
+// отпускании (onDragEnd). Раньше он переезжал уже на лету (onDragOver) — и над границей двух списков
+// прыгал туда-сюда без конца: React останавливал страницу («Etwas ist schiefgelaufen»).
 // middle — то, что стоит между списками («Gruppe hinzufügen», «Gruppenmenü»).
 // Мышь — после сдвига на 5px, палец — после короткого удержания (иначе страница не прокручивалась бы).
 // ─────────────────────────────────────────────────────────────
 const NavEditor = ({ list, features, device, onChange, onError, onRemove, onAdd, onEditGroup, full, middle }) => {
   const t = useT();
-  const [live, setLive] = useState(null); // контейнеры во время перетаскивания
   const [dragged, setDragged] = useState(null);
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 180, tolerance: 8 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
-  const c = live ?? toContainers(list, features);
+  const c = toContainers(list, features);
   const shown = (key) => key.startsWith("g:") || sectionAvailable(key, features); // раздел, который школа выключила (Noten без InfoPoint), не предлагаем
   const groups = Object.fromEntries(list.filter(isGroup).map((g) => [groupKey(g.id), g]));
 
-  const over = ({ active, over: o }) => {
-    if (!o) return;
-    const from = containerOf(c, active.id);
-    const to = zoneTarget(o.id) ?? containerOf(c, o.id);
-    if (from === to) return; // внутри одного списка — при отпускании
-    const r = moveItem(c, active.id, o.id, device);
-    if (!r.error) setLive(r.c);
-  };
   const end = ({ active, over: o }) => {
-    let next = c;
-    if (o) {
-      const r = moveItem(c, active.id, o.id, device);
-      if (r.error) onError(r.error);
-      else next = r.c;
-    }
-    setLive(null);
     setDragged(null);
-    onChange(fromContainers(next, list));
+    if (!o || o.id === active.id) return;
+    const r = moveItem(c, active.id, o.id, device);
+    if (r.error) onError(r.error);
+    else onChange(fromContainers(r.c, list));
   };
-  const cancel = () => {
-    setLive(null);
-    setDragged(null);
-  };
+  const cancel = () => setDragged(null);
 
   const rowOf = (key, props = {}) => {
     if (key.startsWith("g:")) {
@@ -63,7 +48,7 @@ const NavEditor = ({ list, features, device, onChange, onError, onRemove, onAdd,
   };
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={({ active }) => setDragged(active.id)} onDragOver={over} onDragEnd={end} onDragCancel={cancel}>
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={({ active }) => setDragged(active.id)} onDragEnd={end} onDragCancel={cancel}>
       <Zone id="top" title={t("Unten")} aside={full.label}>
         <SortableContext items={c.top} strategy={verticalListSortingStrategy}>
           {c.top.map((key) => (
