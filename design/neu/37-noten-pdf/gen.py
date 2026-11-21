@@ -95,6 +95,132 @@ def p_auswahl(st, pick=0, busy=False):
         b.append(st.button(18, y, 354, "Als PDF", "primary", PDF))
     return st.page(390, H, "".join(b))
 
+
+# ════════════════ v2 (владелец 21.11): окно «Als PDF» с превью, вариантами и «Herunterladen» ════════════════
+DOWNLOAD = P("M12 4v11M7 10l5 5 5-5M5 20h14")
+PRINT = P("M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2") + '<rect x="7" y="14" width="10" height="7" rx="1"/>'
+VARIANTS = [("orbook", "1. Halbjahr", "Noten und Fehlzeiten"), ("orbook", "2. Halbjahr", "Noten und Fehlzeiten"),
+            ("orbook", "Schuljahr", "beide Halbjahre"), ("orbook", "Zeugnis", "Endnoten"), ("orbook", "Fehlzeiten", "nur Fehlzeiten"),
+            ("original", "Übersicht", "Zusammenfassung · 1 Seite"), ("original", "Alle Noten", "Detailansicht · 3 Seiten")]
+
+def embed(svg, x, y, w):
+    """Готовый лист A4 (794×1123) внутрь макета, уменьшенный до ширины w."""
+    inner = svg[svg.index(">", svg.index("<svg")) + 1:svg.rindex("</svg>")]
+    h = w * A4H / A4W
+    return f'<svg x="{x}" y="{y}" width="{w}" height="{h:.1f}" viewBox="0 0 {A4W} {A4H}">{inner}</svg>', h
+
+def original_page(st):
+    """Похоже на печать InfoPoint «Zusammenfassung»: чёрные таблицы, Arial-подобный текст."""
+    ink, grey = "#111111", "#EEEEEE"
+    b = [R(0, 0, A4W, A4H, 0, "#FFFFFF"), T(40, 70, "Herzlich Willkommen", 30, 700, ink)]
+    def table(y, rows, cols, head=False):
+        out = []
+        widths = cols
+        for r_i, row in enumerate(rows):
+            x = 40
+            for c_i, (cell, w) in enumerate(zip(row, widths)):
+                fill = grey if (head and r_i == 0) or (c_i == 0 and not head) else "#FFFFFF"
+                out.append(R(x, y + r_i * 30, w, 30, 0, fill, ink, 1) + T(x + 8, y + r_i * 30 + 20, cell, 14, 700 if head and r_i == 0 else 400, ink))
+                x += w
+        return "".join(out)
+    b.append(table(96, [["Name:", "Max Muster"], ["Klasse:", "8a"]], [160, 554]))
+    b.append(T(40, 200, "Zensurenübersicht (Kompakt)", 24, 700, ink) + f'<line x1="40" y1="212" x2="754" y2="212" stroke="#999"/>')
+    rows = [["Fach", "Zensuren", "", "", "", "1.Hj", "2.Hj"], ["Deutsch", "1", "3", "", "", "2", ""], ["Mathematik", "2", "2-", "1+", "m.E.", "", ""],
+            ["Englisch", "1", "1", "", "", "", ""], ["Physik", "3", "", "", "", "", ""], ["Biologie", "5", "", "", "", "", ""], ["Wahlpflichtfach", "", "", "", "", "", ""]]
+    b.append(table(228, rows, [250, 90, 90, 90, 90, 52, 52], head=True))
+    b.append(T(40, 476, "Fehlzeiten (Kompakt)", 24, 700, ink) + f'<line x1="40" y1="488" x2="754" y2="488" stroke="#999"/>')
+    b.append(table(504, [["Fehltage", "2"], ["Unentschuldigte Fehltage", "1"], ["Fehlstunden", "2 Stunden"], ["Unentschuldigte Fehlstunden", "0 Stunden"]], [300, 414]))
+    b.append(T(40, 680, "Letzte Aktualisierung: Montag, 16. November 2026", 15, 400, ink))
+    return st.page(A4W, A4H, "".join(b))
+
+def var_row(st, x, y, w, ttl, sub, on, h=50):
+    c = st.c
+    out = [R(x, y, w, h, 16, c["tint"] if on else c["card"])]
+    if on: out.append(R(x + .5, y + .5, w - 1, h - 1, 15.5, "none", c["accent"], 1.5))
+    out.append(T(x + 16, y + 22, ttl, 14.5, 800, c["accink"] if on else c["ink"]) + T(x + 16, y + 39, sub, 12, 400, c["muted"] if on else c["faint"]))
+    if on: out.append(DOT(x + w - 26, y + h / 2, 11, c["accent"]) + ICON(x + w - 33.5, y + h / 2 - 7.5, 0.62, c["on"], CHECK, 2.6))
+    return "".join(out)
+
+def chip(st, x, y, text, on):
+    c = st.c
+    w = g.tw(text, 13.5, 800) * 0.92 + 30
+    if on: out = R(x, y, w, 36, 18, c["accent"]) + T(x + w / 2, y + 23, text, 13.5, 800, c["on"], "middle")
+    else: out = R(x, y, w, 36, 18, c["card"]) + R(x + .5, y + .5, w - 1, 35, 17.5, "none", c["rule"], 1) + T(x + w / 2, y + 23, text, 13.5, 700, c["ink"], "middle")
+    return out, w
+
+def preview(st, x, y, w, h, kind, light):
+    """Песочная панель с листом. kind: halbjahr | original | laden."""
+    c = st.c
+    out = [R(x, y, w, h, 22, c["sand"])]
+    pw = (h - 56) * A4W / A4H
+    px = x + (w - pw) / 2
+    if kind == "laden":
+        k = c["skel"]
+        ph = h - 56
+        out.append(R(px, y + 16, pw, ph, 4, c["card"]))
+        for i in range(9):
+            out.append(R(px + pw * .08, y + 16 + ph * (.08 + i * .09), pw * (.84 if i % 3 else .5), ph * .03, 3, k))
+        out.append(T(x + w / 2, y + h - 16, "Hole Original …", 12.5, 700, c["muted"], "middle"))
+        return "".join(out)
+    sheet = a4_halbjahr(light) if kind == "halbjahr" else original_page(light)
+    svg_, ph = embed(sheet, px, y + 16, pw)
+    out.append(R(px - 1, y + 15, pw + 2, ph + 2, 3, c["rule"]) + svg_)
+    pages = "Seite 1 von 1" if kind == "halbjahr" else "Seite 1 von 1"
+    out.append(T(x + w / 2, y + h - 16, pages, 12.5, 700, c["muted"], "middle"))
+    return "".join(out)
+
+def p_vorschau(st, pick=0, state=None):
+    """Телефон: шторка почти на весь экран — превью, варианты кнопками, «Drucken» и «Herunterladen»."""
+    c = st.c
+    s = N.p_noten(st)
+    inner = s[s.index("</defs>") + 7:s.rindex("</svg>")]
+    top = 48
+    b = [inner[:inner.index('<rect x="16" y=')] if False else inner, g.overlay(c, 390, 844 + 200), N.m.sheet(st, top, "Noten · Klasse 9b", "Als PDF", H=844)]
+    light = St("soft", "hell")
+    kind = "laden" if state == "laden" else ("original" if pick >= 5 else "halbjahr")
+    b.append(preview(st, 18, top + 92, 354, 330, kind, light))
+    y = top + 92 + 330 + 26
+    b.append(N.label(18, y, "ORBook", c)); y += 12
+    x = 18
+    for i, (_, ttl, _) in enumerate(VARIANTS[:5]):
+        ch, w = chip(st, x, y, ttl, i == pick)
+        if x + w > 372: x, y = 18, y + 44; ch, w = chip(st, x, y, ttl, i == pick)
+        b.append(ch); x += w + 8
+    y += 36 + 24
+    b.append(N.label(18, y, "Original aus InfoPoint", c)); y += 12
+    x = 18
+    for i, (_, ttl, _) in enumerate(VARIANTS[5:], start=5):
+        ch, w = chip(st, x, y, ttl, i == pick); b.append(ch); x += w + 8
+    by = 844 - 76
+    b.append(st.button(18, by, 150, "Drucken", "sand", PRINT) + st.button(178, by, 194, "Herunterladen", "primary", DOWNLOAD))
+    if state == "gespeichert":
+        b.append(R(18, by - 62, 354, 46, 16, c["toastbg"]) + ICON(32, by - 47, 0.67, c["toastfg"], CHECK, 2.4)
+                 + T(58, by - 34, "Gespeichert: Noten-1-Halbjahr-2026-27.pdf", 13, 600, c["toastfg"]))
+    return st.page(390, 844, "".join(b))
+
+def pc_vorschau(st, pick=0):
+    c = st.c
+    s = N.pc_noten(st)
+    inner = s[s.index("</defs>") + 7:s.rindex("</svg>")]
+    X, Y, W, H = 280, 50, 880, 800
+    b = [inner, g.overlay(c, 1440, 900), R(X, Y, W, H, 30, c["paper"])]
+    b.append(N.eyebrow(X + 28, Y + 38, "Noten · Klasse 9b", c) + N.title(X + 28, Y + 72, "Als PDF", c) + st.rbtn(X + W - 66, Y + 24, N.m.CLOSE if hasattr(N.m, "CLOSE") else g.CLOSE, size=40))
+    y = Y + 104
+    b.append(N.label(X + 28, y, "ORBook", c)); y += 12
+    for i, (_, ttl, sub) in enumerate(VARIANTS):
+        if i == 5:
+            y += 18; b.append(N.label(X + 28, y, "Original aus InfoPoint", c)); y += 12
+        b.append(var_row(st, X + 28, y, 300, ttl, sub, i == pick)); y += 58
+    light = St("soft", "hell")
+    kind = "original" if pick >= 5 else "halbjahr"
+    b.append(preview(st, X + 352, Y + 96, W - 380, 610, kind, light))
+    fy = Y + H - 72
+    b.append(HL(X + 28, X + W - 28, fy - 16, c))
+    name = "Noten-1-Halbjahr-2026-27.pdf" if kind == "halbjahr" else "InfoPoint-Uebersicht-2026-11-16.pdf"
+    b.append(T(X + 28, fy + 29, name, 13, 600, c["faint"]))
+    b.append(st.button(X + W - 28 - 200 - 12 - 140, fy + 4, 140, "Drucken", "sand", PRINT) + st.button(X + W - 28 - 200, fy + 4, 200, "Herunterladen", "primary", DOWNLOAD))
+    return st.page(1440, 900, "".join(b))
+
 # ════════════════ ПК ════════════════
 def pc_noten(st):
     return add(N.pc_noten(st), st.button(918, 44, 126, "Als PDF", "sand", PDF, h=36))
@@ -215,6 +341,11 @@ SCREENS = {   # имя: (функция, темы); лист A4 — только
     "handy-04-auswahl": (lambda st: p_auswahl(st, 1), ("hell", "dunkel")),
     "handy-05-original-laden": (lambda st: p_auswahl(st, 1, busy=True), ("hell",)),
     "pc-01-noten": (pc_noten, ("hell", "dunkel")),
+    "handy-06-vorschau": (p_vorschau, ("hell", "dunkel")),
+    "handy-07-original-laden": (lambda st: p_vorschau(st, 5, "laden"), ("hell",)),
+    "handy-08-gespeichert": (lambda st: p_vorschau(st, 0, "gespeichert"), ("hell",)),
+    "pc-02-vorschau": (pc_vorschau, ("hell", "dunkel")),
+    "pc-03-original": (lambda st: pc_vorschau(st, 5), ("hell",)),
     "a4-01-halbjahr": (a4_halbjahr, ("hell",)),
     "a4-02-zeugnis": (a4_zeugnis, ("hell",)),
     "a4-03-fehlzeiten": (a4_fehlzeiten, ("hell",)),

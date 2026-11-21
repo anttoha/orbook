@@ -704,3 +704,8 @@ Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница �
 Сайт печатает оригинал в `iframe sandbox="allow-same-origin allow-modals"`; Android-App: мосты `printPage` (PrintManager, событие `printed`) и `notenOriginal` (прод — прямо из InfoPoint, демо — через сервер), APK демо 0.23.0 (17). Старый APK — тост «Für PDF bitte die App aktualisieren». Datenschutz: абзац «Noten» дополнен (оригинал с именами — только на устройство). Скриншоты: `/root/work/orbook-compare/37-noten-pdf/shots/` (`_tools/p37.mjs`).
 Не проверено: настоящий InfoPoint (оригинал и `site.css` — по HAR) и системная печать на телефоне — проверит владелец.
 **Дальше:** владелец проверяет на демо; потом «на прод» (changelog, прод-APK) или 38.
+
+### 37 v2 — окно «Als PDF» с превью (2026-11-21, ждёт «ок дизайн»)
+Владелец после демо: меню на ПК уходит вниз → исправлено (`SideNav.jsx`: меню и «Bald» прокручиваются, `dbafed4`). Окно «Als PDF» непонятно → новые макеты `design/neu/37-noten-pdf` (handy-06…08, pc-02, pc-03): варианты (1./2. Halbjahr, Schuljahr, Zeugnis, Fehlzeiten, Original Übersicht/Alle Noten), превью листа, «Drucken» и «Herunterladen» (файл PDF).
+**Дальше:** «ок дизайн» → код в этом же чате (Opus, effort high).
+

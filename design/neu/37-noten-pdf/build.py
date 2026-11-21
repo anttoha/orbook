@@ -20,11 +20,17 @@ def shot(name, caption, kind="phone"):
             f'<div class="v v-hell">{inline(name + "-hell")}</div><div class="v v-dunkel">{inline(name + ("-dunkel" if os.path.exists(os.path.join(HERE, name + "-dunkel.svg")) else "-hell"))}</div></figure>')
 
 SECTIONS = [
+    ("v2", "НОВОЕ (21.11) · Окно «Als PDF» с превью",
+     "По твоим замечаниям: сразу видно, что получится. Слева (на телефоне — кнопками под превью) — варианты: свой лист ORBook (1. Halbjahr, 2. Halbjahr, Schuljahr — оба полугодия, Zeugnis, Fehlzeiten) или оригинал из InfoPoint (Übersicht, Alle Noten). "
+     "Справа — превью настоящего листа, сколько страниц. Внизу имя файла и две кнопки: «Drucken» (окно печати) и «Herunterladen» — сразу файл PDF (на телефоне — в «Downloads»). "
+     "Оригинал при выборе подгружается из InfoPoint («Hole Original …»), потом виден в превью. После скачивания — тост с именем файла.",
+     [("handy-06-vorschau", "Handy · Vorschau"), ("handy-07-original-laden", "Original lädt"), ("handy-08-gespeichert", "Gespeichert")],
+     [("pc-02-vorschau", "Computer · Als PDF"), ("pc-03-original", "Computer · Original")]),
     ("knopf", "1 · Кнопка «PDF»",
      "В шапке «Noten» рядом с ↻ — новая круглая кнопка (лист со стрелкой вниз). Нажал — открывается окно печати: на сайте браузерное, в Android-приложении системное, там выбираешь «Als PDF speichern» (или принтер). "
      "В PDF попадает то, что выбрано сверху: 1. Halbjahr, 2. Halbjahr или Zeugnis. На «Fehlzeiten» такая же кнопка — лист только с пропусками. Пока оценок нет — кнопки нет.",
      [("handy-01-noten", "Noten · Knopf PDF"), ("handy-02-fehlzeiten", "Fehlzeiten · Knopf PDF"), ("handy-03-app-alt", "Alte Android-App")], []),
-    ("auswahl", "1b · Своё или оригинал",
+    ("auswahl", "1b · Своё или оригинал (было, заменяется окном выше)",
      "Кнопка «PDF» открывает шторку (как «Blatt drucken» из части 25). «ORBook-Blatt» — наш лист ниже. «Original · Übersicht» и «Original · Alle Noten» — настоящие страницы InfoPoint («Zusammenfassung» и «Detailansicht», с именем и учителями), напечатанные как есть: ORBook входит в InfoPoint твоим логином, забирает страницу и сразу открывает печать, ничего не сохраняя. "
      "Пока страница грузится — «Hole Original …». Неверный пароль — снова вход, InfoPoint не отвечает — тот же тост, что в «Noten».",
      [("handy-04-auswahl", "Als PDF · Auswahl"), ("handy-05-original-laden", "Hole Original")], []),
