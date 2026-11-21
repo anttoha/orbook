@@ -698,6 +698,9 @@ Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница �
 Новые части от владельца: 37 «Noten als PDF» (у InfoPoint PDF нет — только печать браузера; делаем свой лист A4 + печать в Android), 38 «живое превью нижней панели». Обе — с новыми макетами.
 **Дальше:** «на прод» для правки; затем новый чат → Opus, effort high → `/orb 37`.
 
-## Часть 37 «Noten als PDF» — макеты ждут «ок дизайн» (2026-11-21)
-`design/neu/37-noten-pdf/` (`gen.py` поверх макетов 36, `build.py` → `index.html`): круглая кнопка «PDF» в шапке «Noten» и «Fehlzeiten» (ПК — «Als PDF»), листы A4 (полугодие, Zeugnis, Fehlzeiten), тост для старого APK. Печатается выбранная вкладка, без окна выбора; на листе только класс и школа.
-**Дальше:** «ок дизайн» → spec, код (сайт `window.print`, Android `PrintManager`), новый APK.
+## Часть 37 «Noten als PDF» — готово на демо (2026-11-21)
+Дизайн ок 2026-11-21 + пожелание владельца: печатать и **оригинал** InfoPoint. Кнопка «PDF» (Noten, Fehlzeiten; ПК — «Als PDF») → шторка: «ORBook-Blatt» (лист A4 из данных на устройстве, `components/noten/print/`, `utils/notenSheet.js` + тест), «Original · Übersicht» / «Original · Alle Noten».
+Бэкенд `8fd496c`: `POST /api/noten/original` (`mode` summary/detail) — вход, страница + `css/site.css` школы, выход; HTML очищен (`noten/original.py`, только таблицы и текст, стиль внутри без `url()`), ничего не хранится; 6 попыток / 10 мин. Демо — `beispiel-kompakt.html`.
+Сайт печатает оригинал в `iframe sandbox="allow-same-origin allow-modals"`; Android-App: мосты `printPage` (PrintManager, событие `printed`) и `notenOriginal` (прод — прямо из InfoPoint, демо — через сервер), APK демо 0.23.0 (17). Старый APK — тост «Für PDF bitte die App aktualisieren». Datenschutz: абзац «Noten» дополнен (оригинал с именами — только на устройство). Скриншоты: `/root/work/orbook-compare/37-noten-pdf/shots/` (`_tools/p37.mjs`).
+Не проверено: настоящий InfoPoint (оригинал и `site.css` — по HAR) и системная печать на телефоне — проверит владелец.
+**Дальше:** владелец проверяет на демо; потом «на прод» (changelog, прод-APK) или 38.

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { FileDown, LoaderCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { cn } from "../../shared/utils/cn";
 import { useT } from "../../shared/hooks/useT";
 import { usePdf } from "../../shared/hooks/usePdf";
 import { usePlanStore } from "../../shared/store/planStore";
@@ -34,8 +33,13 @@ const Mini = ({ kind }) => (
     ) : (
       <>
         <span className="h-1 w-5.5 rounded-tick bg-qr-ink" />
-        <span className={cn("grid flex-1 border border-qr-ink/70", kind === "summary" ? "grid-cols-2 grid-rows-6 divide-x divide-qr-ink/40" : "grid-rows-4")}>
-          {kind === "detail" && [0, 1, 2].map((i) => <span key={i} className="border-b border-qr-ink/40" />)}
+        <span className="flex flex-1 flex-col border border-qr-ink/70">
+          {/* Übersicht — одна таблица с колонкой оценок, Detail — блоки строк */}
+          {[0, 1, 2, 3, 4].map((i) => (
+            <span key={i} className="flex flex-1 border-b border-qr-ink/40 last:border-b-0">
+              {kind === "summary" && <span className="w-1/2 border-r border-qr-ink/40" />}
+            </span>
+          ))}
         </span>
       </>
     )}
@@ -99,7 +103,7 @@ const PdfSheet = ({ open, onClose, eyebrow, sheet, sheetHint, data }) => {
         eyebrow={eyebrow}
         title={t("Als PDF")}
         footer={
-          <Button variant="primary" onClick={run} disabled={pdf.busy} className="flex-none">
+          <Button variant="primary" onClick={run} disabled={pdf.busy} className="flex-1">
             {pdf.busy ? <LoaderCircle className="size-4 motion-safe:animate-spin" /> : <FileDown className="size-4" />}
             {pdf.busy ? t("Hole Original …") : t("Als PDF")}
           </Button>

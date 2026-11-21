@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import { useT } from "../../../shared/hooks/useT";
 import { dayDate, dotDate, noteNumber } from "../../../shared/utils/noten";
 import { weightTag } from "../../../shared/utils/notenSheet";
@@ -144,15 +143,13 @@ const Status = ({ excused, pill }) => {
 
 // Пропуски коротко (на листе полугодия): дата · что · статус
 const ShortAbsences = ({ entries }) => (
-  <div className="grid grid-cols-[8rem_1fr_auto] items-center">
+  <div>
     {entries.map((e, i) => (
-      <Fragment key={e.key}>
-        <span className={cn("py-1.5 text-body-sm font-extrabold", i && "border-t border-qr-ink/10")}>{dayDate(e.date) || "–"}</span>
-        <span className={cn("py-1.5 text-body-sm text-qr-ink/60", i && "border-t border-qr-ink/10")}>{[e.title, e.sub].filter(Boolean).join(" · ")}</span>
-        <span className={cn("py-1.5 text-right", i && "border-t border-qr-ink/10")}>
-          <Status excused={e.excused} />
-        </span>
-      </Fragment>
+      <div key={e.key} className={cn("flex items-baseline gap-3 py-1.5", i && "border-t border-qr-ink/10")}>
+        <span className="w-28 shrink-0 text-body-sm font-extrabold">{dayDate(e.date) || "–"}</span>
+        <span className="min-w-0 flex-1 text-body-sm text-qr-ink/60">{[e.title, e.sub].filter(Boolean).join(" · ")}</span>
+        <Status excused={e.excused} />
+      </div>
     ))}
   </div>
 );
