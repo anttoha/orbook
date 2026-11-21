@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addGroup, addToNav, cleanNav, defaultNav, dissolveGroup, fromContainers, menuStyleOf, moveItem, navOf, navTabActive, removeFromNav, restOf, restPaths, toContainers, visibleNav } from "./navLayout";
+import { addGroup, addToNav, cleanNav, defaultNav, dissolveGroup, fromContainers, menuStyleOf, moveItem, navChanges, navOf, navTabActive, removeFromNav, restOf, restPaths, toContainers, visibleNav } from "./navLayout";
 
 const leistung = { id: "leistung", name: "Leistung", icon: "award", items: ["tests", "noten"] };
 
@@ -113,5 +113,34 @@ describe("navTabActive", () => {
   });
   it("Mehr светится на разделах из «Mehr»", () => {
     expect(restPaths(defaultNav("phone"), {})).toEqual(["/heute", "/materialien", "/statistik"]);
+  });
+});
+
+describe("navChanges (часть 38: что подсветить)", () => {
+  const leistung = { id: "leistung", name: "Leistung", icon: "award", items: ["tests", "aufgaben"] };
+  const base = ["start", "woche", leistung];
+
+  it("ничего не поменялось — ничего не светится", () => {
+    expect(navChanges(base, base)).toEqual([]);
+  });
+  it("новый раздел внизу", () => {
+    expect(navChanges(base, [...base, "statistik"])).toEqual(["statistik"]);
+  });
+  it("убрали раздел — светится «Mehr», соседи не светятся", () => {
+    expect(navChanges(base, ["start", leistung])).toEqual(["mehr"]);
+  });
+  it("сдвинули один раздел — светится только он", () => {
+    expect(navChanges(["start", "woche", "heute", "materialien"], ["start", "heute", "materialien", "woche"])).toEqual(["woche"]);
+  });
+  it("в группе другое содержимое — светится группа", () => {
+    const more = { ...leistung, items: ["tests", "aufgaben", "termine"] };
+    expect(navChanges(base, ["start", "woche", more])).toEqual(["leistung"]);
+  });
+  it("из группы ушёл раздел в «Mehr» — группа и «Mehr»", () => {
+    const less = { ...leistung, items: ["tests", "aufgaben", "termine"] };
+    expect(navChanges(["start", less], ["start", leistung])).toEqual(["leistung", "mehr"]);
+  });
+  it("невидимый раздел (школа выключила) не светится", () => {
+    expect(navChanges(base, [...base, "statistik"], { statistics: false })).toEqual([]);
   });
 });

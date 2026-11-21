@@ -201,3 +201,41 @@ export const dissolveGroup = (list, id) => list.filter((item) => !(isGroup(item)
 
 // Сколько мест занято внизу — «4 von 5» (Mehr тоже место)
 export const placesUsed = (list) => list.length + 1;
+
+// ── Подсветка после правки (часть 38) ──
+// Ключ пункта, как его видят панель и сайдбар: раздел — его ключ ("start"), группа — её id
+const entryKey = (entry) => (entry.type === "link" ? entry.tab.key : entry.id);
+const entryItems = (entry) => (entry.type === "group" ? entry.tabs.map((tab) => tab.key).join(",") : "");
+
+// Какие пункты сохранили порядок: самая длинная цепочка, идущая в «до» по возрастанию (остальные — сдвинуты)
+function keptInOrder(positions) {
+  const best = positions.map(() => 1);
+  const prev = positions.map(() => -1);
+  positions.forEach((p, i) => {
+    for (let j = 0; j < i; j++) if (positions[j] < p && best[j] + 1 > best[i]) [best[i], prev[i]] = [best[j] + 1, j];
+  });
+  const kept = new Set();
+  for (let i = best.indexOf(Math.max(0, ...best)); i >= 0; i = prev[i]) kept.add(i);
+  return kept;
+}
+
+// Что подсветить после правки раскладки: новые пункты, группы с другим содержимым, сдвинутые пункты
+// и "mehr", если какой-то раздел ушёл в «Mehr». Сравниваем то, что видно (visibleNav), а не сырой список
+export function navChanges(before, after, features) {
+  const was = visibleNav(before, features);
+  const now = visibleNav(after, features);
+  const wasAt = new Map(was.map((entry, i) => [entryKey(entry), i]));
+  const common = now.filter((entry) => wasAt.has(entryKey(entry)));
+  const kept = keptInOrder(common.map((entry) => wasAt.get(entryKey(entry))));
+  const out = now
+    .filter((entry) => {
+      const at = wasAt.get(entryKey(entry));
+      if (at === undefined) return true; // новый
+      if (entryItems(was[at]) !== entryItems(entry)) return true; // в группе другое
+      return !kept.has(common.indexOf(entry)); // сдвинут
+    })
+    .map(entryKey);
+  const placedNow = new Set(placedKeys(after));
+  if (placedKeys(before).some((key) => !placedNow.has(key))) out.push("mehr");
+  return out;
+}
