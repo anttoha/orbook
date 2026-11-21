@@ -710,3 +710,5 @@ Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница �
 Файл PDF — на устройстве: `html2canvas-pro` + `jspdf` (грузятся только по кнопке), картинкой по листам A4 (`usePdf.jsx` `makePdf`), у оригинала — печатные правила школы. Лист «Noten» — высота области печати 269 мм (`--spacing-a4-noten`), иначе подвал уезжал на 2-ю страницу.
 Android (APK демо 0.23.0 (18)): `notenOriginal` отдаёт {html, css} для превью (прод — прямо из InfoPoint, чистит `utils/cleanOriginal.js` + тест), `printHtml`, `saveFile` → «Downloads» (`Downloads.kt`, Android 10+). Скриншоты и скачанные PDF: `/root/work/orbook-compare/37-noten-pdf/shots/` (`_tools/p37v2.mjs`).
 **Дальше:** владелец проверяет на демо; потом «на прод» (changelog 37, прод-APK) или 38.
+**Прод 21.11:** v0.24.0 (changelog 37 + правки меню и «Untere Leiste», EN/UK), `docs/releases/v0.24.0.md`, тег v0.24.0, прод-APK 0.24.0 (19) в Release. Бэкенд `/api/noten/original` на проде с 21.11 (update.sh).
+**Дальше:** новый чат → Opus, effort high → `/orb 38`.
