@@ -1,8 +1,10 @@
 import { cn } from "../../shared/utils/cn";
+import Badge from "../ui/Badge";
 import { useT } from "../../shared/hooks/useT";
 
 // Пример дня в чужом календаре (макет handy-01): так придут тест, урок, замена и отменённый урок.
-// Это картинка-объяснение, не данные класса — поэтому текст постоянный
+// Это картинка-объяснение, не данные класса — поэтому текст постоянный, а справа бейдж «Beispiel»:
+// раньше там было «ORBook · 9b», и в другом классе это выглядело как ошибка (владелец 2026-11-21)
 const LESSONS = [
   { time: "07:30", title: "Deutsch", place: "Raum 102", color: "deutsch" },
   { time: "08:20", title: "Mathe → Raum B12", place: "Vertretung · Kle statt Mü", color: "mathe" },
@@ -19,9 +21,9 @@ const FeedPreview = () => {
   const t = useT();
   return (
     <figure className="flex flex-col gap-2.5 rounded-card bg-sand p-4" aria-label={t("So sieht es im Kalender aus")}>
-      <figcaption className="flex items-baseline justify-between gap-3">
+      <figcaption className="flex items-center justify-between gap-3">
         <span className="text-body-sm font-extrabold text-ink">{t("Do, 18. September")}</span>
-        <span className="text-caption font-bold text-faint">ORBook · 9b</span>
+        <Badge variant="changed">{t("Beispiel")}</Badge>
       </figcaption>
       <p className="rounded-tile bg-mathe-solid px-3 py-1.5 text-body-sm font-extrabold text-on-accent">{t("Test Mathe · 2. Stunde")}</p>
       <ul className="flex flex-col gap-2">

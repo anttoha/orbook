@@ -2311,4 +2311,8 @@ export const uk = {
   // Was ist neu 0.28.0
   "Neu: Lernplan zum Test. Im Test tippst du „Lernplan erstellen“, wählst, wie viele Tage du lernen willst – und die Themen landen Tag für Tag in deinen Aufgaben.": "Нове: план навчання до тесту. У тесті натисни «Створити план навчання», вибери, скільки днів хочеш вчити, – і теми з'являться день за днем у твоїх завданнях.",
   "Abhaken geht im Test und in den Aufgaben, auf Start siehst du, wie weit du bist. Wird der Test verschoben, rutscht dein Plan einfach mit.": "Відмічай дні в тесті або в завданнях, а на «Старт» видно, скільки вже зроблено. Якщо тест перенесуть, план просто посунеться разом із ним.",
+  // Kalender-Abo: превью — пример
+  "Beispiel": "Приклад",
+  // Was ist neu 0.28.1
+  "Kalender-Abo: Der Beispiel-Tag oben ist jetzt als „Beispiel“ markiert – vorher stand dort „9b“, und das sah aus wie ein Fehler.": "Підписка на календар: день-приклад угорі тепер позначено «Приклад» – раніше там було «9b», і це виглядало як помилка.",
 };
