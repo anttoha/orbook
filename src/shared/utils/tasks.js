@@ -46,7 +46,8 @@ export function dueChoices(today) {
 
 // Одна строка списка: домашка класса или своя задача
 const homeworkRow = (item, done) => ({ kind: "homework", key: `hw-${item.id}`, id: item.id, item, due: item.due, subject: item.subject?.code ?? null, text: item.text?.split("\n")[0] ?? "", done });
-const ownRow = (task) => ({ kind: "own", key: task.id, id: task.id, task, due: task.due, subject: task.subject, text: task.text, done: task.done });
+// plan — задача из Lernplan (часть 41): подпись «Lernplan», нажатие открывает тест
+const ownRow = (task) => ({ kind: "own", key: task.id, id: task.id, task, due: task.due, subject: task.subject, text: task.text, done: task.done, plan: task.plan ?? null });
 
 const byDue = (a, b) => (a.due ?? "9999").localeCompare(b.due ?? "9999") || a.key.localeCompare(b.key);
 

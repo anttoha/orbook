@@ -24,6 +24,21 @@ export const useTasksStore = create(
       },
       restoreTask: (task) => set({ tasks: [...get().tasks.filter((t) => t.id !== task.id), editTask(task, {})] }),
 
+      // Lernplan (часть 41): задачи плана — свои задачи с полем plan. Сохранить = старые в «надгробки», новые добавить
+      savePlan: (examId, planTasks) => {
+        const id = String(examId);
+        const cleared = get().tasks.map((t) => (!t.deleted && t.plan?.exam === id ? removeTask(t) : t));
+        set({ tasks: [...cleared, ...planTasks] });
+      },
+      deletePlan: (examId) => set({ tasks: get().tasks.map((t) => (!t.deleted && t.plan?.exam === String(examId) ? removeTask(t) : t)) }),
+      // Тест удалили, а план оставили: больше не спрашиваем
+      keepPlan: (examId) => set({ tasks: get().tasks.map((t) => (!t.deleted && t.plan?.exam === String(examId) ? editTask(t, { plan: { ...t.plan, kept: true } }) : t)) }),
+      // Тест перенесли: готовые задачи с новыми датами (lernplan.shiftPlan)
+      replaceTasks: (changed) => {
+        const byId = new Map(changed.map((t) => [t.id, t]));
+        set({ tasks: get().tasks.map((t) => byId.get(t.id) ?? t) });
+      },
+
       // Галочка у домашки класса (видишь только ты)
       markHomework: (id, done) => set({ marks: setMark(get().marks, id, done) }),
 
