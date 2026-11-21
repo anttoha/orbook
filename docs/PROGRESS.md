@@ -730,3 +730,6 @@ Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWi
 **Прод 21.11:** v0.26.0 (changelog 39, EN/UK), `docs/releases/v0.26.0.md`, тег v0.26.0, прод выложен таймером (`orbook: ausgeliefert 67b60061`), прод-APK 0.26.0 (21) на сайте и в Release. Бэкенд не менялся.
 **Дальше:** все части из `docs/specs/README.md` готовы — новые пожелания владельца → новая строка в README.
 **Прод 21.11 (вечер):** v0.26.1 — исправление 37: «Original aus InfoPoint» в превью и PDF-файле теперь как печать (`@media print` школы применяется, экранные правила выброшены, без фона): `cleanOriginal.js` `printCss`/`asPrinted` + тесты. APK не нужен.
+
+**21.11 — новые части 40–44** (владелец выбрал идеи 5, 1, 2, 3, 4): 40 Kalender-Abo (webcal, бэкенд), 41 Lernplan zum Test, 42 Notenziel + Verlauf, 43 Vokabeln/Karteikarten, 44 Lerntimer. Порядок — как в `docs/specs/README.md`; у каждой сначала `/orb-design` и «ок дизайн».
+**Дальше:** новый чат, Opus · effort high → `/orb 40`.
