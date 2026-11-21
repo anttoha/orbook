@@ -718,3 +718,5 @@ Android (APK демо 0.23.0 (18)): `notenOriginal` отдаёт {html, css} д�
 Телефон: серое превью сверху убрано — превью это настоящая нижняя панель. После правки изменённые вкладки ~1,2 с светятся (`navChanges` в `navLayout.js` + тесты → `navFlashStore` → `NavFlash` в `TabBar`, `NavigationLink`, `NavGroup`, «Mehr»). ПК: «Handy» — телефон справа (sticky, `LeistePreview`), «Computer» — светится само боковое меню. «Animationen: Aus» — без подсветки; в «Glas» на телефоне — без кольца (панель библиотеки).
 Скриншоты: `/root/work/orbook-compare/38-leiste-vorschau/` (`_tools/leiste38.mjs`).
 **Дальше:** владелец проверяет на демо; потом «на прод» (changelog 38).
+**Прод 21.11:** v0.25.0 (changelog 38, EN/UK), `docs/releases/v0.25.0.md`, тег v0.25.0. Бэкенд и APK не менялись.
+**Дальше:** все части из `docs/specs/README.md` готовы — новые пожелания владельца → новая строка в README.
