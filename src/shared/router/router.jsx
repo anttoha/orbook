@@ -19,6 +19,7 @@ import PlanSettings from "../../pages/PlanSettings";
 import SubjectColors from "../../pages/SubjectColors";
 import NotesSync from "../../pages/NotesSync";
 import Mitteilungen from "../../pages/Mitteilungen";
+import CalendarFeed from "../../pages/CalendarFeed";
 import StartPage from "../../pages/StartPage";
 import Start from "../../pages/Start";
 import Week from "../../pages/Week";
@@ -134,6 +135,7 @@ export const router = createBrowserRouter([
               page({ path: "fachfarben", Component: SubjectColors }),
               page({ path: "sync", Component: NotesSync }), // Notizen synchronisieren
               page({ path: "mitteilungen", Component: Mitteilungen }), // Web Push (частина 17)
+              page({ path: "kalender", Component: CalendarFeed }), // Kalender-Abo (часть 40)
               page({ path: "editor-code", Component: EditorCode }),
               page({ path: "klasse-verwalten", Component: ClassManage }), // Zugangscodes своего класса (часть 29c)
               page({ path: "neuigkeiten", Component: Neuigkeiten }), // «Was ist neu», все версии (часть 22b)

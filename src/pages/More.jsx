@@ -1,4 +1,4 @@
-import { Bell, Info, Palette, Smartphone, Sparkles, Sun, Table2, UserPlus, UsersRound } from "lucide-react";
+import { Bell, CalendarSync, Info, Palette, Smartphone, Sparkles, Sun, Table2, UserPlus, UsersRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { version } from "../../package.json";
@@ -28,6 +28,7 @@ import { useMaterials } from "../shared/store/materialsStore";
 import { useSyncStore } from "../shared/store/syncStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
+import { useCalendarFeedOfClass } from "../shared/store/calendarFeedStore";
 import { courseCount } from "../shared/utils/courses";
 import { isTeacher } from "../shared/utils/examRules";
 import { hasAppNotify } from "../shared/api/android";
@@ -86,6 +87,7 @@ const PhoneMenu = () => {
   const androidSeen = useAndroidStore((s) => s.seen);
   const pushOn = usePushStore((s) => s.enabled);
   const pushPrefs = usePushStore((s) => s.prefs);
+  const feed = useCalendarFeedOfClass(); // часть 40: «an» без запроса — что устройство помнит
   const pushAllowed = me?.features?.push !== false;
 
   const school = [me?.className, me?.schoolName].filter(Boolean).join(" · "); // обидва поля бувають порожні
@@ -135,6 +137,7 @@ const PhoneMenu = () => {
         <MenuRow to="/mehr/darstellung" icon={Sun} label={t("Darstellung")} value={THEME_LABELS[theme]} />
         <MenuRow to="/mehr/fachfarben" icon={Palette} label={t("Fachfarben")} />
         {pushAllowed && <MenuRow to="/mehr/mitteilungen" icon={Bell} label={t("Mitteilungen")} value={prefsSummary(pushOn, pushPrefs)} />}
+        <MenuRow to="/mehr/kalender" icon={CalendarSync} label={t("Kalender-Abo")} value={feed?.on ? "an" : "Aus"} />
         {/* праворуч — перша група коду, як у макеті: «K7QM-…» */}
         {syncAllowed && <MenuRow to="/mehr/sync" icon={SyncIcon} label={t("Synchronisieren")} value={syncCode ? `${syncCode.slice(0, 4)}-…` : t("Aus")} />}
         {!isTeacher(me) && <MenuRow to="/mehr/editor-code" icon={KeyIcon} label={t("Tests eintragen")} value={me?.editor?.label ?? "Editor-Code"} />}

@@ -286,6 +286,8 @@
     --container-palette: 640px; /* пошук ⌘K (макет 51) */
     --container-settings-nav: 230px; /* меню розділів «Einstellungen» на ПК */
     --container-settings: 680px; /* праворуч від нього: дві плитки по 334 + 12 */
+    --container-feed: 380px; /* «Kalender-Abo» на ПК: настройки слева (часть 40, макет pc-01) */
+    --container-feed-side: 340px; /* справа: QR, кнопки, «Link erneuern» */
 
     --color-overlay: #2a243366; /* затемнення під вікнами і панелями */
     --color-muster-stripe: #fbf7f28c; /* штриховка Muster поверх кольору предмета (paper 55 %, частина 19) */

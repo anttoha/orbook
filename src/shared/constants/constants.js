@@ -1,4 +1,4 @@
-import { Bell, CalendarDays, FileText, Folder, House, Layers, Megaphone, Palette, Server, Smartphone, Sparkles, Sun, Table2, UserRound, UsersRound } from "lucide-react";
+import { Bell, CalendarDays, CalendarSync, FileText, Folder, House, Layers, Megaphone, Palette, Server, Smartphone, Sparkles, Sun, Table2, UserRound, UsersRound } from "lucide-react";
 import { FlagIcon, KeyIcon, LockIcon, SchoolIcon, ShieldIcon, StatsIcon, SyncIcon } from "../../components/ui/icons";
 import { translate } from "../i18n/translate";
 
@@ -42,6 +42,7 @@ export const settingsSections = [
   { to: "/mehr/darstellung", get label() { return translate("Darstellung"); }, icon: Sun, hint: "appearance", group: "einstellungen" },
   { to: "/mehr/fachfarben", get label() { return translate("Fachfarben"); }, icon: Palette, hint: "subjects", group: "einstellungen" },
   { to: "/mehr/mitteilungen", get label() { return translate("Mitteilungen"); }, icon: Bell, hint: "push", group: "einstellungen", feature: "push" }, // частина 17
+  { to: "/mehr/kalender", get label() { return translate("Kalender-Abo"); }, icon: CalendarSync, hint: "calendar", group: "einstellungen" }, // часть 40
   { to: "/mehr/sync", get label() { return translate("Synchronisieren"); }, icon: SyncIcon, hint: "sync", sync: true, group: "einstellungen" },
   { to: "/mehr/editor-code", get label() { return translate("Editor-Code"); }, icon: KeyIcon, hint: "editor", classOnly: true, group: "einstellungen" }, // учителю код не потрібен
   // часть 29c: Zugangscodes своего класса — только с правом «Klasse verwalten» (manage)

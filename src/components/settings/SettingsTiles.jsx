@@ -6,6 +6,7 @@ import { useSheet } from "../../shared/hooks/useSheet";
 import { useTheme } from "../../shared/hooks/useTheme";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useSyncStore } from "../../shared/store/syncStore";
+import { useCalendarFeedOfClass } from "../../shared/store/calendarFeedStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { changelog } from "../../shared/changelog";
 import { courseCount, visibleSubjects } from "../../shared/utils/courses";
@@ -52,6 +53,7 @@ const useHints = () => {
   const lastSyncAt = useSyncStore((s) => s.lastSyncAt);
   const pushOn = usePushStore((s) => s.enabled);
   const pushPrefs = usePushStore((s) => s.prefs);
+  const feed = useCalendarFeedOfClass();
 
   return {
     courses: coursesHint(courseCount(courses, picked, hiddenRequired)),
@@ -59,6 +61,7 @@ const useHints = () => {
     subjects: subjectsHint(visibleSubjects(courses, picked, metaSubjects, hiddenRequired).length), // як на сторінці «Fachfarben»
     sync: syncHint(syncCode, lastSyncAt),
     push: prefsSummary(pushOn, pushPrefs),
+    calendar: translate(feed?.on ? "an" : "Aus"),
     editor: editorHint(me?.editor),
     manage: translate("Zugangscodes · Einladen"),
     android: translate("APK · Widget"),

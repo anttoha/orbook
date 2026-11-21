@@ -21,6 +21,7 @@ import { useAndroidUpdateOnStart } from "../shared/hooks/useAndroidUpdateOnStart
 import { useAndroidWidgetSync } from "../shared/hooks/useAndroidWidgetSync";
 import { useTipsOnStart } from "../shared/hooks/useTipsOnStart";
 import { usePlanLive } from "../shared/hooks/usePlanLive";
+import { useCalendarFeedCourses } from "../shared/hooks/useCalendarFeedCourses";
 import { usePushOnStart } from "../shared/hooks/usePushOnStart";
 import { useActiveClass } from "../shared/store/classesStore";
 import { usePlanStore } from "../shared/store/planStore";
@@ -65,6 +66,7 @@ const HomePage = () => {
   useAndroidUpdateOnStart(Boolean(me) && coursesChosen); // в Android-App: раз в день «Update ist da?» (часть 31a)
   useAndroidWidgetSync(Boolean(me)); // в Android-App: снимок для виджета и «освежить» после нового плана (часть 31b)
   usePushOnStart(Boolean(me) && me.features?.push !== false); // часть 17: Mitteilungen — курсы и «я ещё здесь»
+  useCalendarFeedCourses(Boolean(me)); // часть 40: Kalender-Abo — новые «Meine Kurse» сразу на сервер
   usePlanLive(Boolean(me)); // часть 26: новый план приходит сам (поток), без потока — опрос раз в минуту
   useNotesSync(Boolean(me) && me.features?.notesSync !== false); // нотатки на інших пристроях (якщо є Sync-Code)
 

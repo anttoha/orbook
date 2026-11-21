@@ -58,6 +58,15 @@ export const SECTIONS = [
     ],
   },
   {
+    id: "kalender",
+    title: "Kalender-Abo",
+    intro: [
+      "Nur wenn du es unter Mehr → „Kalender-Abo“ anlegst. Dann merkt sich der Server: einen geheimen Link (verschlüsselt), was rein soll (Stunden, Tests, Termine), bei „Meine Kurse“ die Nummern deiner Kurse und wann ein Kalender die Liste zuletzt abgeholt hat. Keine IP, keinen Namen.",
+      "Wer den Link hat, sieht den Plan, die Tests und Termine der Klasse, ohne Namen von Schülern. Dein Kalender (zum Beispiel Google, Apple oder Microsoft) holt die Liste selbst über diesen Link ab, dort gelten dessen Regeln.",
+      "Der Link geht sofort nicht mehr bei „Abo löschen“ oder „Link erneuern“, wenn dein Gerät die Klasse verlässt, sein Code ausgeschaltet wird oder die Anmeldung abläuft.",
+    ],
+  },
+  {
     id: "telegram",
     title: "Telegram-Gruppe",
     intro: [
@@ -124,6 +133,7 @@ export const SECTIONS = [
       ["Sync-Daten", "365 Tage ohne Zugriff"],
       ["Noten", "auf dem Server gar nicht; auf deinem Gerät bis „Abmelden“"],
       ["Mitteilungen", "bis du sie ausschaltest, höchstens 60 Tage ohne Zustellung; was schon geschickt wurde: 14 Tage"],
+      ["Kalender-Abo", "bis du es löschst oder die Anmeldung auf dem Gerät endet"],
       ["Telegram-Gruppe", "bis der Admin sie trennt; was geschickt wurde: 30 Tage"],
       ["Telegram-Bot", "bis du ihn trennst oder blockierst, höchstens 60 Tage ohne Nachricht; was schon geschickt wurde: 14 Tage"],
       ["Protokoll für den Admin", "30 Tage, ohne IP und ohne Namen"],
@@ -134,7 +144,7 @@ export const SECTIONS = [
     id: "draussen",
     title: "Links nach draußen",
     intro: [
-      "Materialien öffnen Google Drive oder OneDrive. „Teilen“ öffnet WhatsApp oder das Teilen-Menü deines Geräts. Dort gelten die Regeln dieser Anbieter. Die App schickt ihnen vorher nichts. Mitteilungen laufen über den Dienst deines Browsers, verschlüsselt (siehe oben).",
+      "Materialien öffnen Google Drive oder OneDrive. „Teilen“ öffnet WhatsApp oder das Teilen-Menü deines Geräts. Dort gelten die Regeln dieser Anbieter. Die App schickt ihnen vorher nichts. Mitteilungen laufen über den Dienst deines Browsers, verschlüsselt (siehe oben). Ein Kalender-Abo holt dein Kalender selbst ab (siehe oben).",
       "Wir geben keine Daten weiter und verkaufen nichts. Der Server steht in Deutschland.",
     ],
   },
