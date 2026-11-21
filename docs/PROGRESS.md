@@ -744,6 +744,9 @@ Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWi
 **Дальше:** новый чат, Opus · effort medium → `/orb 41`.
 
 ## Часть 41 · Lernplan zum Test (2026-11-21, дизайн)
-Макеты `design/neu/41-lernplan/` (`gen.py`, `build.py`, 15 SVG/PNG, `index.html`), артефакт https://claude.ai/artifact/XjN1yZDvRJj21gynVT12Sx. Ждёт «ок дизайн».
+Макеты `design/neu/41-lernplan/` (`gen.py`, `build.py`, 15 SVG/PNG, `index.html`), артефакт https://claude.ai/artifact/XjN1yZDvRJj21gynVT12Sx. Дизайн ок 21.11 (владелец: «сделать интереснее» → подсветка «Heute», «Alles gelernt!», тост «noch N», плавная полоска; без конфетти по правилу 13.11).
 Решения: план только на устройстве + Sync, кончается накануне теста, по умолчанию 4 дня без выходных; задачи в «Aufgaben» с подписью «Lernplan»; прогресс — шторка теста и блок «Tests» на Start; перенос — сдвиг + тост, удаление теста — вопрос в «Aufgaben».
 **Дальше:** «ок дизайн» → `/orb-spec 41`, `/orb-build`, `/orb-check` (Opus · effort medium).
+Фронт (демо `b1342dc`): `shared/utils/lernplan.js` (+тесты), задачи плана = свои задачи с `plan` в `tasksStore` (Sync сам), `/testen/:id/lernplan` (`pages/Lernplan.jsx`, `components/lernplan/*`), карточка в шторке теста, «Lernplan» в Aufgaben/дне, полоска в блоке Tests на Start, `useLernplanShift` (перенос), `GoneExamCards` (тест удалён), EN/UK. Бэкенд и Datenschutz не менялись.
+Скриншоты: `/root/work/orbook-compare/41-lernplan/shots/` (`_tools/p41.mjs`).
+**Дальше:** владелец проверяет на демо; потом «на прод» (changelog 41) или 42 (Opus · effort medium).
