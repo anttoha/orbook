@@ -697,3 +697,7 @@ Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница �
 Ошибка «Etwas ist schiefgelaufen» при правке «Untere Leiste»: React #185 (бесконечный цикл) — при перетаскивании между «Unten» и «In „Mehr“» строка на лету переезжала (onDragOver) и над границей прыгала туда-сюда. Теперь переезд только при отпускании (`NavEditor.jsx`, `578cdee`). Проверено прогоном `_tools/fix-leiste.mjs` (телефон и ПК, ~200 перетаскиваний, группы, сброс) и `_tools/fix-leiste-check.mjs`. На демо; прод — по слову «на прод» (v0.23.1, в changelog «behoben»).
 Новые части от владельца: 37 «Noten als PDF» (у InfoPoint PDF нет — только печать браузера; делаем свой лист A4 + печать в Android), 38 «живое превью нижней панели». Обе — с новыми макетами.
 **Дальше:** «на прод» для правки; затем новый чат → Opus, effort high → `/orb 37`.
+
+## Часть 37 «Noten als PDF» — макеты ждут «ок дизайн» (2026-11-21)
+`design/neu/37-noten-pdf/` (`gen.py` поверх макетов 36, `build.py` → `index.html`): круглая кнопка «PDF» в шапке «Noten» и «Fehlzeiten» (ПК — «Als PDF»), листы A4 (полугодие, Zeugnis, Fehlzeiten), тост для старого APK. Печатается выбранная вкладка, без окна выбора; на листе только класс и школа.
+**Дальше:** «ок дизайн» → spec, код (сайт `window.print`, Android `PrintManager`), новый APK.
