@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useT } from "../../shared/hooks/useT";
+import { useNavFlash } from "../../shared/store/navFlashStore";
 import { cn } from "../../shared/utils/cn";
+import NavFlash from "./NavFlash";
 import NavigationLink from "./NavigationLink";
 
 // ─────────────────────────────────────────────────────────────
@@ -12,6 +14,7 @@ import NavigationLink from "./NavigationLink";
 const NavGroup = ({ group, index, isHidden }) => {
   const t = useT();
   const [open, setOpen] = useState(true);
+  const flash = useNavFlash("pc", group.id); // часть 38: после правки группа коротко светится
   const shown = open || group.active;
   const links = group.items.map((item, i) => (
     <NavigationLink key={item.to} index={index + i} active={item.active} tab={item} isHidden={isHidden} badge={item.count || null} />
@@ -25,8 +28,9 @@ const NavGroup = ({ group, index, isHidden }) => {
         type="button"
         aria-expanded={shown}
         onClick={() => setOpen(!open)}
-        className="flex h-10.5 w-full items-center gap-3 rounded-full px-3 text-body font-semibold text-ink/80 transition-colors hover:bg-sand"
+        className="relative flex h-10.5 w-full items-center gap-3 rounded-full px-3 text-body font-semibold text-ink/80 transition-colors hover:bg-sand"
       >
+        <NavFlash stamp={flash} />
         <group.icon className="size-5 shrink-0" />
         <span className="flex-1 truncate text-left">{t(group.label)}</span>
         <ChevronDown className={cn("size-4 text-faint transition-transform", shown && "rotate-180")} />

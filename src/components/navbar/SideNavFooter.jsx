@@ -53,6 +53,7 @@ const SideNavFooter = ({ collapsed }) => {
         tab={settingsTab}
         active={isTabActive(settingsTab, pathname)}
         isHidden={collapsed}
+        flashKey="mehr"
       />
 
       <div className="mt-3 border-t border-hair pt-3">

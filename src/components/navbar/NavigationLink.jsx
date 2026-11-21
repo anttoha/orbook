@@ -1,26 +1,31 @@
 import { Link } from "react-router-dom";
 import { useT } from "../../shared/hooks/useT";
+import { useNavFlash } from "../../shared/store/navFlashStore";
 import { cn } from "../../shared/utils/cn";
+import NavFlash from "./NavFlash";
 
 // ─────────────────────────────────────────────────────────────
 // Пункт меню сайдбара: іконка + підпис (+ лічильник праворуч).
 // isHidden — сайдбар згорнутий: підпис прозорий, видно тільки іконку
 // badge — число праворуч (наприклад, 5 у «Testen»); null — без лічильника
+// flashKey — ключ пункту в «Untere Leiste»: після правки на ПК пункт коротко світиться (частина 38)
 // index — номер пункту: підписи від'їжджають і повертаються по черзі (сходинкою), а не всі разом
 // ─────────────────────────────────────────────────────────────
-const NavigationLink = ({ active, tab, isHidden = false, badge = null, index = 0, className = "", iconClassName = "", textClassName = "" }) => {
+const NavigationLink = ({ active, tab, isHidden = false, badge = null, index = 0, className = "", iconClassName = "", textClassName = "", flashKey }) => {
   const t = useT();
+  const flash = useNavFlash("pc", flashKey);
   return (
     <Link
       to={tab.to}
       aria-current={active ? "page" : undefined}
       title={isHidden ? t(tab.label) : undefined} // підказка в згорнутому вигляді
       className={cn(
-        "flex h-10.5 items-center gap-3 overflow-hidden rounded-full px-3 text-body font-semibold transition-colors",
+        "relative flex h-10.5 items-center gap-3 overflow-hidden rounded-full px-3 text-body font-semibold transition-colors",
         active ? "bg-accent font-bold text-on-accent" : "text-ink/80 hover:bg-sand",
         className,
       )}
     >
+      <NavFlash stamp={flash} />
       <tab.icon className={cn("size-5 shrink-0", iconClassName)} />
       <span
         className={cn(

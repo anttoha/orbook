@@ -45,7 +45,7 @@ const SideNav = () => {
             <NavGroup key={tab.id} group={tab} index={index} isHidden={isHidden} />
           ) : (
             // index — підписи ховаються й з'являються по черзі; count — кількість найближчих Klausuren у Tests
-            <NavigationLink key={tab.to} index={index} active={tab.active} tab={tab} isHidden={isHidden} badge={tab.count || null} />
+            <NavigationLink key={tab.to} index={index} active={tab.active} tab={tab} isHidden={isHidden} badge={tab.count || null} flashKey={tab.key} />
           ),
         )}
       </nav>

@@ -15,8 +15,8 @@ const BottomNav = () => {
   const { tabs, list, look } = useNavTabs("phone");
   if (isFullScreenPage(pathname)) return null; // форма на весь екран: унизу її кнопки
 
-  const mehr = { to: "/mehr", label: translate("Mehr"), icon: Ellipsis, activeOn: restPaths(list, features) };
-  return <TabBar tabs={[...tabs, { ...mehr, active: isTabActive(mehr, pathname) }]} look={look} />;
+  const mehr = { key: "mehr", to: "/mehr", label: translate("Mehr"), icon: Ellipsis, activeOn: restPaths(list, features) };
+  return <TabBar tabs={[...tabs, { ...mehr, active: isTabActive(mehr, pathname) }]} look={look} device="phone" />;
 };
 
 export default BottomNav;

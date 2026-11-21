@@ -205,7 +205,8 @@ export const placesUsed = (list) => list.length + 1;
 // ── Подсветка после правки (часть 38) ──
 // Ключ пункта, как его видят панель и сайдбар: раздел — его ключ ("start"), группа — её id
 const entryKey = (entry) => (entry.type === "link" ? entry.tab.key : entry.id);
-const entryItems = (entry) => (entry.type === "group" ? entry.tabs.map((tab) => tab.key).join(",") : "");
+// Что видно у группы: имя, значок и разделы — поменялось что-то из этого, группа светится
+const entryLook = (entry) => (entry.type === "group" ? [entry.name, entry.icon, ...entry.tabs.map((tab) => tab.key)].join("|") : "");
 
 // Какие пункты сохранили порядок: самая длинная цепочка, идущая в «до» по возрастанию (остальные — сдвинуты)
 function keptInOrder(positions) {
@@ -231,7 +232,7 @@ export function navChanges(before, after, features) {
     .filter((entry) => {
       const at = wasAt.get(entryKey(entry));
       if (at === undefined) return true; // новый
-      if (entryItems(was[at]) !== entryItems(entry)) return true; // в группе другое
+      if (entryLook(was[at]) !== entryLook(entry)) return true; // у группы другое имя, значок или разделы
       return !kept.has(common.indexOf(entry)); // сдвинут
     })
     .map(entryKey);

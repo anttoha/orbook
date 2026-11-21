@@ -4,10 +4,12 @@ import { ChevronUp } from "lucide-react";
 import { GlassNav } from "@zakisheriff/liquid-glass";
 import { useGlass } from "../../shared/hooks/useGlass";
 import { useGroupPress } from "../../shared/hooks/useGroupPress";
+import { useNavFlash } from "../../shared/store/navFlashStore";
 import { useT } from "../../shared/hooks/useT";
 import { cn } from "../../shared/utils/cn";
 import { isTabActive } from "../../shared/utils/isTabActive";
 import GroupMenu from "./GroupMenu";
+import NavFlash from "./NavFlash";
 
 // ─────────────────────────────────────────────────────────────
 // Нижнє меню телефона (< 1024px): «пігулка» з іконками, у вибраного пункту ще й підпис.
@@ -16,10 +18,11 @@ import GroupMenu from "./GroupMenu";
 // Вкладка-група (частина 35): { id, label, icon, items: [{ to, label, icon, active, count }], active, current } —
 // натиснув — над нею меню (GroupMenu), або затиснув і повів палець угору. look — вигляд меню: "kompakt" | "gross".
 // Спільне для застосунку класу (BottomNav) і адмінки (AdminShell).
+// device — "phone" у застосунку класу: тоді вкладка (за tab.key / tab.id) коротко світиться після правки «Untere Leiste» (частина 38).
 // ─────────────────────────────────────────────────────────────
 const tabKey = (tab) => tab.id ?? tab.to;
 
-const TabBar = ({ tabs, look = "kompakt" }) => {
+const TabBar = ({ tabs, look = "kompakt", device = null }) => {
   const { pathname } = useLocation();
   const glass = useGlass();
   const [openId, setOpenId] = useState(null); // відкрите меню групи
@@ -48,9 +51,9 @@ const TabBar = ({ tabs, look = "kompakt" }) => {
         <nav ref={bar} className="pointer-events-auto flex h-14.5 rounded-full border border-hair bg-card p-1.75">
           {tabs.map((tab, index) =>
             tab.items ? (
-              <GroupTab key={tabKey(tab)} tab={tab} look={look} first={index === 0} open={openId === tab.id} setOpen={(on) => setOpenId(on ? tab.id : null)} />
+              <GroupTab key={tabKey(tab)} tab={tab} look={look} device={device} first={index === 0} open={openId === tab.id} setOpen={(on) => setOpenId(on ? tab.id : null)} />
             ) : (
-              <LinkTab key={tabKey(tab)} tab={tab} active={activeOf(tab)} />
+              <LinkTab key={tabKey(tab)} tab={tab} device={device} active={activeOf(tab)} />
             ),
           )}
         </nav>
@@ -62,7 +65,7 @@ const TabBar = ({ tabs, look = "kompakt" }) => {
 // Клас «пігулки» вкладки: вибрана ширша, з акцентним фоном; у групи з відкритим меню — світлий фон
 const pillClass = (active, pressed) =>
   cn(
-    "flex h-full min-w-0 basis-0 items-center justify-center rounded-full",
+    "relative flex h-full min-w-0 basis-0 items-center justify-center rounded-full",
     "transition-[flex-grow,background-color,color] duration-300 ease-out motion-reduce:transition-none",
     active ? "grow-[1.4] bg-accent text-on-accent" : pressed ? "grow bg-tint text-accent-ink" : "grow text-faint",
   );
@@ -80,20 +83,23 @@ const TabLabel = ({ active, children }) => (
   </span>
 );
 
-const LinkTab = ({ tab, active }) => {
+const LinkTab = ({ tab, active, device }) => {
   const t = useT();
+  const flash = useNavFlash(device, tab.key);
   const label = t(tab.short ?? tab.label);
   return (
     <Link to={tab.to} aria-label={label} aria-current={active ? "page" : undefined} className={pillClass(active)}>
       <tab.icon className="size-5 shrink-0" />
       <TabLabel active={active}>{label}</TabLabel>
+      <NavFlash stamp={flash} />
     </Link>
   );
 };
 
 // Вкладка-група: якщо ти в одному з її розділів — показує його іконку й назву і стрілку вгору
-const GroupTab = ({ tab, look, first, open, setOpen }) => {
+const GroupTab = ({ tab, look, device, first, open, setOpen }) => {
   const t = useT();
+  const flash = useNavFlash(device, tab.id);
   const navigate = useNavigate();
   const pick = (to) => {
     setOpen(false);
@@ -110,7 +116,8 @@ const GroupTab = ({ tab, look, first, open, setOpen }) => {
   const menuId = `gruppe-${tab.id}`;
 
   return (
-    <div className={cn("relative", pillClass(tab.active, open && !tab.active))}>
+    <div className={pillClass(tab.active, open && !tab.active)}>
+      <NavFlash stamp={flash} />
       <button
         type="button"
         aria-haspopup="menu"

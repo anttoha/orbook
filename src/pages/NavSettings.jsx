@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Plus, RotateCcw } from "lucide-react";
 import GroupSheet from "../components/leiste/GroupSheet";
@@ -13,8 +13,9 @@ import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useT } from "../shared/hooks/useT";
 import { translate } from "../shared/i18n/translate";
 import { usePlanStore } from "../shared/store/planStore";
+import { useNavFlashStore } from "../shared/store/navFlashStore";
 import { useUserStore } from "../shared/store/userStore";
-import { addGroup, addToNav, dissolveGroup, isGroup, LIMITS, menuStyleOf, navOf, placesUsed, removeFromNav, updateGroup } from "../shared/utils/navLayout";
+import { addGroup, addToNav, cleanNav, dissolveGroup, isGroup, LIMITS, menuStyleOf, navChanges, navOf, placesUsed, removeFromNav, updateGroup } from "../shared/utils/navLayout";
 
 const DEVICES = [
   { value: "pc", get label() { return translate("Computer"); } },
@@ -35,6 +36,8 @@ const ERRORS = {
 // ─────────────────────────────────────────────────────────────
 // «Darstellung → Untere Leiste» (часть 35, макеты handy-03…07, pc-02). Всё живёт в userStore.nav и едет в Sync.
 // Телефон правит свою панель; на ПК сверху переключатель «Computer | Handy» — у ПК своё боковое меню (места больше).
+// Часть 38: превью — сама панель. После правки изменённые вкладки коротко светятся (navFlashStore):
+// на телефоне — нижняя панель, на ПК — боковое меню или телефон справа («Handy»).
 // ─────────────────────────────────────────────────────────────
 const NavSettings = () => {
   const t = useT();
@@ -43,13 +46,23 @@ const NavSettings = () => {
   const device = picked ?? (isDesktop ? "pc" : "phone");
   const features = usePlanStore((s) => s.me?.features);
   const nav = useUserStore((s) => s.nav);
-  const setNav = useUserStore((s) => s.setNav);
+  const storeNav = useUserStore((s) => s.setNav);
+  const flash = useNavFlashStore((s) => s.flash);
+  const clearFlash = useNavFlashStore((s) => s.clear);
   const setNavMenu = useUserStore((s) => s.setNavMenu);
   const list = navOf(nav, device);
   const [editing, setEditing] = useState(null); // id группы в шторке
   const group = list.find((item) => isGroup(item) && item.id === editing) ?? null;
 
+  // Любая правка раскладки идёт сюда: сохранить и подсветить то, что изменилось
+  const setNav = (which, next) => {
+    const now = useUserStore.getState().nav; // свежее состояние: «Rückgängig» срабатывает позже, из тоста
+    flash(which, navChanges(navOf(now, which), cleanNav(next, which), features));
+    storeNav(which, next);
+  };
   const save = (next) => setNav(device, next);
+  // Ушли со страницы — подсветка больше не нужна (иначе снова мигнёт, когда панель перерисуется)
+  useEffect(() => clearFlash, [clearFlash]);
   const fail = (error) => toast(t(ERRORS[device][error] ?? ERRORS[error]));
   const full = { on: list.length >= LIMITS[device], label: device === "phone" ? `${placesUsed(list)} ${t("von")} ${LIMITS.phone + 1}` : null };
 
@@ -78,43 +91,47 @@ const NavSettings = () => {
   };
 
   return (
-    <section className="flex flex-col gap-4.5 lg:max-w-186">
+    <section className="flex flex-col gap-4.5">
       <PageHeader backTo="/mehr/darstellung" eyebrow={t("Darstellung")} title={t(device === "pc" ? "Seitenleiste" : "Untere Leiste")} subpage />
 
       {isDesktop && <Segmented label={t("Gerät")} size="form" className="w-fit" options={DEVICES} value={device} onChange={setPicked} />}
-      {device === "phone" && <LeistePreview list={list} features={features} />}
 
-      <NavEditor
-        list={list}
-        features={features}
-        device={device}
-        full={full}
-        onChange={save}
-        onError={fail}
-        onAdd={add}
-        onRemove={(key) => save(removeFromNav(list, key))}
-        onEditGroup={setEditing}
-        middle={
-          <div className="flex flex-col gap-4.5">
-            <PillButton glass="glass" size="lg" onClick={newGroup} className="flex h-11.5 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink transition-opacity active:opacity-80">
-              <Plus className="size-4" />
-              {t("Gruppe hinzufügen")}
-            </PillButton>
-            {device === "phone" && (
-              <ListCard>
-                <SettingRow label={t("Gruppenmenü")}>
-                  <Segmented label={t("Gruppenmenü")} size="form" className="w-fit" options={LOOKS} value={menuStyleOf(nav)} onChange={setNavMenu} />
-                </SettingRow>
-              </ListCard>
-            )}
-          </div>
-        }
-      />
+      <div className="flex items-start gap-10">
+        <div className="flex min-w-0 flex-1 flex-col gap-4.5 lg:max-w-186">
+          <NavEditor
+            list={list}
+            features={features}
+            device={device}
+            full={full}
+            onChange={save}
+            onError={fail}
+            onAdd={add}
+            onRemove={(key) => save(removeFromNav(list, key))}
+            onEditGroup={setEditing}
+            middle={
+              <div className="flex flex-col gap-4.5">
+                <PillButton glass="glass" size="lg" onClick={newGroup} className="flex h-11.5 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink transition-opacity active:opacity-80">
+                  <Plus className="size-4" />
+                  {t("Gruppe hinzufügen")}
+                </PillButton>
+                {device === "phone" && (
+                  <ListCard>
+                    <SettingRow label={t("Gruppenmenü")}>
+                      <Segmented label={t("Gruppenmenü")} size="form" className="w-fit" options={LOOKS} value={menuStyleOf(nav)} onChange={setNavMenu} />
+                    </SettingRow>
+                  </ListCard>
+                )}
+              </div>
+            }
+          />
 
-      <PillButton glass="glass" size="lg" onClick={reset} className="flex h-12 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink transition-opacity active:opacity-80">
-        <RotateCcw className="size-4" />
-        {t("Zurücksetzen")}
-      </PillButton>
+          <PillButton glass="glass" size="lg" onClick={reset} className="flex h-12 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink transition-opacity active:opacity-80">
+            <RotateCcw className="size-4" />
+            {t("Zurücksetzen")}
+          </PillButton>
+        </div>
+        {isDesktop && device === "phone" && <LeistePreview list={list} features={features} />}
+      </div>
 
       <GroupSheet
         group={group}

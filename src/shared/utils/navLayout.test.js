@@ -140,6 +140,9 @@ describe("navChanges (часть 38: что подсветить)", () => {
     const less = { ...leistung, items: ["tests", "aufgaben", "termine"] };
     expect(navChanges(["start", less], ["start", leistung])).toEqual(["leistung", "mehr"]);
   });
+  it("новое имя группы — светится группа", () => {
+    expect(navChanges(base, ["start", "woche", { ...leistung, name: "Schule" }])).toEqual(["leistung"]);
+  });
   it("невидимый раздел (школа выключила) не светится", () => {
     expect(navChanges(base, [...base, "statistik"], { statistics: false })).toEqual([]);
   });
