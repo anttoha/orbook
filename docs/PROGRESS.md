@@ -740,3 +740,5 @@ Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWi
 Фронт: `/mehr/kalender` (`pages/CalendarFeed.jsx`, `components/calendar-feed/*`), строка в Mehr и пункт меню ПК («an»/«Aus» — `calendarFeedStore`), «Zum Kalender» — шторка (телефон) / меню (ПК): Google, Apple (webcal), Outlook, копировать; QR на ПК; смена «Meine Kurse» → `useCalendarFeedCourses` сам шлёт PUT. Datenschutz — раздел «Kalender-Abo» + строка в «Fristen», EN/UK. APK не менялся (внешние ссылки приложение и так отдаёт системе).
 Скриншоты: `/root/work/orbook-compare/40-kalender-abo/shots/` (`_tools/p40.mjs`).
 **Дальше:** владелец проверяет на демо; потом «на прод» (changelog 40) или 41.
+**Прод 21.11:** v0.27.0 (changelog 40, EN/UK), `docs/releases/v0.27.0.md`, тег v0.27.0. Бэкенд на проде с 21.11 (`update.sh`, схема 0017). APK не менялся.
+**Дальше:** новый чат, Opus · effort medium → `/orb 41`.
