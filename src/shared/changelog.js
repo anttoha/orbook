@@ -6,6 +6,18 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.24.0",
+    date: "2026-11-21",
+    neu: [
+      "Neu: Noten als PDF. In Noten und Fehlzeiten tippst du auf „Als PDF“, siehst eine Vorschau und kannst drucken oder die Datei direkt herunterladen.",
+      "Du hast die Wahl: dein ORBook-Blatt fürs 1. oder 2. Halbjahr, das ganze Schuljahr, Zeugnis oder nur Fehlzeiten – oder das Original aus dem InfoPoint, genau wie die Schule es druckt.",
+    ],
+    behoben: [
+      "Am PC scrollt das Seitenmenü jetzt, wenn der Bildschirm zu niedrig ist – unten verschwindet nichts mehr.",
+      "Untere Leiste bearbeiten: Ziehen zwischen „Unten“ und „Mehr“ führt nicht mehr zu „Etwas ist schiefgelaufen“.",
+    ],
+  },
+  {
     version: "0.23.0",
     date: "2026-11-21",
     neu: [

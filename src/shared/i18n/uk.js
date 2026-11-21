@@ -2202,4 +2202,9 @@ export const uk = {
   "Zusammenfassung": "Підсумок",
   "beide Halbjahre": "обидва півріччя",
   "nur Fehlzeiten": "лише пропуски",
+  // Was ist neu 0.24.0
+  "Neu: Noten als PDF. In Noten und Fehlzeiten tippst du auf „Als PDF“, siehst eine Vorschau und kannst drucken oder die Datei direkt herunterladen.": "Нове: оцінки як PDF. У «Оцінки» та «Пропуски» натисни «Як PDF», подивись попередній перегляд і друкуй або одразу завантаж файл.",
+  "Du hast die Wahl: dein ORBook-Blatt fürs 1. oder 2. Halbjahr, das ganze Schuljahr, Zeugnis oder nur Fehlzeiten – oder das Original aus dem InfoPoint, genau wie die Schule es druckt.": "Обирай сам: аркуш ORBook за 1-е чи 2-ге півріччя, за весь навчальний рік, табель або лише пропуски – або оригінал з InfoPoint, точно як друкує школа.",
+  "Am PC scrollt das Seitenmenü jetzt, wenn der Bildschirm zu niedrig ist – unten verschwindet nichts mehr.": "На комп’ютері бічне меню тепер прокручується, якщо екран занизький, – унизу більше нічого не зникає.",
+  "Untere Leiste bearbeiten: Ziehen zwischen „Unten“ und „Mehr“ führt nicht mehr zu „Etwas ist schiefgelaufen“.": "Редагування нижньої панелі: перетягування між «Унизу» та «Ще» більше не призводить до «Щось пішло не так».",
 };

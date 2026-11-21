@@ -2202,4 +2202,9 @@ export const en = {
   "Zusammenfassung": "Summary",
   "beide Halbjahre": "both terms",
   "nur Fehlzeiten": "absences only",
+  // Was ist neu 0.24.0
+  "Neu: Noten als PDF. In Noten und Fehlzeiten tippst du auf „Als PDF“, siehst eine Vorschau und kannst drucken oder die Datei direkt herunterladen.": "New: grades as PDF. In Grades and Absences, tap “As PDF”, check the preview, then print or download the file right away.",
+  "Du hast die Wahl: dein ORBook-Blatt fürs 1. oder 2. Halbjahr, das ganze Schuljahr, Zeugnis oder nur Fehlzeiten – oder das Original aus dem InfoPoint, genau wie die Schule es druckt.": "Your choice: your ORBook sheet for term 1 or 2, the whole school year, the report card or just absences – or the original from InfoPoint, exactly as the school prints it.",
+  "Am PC scrollt das Seitenmenü jetzt, wenn der Bildschirm zu niedrig ist – unten verschwindet nichts mehr.": "On a computer, the side menu now scrolls when the screen is too short – nothing disappears at the bottom anymore.",
+  "Untere Leiste bearbeiten: Ziehen zwischen „Unten“ und „Mehr“ führt nicht mehr zu „Etwas ist schiefgelaufen“.": "Editing the bottom bar: dragging between “Bottom” and “More” no longer ends in “Something went wrong”.",
 };
