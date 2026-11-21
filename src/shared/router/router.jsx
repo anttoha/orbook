@@ -3,6 +3,7 @@ import App from "../../App";
 import HomePage from "../../pages/HomePage";
 import Tests from "../../pages/Tests";
 import ExamEdit from "../../pages/ExamEdit";
+import Lernplan from "../../pages/Lernplan";
 import HomeworkEdit from "../../pages/HomeworkEdit";
 import EditorCode from "../../pages/EditorCode";
 import Materials from "../../pages/Materials";
@@ -109,6 +110,7 @@ export const router = createBrowserRouter([
           page({ path: "testen", Component: Tests }),
           page({ path: "testen/neu", Component: ExamEdit }), // нова Klausur
           page({ path: "testen/:id/bearbeiten", Component: ExamEdit }), // правка
+          page({ path: "testen/:id/lernplan", Component: Lernplan }), // Lernplan zum Test (частина 41)
           page({ path: "testen/hausaufgaben/neu", Component: HomeworkEdit }), // нова Hausaufgabe (частина 14)
           page({ path: "testen/hausaufgaben/:id/bearbeiten", Component: HomeworkEdit }),
           page({ path: "testen/termine/neu", Component: AppointmentEdit }), // новий Termin (частина 18)

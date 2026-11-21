@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildPlanTasks, checkPlans, distribute, learnDays, maxDays, planSettings, planTasksOf, preview, shiftPlan, topicsFrom } from "./lernplan";
+import { buildPlanTasks, checkPlans, formTopics, planDoneToast, distribute, learnDays, maxDays, planSettings, planTasksOf, preview, shiftPlan, topicsFrom } from "./lernplan";
 
 const TODAY = "2025-09-17"; // Mi
 const EXAM = { id: 7, date: "2025-09-25", subject: { code: "Ph", name: "Physik" }, topic: "Federpendel", details: "Schwingungsdauer\nFederkonstante bestimmen\nProtokoll auswerten" };
@@ -86,5 +86,22 @@ describe("перенос и удаление теста", () => {
     expect(checkPlans(tasks, [], 4, TODAY).gone).toHaveLength(0);
     const kept = tasks.map((task) => ({ ...task, plan: { ...task.plan, kept: true } }));
     expect(checkPlans(kept, [], 3, TODAY).gone).toHaveLength(0);
+  });
+});
+
+describe("planDoneToast", () => {
+  const tasks = [{ id: "a", done: true }, { id: "b", done: false }, { id: "c", done: false }];
+  it("считает, сколько осталось", () => {
+    expect(planDoneToast(tasks, "b")).toBe("Erledigt · noch 1");
+    expect(planDoneToast(tasks.slice(0, 2), "b")).toBe("Alles gelernt – viel Erfolg!");
+  });
+});
+
+describe("formTopics", () => {
+  it("новый план — все темы из описания включены", () => {
+    expect(formTopics("A, B")).toEqual([{ text: "A", on: true, own: false }, { text: "B", on: true, own: false }]);
+  });
+  it("правка — выключенные темы описания и свои темы", () => {
+    expect(formTopics("A, B", ["B", "X"])).toEqual([{ text: "A", on: false, own: false }, { text: "B", on: true, own: false }, { text: "X", on: true, own: true }]);
   });
 });

@@ -3,7 +3,7 @@
 // План = обычные свои задачи «Aufgaben» (tasks.js) с полем plan — поэтому они сами едут через Sync.
 // plan: { exam: "12", cls, examDate, subject, label, title, topics: [...], weekend, review }
 // ─────────────────────────────────────────────────────────────
-import { addDays, isWeekend } from "./format";
+import { addDays, isWeekend, weekdayShort } from "./format";
 import { newTask, TASK_MAX } from "./tasks";
 import { translate } from "../i18n/translate";
 
@@ -160,4 +160,23 @@ export function checkPlans(tasks, exams, cls, today) {
     else if (!exam && plan.examDate >= today) gone.push({ id, plan, tasks: list });
   }
   return { moved, gone };
+}
+
+// Тост после галочки дня плана: сколько осталось, а последний день — «Alles gelernt»
+export function planDoneToast(planTasks, toggledId) {
+  const left = planTasks.filter((task) => !task.done && task.id !== toggledId).length;
+  return left === 0 ? translate("Alles gelernt – viel Erfolg!") : translate("Erledigt · noch {n}", { n: left });
+}
+
+// «Fr 19.09.» — как дата теста в examLabel
+export const shortDay = (date) => `${weekdayShort(date)} ${date.slice(8, 10)}.${date.slice(5, 7)}.`;
+// Подпись дня в карточке плана: «Heute» или «Fr 19.09.»
+export const dayLabel = (date, today) => (date === today ? translate("Heute") : shortDay(date));
+
+// Список тем в форме: из описания теста (вкл., если план новый или тема в плане) + свои темы плана
+export function formTopics(details, planTopics = null) {
+  const fromDetails = topicsFrom(details);
+  const rows = fromDetails.map((text) => ({ text, on: planTopics ? planTopics.includes(text) : true, own: false }));
+  for (const text of planTopics ?? []) if (!fromDetails.includes(text)) rows.push({ text, on: true, own: true });
+  return rows;
 }
