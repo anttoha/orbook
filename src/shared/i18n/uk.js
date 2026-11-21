@@ -2218,4 +2218,7 @@ export const uk = {
   "Std.": "ур.",
   "unentsch.": "без поваж.",
   "Die Noten-Widgets der Android-App (Noten, Neue Noten, Fehlzeiten) zeigen nur, was die App schon gespeichert hat, und fragen selbst nichts ab. Noten und Fehlzeiten sind dort standardmäßig verdeckt („•••“). Schaltest du bei einem Widget „Noten anzeigen“ ein, sieht sie jeder, der auf deinen Startbildschirm schaut.": "Віджети оцінок у застосунку Android (Оцінки, Нові оцінки, Пропуски) показують лише те, що застосунок уже зберіг, і самі нічого не запитують. Оцінки й пропуски там за замовчуванням приховані («•••»). Якщо для віджета ввімкнути «Показувати оцінки», їх побачить кожен, хто дивиться на твій головний екран.",
+  // Was ist neu 0.26.0
+  "Neu in der Android-App: Widgets für Noten, neue Noten und Fehlzeiten. Leg sie wie die anderen ORBook-Widgets auf den Startbildschirm.": "Нове в застосунку Android: віджети для оцінок, нових оцінок і пропусків. Додай їх на головний екран, як інші віджети ORBook.",
+  "Auf dem Widget sind deine Noten erst mal verdeckt („•••“), damit nicht jeder sie sieht, der auf dein Handy schaut. Bei jedem Widget kannst du sie mit „Noten anzeigen“ einblenden.": "На віджеті твої оцінки спершу приховані («•••»), щоб їх не бачив кожен, хто дивиться на твій телефон. Для кожного віджета їх можна показати через «Показувати оцінки».",
 };

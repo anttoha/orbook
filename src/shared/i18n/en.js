@@ -2218,4 +2218,7 @@ export const en = {
   "Std.": "les.",
   "unentsch.": "unexc.",
   "Die Noten-Widgets der Android-App (Noten, Neue Noten, Fehlzeiten) zeigen nur, was die App schon gespeichert hat, und fragen selbst nichts ab. Noten und Fehlzeiten sind dort standardmäßig verdeckt („•••“). Schaltest du bei einem Widget „Noten anzeigen“ ein, sieht sie jeder, der auf deinen Startbildschirm schaut.": "The grade widgets of the Android app (Grades, New grades, Absences) only show what the app has already saved and fetch nothing themselves. Grades and absences are hidden there by default (“•••”). If you turn on “Show grades” for a widget, anyone who looks at your home screen can see them.",
+  // Was ist neu 0.26.0
+  "Neu in der Android-App: Widgets für Noten, neue Noten und Fehlzeiten. Leg sie wie die anderen ORBook-Widgets auf den Startbildschirm.": "New in the Android app: widgets for grades, new grades and absences. Put them on your home screen like the other ORBook widgets.",
+  "Auf dem Widget sind deine Noten erst mal verdeckt („•••“), damit nicht jeder sie sieht, der auf dein Handy schaut. Bei jedem Widget kannst du sie mit „Noten anzeigen“ einblenden.": "On the widget your grades are hidden at first (“•••”), so not everyone who looks at your phone sees them. For each widget you can show them with “Show grades”.",
 };
