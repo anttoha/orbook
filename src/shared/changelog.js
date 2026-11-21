@@ -6,6 +6,14 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.28.0",
+    date: "2026-11-21",
+    neu: [
+      "Neu: Lernplan zum Test. Im Test tippst du „Lernplan erstellen“, wählst, wie viele Tage du lernen willst – und die Themen landen Tag für Tag in deinen Aufgaben.",
+      "Abhaken geht im Test und in den Aufgaben, auf Start siehst du, wie weit du bist. Wird der Test verschoben, rutscht dein Plan einfach mit.",
+    ],
+  },
+  {
     version: "0.27.0",
     date: "2026-11-21",
     neu: [

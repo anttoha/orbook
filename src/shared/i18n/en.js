@@ -2308,4 +2308,7 @@ export const en = {
   "Test {subject} gelöscht": "Test {subject} deleted",
   "Behalten": "Keep",
   "Eigene": "Own",
+  // Was ist neu 0.28.0
+  "Neu: Lernplan zum Test. Im Test tippst du „Lernplan erstellen“, wählst, wie viele Tage du lernen willst – und die Themen landen Tag für Tag in deinen Aufgaben.": "New: study plan for tests. In a test, tap “Create study plan”, choose how many days you want to study – and the topics show up day by day in your tasks.",
+  "Abhaken geht im Test und in den Aufgaben, auf Start siehst du, wie weit du bist. Wird der Test verschoben, rutscht dein Plan einfach mit.": "Tick days off in the test or in your tasks, and Start shows how far you are. If the test gets moved, your plan simply moves with it.",
 };
