@@ -2221,4 +2221,6 @@ export const en = {
   // Was ist neu 0.26.0
   "Neu in der Android-App: Widgets für Noten, neue Noten und Fehlzeiten. Leg sie wie die anderen ORBook-Widgets auf den Startbildschirm.": "New in the Android app: widgets for grades, new grades and absences. Put them on your home screen like the other ORBook widgets.",
   "Auf dem Widget sind deine Noten erst mal verdeckt („•••“), damit nicht jeder sie sieht, der auf dein Handy schaut. Bei jedem Widget kannst du sie mit „Noten anzeigen“ einblenden.": "On the widget your grades are hidden at first (“•••”), so not everyone who looks at your phone sees them. For each widget you can show them with “Show grades”.",
+  // Was ist neu 0.26.1
+  "Noten als PDF: Das Original aus dem InfoPoint sieht jetzt aus wie gedruckt – ohne Menüleiste oben und Fußzeile unten.": "Grades as PDF: the original from InfoPoint now looks just like the printout – no menu bar at the top and no footer.",
 };

@@ -6,6 +6,13 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.26.1",
+    date: "2026-11-21",
+    behoben: [
+      "Noten als PDF: Das Original aus dem InfoPoint sieht jetzt aus wie gedruckt – ohne Menüleiste oben und Fußzeile unten.",
+    ],
+  },
+  {
     version: "0.26.0",
     date: "2026-11-21",
     neu: [
