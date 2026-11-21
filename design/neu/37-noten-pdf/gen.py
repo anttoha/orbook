@@ -36,6 +36,65 @@ def p_app_alt(st):
     return add(s, R(18, H - 140, 354, 46, 16, c["toastbg"]) + ICON(32, H - 125, 0.67, c["toastfg"], ALERT)
                + T(58, H - 112, "Für PDF bitte die App aktualisieren", 13.5, 600, c["toastfg"]))
 
+
+# ════════════════ Шторка «Als PDF»: своё или оригинал InfoPoint ════════════════
+CHECK = g.CHECK
+SPIN = P("M12 3a9 9 0 1 0 9 9")
+
+def mini(x, y, kind, c):
+    """Маленькая страница: ORBook — фиолетовый заголовок и плашки; оригинал — таблицы в линию."""
+    w, h = 40, 56
+    out = [R(x, y, w, h, 5, "#FFFFFF", c["rule"], 1)]
+    if kind == "orbook":
+        out.append(R(x + 6, y + 7, 18, 3.5, 1.5, "#2A2433") + R(x + 6, y + 13, 24, 3.5, 1.5, "#6C4DF6"))
+        for i in range(4):
+            out.append(R(x + 6 + i * 7.2, y + 21, 6, 6, 1.5, "#F3EDE5"))
+        for i in range(4):
+            out.append(R(x + 6, y + 31 + i * 5.5, 20, 2.5, 1, "#C0B8C6") + R(x + 29, y + 30.5 + i * 5.5, 5, 3.5, 1, "#E3F5EC"))
+    else:
+        out.append(R(x + 6, y + 7, 22, 3.5, 1, "#2A2433"))
+        rows = 7 if kind == "kompakt" else 4
+        top = y + 14
+        out.append(R(x + 6, top, 28, rows * 4.6, 0, "none", "#2A2433", 0.6))
+        for i in range(1, rows):
+            out.append(f'<line x1="{x + 6}" y1="{top + i * 4.6}" x2="{x + 34}" y2="{top + i * 4.6}" stroke="#2A2433" stroke-width="0.4"/>')
+        if kind == "detail":
+            out.append(R(x + 6, top + 24, 28, 12, 0, "none", "#2A2433", 0.6))
+        else:
+            out.append(f'<line x1="{x + 20}" y1="{top}" x2="{x + 20}" y2="{top + rows * 4.6}" stroke="#2A2433" stroke-width="0.4"/>')
+    return "".join(out)
+
+def choice(st, x, y, w, kind, ttl, sub, on, first=False):
+    c = st.c
+    out = []
+    if not first: out.append(HL(x + 14, x + w - 14, y, c))
+    out.append(mini(x + 14, y + 12, kind, c) + T(x + 68, y + 36, ttl, 15, 800, c["ink"]) + T(x + 68, y + 55, sub, 12.5, 400, c["faint"]))
+    if on: out.append(DOT(x + w - 30, y + 40, 12, c["accent"]) + ICON(x + w - 38, y + 32, 0.67, c["on"], CHECK, 2.6))
+    else: out.append(f'<circle cx="{x + w - 30}" cy="{y + 40}" r="11" fill="none" stroke="{c["faint2"]}" stroke-width="1.6"/>')
+    return "".join(out)
+
+def p_auswahl(st, pick=0, busy=False):
+    c = st.c
+    s = p_noten(st)
+    H = height(s)
+    inner = s[s.index("</defs>") + 7:s.rindex("</svg>")]
+    top = H - 470
+    b = [inner, g.overlay(c, 390, H), N.m.sheet(st, top, "Noten · 1. Halbjahr", "Als PDF", H=H)]
+    y = top + 96
+    rows = [("orbook", "ORBook-Blatt", "Noten und Fehlzeiten · 1 Seite"),
+            ("kompakt", "Original · Übersicht", "aus InfoPoint · Zusammenfassung"),
+            ("detail", "Original · Alle Noten", "aus InfoPoint · Detailansicht")]
+    b.append(st.card(18, y, 354, 80 * 3))
+    for i, (k, t1, t2) in enumerate(rows):
+        b.append(choice(st, 18, y + i * 80, 354, k, t1, t2, i == pick, i == 0))
+    y = H - 76 - 20
+    if busy:
+        b.append(R(18, y, 354, 48, 24, c["accent"], None) + f'<g opacity="0.75">' + ICON(124, y + 16, 0.67, c["on"], SPIN, 2.4)
+                 + T(150, y + 29, "Hole Original …", 14.5, 700, c["on"]) + "</g>")
+    else:
+        b.append(st.button(18, y, 354, "Als PDF", "primary", PDF))
+    return st.page(390, H, "".join(b))
+
 # ════════════════ ПК ════════════════
 def pc_noten(st):
     return add(N.pc_noten(st), st.button(918, 44, 126, "Als PDF", "sand", PDF, h=36))
@@ -153,6 +212,8 @@ SCREENS = {   # имя: (функция, темы); лист A4 — только
     "handy-01-noten": (p_noten, ("hell", "dunkel")),
     "handy-02-fehlzeiten": (p_fehlzeiten, ("hell", "dunkel")),
     "handy-03-app-alt": (p_app_alt, ("hell",)),
+    "handy-04-auswahl": (lambda st: p_auswahl(st, 1), ("hell", "dunkel")),
+    "handy-05-original-laden": (lambda st: p_auswahl(st, 1, busy=True), ("hell",)),
     "pc-01-noten": (pc_noten, ("hell", "dunkel")),
     "a4-01-halbjahr": (a4_halbjahr, ("hell",)),
     "a4-02-zeugnis": (a4_zeugnis, ("hell",)),
