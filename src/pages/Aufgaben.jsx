@@ -4,6 +4,7 @@ import ExamChips from "../components/exams/ExamChips";
 import ExamSkeleton from "../components/exams/ExamSkeleton";
 import ExamsToolbar from "../components/exams/ExamsToolbar";
 import ListSwitch from "../components/homework/ListSwitch";
+import GoneExamCards from "../components/lernplan/GoneExamCards";
 import AddTaskButton from "../components/tasks/AddTaskButton";
 import AufgabeRow from "../components/tasks/AufgabeRow";
 import WeekProgress from "../components/tasks/WeekProgress";
@@ -21,7 +22,7 @@ import { useUserStore } from "../shared/store/userStore";
 import { cn } from "../shared/utils/cn";
 import { addHomeworkTarget } from "../shared/utils/examRules";
 import { subjectChips, toggleSubject } from "../shared/utils/exams";
-import { aufgabenList } from "../shared/utils/tasks";
+import { aufgabenList, rowSheet } from "../shared/utils/tasks";
 import { useT } from "../shared/hooks/useT";
 import { translate } from "../shared/i18n/translate";
 
@@ -142,6 +143,7 @@ const Aufgaben = () => {
             />
           )}
           <PlanBanner resource={resource} onRetry={loadHomework} />
+          <GoneExamCards />
           {body()}
         </div>
         <WeekProgress list={list} today={today} />
@@ -160,10 +162,10 @@ function eyebrowText(open, done, wide) {
 const stagger = (i) => ({ animationDelay: `${Math.min(i, 8) * 35}ms` });
 
 
-// Открытая строка: нажатие — детали домашки или правка своей задачи
+// Открытая строка: нажатие — детали домашки, правка своей задачи или (задача Lernplan) шторка теста
 const OpenRow = (props) => {
   const { openSheet } = useSheet();
-  const open = () => (props.row.kind === "own" ? openSheet("aufgabe", { id: props.row.id }) : openSheet("hausaufgabe", { id: props.row.id }));
+  const open = () => openSheet(...rowSheet(props.row));
   return <AufgabeRow {...props} onOpen={open} />;
 };
 

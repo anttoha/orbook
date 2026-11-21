@@ -1,6 +1,9 @@
 import { useT } from "../../shared/hooks/useT";
 import { usePlanStore } from "../../shared/store/planStore";
+import { useTasksStore } from "../../shared/store/tasksStore";
 import { useUserStore } from "../../shared/store/userStore";
+import { planProgress, planTasksOf } from "../../shared/utils/lernplan";
+import ProgressBar from "../ui/ProgressBar";
 import { mySubjects } from "../../shared/utils/appointments";
 import { cn } from "../../shared/utils/cn";
 import { examWhen, numericDate, subjectName, weekdayShort } from "../../shared/utils/format";
@@ -8,6 +11,19 @@ import { fachDotClass } from "../../shared/utils/lessons";
 import BlockCard from "./BlockCard";
 import BlockEmpty from "./BlockEmpty";
 import BlockSkeleton from "./BlockSkeleton";
+
+// Lernplan ближайшего теста (часть 41, макет handy-05): полоска и «2/4». Плана нет — ничего
+const PlanLine = ({ examId }) => {
+  const tasks = useTasksStore((s) => s.tasks);
+  const { done, total } = planProgress(planTasksOf(tasks, examId));
+  if (total === 0) return null;
+  return (
+    <p className="mt-2 flex items-center gap-2">
+      <ProgressBar done={done} total={total} className="h-1.5 flex-1" />
+      <span className="text-note font-extrabold text-muted">{`${done}/${total}`}</span>
+    </p>
+  );
+};
 
 // ─────────────────────────────────────────────────────────────
 // Блок «Tests» (макет handy-01): ближайшие тесты. Первый — крупно, «Fr · in 2 Tagen»,
@@ -35,6 +51,7 @@ const TestsBlock = ({ block, editing }) => {
           <span className="truncate">{subjectName(first.subject)}</span>
         </p>
         <p className="truncate text-caption font-bold text-accent-ink">{`${weekdayShort(first.date)} · ${examWhen(first)}`}</p>
+        <PlanLine examId={first.id} />
         {rest.length > 0 && (
           <ul className="mt-2 flex flex-col divide-y divide-hair border-t border-hair">
             {rest.map((exam) => (

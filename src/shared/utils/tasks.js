@@ -51,6 +51,12 @@ const ownRow = (task) => ({ kind: "own", key: task.id, id: task.id, task, due: t
 
 const byDue = (a, b) => (a.due ?? "9999").localeCompare(b.due ?? "9999") || a.key.localeCompare(b.key);
 
+// Какую шторку открыть по строке: задача Lernplan — тест (если тест ещё есть), своя — правка, домашка — детали
+export function rowSheet(row) {
+  if (row.plan && !row.plan.kept) return ["klausur", { id: row.plan.exam }];
+  return row.kind === "own" ? ["aufgabe", { id: row.id }] : ["hausaufgabe", { id: row.id }];
+}
+
 // Список «Aufgaben»: открытые по группам («Bis morgen» … «Ohne Datum») и сделанные отдельно
 export function aufgabenList({ homework = [], tasks = [], marks = [], today }) {
   const doneIds = new Set(marks.filter((m) => m.done).map((m) => m.id));

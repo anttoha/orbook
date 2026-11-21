@@ -6,6 +6,7 @@ import { cn } from "../../shared/utils/cn";
 import { dayNumber, examWhen, daysBetween, weekdayShort } from "../../shared/utils/format";
 import { authorShort } from "../../shared/utils/homework";
 import { movedFromText } from "../../shared/utils/entries";
+import { planDoneToast, planTasksOf } from "../../shared/utils/lernplan";
 import MovedLine from "../entries/MovedLine";
 import ExamDateTile from "../exams/ExamDateTile";
 import CheckCircle from "./CheckCircle";
@@ -32,9 +33,10 @@ const whenText = (due, today) => (due ? examWhen({ daysLeft: daysBetween(today, 
 
 // Серая строка над текстом: «Eigene · Deutsch · morgen» или «Mathe · 2. Std · von Mü · morgen».
 // «Eigene» и близкий срок — акцентом (пока не сделано)
-function metaParts({ own, done, subject, lesson, author, when, soon }) {
+// Задача из Lernplan (часть 41) — «Lernplan» вместо «Eigene»
+function metaParts({ own, plan, done, subject, lesson, author, when, soon }) {
   return [
-    own && { text: "Eigene", className: cn("font-extrabold", !done && "text-accent-ink") },
+    own && { text: plan ? translate("Lernplan") : translate("Eigene"), className: cn("font-extrabold", !done && "text-accent-ink") },
     subject && { text: subject },
     lesson && { text: translate("{lesson}. Std", { lesson }) },
     author && { text: translate("von {author}", { author }) },
@@ -48,6 +50,9 @@ function metaParts({ own, done, subject, lesson, author, when, soon }) {
 //            Buch S. 54, Nr. 3 a–d
 // Нажатие на строку — детали (домашка) или правка (своя). Кружок — «erledigt», видно только тебе.
 // ─────────────────────────────────────────────────────────────
+// Тост после галочки: у дня Lernplan — сколько ещё осталось
+const doneText = (row) => (row.plan ? planDoneToast(planTasksOf(useTasksStore.getState().tasks, row.plan.exam), row.id) : translate("Erledigt"));
+
 const MOVE_AFTER_MS = 420; // сначала кружок пружинит и текст зачёркивается, потом строка переезжает
 
 const AufgabeRow = ({ row, today, overrides, subjectNames, highlight, onOpen, style }) => {
@@ -69,7 +74,7 @@ const AufgabeRow = ({ row, today, overrides, subjectNames, highlight, onOpen, st
     setLeaving(true);
     setTimeout(() => {
       flip();
-      if (!row.done) toast(translate("Erledigt"), { duration: 5000, action: { label: translate("Rückgängig"), onClick: flip } });
+      if (!row.done) toast(doneText(row), { duration: 5000, action: { label: translate("Rückgängig"), onClick: flip } });
     }, MOVE_AFTER_MS);
   };
 
@@ -88,7 +93,7 @@ const AufgabeRow = ({ row, today, overrides, subjectNames, highlight, onOpen, st
         </span>
         <span className="min-w-0 flex-1">
           <span className="block truncate text-note text-faint">
-            {metaParts({ own, done, subject, lesson: row.item?.lesson, author, when, soon }).map((part, i) => (
+            {metaParts({ own, plan: Boolean(row.plan), done, subject, lesson: row.item?.lesson, author, when, soon }).map((part, i) => (
               <span key={part.text} className={part.className}>
                 {i > 0 && " · "}
                 {part.text}

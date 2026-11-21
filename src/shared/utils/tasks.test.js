@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { aufgabenList, aufgabenOfDay, dueChoices, editTask, newTask, removeTask, setMark, validateTaskText, weekProgress } from "./tasks";
+import { aufgabenList, aufgabenOfDay, dueChoices, editTask, newTask, removeTask, rowSheet, setMark, validateTaskText, weekProgress } from "./tasks";
 
 const now = new Date("2026-09-17T10:00:00Z");
 const today = "2026-09-17";
@@ -60,5 +60,13 @@ describe("weekProgress", () => {
   it("zählt nur diese Woche, offen bis morgen extra", () => {
     const list = aufgabenList({ homework: [hw(1, "2026-09-18"), hw(2, "2026-09-25"), hw(3, "2026-09-16")], marks: setMark([], 3, true, now), today });
     expect(weekProgress(list, today)).toEqual({ done: 1, total: 2, dueSoon: 1 });
+  });
+});
+
+describe("rowSheet", () => {
+  it("задача Lernplan открывает тест, «Behalten» — правку", () => {
+    expect(rowSheet({ kind: "own", id: "t-1", plan: { exam: "7" } })).toEqual(["klausur", { id: "7" }]);
+    expect(rowSheet({ kind: "own", id: "t-1", plan: { exam: "7", kept: true } })).toEqual(["aufgabe", { id: "t-1" }]);
+    expect(rowSheet({ kind: "homework", id: 3, plan: null })).toEqual(["hausaufgabe", { id: 3 }]);
   });
 });

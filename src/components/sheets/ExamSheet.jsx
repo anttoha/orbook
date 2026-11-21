@@ -9,6 +9,7 @@ import { examCountdown } from "../../shared/utils/exams";
 import { longDate, subjectName, weekdayLong } from "../../shared/utils/format";
 import { examText, shareText } from "../../shared/utils/share";
 import EntryExtras from "../entries/EntryExtras";
+import PlanCard from "../lernplan/PlanCard";
 import MovedNote from "../entries/MovedNote";
 import ExamBadge from "../exams/ExamBadge";
 import Badge from "../ui/Badge";
@@ -99,6 +100,7 @@ const ExamSheet = ({ open, onClose, sheet }) => {
     >
       <Countdown exam={exam} />
       <MovedNote entry={exam} />
+      <PlanCard exam={exam} />
       <EntryExtras entry={exam} />
 
       <AuthorNote entry={exam} />

@@ -7,7 +7,7 @@ import { useTasksStore } from "../../shared/store/tasksStore";
 import { cn } from "../../shared/utils/cn";
 import { subjectName } from "../../shared/utils/format";
 import { authorShort } from "../../shared/utils/homework";
-import { aufgabenOfDay } from "../../shared/utils/tasks";
+import { aufgabenOfDay, rowSheet } from "../../shared/utils/tasks";
 import CheckCircle from "../tasks/CheckCircle";
 import DoneText from "../tasks/DoneText";
 import SubjectBadge from "../ui/SubjectBadge";
@@ -17,7 +17,7 @@ import { translate } from "../../shared/i18n/translate";
 
 // Вторая строка: «Mathe · von Mü» у домашки, «Eigene Aufgabe» у своей
 function subline(row, names) {
-  if (row.kind === "own") return [ translate("Eigene Aufgabe"), row.subject ? (names?.[row.subject] ?? row.subject) : null].filter(Boolean).join(" · ");
+  if (row.kind === "own") return [row.plan ? translate("Lernplan") : translate("Eigene Aufgabe"), row.subject ? (names?.[row.subject] ?? row.subject) : null].filter(Boolean).join(" · ");
   return [subjectName(row.item.subject), authorShort(row.item) && translate("von {v1}", { v1: authorShort(row.item) })].filter(Boolean).join(" · ");
 }
 
@@ -50,7 +50,7 @@ const HomeworkDue = ({ date, className }) => {
           <li key={row.key} className="flex items-center border-b border-rule last:border-0">
             <button
               type="button"
-              onClick={() => (row.kind === "own" ? openSheet("aufgabe", { id: row.id }) : openSheet("hausaufgabe", { id: row.id }))}
+              onClick={() => openSheet(...rowSheet(row))}
               className="flex min-w-0 flex-1 items-center gap-3 py-3 text-left outline-none transition-transform duration-150 focus-visible:ring-2 focus-visible:ring-accent/50 active:scale-98"
             >
               <span className={cn("shrink-0 transition-opacity duration-300", row.done && "opacity-50")}>
