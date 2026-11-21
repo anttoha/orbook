@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { WIDGET_DEFAULTS, WIDGET_ROWS, cellsLabel, configToSave, parseWidget, parseWidgets, widgetClass, widgetConfigOf } from "./widgetConfig";
+import { NOTEN_KINDS, WIDGET_DEFAULTS, WIDGET_KIND_LIST, WIDGET_ROWS, isNotenKind, cellsLabel, configToSave, parseWidget, parseWidgets, widgetClass, widgetConfigOf } from "./widgetConfig";
 
 describe("parseWidget", () => {
   it("читает ответ моста и подставляет значения по умолчанию", () => {
@@ -37,8 +37,8 @@ describe("widgetConfigOf", () => {
   });
 });
 
-it("строки «Anzeige» есть у всех девяти видов и только из известных полей", () => {
-  expect(Object.keys(WIDGET_ROWS)).toHaveLength(9);
+it("строки «Anzeige» есть у каждого вида и только из известных полей", () => {
+  expect(Object.keys(WIDGET_ROWS)).toEqual(WIDGET_KIND_LIST);
   for (const rows of Object.values(WIDGET_ROWS)) for (const key of rows) expect(WIDGET_DEFAULTS).toHaveProperty(key);
 });
 
@@ -51,4 +51,18 @@ it("класс виджета: сохранённый, если он ещё ес
   expect(widgetClass({ classId: 2 }, classes, 1)).toBe(2);
   expect(widgetClass({ classId: 9 }, classes, 1)).toBe(1);
   expect(widgetClass({ classId: null }, [], null)).toBeNull();
+});
+
+describe("часть 39: виды с оценками", () => {
+  it("оценки по умолчанию скрыты; «Noten anzeigen» сохраняется только как true/false", () => {
+    expect(WIDGET_DEFAULTS.showGrades).toBe(false);
+    expect(widgetConfigOf({ kind: "neueNoten", showGrades: true })).toMatchObject({ kind: "neueNoten", showGrades: true });
+    expect(widgetConfigOf({ kind: "fehlzeiten", showGrades: "ja" }).showGrades).toBe(false);
+  });
+
+  it("у видов с оценками в «Anzeige» только «Noten anzeigen»", () => {
+    for (const kind of NOTEN_KINDS) expect(WIDGET_ROWS[kind]).toEqual(["showGrades"]);
+    expect(isNotenKind("noten")).toBe(true);
+    expect(isNotenKind("tests")).toBe(false);
+  });
 });

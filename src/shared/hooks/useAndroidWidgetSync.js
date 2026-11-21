@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { androidBridge, refreshWidgets, saveSnapshot } from "../api/android";
+import { appNotenFresh } from "../api/noten";
 import { useClasses } from "../store/classesStore";
 import { useLanguage } from "../store/languageStore";
+import { useNotenStore } from "../store/notenStore";
 import { usePlanStore } from "../store/planStore";
 import { useTasksStore } from "../store/tasksStore";
 import { useUserStore } from "../store/userStore";
@@ -46,7 +48,13 @@ export const useAndroidWidgetSync = (enabled) => {
       if (state.planStamp !== before.planStamp || state.status?.lastChangeAt !== before.status?.lastChangeAt) refreshWidgets();
     };
 
+    // Часть 39: «neu» у оценок — виджеты Noten помечают те же оценки, что сайт
+    const onNoten = (state, before) => {
+      if (state.fresh !== before.fresh) appNotenFresh(state.fresh);
+    };
+
     send();
+    appNotenFresh(useNotenStore.getState().fresh);
     const stops = [
       useUserStore.subscribe(later),
       useClasses.subscribe(later),
@@ -54,6 +62,7 @@ export const useAndroidWidgetSync = (enabled) => {
       useTheme.subscribe(later),
       useLanguage.subscribe(later),
       usePlanStore.subscribe(onPlan),
+      useNotenStore.subscribe(onNoten),
     ];
     return () => {
       clearTimeout(timer);

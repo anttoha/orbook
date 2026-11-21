@@ -2210,4 +2210,12 @@ export const en = {
   // Was ist neu 0.25.0
   "Untere Leiste bearbeiten: Die Vorschau oben ist weg – die echte Leiste unten ändert sich sofort, und was du geändert hast, leuchtet kurz auf.": "Editing the bottom bar: the preview at the top is gone – the real bar at the bottom changes right away, and whatever you changed lights up briefly.",
   "Am PC steht beim „Handy“-Einstellen ein Handy daneben, das zeigt, wie deine Leiste aussieht. Beim Seitenmenü leuchtet der geänderte Punkt direkt im Menü.": "On a computer, setting up the “Handy” bar shows a phone next to the list with your bar. For the side menu, the changed item lights up right in the menu.",
+  // Teil 39: Noten-Widgets
+  "Neue Noten": "New grades",
+  "Noten anzeigen": "Show grades",
+  "In ORBook bei Noten anmelden": "Sign in to Grades in ORBook",
+  "{n}. Halbjahr": "Term {n}",
+  "Std.": "les.",
+  "unentsch.": "unexc.",
+  "Die Noten-Widgets der Android-App (Noten, Neue Noten, Fehlzeiten) zeigen nur, was die App schon gespeichert hat, und fragen selbst nichts ab. Noten und Fehlzeiten sind dort standardmäßig verdeckt („•••“). Schaltest du bei einem Widget „Noten anzeigen“ ein, sieht sie jeder, der auf deinen Startbildschirm schaut.": "The grade widgets of the Android app (Grades, New grades, Absences) only show what the app has already saved and fetch nothing themselves. Grades and absences are hidden there by default (“•••”). If you turn on “Show grades” for a widget, anyone who looks at your home screen can see them.",
 };

@@ -23,6 +23,7 @@ const SWITCHES = {
   next: "Danach zeigen",
   progress: "Fortschritt",
   showDone: "Erledigte zeigen",
+  showGrades: "Noten anzeigen", // часть 39: иначе «•••» — виджет видит любой, кто смотрит на телефон
 };
 
 // «Anzeige»: у каждого вида свои строки (WIDGET_ROWS). У «Notizen» строк нет — карточки тоже нет

@@ -1,7 +1,9 @@
 import { blockInfo } from "../../shared/utils/startBlocks";
 import { previewSize } from "../../shared/utils/widgetSnapshot";
 import { cn } from "../../shared/utils/cn";
+import { isNotenKind } from "../../shared/utils/widgetConfig";
 import StartBlock from "../start/StartBlock";
+import NotenWidgetCard from "./NotenWidgetCard";
 
 // Превью в «Widget einstellen»: кусочек «обоев» и на нём тот же блок, что на Start (виджет рисуется так же).
 // Колонка сетки — minmax(0,1fr) (grid-cols-1) и min-w-0: длинная строка урока не растягивает карточку за края подложки
@@ -21,7 +23,7 @@ const WidgetPreview = ({ widget }) => {
         data-accent={widget.accent !== "app" ? widget.accent : undefined}
         className={cn(size === "klein" ? "w-1/2 min-w-0" : "w-full min-w-0", widget.look === "dunkel" && "dark")}
       >
-        <StartBlock block={block} editing />
+        {isNotenKind(widget.kind) ? <NotenWidgetCard kind={widget.kind} show={widget.showGrades} /> : <StartBlock block={block} editing />}
       </div>
     </div>
   );

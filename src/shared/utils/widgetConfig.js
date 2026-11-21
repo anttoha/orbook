@@ -33,12 +33,18 @@ export const WIDGET_DEFAULTS = {
   changes: "morgen", // Änderungen: heute | morgen («+ Morgen») | woche
   termineDays: 90, // Termine: 30 | 90 | 0 (все)
   count: "schultage", // Countdown: schultage | tage
+  showGrades: false, // часть 39: Noten / Neue Noten / Fehlzeiten — оценки и числа видны (иначе «•••»)
   // Verhalten
   refresh: 30, // минут: 15 | 30 | 60
   open: "auto", // что открыть по нажатию: auto (по виду) | tag | woche | tests | start
 };
 
-export const WIDGET_KIND_LIST = ["jetzt", "heute", "woche", "tests", "aufgaben", "aenderungen", "termine", "notizen", "countdown"];
+export const WIDGET_KIND_LIST = ["jetzt", "heute", "woche", "tests", "aufgaben", "aenderungen", "termine", "notizen", "countdown", "noten", "neueNoten", "fehlzeiten"];
+
+// Часть 39: виды с оценками из InfoPoint. Данные — с телефона, не класса: им не нужны «Klasse», «Nur meine Kurse»
+// и «Verhalten» (обновлять у сервера нечего, открывают всегда «Noten»)
+export const NOTEN_KINDS = ["noten", "neueNoten", "fehlzeiten"];
+export const isNotenKind = (kind) => NOTEN_KINDS.includes(kind);
 
 // Допустимые значения выборов. Чужое или старое значение → по умолчанию (как planOf)
 export const WIDGET_CHOICES = {
@@ -114,6 +120,9 @@ export const WIDGET_ROWS = {
   termine: ["termineDays"],
   notizen: [],
   countdown: ["count"],
+  noten: ["showGrades"],
+  neueNoten: ["showGrades"],
+  fehlzeiten: ["showGrades"],
 };
 
 // «4 × 2»

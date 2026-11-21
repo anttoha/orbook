@@ -4,7 +4,7 @@ import { Check, X } from "lucide-react";
 import { androidWidget, closeWidget, saveWidget } from "../shared/api/android";
 import { useT } from "../shared/hooks/useT";
 import { useClasses } from "../shared/store/classesStore";
-import { cellsLabel, configToSave, parseWidget, widgetClass } from "../shared/utils/widgetConfig";
+import { cellsLabel, configToSave, isNotenKind, parseWidget, widgetClass } from "../shared/utils/widgetConfig";
 import WidgetBehaviour from "../components/android/WidgetBehaviour";
 import WidgetKindGrid from "../components/android/WidgetKindGrid";
 import WidgetLook from "../components/android/WidgetLook";
@@ -40,6 +40,7 @@ const WidgetSettings = () => {
   if (!draft) return <Navigate to="/mehr" replace />; // в браузере (без моста) этой страницы нет
 
   const change = (patch) => setDraft((old) => ({ ...old, ...patch }));
+  const noten = isNotenKind(draft.kind); // оценки с телефона: ни класса, ни «Verhalten»
   const back = () => (first ? closeWidget() : navigate("/mehr/android"));
   const done = () => {
     saveWidget(id, configToSave(draft));
@@ -64,7 +65,7 @@ const WidgetSettings = () => {
 
       <WidgetKindGrid value={draft.kind} onChange={(kind) => change({ kind })} />
 
-      {classes.length > 1 && (
+      {!noten && classes.length > 1 && (
         <section>
           <h2 className="mb-2.5 text-hint font-extrabold text-faint">{t("Klasse")}</h2>
           <Segmented label={t("Klasse")} options={classes.map((item) => ({ value: item.id, label: classLabel(item) }))} value={draft.classId} onChange={(classId) => change({ classId })} />
@@ -73,7 +74,7 @@ const WidgetSettings = () => {
 
       <WidgetShow draft={draft} change={change} />
       <WidgetLook draft={draft} change={change} />
-      <WidgetBehaviour draft={draft} change={change} />
+      {!noten && <WidgetBehaviour draft={draft} change={change} />}
 
       {/* «Fertig» прилипает к низу экрана */}
       <div className="fixed inset-x-0 bottom-0 z-10 border-t border-hair bg-paper px-gutter pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">

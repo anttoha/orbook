@@ -27,6 +27,9 @@ export const WIDGET_TEXTS = [
   "Plan und Tests", "Vor der Stunde", "{n} Änderungen im Plan",
   // часть 36c: уведомление о новой оценке (канал «Noten»)
   "Noten", "Neue Note in {n}", "Neue Noten in {n}",
+  // часть 39: виджеты Noten, Neue Noten, Fehlzeiten
+  "Neue Noten", "Fehlzeiten", "Schnitt", "Neu:", "neu", "In ORBook bei Noten anmelden", "Noch keine Noten", "Keine Fehlzeiten",
+  "Fehltage", "Fehlstunden", "unentschuldigt", "entschuldigt", "unentsch.", "Std.", "Zuletzt", "Ganzer Tag", "{n}. Halbjahr",
 ];
 
 const NOTES_IN_WIDGET = 5;

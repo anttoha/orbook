@@ -36,6 +36,8 @@ export const appNotenState = () => parse(androidBridge()?.notenState?.() ?? null
 export const appNotenData = () => parse(androidBridge()?.notenData?.() ?? null);
 
 export const appNotenLogout = () => androidBridge()?.notenLogout?.();
+// Часть 39: какие оценки «neu» (ключи gradeKey) — их помечает и виджет. Старое приложение без моста — ничего
+export const appNotenFresh = (keys) => androidBridge()?.notenFresh?.(JSON.stringify(keys));
 
 const APP_TIMEOUT_MS = 70000; // четыре запроса к школе по 15 с + запас
 let nextId = 1;

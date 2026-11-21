@@ -2210,4 +2210,12 @@ export const uk = {
   // Was ist neu 0.25.0
   "Untere Leiste bearbeiten: Die Vorschau oben ist weg – die echte Leiste unten ändert sich sofort, und was du geändert hast, leuchtet kurz auf.": "Налаштування нижньої панелі: попереднього перегляду зверху більше немає – справжня панель унизу змінюється одразу, а те, що ти змінив, коротко підсвічується.",
   "Am PC steht beim „Handy“-Einstellen ein Handy daneben, das zeigt, wie deine Leiste aussieht. Beim Seitenmenü leuchtet der geänderte Punkt direkt im Menü.": "На комп'ютері під час налаштування «Handy» поруч зі списком стоїть телефон із твоєю панеллю. Для бічного меню змінений пункт підсвічується просто в меню.",
+  // Teil 39: Noten-Widgets
+  "Neue Noten": "Нові оцінки",
+  "Noten anzeigen": "Показувати оцінки",
+  "In ORBook bei Noten anmelden": "Увійди в «Оцінки» в ORBook",
+  "{n}. Halbjahr": "Півріччя {n}",
+  "Std.": "ур.",
+  "unentsch.": "без поваж.",
+  "Die Noten-Widgets der Android-App (Noten, Neue Noten, Fehlzeiten) zeigen nur, was die App schon gespeichert hat, und fragen selbst nichts ab. Noten und Fehlzeiten sind dort standardmäßig verdeckt („•••“). Schaltest du bei einem Widget „Noten anzeigen“ ein, sieht sie jeder, der auf deinen Startbildschirm schaut.": "Віджети оцінок у застосунку Android (Оцінки, Нові оцінки, Пропуски) показують лише те, що застосунок уже зберіг, і самі нічого не запитують. Оцінки й пропуски там за замовчуванням приховані («•••»). Якщо для віджета ввімкнути «Показувати оцінки», їх побачить кожен, хто дивиться на твій головний екран.",
 };
