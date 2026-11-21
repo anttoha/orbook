@@ -720,3 +720,10 @@ Android (APK демо 0.23.0 (18)): `notenOriginal` отдаёт {html, css} д�
 **Дальше:** владелец проверяет на демо; потом «на прод» (changelog 38).
 **Прод 21.11:** v0.25.0 (changelog 38, EN/UK), `docs/releases/v0.25.0.md`, тег v0.25.0. Бэкенд и APK не менялись.
 **Дальше:** все части из `docs/specs/README.md` готовы — новые пожелания владельца → новая строка в README.
+
+## Часть 39 · Widgets Noten, Neue Noten, Fehlzeiten (2026-11-21, демо)
+Дизайн `design/neu/39-widget-noten/` (ок 21.11), spec `docs/specs/39-widget-noten/spec.md`.
+Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWidget.kt` (+ `NotenWidgetTest`, тот же, что `utils/notenWidget.js` на сайте). Данные — только из `NotenStore` (с «Angemeldet bleiben»), сервер не спрашивается (`WidgetSync` их пропускает); без данных — «In ORBook bei Noten anmelden». По умолчанию «•••», `showGrades` («Noten anzeigen») в настройке каждого виджета. «neu»: сайт шлёт `fresh` мостом `notenFresh`, фоновая проверка добавляет новые; хранится зашифрованно, «Abmelden» стирает. Перерисовка после загрузки, `notenFresh`, «Abmelden». Нажатие — `/noten` или `/fehlzeiten`.
+Сайт: 12 плиток «Inhalt» (без «Noten», если школа выключила раздел), у трёх видов нет «Klasse» и «Verhalten», превью `NotenWidgetCard`. Datenschutz — абзац про виджеты, EN/UK. Демо-APK 0.25.0 (20).
+Скриншоты: `/root/work/orbook-compare/39-widget-noten/` (`_tools/p39.mjs`). Не проверено: сам виджет на телефоне (эмулятора на сервере нет) — проверит владелец.
+**Дальше:** владелец ставит демо-APK и проверяет; потом «на прод» (changelog 39, прод-APK).
