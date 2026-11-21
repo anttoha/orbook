@@ -34,9 +34,12 @@ const PlanDay = ({ task, today, onToggle }) => {
   return (
     <li className={cn("flex items-center gap-3 border-t border-hair pl-4 pr-1.5", isToday && !task.done && "bg-tint/60")}>
       <span className={cn("w-19 shrink-0 text-caption", isToday ? "font-extrabold text-accent-ink" : "font-bold text-faint")}>{dayLabel(task.due, today)}</span>
-      <DoneText done={task.done} className={cn("min-w-0 flex-1 text-row", isToday ? "font-extrabold" : "font-bold")}>
-        {task.text}
-      </DoneText>
+      {/* обёртка тянется, а сам текст — нет: линия зачёркивания ровно под словами */}
+      <span className="min-w-0 flex-1">
+        <DoneText done={task.done} className={cn("text-row", isToday ? "font-extrabold" : "font-bold")}>
+          {task.text}
+        </DoneText>
+      </span>
       <CheckCircle done={task.done} label={task.text} onToggle={() => onToggle(task)} />
     </li>
   );
