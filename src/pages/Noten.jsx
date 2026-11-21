@@ -8,7 +8,7 @@ import Notenrechner from "../components/noten/Notenrechner";
 import NotenSkeleton from "../components/noten/NotenSkeleton";
 import NotenTiles from "../components/noten/NotenTiles";
 import OfflineBanner from "../components/noten/OfflineBanner";
-import PdfSheet, { PdfButton } from "../components/noten/PdfSheet";
+import PdfDialog, { PdfButton } from "../components/noten/PdfDialog";
 import StandLine from "../components/noten/StandLine";
 import SubjectList from "../components/noten/SubjectList";
 import ZeugnisList from "../components/noten/ZeugnisList";
@@ -22,7 +22,7 @@ import { translate } from "../shared/i18n/translate";
 import { useNotenStore } from "../shared/store/notenStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { absenceStats, defaultHalf, gradesOf, averageOf, noteNumber, overviewOf, zeugnisOf } from "../shared/utils/noten";
-import { hasSheet, sheetForTab } from "../shared/utils/notenSheet";
+import { hasSheet } from "../shared/utils/notenSheet";
 
 const TABS = [
   { value: "1", get label() { return translate("1. Halbjahr"); } },
@@ -99,19 +99,9 @@ const Noten = () => {
   const setTab = (value) => setParams((prev) => (prev.set("hj", value), prev), { replace: true });
   const offline = error?.code === "unreachable";
   const status = offline ? <OfflineBanner data={data} busy={busy} onRetry={refresh} /> : <StandLine data={data} />;
-  // «Als PDF» (часть 37): кнопка — только если есть что печатать; лист — по выбранной вкладке
-  const tabLabel = TABS.find((x) => x.value === tab)?.label;
+  // «Als PDF» (часть 37): кнопка — только если есть что печатать; окно открывается на выбранной вкладке
   const pdfButton = hasSheet(data) ? <PdfButton onClick={() => setPdfOpen(true)} wide={isDesktop} /> : null;
-  const pdfSheet = (
-    <PdfSheet
-      open={pdfOpen}
-      onClose={() => setPdfOpen(false)}
-      eyebrow={`${t("Noten")} · ${tabLabel}`}
-      sheet={sheetForTab(data, tab)}
-      sheetHint={tab === "zeugnis" ? t("Endnoten und Fehlzeiten") : t("Noten und Fehlzeiten")}
-      data={data}
-    />
-  );
+  const pdfSheet = pdfOpen && <PdfDialog open onClose={() => setPdfOpen(false)} data={data} start={tab} />;
   const tabs = <Segmented options={TABS} value={tab} onChange={setTab} label={t("Halbjahr")} size={isDesktop ? "sm" : "md"} className={isDesktop ? "w-75 shrink-0" : undefined} />;
 
   // Телефон, открыт предмет

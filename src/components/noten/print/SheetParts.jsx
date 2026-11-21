@@ -16,7 +16,8 @@ export const PaperGrade = ({ text, value, className }) => (
 export const PaperSubject = ({ code, name }) => (
   <span className="flex min-w-0 items-center gap-3">
     <span className="grid size-8 shrink-0 place-items-center rounded-thumb bg-print-sand text-small font-black">{badgeOf(code)}</span>
-    <span className="truncate text-body font-extrabold">{name}</span>
+    {/* без truncate: при «Herunterladen» лист рисуется картинкой, и многоточие там ставится раньше времени */}
+    <span className="min-w-0 text-body leading-tight font-extrabold break-words">{name}</span>
   </span>
 );
 
@@ -24,7 +25,7 @@ export const PaperSubject = ({ code, name }) => (
 export const PaperTiles = ({ items }) => (
   <div className={cn("grid gap-3", items.length === 4 ? "grid-cols-4" : items.length === 3 ? "grid-cols-3" : "grid-cols-2")}>
     {items.map((item) => (
-      <div key={item.label} className="rounded-box bg-print-sand px-4 py-4">
+      <div key={item.label} className="rounded-box bg-print-sand px-4 py-3">
         <p className="text-small font-extrabold tracking-wide text-qr-ink/45 uppercase">{item.label}</p>
         <p className="mt-2 flex items-baseline gap-2">
           <span className="text-panel">{item.value}</span>
@@ -39,18 +40,18 @@ export const PaperTiles = ({ items }) => (
 export const PaperColumns = ({ children, className }) => <div className={cn("flex items-end pb-3 text-hint font-extrabold text-qr-ink/45", className)}>{children}</div>;
 
 // Рамка листа: шапка ORBook, крупный заголовок, строка «Stand», содержимое, подвал
-export const Paper = ({ className: klass, title, sub, stand, foot, children }) => {
+export const Paper = ({ ref, className: klass, title, sub, stand, foot, children }) => {
   const t = useT();
   return (
-    <article className="print-noten flex min-h-a4h w-a4w flex-col bg-white px-16 pb-2 text-qr-ink">
+    <article ref={ref} className="print-noten flex min-h-a4-noten w-a4w flex-col bg-white px-16 text-qr-ink">
       <PrintHead right={klass} />
-      <h1 className="mt-10 text-lobby">
+      <h1 className="mt-6 text-lobby">
         {title}
         {sub && <span className="block text-qr-eye">{sub}</span>}
       </h1>
       {stand && <p className="mt-3 text-body text-qr-ink/60">{stand}</p>}
-      <div className="mt-7 flex flex-col gap-8">{children}</div>
-      <div className="mt-10 break-inside-avoid">
+      <div className="mt-5 flex flex-col gap-5">{children}</div>
+      <div className="mt-6 break-inside-avoid">
         <PrintFoot lines={[foot, t("Erstellt am {date}", { date: new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }) })].filter(Boolean)} />
       </div>
     </article>

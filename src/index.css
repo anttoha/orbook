@@ -268,6 +268,7 @@
     --spacing-gutter-auth: 28px; /* край на екрані входу */
     --spacing-a4w: 210mm; /* лист A4 для печати (часть 25): ширина … */
     --spacing-a4h: 296mm; /* … и высота (на 1 мм меньше — иначе браузер добавит пустую вторую страницу) */
+    --spacing-a4-noten: 269mm; /* лист «Noten» (часть 37): A4 минус поля 14 мм сверху и снизу (@page noten) — иначе подвал уедет на 2-ю страницу */
 
     /* ── Ширини на ПК: w-sidebar, w-sheet … ── */
     --container-sidebar: 232px;
@@ -280,6 +281,7 @@
     --container-sheet: 440px; /* панель справа */
     --container-dialog: 520px; /* вікно посередині */
     --container-dialog-wide: 760px; /* широке вікно: «Tastenkürzel» у дві колонки */
+    --container-dialog-pdf: 880px; /* окно «Als PDF»: варианты слева, превью листа справа (часть 37) */
     --container-dialog-qr: 620px; /* вікно «Einladen»: QR ліворуч, посилання й кнопки праворуч (частина 16) */
     --container-palette: 640px; /* пошук ⌘K (макет 51) */
     --container-settings-nav: 230px; /* меню розділів «Einstellungen» на ПК */

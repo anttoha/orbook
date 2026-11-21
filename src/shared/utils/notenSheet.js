@@ -46,10 +46,14 @@ function yearOf(data) {
 
 const absencesOf = (data, half) => ({ stats: absenceStats(data?.absences, half), entries: absenceEntries(data?.absences, half) });
 
-// Лист полугодия: предметы с оценками (новые первыми), их Schnitt и общий, пропуски
+// Оценки предмета: полугодие или (half null) весь год, новые первыми
+const gradesIn = (subject, half) =>
+  half == null ? [...(subject?.grades ?? [])].sort((a, b) => (b.date ?? "").localeCompare(a.date ?? "")) : gradesOf(subject, half);
+
+// Лист полугодия (half null — весь учебный год): предметы с оценками (новые первыми), их Schnitt и общий, пропуски
 export function halbjahrSheet(data, half) {
   const subjects = (data?.subjects ?? [])
-    .map((s) => ({ code: s.code, name: s.name, grades: gradesOf(s, half) }))
+    .map((s) => ({ code: s.code, name: s.name, grades: gradesIn(s, half) }))
     .filter((s) => s.grades.length > 0)
     .map((s) => ({ ...s, average: averageOf(s.grades) }));
   const averages = subjects.map((s) => s.average).filter((v) => v != null);
@@ -74,8 +78,37 @@ export function zeugnisSheet(data) {
   };
 }
 
-// Лист «Fehlzeiten» полугодия
+// Лист «Fehlzeiten» полугодия (half null — весь год)
 export const fehlzeitenSheet = (data, half) => ({ kind: "fehlzeiten", half, year: yearOf(data), absences: absencesOf(data, half) });
 
-// Лист для вкладки «Noten»: "1" | "2" | "zeugnis"
-export const sheetForTab = (data, tab) => (tab === "zeugnis" ? zeugnisSheet(data) : halbjahrSheet(data, Number(tab)));
+// ── Варианты окна «Als PDF» (макеты 37 handy-06, pc-02) ──
+// ORBook: "1" | "2" | "jahr" | "zeugnis" | "fehlzeiten"; оригинал InfoPoint: "summary" | "detail"
+export const ORBOOK_VARIANTS = ["1", "2", "jahr", "zeugnis", "fehlzeiten"];
+export const ORIGINAL_VARIANTS = ["summary", "detail"];
+export const isOriginal = (variant) => ORIGINAL_VARIANTS.includes(variant);
+
+export function sheetFor(data, variant) {
+  if (variant === "zeugnis") return zeugnisSheet(data);
+  if (variant === "fehlzeiten") return fehlzeitenSheet(data, null);
+  return halbjahrSheet(data, variant === "jahr" ? null : Number(variant));
+}
+
+// Имя файла: «Noten-1-Halbjahr-2026-27.pdf», «InfoPoint-Uebersicht-2026-11-16.pdf»
+export function pdfName(data, variant) {
+  const year = (yearOf(data) ?? "").replace("/", "-");
+  const day = data?.updatedAt ?? data?.fetchedAt?.slice(0, 10) ?? "";
+  const names = {
+    1: `Noten-1-Halbjahr-${year}`,
+    2: `Noten-2-Halbjahr-${year}`,
+    jahr: `Noten-Schuljahr-${year}`,
+    zeugnis: `Zeugnis-${year}`,
+    fehlzeiten: `Fehlzeiten-${year}`,
+    summary: `InfoPoint-Uebersicht-${day}`,
+    detail: `InfoPoint-Alle-Noten-${day}`,
+  };
+  return `${(names[variant] ?? "Noten").replace(/-+$/, "")}.pdf`;
+}
+
+// Сколько страниц A4 займёт лист высотой heightPx (CSS-пиксели при ширине 210 мм), поля 14 мм сверху и снизу
+export const A4_CONTENT_PX = Math.round((794 * 269) / 210); // 1017
+export const pageCount = (heightPx) => Math.max(1, Math.ceil((heightPx - 4) / A4_CONTENT_PX));

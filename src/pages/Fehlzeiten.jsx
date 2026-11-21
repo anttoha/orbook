@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Navigate, useSearchParams } from "react-router-dom";
 import AbsenceList, { AbsenceTile } from "../components/noten/AbsenceList";
 import NotenHeader from "../components/noten/NotenHeader";
-import PdfSheet, { PdfButton } from "../components/noten/PdfSheet";
+import PdfDialog, { PdfButton } from "../components/noten/PdfDialog";
 import StandLine from "../components/noten/StandLine";
 import Segmented from "../components/ui/Segmented";
 import { useT } from "../shared/hooks/useT";
@@ -10,7 +10,6 @@ import { translate } from "../shared/i18n/translate";
 import { useNotenStore } from "../shared/store/notenStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { absenceEntries, absenceStats, defaultHalf } from "../shared/utils/noten";
-import { fehlzeitenSheet } from "../shared/utils/notenSheet";
 
 const HALVES = [
   { value: "1", get label() { return translate("1. Halbjahr"); } },
@@ -47,14 +46,7 @@ const Fehlzeiten = () => {
       <div className="mt-2">
         <AbsenceList entries={absenceEntries(data.absences, half)} />
       </div>
-      <PdfSheet
-        open={pdfOpen}
-        onClose={() => setPdfOpen(false)}
-        eyebrow={`${t("Fehlzeiten")} · ${t(`${half}. Halbjahr`)}`}
-        sheet={fehlzeitenSheet(data, half)}
-        sheetHint={t("Nur Fehlzeiten")}
-        data={data}
-      />
+      {pdfOpen && <PdfDialog open onClose={() => setPdfOpen(false)} data={data} start="fehlzeiten" />}
     </section>
   );
 };

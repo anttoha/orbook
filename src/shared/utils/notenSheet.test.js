@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fehlzeitenSheet, halbjahrSheet, hasSheet, paperStand, schoolYear, sheetForTab, weightTag, zeugnisSheet } from "./notenSheet";
+import { fehlzeitenSheet, halbjahrSheet, hasSheet, isOriginal, pageCount, paperStand, pdfName, schoolYear, sheetFor, weightTag, zeugnisSheet } from "./notenSheet";
 
 const DATA = {
   updatedAt: "2026-09-16",
@@ -58,7 +58,7 @@ describe("notenSheet", () => {
   });
 
   it("Zeugnis: nur Fächer mit Endnote, beide Halbjahre", () => {
-    const sheet = sheetForTab(DATA, "zeugnis");
+    const sheet = sheetFor(DATA, "zeugnis");
     expect(sheet.kind).toBe("zeugnis");
     expect(sheet.subjects).toHaveLength(1);
     expect(sheet.subjects[0].finals.map((f) => f?.grade ?? null)).toEqual(["2", null]);
@@ -72,5 +72,22 @@ describe("notenSheet", () => {
     expect(hasSheet(null)).toBe(false);
     expect(hasSheet({ subjects: [{ grades: [], finals: null }], absences: null })).toBe(false);
     expect(halbjahrSheet(null, 1)).toMatchObject({ subjects: [], average: null, count: 0, year: null });
+  });
+
+  it("Varianten, Schuljahr, Dateiname und Seiten", () => {
+    const year = sheetFor(DATA, "jahr");
+    expect(year.half).toBeNull();
+    expect(year.subjects[0].grades.map((g) => g.grade)).toEqual(["1", "3+", "2"]);
+    expect(sheetFor(DATA, "fehlzeiten").absences.entries).toHaveLength(2);
+    expect(sheetFor(DATA, "2").subjects.map((s) => s.code)).toEqual(["ma"]);
+    expect(isOriginal("summary")).toBe(true);
+    expect(isOriginal("1")).toBe(false);
+    expect(pdfName(DATA, "1")).toBe("Noten-1-Halbjahr-2026-27.pdf");
+    expect(pdfName(DATA, "detail")).toBe("InfoPoint-Alle-Noten-2026-09-16.pdf");
+    expect(pdfName({}, "zeugnis")).toBe("Zeugnis.pdf");
+    expect(pageCount(900)).toBe(1);
+    expect(pageCount(1017)).toBe(1);
+    expect(pageCount(1500)).toBe(2);
+    expect(pageCount(0)).toBe(1);
   });
 });

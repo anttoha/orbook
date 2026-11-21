@@ -22,16 +22,20 @@ object InfoPoint {
     private val agent = "ORBook-Android/${BuildConfig.VERSION_NAME}"
 
     /** HTML страницы с оценками. Исключения: Denied, Unreachable. */
-    fun fetchPage(baseUrl: String, username: String, password: String): String = session(baseUrl, username, password, "getdata.php")
+    fun fetchPage(baseUrl: String, username: String, password: String): String = session(baseUrl, username, password, listOf("getdata.php"))[0]
 
-    /** Часть 37: страница для печати «как есть» — mode "summary" («Zusammenfassung») или "detail". */
-    fun fetchOriginal(baseUrl: String, username: String, password: String, mode: String): String {
+    /**
+     * Часть 37: страница для печати «как есть» (mode "summary" | "detail") и стиль школы `css/site.css`
+     * (в нём `@media print`). Стиль не пришёл — пустая строка.
+     */
+    fun fetchOriginal(baseUrl: String, username: String, password: String, mode: String): Pair<String, String> {
         require(mode == "summary" || mode == "detail")
-        return session(baseUrl, username, password, "getdata.php?mode=$mode")
+        val pages = session(baseUrl, username, password, listOf("getdata.php?mode=$mode", "css/site.css"), optional = setOf(1))
+        return pages[0] to pages[1]
     }
 
-    // Войти, забрать одну страницу, выйти
-    private fun session(baseUrl: String, username: String, password: String, path: String): String {
+    // Войти, забрать страницы по порядку, выйти. optional — номера страниц, без которых можно (ошибка → "")
+    private fun session(baseUrl: String, username: String, password: String, paths: List<String>, optional: Set<Int> = emptySet()): List<String> {
         val base = baseUrl.trimEnd('/')
         if (!base.startsWith("https://")) throw Unreachable("nur https")
         val cookies = linkedMapOf<String, String>()
@@ -39,7 +43,13 @@ object InfoPoint {
             get("$base/default.php", cookies)
             login(base, username, password, cookies)
             try {
-                return get("$base/$path", cookies)
+                return paths.mapIndexed { i, path ->
+                    try {
+                        get("$base/$path", cookies)
+                    } catch (e: Exception) {
+                        if (i in optional && (e is IOException || e is Unreachable)) "" else throw e
+                    }
+                }
             } finally {
                 runCatching { request("$base/logout.php", cookies).disconnect() }
             }

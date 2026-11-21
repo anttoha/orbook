@@ -39,3 +39,6 @@
 - **Original** — страница InfoPoint как её видит ученик в браузере школы.
 - **sandbox-iframe** — рамка, в которой чужая страница не может запустить код.
 - **PrintManager** — системная печать Android, умеет «Als PDF speichern».
+
+## v2 (21.11, дизайн ок): окно с превью
+Макеты handy-06…08, pc-02, pc-03. Варианты не зависят от вкладки: ORBook — 1./2. Halbjahr, Schuljahr (оба полугодия), Zeugnis, Fehlzeiten (весь год); оригинал — Übersicht, Alle Noten (грузится при выборе, видно в превью). «Drucken» — окно печати; «Herunterladen» — файл PDF, собранный на устройстве (html2canvas-pro + jsPDF, ленивые; текст в файле — картинка). Android: `saveFile` в «Downloads» (Android 10+), `printHtml`; оригинал в приложении прод чистит сайт (`utils/cleanOriginal.js`, те же правила, что у сервера).

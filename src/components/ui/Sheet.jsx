@@ -20,6 +20,7 @@ import { useT } from "../../shared/hooks/useT";
 //     "dialog" — вікно по центру (Teilen, календар)
 //     "wide"   — широке вікно по центру (Tastenkürzel)
 //     "qr"     — вікно 620px: QR і кнопки поруч («Einladen», частина 16)
+//     "pdf"    — вікно 880px: варіанти й превʼю аркуша («Als PDF», частина 37)
 // Обидві бібліотеки самі дають: затемнення, Esc, клік по фону, фокус усередині.
 //
 // Пропси:
@@ -39,7 +40,7 @@ const Sheet = ({ open, onClose, desktop = "panel", panelLabel, eyebrow, title, t
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // який варіант показувати
   const isPanel = isDesktop && desktop === "panel"; // панель праворуч?
   const glass = useGlass(); // «Glas» на телефоні — шторка з бібліотеки liquid-glass
-  const dialogWidth = { wide: "w-dialog-wide", qr: "w-dialog-qr" }[desktop] ?? "w-dialog"; // ширина вікна по центру
+  const dialogWidth = { wide: "w-dialog-wide", qr: "w-dialog-qr", pdf: "w-dialog-pdf" }[desktop] ?? "w-dialog"; // ширина вікна по центру
   // Часть 29d: ниже есть ещё — кнопка «вниз» внизу шторки. scroller — блок, который прокручивается
   const [scroller, setScroller] = useState(null);
   const { more, scrollDown } = useMoreBelow(scroller, { enabled: open });

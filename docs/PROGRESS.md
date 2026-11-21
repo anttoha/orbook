@@ -705,7 +705,8 @@ Android `c126859`: `notify/` — `NotifySettings`, `PlanNotes` (разница �
 Не проверено: настоящий InfoPoint (оригинал и `site.css` — по HAR) и системная печать на телефоне — проверит владелец.
 **Дальше:** владелец проверяет на демо; потом «на прод» (changelog, прод-APK) или 38.
 
-### 37 v2 — окно «Als PDF» с превью (2026-11-21, ждёт «ок дизайн»)
-Владелец после демо: меню на ПК уходит вниз → исправлено (`SideNav.jsx`: меню и «Bald» прокручиваются, `dbafed4`). Окно «Als PDF» непонятно → новые макеты `design/neu/37-noten-pdf` (handy-06…08, pc-02, pc-03): варианты (1./2. Halbjahr, Schuljahr, Zeugnis, Fehlzeiten, Original Übersicht/Alle Noten), превью листа, «Drucken» и «Herunterladen» (файл PDF).
-**Дальше:** «ок дизайн» → код в этом же чате (Opus, effort high).
-
+### 37 v2 — окно «Als PDF» с превью — готово на демо (2026-11-21)
+Владелец: меню на ПК уходит вниз → `SideNav.jsx` прокручивает меню и «Bald` (`dbafed4`). Окно «Als PDF» непонятно → новое окно (дизайн ок 21.11): `components/noten/PdfDialog.jsx` + `PdfPreview.jsx` — варианты (1./2. Halbjahr, Schuljahr, Zeugnis, Fehlzeiten; Original Übersicht/Alle Noten), превью настоящего листа и число страниц, «Drucken» и «Herunterladen».
+Файл PDF — на устройстве: `html2canvas-pro` + `jspdf` (грузятся только по кнопке), картинкой по листам A4 (`usePdf.jsx` `makePdf`), у оригинала — печатные правила школы. Лист «Noten» — высота области печати 269 мм (`--spacing-a4-noten`), иначе подвал уезжал на 2-ю страницу.
+Android (APK демо 0.23.0 (18)): `notenOriginal` отдаёт {html, css} для превью (прод — прямо из InfoPoint, чистит `utils/cleanOriginal.js` + тест), `printHtml`, `saveFile` → «Downloads» (`Downloads.kt`, Android 10+). Скриншоты и скачанные PDF: `/root/work/orbook-compare/37-noten-pdf/shots/` (`_tools/p37v2.mjs`).
+**Дальше:** владелец проверяет на демо; потом «на прод» (changelog 37, прод-APK) или 38.

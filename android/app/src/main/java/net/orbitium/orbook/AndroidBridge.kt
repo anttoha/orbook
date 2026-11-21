@@ -199,8 +199,8 @@ class AndroidBridge(private val web: WebView, private val host: WidgetHost? = nu
     }
 
     /**
-     * Часть 37: {"id", "url", "username", "password", "mode"} → забрать оригинал InfoPoint и открыть печать.
-     * Событие {type: "notenOriginal", id, ok, error: {code, retryAfter}} — когда окно печати открыто (или ошибка).
+     * Часть 37: {"id", "url", "username", "password", "mode"} → забрать оригинал InfoPoint для превью.
+     * Событие {type: "notenOriginal", id, ok, data: {html, css} | error: {code, retryAfter}}.
      */
     @JavascriptInterface
     fun notenOriginal(json: String) {
@@ -210,8 +210,28 @@ class AndroidBridge(private val web: WebView, private val host: WidgetHost? = nu
         Thread {
             val page = NotenOriginal.load(context, text("url"), text("username"), text("password"), text("mode") ?: "")
             val detail = JSONObject().put("type", "notenOriginal").put("id", request.opt("id")).put("ok", page.html != null)
-            if (page.html != null) web.post { Printer.html(web.context, page.html, page.base, "InfoPoint Noten") }
+            if (page.html != null) detail.put("data", JSONObject().put("html", page.html).put("css", page.css ?: JSONObject.NULL))
             else detail.put("error", JSONObject().put("code", page.code).put("retryAfter", page.retryAfter ?: JSONObject.NULL))
+            send(detail)
+        }.start()
+    }
+
+    /** Часть 37: напечатать чужую страницу (оригинал, уже очищенный сайтом) — без JavaScript и без сети. */
+    @JavascriptInterface
+    fun printHtml(html: String, title: String?) {
+        if (!allowed()) return
+        web.post { Printer.html(web.context, html, null, title?.ifBlank { null } ?: "InfoPoint") }
+    }
+
+    /** Часть 37: {"id", "name", "mime", "data" (base64)} → файл в «Downloads». Событие {type: "saved", id, ok}. */
+    @JavascriptInterface
+    fun saveFile(json: String) {
+        if (!allowed()) return
+        val request = try { JSONObject(json) } catch (e: JSONException) { return }
+        Thread {
+            val ok = Downloads.save(context, request.optString("name", "ORBook.pdf"), request.optString("mime", "application/pdf"), request.optString("data"))
+            val detail = JSONObject().put("type", "saved").put("id", request.opt("id")).put("ok", ok)
+            if (!ok) detail.put("error", JSONObject().put("code", "save_failed"))
             send(detail)
         }.start()
     }

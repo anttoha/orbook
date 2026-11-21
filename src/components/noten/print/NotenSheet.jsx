@@ -11,21 +11,22 @@ import { Paper, PaperColumns, PaperGrade, PaperSubject, PaperTiles } from "./She
 //   fehlzeiten — a4-03: только пропуски
 // klass — «Klasse 9b · Petrischule»; stand — «Stand 16.09.2026 · aus Home.InfoPoint»
 // ─────────────────────────────────────────────────────────────
-const NotenSheet = ({ sheet, klass, stand }) => {
+const NotenSheet = ({ sheet, klass, stand, ref }) => {
   const t = useT();
   const year = sheet.year ? ` ${sheet.year}` : "";
   if (sheet.kind === "zeugnis") {
     return (
-      <Paper className={klass} title={t("Zeugnis")} sub={sheet.year ? t("Schuljahr {year}", { year: sheet.year }) : null} stand={stand} foot={t("Endnoten setzt die Schule.")}>
+      <Paper ref={ref} className={klass} title={t("Zeugnis")} sub={sheet.year ? t("Schuljahr {year}", { year: sheet.year }) : null} stand={stand} foot={t("Endnoten setzt die Schule.")}>
         <AbsenceTiles stats={sheet.absences.stats} short />
         <ZeugnisTable subjects={sheet.subjects} />
       </Paper>
     );
   }
-  const halfTitle = `${t(`${sheet.half}. Halbjahr`)}${year}`;
+  // half null — весь учебный год («Schuljahr»)
+  const halfTitle = sheet.half == null ? (sheet.year ? t("Schuljahr {year}", { year: sheet.year }) : t("Schuljahr")) : `${t(`${sheet.half}. Halbjahr`)}${year}`;
   if (sheet.kind === "fehlzeiten") {
     return (
-      <Paper className={klass} title={t("Fehlzeiten")} sub={halfTitle} stand={stand}>
+      <Paper ref={ref} className={klass} title={t("Fehlzeiten")} sub={halfTitle} stand={stand}>
         <AbsenceTiles stats={sheet.absences.stats} />
         <AbsenceTable entries={sheet.absences.entries} />
       </Paper>
@@ -33,7 +34,7 @@ const NotenSheet = ({ sheet, klass, stand }) => {
   }
   const { stats } = sheet.absences;
   return (
-    <Paper className={klass} title={t("Noten")} sub={halfTitle} stand={stand} foot={t("Schnitt: von ORBook aus den Einzelnoten berechnet, keine Zeugnisnote.")}>
+    <Paper ref={ref} className={klass} title={t("Noten")} sub={halfTitle} stand={stand} foot={t("Schnitt: von ORBook aus den Einzelnoten berechnet, keine Zeugnisnote.")}>
       <PaperTiles
         items={[
           { label: t("Schnitt"), value: noteNumber(sheet.average) },
@@ -85,7 +86,7 @@ const GradesTable = ({ subjects }) => {
         <span>{t("Schnitt")}</span>
       </PaperColumns>
       {subjects.map((s) => (
-        <div key={s.code} className="flex break-inside-avoid items-center gap-3 border-t border-qr-ink/10 py-2">
+        <div key={s.code} className="flex break-inside-avoid items-center gap-3 border-t border-qr-ink/10 py-1">
           <span className="w-47 shrink-0">
             <PaperSubject code={s.code} name={s.name} />
           </span>
@@ -145,7 +146,7 @@ const Status = ({ excused, pill }) => {
 const ShortAbsences = ({ entries }) => (
   <div>
     {entries.map((e, i) => (
-      <div key={e.key} className={cn("flex items-baseline gap-3 py-1.5", i && "border-t border-qr-ink/10")}>
+      <div key={e.key} className={cn("flex items-baseline gap-3 py-1", i && "border-t border-qr-ink/10")}>
         <span className="w-28 shrink-0 text-body-sm font-extrabold">{dayDate(e.date) || "–"}</span>
         <span className="min-w-0 flex-1 text-body-sm text-qr-ink/60">{[e.title, e.sub].filter(Boolean).join(" · ")}</span>
         <Status excused={e.excused} />

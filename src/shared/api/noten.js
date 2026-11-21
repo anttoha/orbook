@@ -65,9 +65,13 @@ function askApp(method, type, payload) {
 export const fetchNotenApp = ({ url, username, password, remember }) =>
   askApp("notenFetch", "noten", { url: url ?? null, username, password: password || null, remember });
 
-// Часть 37: умеет ли приложение «Original» (забрать страницу InfoPoint и сразу напечатать)
-export const hasAppOriginal = () => typeof androidBridge()?.notenOriginal === "function";
+// Часть 37 v2: умеет ли приложение «Original» и сохранение файлов (APK с превью «Als PDF»)
+export const hasAppOriginal = () => ["notenOriginal", "printHtml", "saveFile"].every((name) => typeof androidBridge()?.[name] === "function");
 
-// Приложение забирает оригинал (из InfoPoint, в демо — с сервера) и открывает системную печать
-export const printOriginalApp = ({ url, username, password, mode }) =>
+// Приложение забирает оригинал: { html, css } — прямо из InfoPoint (css — стиль школы, страницу чистим сами),
+// в демо — с сервера (уже чистая, css null)
+export const fetchOriginalApp = ({ url, username, password, mode }) =>
   askApp("notenOriginal", "notenOriginal", { url: url ?? null, username, password: password || null, mode });
+
+// Сохранить файл в «Downloads» телефона: data — base64. Ответ — когда файл записан
+export const saveFileApp = ({ name, mime, data }) => askApp("saveFile", "saved", { name, mime, data });

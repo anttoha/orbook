@@ -10,14 +10,14 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 /**
- * Часть 37: «Als PDF» → «Original» — страница InfoPoint для печати, нигде не сохраняется.
- * Прод: прямо с телефона (как оценки, часть 36c); печатается в WebView без JavaScript с адресом
- * InfoPoint как базой — стиль печати школы подтягивается сам. Демо (адреса нет): `POST /api/noten/original`,
- * сервер отдаёт уже очищенную страницу со стилем внутри.
+ * Часть 37: «Als PDF» → «Original» — страница InfoPoint для превью и печати, нигде не сохраняется.
+ * Прод: прямо с телефона (как оценки, часть 36c) — страница и стиль школы как есть, чистит сайт
+ * (src/shared/utils/cleanOriginal.js). Демо (адреса нет): `POST /api/noten/original` — сервер отдаёт
+ * уже очищенную страницу со стилем внутри (css = null).
  */
 object NotenOriginal {
-    /** html + base (адрес для относительных ссылок; null — страница с сервера) или code ошибки. */
-    data class Page(val html: String? = null, val base: String? = null, val code: String? = null, val retryAfter: Int? = null)
+    /** html + css (стиль школы; null — страница с сервера, уже чистая) или code ошибки. */
+    data class Page(val html: String? = null, val css: String? = null, val code: String? = null, val retryAfter: Int? = null)
 
     private const val TRIES = 6 // как на сервере: 6 за 10 минут
     private const val WINDOW_MS = 10 * 60_000L
@@ -34,11 +34,11 @@ object NotenOriginal {
             return if (BuildConfig.SITE == "orbook-demo") viaServer(user, pass, mode) else Page(code = "feature_disabled")
         }
         return try {
-            val html = InfoPoint.fetchOriginal(url, user, pass, mode)
+            val (html, css) = InfoPoint.fetchOriginal(url, user, pass, mode)
             when {
                 Regex("""type\s*=\s*["']?password""", RegexOption.IGNORE_CASE).containsMatchIn(html) -> Page(code = "infopoint_denied")
                 !html.contains("Zensuren") && !html.contains("Fehlzeiten") -> Page(code = "infopoint_changed")
-                else -> Page(html = html, base = url.trimEnd('/') + "/")
+                else -> Page(html = html, css = css)
             }
         } catch (e: InfoPoint.Denied) {
             Page(code = "infopoint_denied")
