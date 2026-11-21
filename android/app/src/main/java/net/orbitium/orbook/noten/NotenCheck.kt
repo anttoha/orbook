@@ -112,6 +112,8 @@ object NotenCheck {
             c.requestMethod = "POST"
             c.doOutput = true
             c.setRequestProperty("Content-Type", "application/json")
+            // сервер пускает POST только со своего сайта (проверка Origin, docs/API.md «CSRF») — без него 403 origin_rejected
+            c.setRequestProperty("Origin", Site.url(""))
             CookieManager.getInstance().getCookie(Site.url("/"))?.let { c.setRequestProperty("Cookie", it) }
             c.outputStream.use { it.write(JSONObject().put("username", username).put("password", password).toString().toByteArray()) }
             val status = c.responseCode
