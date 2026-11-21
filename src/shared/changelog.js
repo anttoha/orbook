@@ -6,6 +6,14 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.27.0",
+    date: "2026-11-21",
+    neu: [
+      "Neu: Kalender-Abo. Unter Mehr → „Kalender-Abo“ bekommst du einen Link, mit dem deine Stunden, Tests und Termine in Google, Apple oder Outlook Kalender landen – und sich von selbst aktualisieren.",
+      "Ausfall und Vertretung stehen direkt im Eintrag („Englisch fällt aus“, „Mathe → Raum B12“). Am PC scannst du einfach den QR mit dem Handy.",
+    ],
+  },
+  {
     version: "0.26.1",
     date: "2026-11-21",
     behoben: [
