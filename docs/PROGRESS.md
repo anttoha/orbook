@@ -733,3 +733,10 @@ Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWi
 
 **21.11 — новые части 40–44** (владелец выбрал идеи 5, 1, 2, 3, 4): 40 Kalender-Abo (webcal, бэкенд), 41 Lernplan zum Test, 42 Notenziel + Verlauf, 43 Vokabeln/Karteikarten, 44 Lerntimer. Порядок — как в `docs/specs/README.md`; у каждой сначала `/orb-design` и «ок дизайн».
 **Дальше:** новый чат, Opus · effort high → `/orb 40`.
+
+## Часть 40 · Kalender-Abo (2026-11-21, демо)
+Дизайн `design/neu/40-kalender-abo/` (ок 21.11; приватность: ссылка умирает при выходе устройства из класса, Datenschutz про Google/Apple/Microsoft — «да»), spec `docs/specs/40-kalender-abo/spec.md`.
+Бэкенд (`70ec192`, схема 0017, выложен `update.sh`): таблица `calendar_feeds`, `GET/PUT/DELETE /api/calendar-feed`, `POST …/renew`, `GET /api/public/calendar/{token}.ics` (Stunden −1…+1 неделя с Ausfall/Vertretung, Tests на весь день, Termine; фильтр курсов как у виджета). Проверено на демо curl: лента 200 (80 событий), renew → старая 404, delete → 404.
+Фронт: `/mehr/kalender` (`pages/CalendarFeed.jsx`, `components/calendar-feed/*`), строка в Mehr и пункт меню ПК («an»/«Aus» — `calendarFeedStore`), «Zum Kalender» — шторка (телефон) / меню (ПК): Google, Apple (webcal), Outlook, копировать; QR на ПК; смена «Meine Kurse» → `useCalendarFeedCourses` сам шлёт PUT. Datenschutz — раздел «Kalender-Abo» + строка в «Fristen», EN/UK. APK не менялся (внешние ссылки приложение и так отдаёт системе).
+Скриншоты: `/root/work/orbook-compare/40-kalender-abo/shots/` (`_tools/p40.mjs`).
+**Дальше:** владелец проверяет на демо; потом «на прод» (changelog 40) или 41.
