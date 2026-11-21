@@ -14,6 +14,8 @@ const WidgetPreview = ({ widget }) => {
   const wanted = previewSize(widget);
   const size = info?.sizes.includes(wanted) ? wanted : info?.sizes[0];
   const block = { id: "vorschau", kind: widget.kind, size, opts: info?.opts ?? {} };
+  // виды с оценками (часть 39) — не блоки Start: ширина по клеткам самого виджета
+  const narrow = isNotenKind(widget.kind) ? widget.cols <= 2 : size === "klein";
   return (
     <div data-glass-bg="aurora" className="glass-backdrop widget-wall grid min-h-48 grid-cols-1 place-items-center rounded-card p-4" aria-hidden="true">
       {/* inert: превью только смотреть — ссылки и кнопки блока не нажимаются */}
@@ -21,7 +23,7 @@ const WidgetPreview = ({ widget }) => {
         inert
         data-design={widget.design !== "app" ? widget.design : undefined}
         data-accent={widget.accent !== "app" ? widget.accent : undefined}
-        className={cn(size === "klein" ? "w-1/2 min-w-0" : "w-full min-w-0", widget.look === "dunkel" && "dark")}
+        className={cn(narrow ? "w-1/2 min-w-0" : "w-full min-w-0", widget.look === "dunkel" && "dark")}
       >
         {isNotenKind(widget.kind) ? <NotenWidgetCard kind={widget.kind} show={widget.showGrades} /> : <StartBlock block={block} editing />}
       </div>

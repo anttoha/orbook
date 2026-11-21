@@ -18,8 +18,9 @@ const ROWS = 4;
 // Оценка или «•••» в той же плашке (скрытая — нейтрального цвета)
 const Grade = ({ text, value, show }) => <GradePill text={show ? text : HIDDEN} value={show ? value : null} className="h-6.5 min-w-11 text-caption font-black" />;
 
-const Name = ({ name, fresh }) => (
-  <span className="flex min-w-0 flex-1 items-center gap-1.5">
+// grow — имя занимает свободное место (Noten); иначе не сжимается, а сжимается подпись рядом (Neue Noten)
+const Name = ({ name, fresh, grow = true }) => (
+  <span className={cn("flex items-center gap-1.5", grow ? "min-w-0 flex-1" : "shrink-0")}>
     <span className="truncate text-body-sm font-extrabold text-ink">{name}</span>
     {fresh && <NewBadge />}
   </span>
@@ -49,8 +50,8 @@ const NeueNoten = ({ w, show }) => (
   <ul>
     {w.latest.slice(0, ROWS).map((x, i) => (
       <li key={`${x.code}-${x.date}-${i}`} className="flex h-8 items-center gap-2 border-b border-hair last:border-0">
-        <Name name={x.subject} fresh={x.fresh} />
-        <span className="truncate text-caption text-faint">{[x.what, dayDate(x.date)].filter(Boolean).join(" · ")}</span>
+        <Name name={x.subject} fresh={x.fresh} grow={false} />
+        <span className="min-w-0 flex-1 truncate text-right text-caption text-faint">{[x.what, dayDate(x.date)].filter(Boolean).join(" · ")}</span>
         <Grade text={x.grade} value={x.value} show={show} />
       </li>
     ))}
