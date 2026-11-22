@@ -6,6 +6,15 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.31.0",
+    date: "2026-11-22",
+    neu: [
+      "Neu: Lerntimer. Fach wählen, „Start“ drücken – 25 Minuten lernen, 5 Minuten Pause, nach vier Runden eine lange. Oder 50 / 10, oder ganz eigene Zeiten.",
+      "Der Timer läuft weiter, auch wenn du die Seite schließt. Ist die Runde um, klingelt es – in der Android-App kommt eine Meldung, selbst wenn die App zu ist.",
+      "Wie viel du gelernt hast, siehst du jetzt in der Statistik – pro Tag und pro Fach. Und auf Start gibt’s einen Block dafür.",
+    ],
+  },
+  {
     version: "0.30.0",
     date: "2026-11-22",
     neu: [
