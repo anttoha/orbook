@@ -774,3 +774,5 @@ Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWi
 Экраны: `pages/Karteikarten.jsx` (список/стопка, ПК — две колонки), `KartenLernen.jsx` (3D-переворот `flip-motion`, свайп, улёт `animate-fly-*`, итог со счётом и растущими коробками), `KartenEdit.jsx` (форма, «Liste» с проверкой строк), `KartenImport.jsx`; `components/karten/*`. Встроено: раздел в «Mehr» (navLayout `karteikarten`, в панель — через «Untere Leiste»), блок Start «Karteikarten», строки в «Aufgaben», карточка в шторке теста (`ExamKarten`). Анимации — в `index.css` (исключение из правила 13.11, «Weniger»/«Aus» работают). Datenschutz — раздел «Karteikarten», EN/UK.
 Скриншоты: `/root/work/orbook-compare/43-karteikarten/shots/` (`_tools/p43.mjs`).
 **Дальше:** владелец проверяет на демо; потом «на прод» (changelog 43) или 44 (Opus · effort medium).
+**Прод 22.11:** v0.30.0 (changelog 43, EN/UK), `docs/releases/v0.30.0.md`, тег v0.30.0, прод выложен таймером (`orbook: ausgeliefert 80a04811`). Бэкенд и APK не менялись.
+**Дальше:** новый чат, Opus · effort medium → `/orb-auto` (часть 44 Lerntimer, сначала макеты).
