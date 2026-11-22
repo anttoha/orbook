@@ -12,6 +12,9 @@ import { useNotenStore } from "./notenStore";
 import { useNotenZielStore } from "./notenZielStore";
 import { useKartenStore } from "./kartenStore";
 import { kartenKeys, syncDecks } from "../utils/kartenSync";
+import { timerBlockOf, useLerntimerStore } from "./lerntimerStore";
+import { lerntimerKeys, mergeTimerBlocks, syncTimer } from "../utils/lerntimerSync";
+import { localDay } from "../utils/lerntimer";
 import { useUserStore } from "./userStore";
 
 // ─────────────────────────────────────────────────────────────
@@ -69,6 +72,7 @@ export const useSyncStore = create(
           if (get().code !== code) return; // пока ждали, код сменили — результат уже не наш
           applyBlock(res.block, get().parts, set); // класс могли переключить: applyBlock кладёт данные по id класса
           if (get().parts.karten !== false) await syncKarten(code);
+          if (get().parts.lerntimer !== false) await syncLerntimer(code);
           if (get().code !== code) return;
           set({ version: res.version, lastSyncAt: new Date().toISOString(), status: "idle", error: null });
         } catch (error) {
@@ -130,6 +134,7 @@ export const useSyncStore = create(
         const code = generateSyncCode();
         const res = await syncWith(code, get());
         if (get().parts.karten !== false) await syncKarten(code);
+        if (get().parts.lerntimer !== false) await syncLerntimer(code);
         if (old) await deleteBlocks(old);
         applyBlock(res.block, get().parts, set);
         set({ code, version: res.version, lastSyncAt: new Date().toISOString(), status: "idle", error: null });
@@ -164,11 +169,22 @@ async function syncKarten(code) {
   if (differs(next, current)) quietly(() => useKartenStore.getState().setSynced(next));
 }
 
-// Удалить с сервера оба блока кода (основной и Karteikarten). Второго может и не быть — DELETE безопасен
+// Lerntimer (часть 44) — свой блок (lerntimerSync.js): сессии и настройки
+async function syncLerntimer(code) {
+  const keys = await lerntimerKeys(await keysFor(code));
+  const today = localDay(new Date());
+  const { block } = await syncTimer({ keys, local: timerBlockOf(), today, request: makeSyncRequest(keys.syncId), crypto: BOX });
+  const current = timerBlockOf();
+  const next = mergeTimerBlocks(current, block, today); // пока шёл запрос, могла закончиться ещё одна Runde
+  if (differs(next.sessions, current.sessions) || differs(next.settings, current.settings)) quietly(() => useLerntimerStore.getState().setSynced(next));
+}
+
+// Удалить с сервера все блоки кода (основной, Karteikarten, Lerntimer). Других может и не быть — DELETE безопасен
 async function deleteBlocks(code) {
   const keys = await keysFor(code);
   await deleteSyncBlock(keys.syncId);
   await deleteSyncBlock((await kartenKeys(keys)).syncId);
+  await deleteSyncBlock((await lerntimerKeys(keys)).syncId);
 }
 
 // Отметки времени классов. Старая общая отметка «kurse» (до 29d) — это курсы «домашнего» класса
@@ -335,7 +351,12 @@ export function watchChanges(onChange) {
   const stopKarten = useKartenStore.subscribe((state, prev) => {
     if (!applying && state.decks !== prev.decks) onChange();
   });
+  // Lerntimer: новая сессия или настройки (тиканье идущего таймера — не изменение)
+  const stopTimer = useLerntimerStore.subscribe((state, prev) => {
+    if (!applying && (state.sessions !== prev.sessions || state.settingsStamp !== prev.settingsStamp)) onChange();
+  });
   return () => {
+    stopTimer();
     stopKarten();
     stopZiele();
     stopNoten();
