@@ -2,7 +2,7 @@
 // Меняется что-то в данных (новая таблица, cookie, срок) — поправь текст здесь и дату STAND.
 // Формат раздела: title, intro — абзацы, rows — пары [что, пояснение] (cookies, сроки).
 
-export const STAND = "2026-11-21";
+export const STAND = "2026-11-22";
 
 // Коротко — первые строки страницы (макет 27). Иконки подставляет страница по id.
 export const FACTS = [
@@ -99,10 +99,19 @@ export const SECTIONS = [
     ],
   },
   {
+    id: "karteikarten",
+    title: "Karteikarten",
+    intro: [
+      "Deine Stapel, Karten und dein Lernstand liegen nur auf deinem Gerät. Der Server weiß nicht, dass es sie gibt.",
+      "Mit Sync kommen sie verschlüsselt mit, solange „Karteikarten“ dort eingeschaltet ist – als zweiter Block neben dem ersten, unter einer anderen zufälligen Kennung. Der Server kann ihn nicht lesen und nicht erkennen, dass beide Blöcke zu dir gehören.",
+      "„Teilen“ steckt die Karten (ohne Lernstand) in den Link selbst, hinter das „#“. Diesen Teil schickt der Browser nicht an den Server – ORBook sieht die Karten also nicht. Wer den Link oder den QR-Code bekommt, sieht alle Karten des Stapels.",
+    ],
+  },
+  {
     id: "geraet",
     title: "Auf deinem Gerät",
     intro: [
-      "Im Browser (localStorage) liegen: deine Klassen mit dem Namen und der Farbe, die du ihnen gibst, deine Kurse, Darstellung (auch die Sprache, Design und Akzentfarbe), Fachfarben, Stundenplan-Ansicht und die Blöcke auf deinem Start, deine Notizen, Aufgaben und Häkchen, dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne, damit die App auch ohne Netz geht.",
+      "Im Browser (localStorage) liegen: deine Klassen mit dem Namen und der Farbe, die du ihnen gibst, deine Kurse, Darstellung (auch die Sprache, Design und Akzentfarbe), Fachfarben, Stundenplan-Ansicht und die Blöcke auf deinem Start, deine Notizen, Aufgaben und Häkchen, deine Karteikarten, dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne, damit die App auch ohne Netz geht.",
       "In der Android-App liegt zusätzlich eine Kopie für das Widget: der Plan der nächsten zwei Wochen, Tests, Hausaufgaben, Termine, deine letzten Notizen und Häkchen. Dafür fragt die App den Server alle 15, 30 oder 60 Minuten (so wie im Widget eingestellt, sonst 30) – mit deiner Anmeldung, wie die Website. Entfernst du das letzte Widget und sind die Mitteilungen der App aus, hört das auf. Die Kopie löscht Android zusammen mit der App.",
       "Mitteilungen in der Android-App macht die App selbst: Sie vergleicht den Plan, den sie für Widgets und Mitteilungen ohnehin lädt, mit dem vorigen und meldet, was sich geändert hat. Die Erinnerung vor der Stunde stellt sie aus dem gespeicherten Plan – auch ohne Internet. Der Server erfährt davon nichts, Google oder andere Dienste sind nicht beteiligt.",
       "Damit ORBook auch ohne Internet startet, legt die Website ihre eigenen Seiten und Dateien auf dem Gerät ab (Service Worker). Daten deiner Klasse sind darin nicht.",

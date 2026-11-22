@@ -22,6 +22,8 @@ export const SECTIONS = {
   fehlzeiten: { to: "/fehlzeiten", get label() { return translate("Fehlzeiten"); }, feature: "noten" },
   materialien: { to: "/materialien", get label() { return translate("Materialien"); } },
   statistik: { to: "/statistik", get label() { return translate("Statistik"); }, feature: "statistics" },
+  // Karteikarten (часть 43): по умолчанию в «Mehr», в панель — через «Untere Leiste»
+  karteikarten: { to: "/karteikarten", get label() { return translate("Karteikarten"); } },
 };
 export const SECTION_KEYS = Object.keys(SECTIONS);
 

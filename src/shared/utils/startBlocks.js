@@ -26,6 +26,7 @@ export const BLOCKS = [
   { kind: "statistik", get label() { return translate("Statistik"); }, get hint() { return translate("Ausfall in dieser Woche"); }, sizes: ["klein"], feature: "statistics" },
   { kind: "noten", get label() { return translate("Noten"); }, get hint() { return translate("Schnitt und neue Noten"); }, sizes: ["klein"], feature: "noten" },
   { kind: "countdown", get label() { return translate("Countdown"); }, get hint() { return translate("Tage bis zu den Ferien"); }, sizes: ["klein"] },
+  { kind: "karteikarten", get label() { return translate("Karteikarten"); }, get hint() { return translate("Was heute dran ist"); }, sizes: ["klein", "breit"] }, // часть 43
 ];
 
 // Сколько строк показывают Tests и Termine (настройка «Einträge»)

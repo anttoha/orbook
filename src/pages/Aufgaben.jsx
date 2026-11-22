@@ -5,6 +5,7 @@ import ExamSkeleton from "../components/exams/ExamSkeleton";
 import ExamsToolbar from "../components/exams/ExamsToolbar";
 import ListSwitch from "../components/homework/ListSwitch";
 import GoneExamCards from "../components/lernplan/GoneExamCards";
+import KartenAufgaben from "../components/karten/KartenAufgaben";
 import AddTaskButton from "../components/tasks/AddTaskButton";
 import AufgabeRow from "../components/tasks/AufgabeRow";
 import WeekProgress from "../components/tasks/WeekProgress";
@@ -144,6 +145,8 @@ const Aufgaben = () => {
           )}
           <PlanBanner resource={resource} onRetry={loadHomework} />
           <GoneExamCards />
+          {/* часть 43: стопки Karteikarten, которые сегодня пора повторить */}
+          {!filterActive && <KartenAufgaben today={today} />}
           {body()}
         </div>
         <WeekProgress list={list} today={today} />

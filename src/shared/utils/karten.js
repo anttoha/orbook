@@ -177,3 +177,16 @@ export const examRef = (exam, cls) => (exam ? { id: String(exam.id), cls: cls ??
 // Стопки, привязанные к тесту
 export const decksForExam = (decks, examId, cls) =>
   liveDecks(decks).filter((deck) => deck.exam && String(deck.exam.id) === String(examId) && (deck.exam.cls == null || cls == null || String(deck.exam.cls) === String(cls)));
+
+// Тесты для поля «Für Test»: только будущие (сегодня и позже), ближайшие сначала
+export const upcomingExams = (exams, today) => (exams ?? []).filter((exam) => exam.date >= today).sort((a, b) => a.date.localeCompare(b.date));
+
+// ── Сессия «Lernen» (несколько стопок подряд) ──
+
+// Очередь сессии: [{ deckId, card, side }]. all — «Alle üben» (все карточки, коробки не двигаем)
+export function sessionQueue(decks, today, { all = false, random = Math.random } = {}) {
+  return decks.flatMap((deck) => learnQueue(deck, today, { all, random }).map((card) => ({ deckId: deck.id, card, side: frontSide(deck.first, random) })));
+}
+
+// Все карточки стопок сессии одной «стопкой» — для итога (коробки до и после)
+export const pooled = (decks, ids) => ({ cards: decks.filter((deck) => ids.includes(deck.id)).flatMap((deck) => deck.cards) });

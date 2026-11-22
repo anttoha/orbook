@@ -97,3 +97,14 @@ describe("стопки", () => {
     expect(examRef(null)).toBeNull();
   });
 });
+
+describe("сессия", async () => {
+  const { sessionQueue, pooled } = await import("./karten");
+  it("очередь по стопкам, сторона по настройке стопки", () => {
+    const d1 = deck([card(1, null, "a1")], { id: "k1", first: "b" });
+    const d2 = deck([card(2, null, "b1"), card(2, "2025-09-30", "b2")], { id: "k2" });
+    expect(sessionQueue([d1, d2], TODAY).map((q) => [q.deckId, q.card.id, q.side])).toEqual([["k1", "a1", "b"], ["k2", "b1", "a"]]);
+    expect(sessionQueue([d2], TODAY, { all: true })).toHaveLength(2);
+    expect(pooled([d1, d2], ["k2"]).cards).toHaveLength(2);
+  });
+});

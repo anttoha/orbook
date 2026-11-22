@@ -4,6 +4,10 @@ import HomePage from "../../pages/HomePage";
 import Tests from "../../pages/Tests";
 import ExamEdit from "../../pages/ExamEdit";
 import Lernplan from "../../pages/Lernplan";
+import Karteikarten from "../../pages/Karteikarten";
+import KartenEdit from "../../pages/KartenEdit";
+import KartenLernen from "../../pages/KartenLernen";
+import KartenImport from "../../pages/KartenImport";
 import HomeworkEdit from "../../pages/HomeworkEdit";
 import EditorCode from "../../pages/EditorCode";
 import Materials from "../../pages/Materials";
@@ -116,6 +120,14 @@ export const router = createBrowserRouter([
           page({ path: "testen/termine/neu", Component: AppointmentEdit }), // новий Termin (частина 18)
           page({ path: "testen/termine/:id/bearbeiten", Component: AppointmentEdit }),
           page({ path: "editor-code", Component: EditorCode }),
+          // Karteikarten (часть 43): всё на устройстве. /karten#k1.… — ссылка «Stapel teilen»
+          page({ path: "karteikarten", Component: Karteikarten }),
+          page({ path: "karteikarten/neu", Component: KartenEdit }),
+          page({ path: "karteikarten/lernen", Component: KartenLernen }),
+          page({ path: "karteikarten/:id", Component: Karteikarten }),
+          page({ path: "karteikarten/:id/bearbeiten", Component: KartenEdit }),
+          page({ path: "karteikarten/:id/lernen", Component: KartenLernen }),
+          page({ path: "karten", Component: KartenImport }),
           page({ path: "statistik", Component: Statistic }),
           page({ path: "noten", Component: Noten }), // оценки из Home.InfoPoint (часть 36b)
           page({ path: "noten/:fach", Component: Noten }), // предмет; на ПК — правая колонка той же страницы

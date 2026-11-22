@@ -19,7 +19,7 @@
 | ПК | `pc-01-karteikarten`, `pc-02-lernen` | слева стопки, справа стопка; учить — карточка по центру |
 
 ## Что куда нажимать
-- Раздел `/karteikarten`: в группе «Leistung» по умолчанию (`navLayout.SECTIONS.karteikarten`, в `defaultNav` после «aufgaben»), строка в «Mehr → Seiten», можно поставить в панель (часть 35).
+- Раздел `/karteikarten` (`navLayout.SECTIONS.karteikarten`): по умолчанию строка в «Mehr → Seiten» (справа «12 fällig»), в панель или группу «Leistung» — через «Untere Leiste» (часть 35). Состав «Leistung» по умолчанию не меняем: его фиксируют тесты и раскладки пользователей.
 - «Lernen» (Heute lernen) → `/karteikarten/lernen` — все fällige из всех стопок подряд (по стопкам).
 - Строка стопки → `/karteikarten/:id` (на ПК — правая колонка той же страницы, как «Noten»).
 - «+» → `/karteikarten/neu`. ⋮ → «Bearbeiten» (`/karteikarten/:id/bearbeiten`, та же форма), «Teilen» (шторка), «Lernstand zurücksetzen» (вопрос → все карточки в «Neu»), «Löschen» (вопрос).
@@ -102,6 +102,11 @@ deck = { id: "k-…", name, subject: "En" | null, sides: ["Englisch", "Deutsch"]
 ## Отличия от дизайна
 - Ссылка `…/karten#k1.…` (на макете `v1.eJx…` — пример).
 - «Alles gelernt» на плашке «Heute lernen» и «Zu groß für QR» — состояния, которых нет на макетах.
+- Блок «Karteikarten» на Start — в «Block hinzufügen», раскладку Start по умолчанию не меняем (на макете он стоит вместо «Notizen» как пример).
+- Выбор стопок в шторке теста — список прямо в карточке, а не вторая шторка (шторка в шторке на телефоне ведёт себя плохо).
+- В «Aufgaben» строки стопок — своей группой «Heute» над остальными (у Aufgaben группы «Heute» нет).
+- ⋮ в стопке — шторка (на ПК — окно), на ПК рядом ещё кнопка «Teilen», как на pc-01.
+- Ссылка без входа: экран входа открывается на том же адресе, поэтому «#…» не теряется — отдельно хранить не нужно.
 
 ## Слова
 - **Stapel** — набор карточек одной темы.

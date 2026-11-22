@@ -55,8 +55,8 @@ describe("visibleNav", () => {
 
 describe("restOf", () => {
   it("всё доступное, чего нет в панели", () => {
-    expect(restOf(defaultNav("phone"), { noten: false })).toEqual(["heute", "termine", "materialien", "statistik"]);
-    expect(restOf(defaultNav("phone"), { noten: true })).toEqual(["heute", "termine", "fehlzeiten", "materialien", "statistik"]);
+    expect(restOf(defaultNav("phone"), { noten: false })).toEqual(["heute", "termine", "materialien", "statistik", "karteikarten"]);
+    expect(restOf(defaultNav("phone"), { noten: true })).toEqual(["heute", "termine", "fehlzeiten", "materialien", "statistik", "karteikarten"]);
   });
   it("Fehlzeiten in «Mehr» светит Noten, а не «Mehr»", () => {
     expect(restPaths(defaultNav("phone"), { noten: true })).not.toContain("/fehlzeiten");
@@ -112,7 +112,7 @@ describe("navTabActive", () => {
     expect(navTabActive(auf, "/testen/neu", "")).toBe(false);
   });
   it("Mehr светится на разделах из «Mehr»", () => {
-    expect(restPaths(defaultNav("phone"), {})).toEqual(["/heute", "/materialien", "/statistik"]);
+    expect(restPaths(defaultNav("phone"), {})).toEqual(["/heute", "/materialien", "/statistik", "/karteikarten"]);
   });
 });
 
