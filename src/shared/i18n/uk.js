@@ -2332,4 +2332,7 @@ export const uk = {
   // Was ist neu 0.29.0
   "Neu: Ziele für deine Noten. Im Fach tippst du „Ziel setzen“ – und siehst sofort, welche Note du in der nächsten Arbeit brauchst und ob das „erreichbar“, „knapp“ oder „schwer“ ist.": "Нове: цілі для оцінок. У предметі натисни «Поставити мету» – і одразу побачиш, яка оцінка потрібна на наступній роботі і чи це «реально», «впритул» чи «важко».",
   "Dazu ein Verlauf: Wie sich dein Schnitt übers Halbjahr entwickelt hat, im Fach und insgesamt – einfach auf „Schnitt“ tippen.": "А ще графік: як змінювався твій середній бал за півріччя, у предметі й загалом – просто натисни «Середній бал».",
+  // Was ist neu 0.29.1
+  "Noten am PC: Wenn du ein Fach oder „Schnitt“ öffnest, blendet nur die rechte Spalte um – die Seite lädt nicht mehr sichtbar neu.": "Оцінки на ПК: коли відкриваєш предмет або «Середній бал», плавно змінюється лише права колонка – сторінка більше не «перезавантажується».",
+  "Menü am PC: Gruppen wie „Leistung“ klappen weich auf und zu. Passt das Menü nicht auf den Bildschirm, wird der Rand blass – so siehst du, dass du scrollen kannst.": "Меню на ПК: групи на кшталт «Успішність» тепер плавно розгортаються і згортаються. Якщо меню не вміщається на екрані, його край блякне – видно, що можна гортати.",
 };

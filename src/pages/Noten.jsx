@@ -173,18 +173,21 @@ const Noten = () => {
           {tabs}
           <RefreshButton />
         </div>
-        {schnitt && (
-          <>
-            <h2 className="truncate text-heading text-ink">{t("Schnitt")}</h2>
-            <SchnittView overview={overviewOf(data, half)} half={half} wide />
-          </>
-        )}
-        {subject && (
-          <>
-            <h2 className="truncate text-heading text-ink">{subject.name}</h2>
-            <FachView key={`${subject.code}-${half}`} subject={subject} fresh={fresh} half={half} wide />
-          </>
-        )}
+        {/* Сменился предмет или «Schnitt» — проявляется только эта колонка, а не вся страница */}
+        <div key={schnitt ? SCHNITT : subject?.code} className="flex min-w-0 flex-col gap-5 motion-safe:animate-panel-in">
+          {schnitt && (
+            <>
+              <h2 className="truncate text-heading text-ink">{t("Schnitt")}</h2>
+              <SchnittView overview={overviewOf(data, half)} half={half} wide />
+            </>
+          )}
+          {subject && (
+            <>
+              <h2 className="truncate text-heading text-ink">{subject.name}</h2>
+              <FachView key={`${subject.code}-${half}`} subject={subject} fresh={fresh} half={half} wide />
+            </>
+          )}
+        </div>
       </div>
       {pdfSheet}
     </section>

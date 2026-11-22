@@ -21,3 +21,12 @@ describe("Einstellungen auf dem PC", () => {
   });
   it("Handy wie bisher", () => expect(pageAnimation("/mehr", "/mehr/kurse", "PUSH")).toBe("animate-page-forward"));
 });
+
+describe("Noten am PC: rechts wechselt nur die Spalte", () => {
+  it("Fach ↔ Schnitt — die Seite bleibt stehen; am Handy — wie eine neue Seite", () => {
+    expect(pageAnimation("/noten", "/noten/schnitt", "PUSH", { desktop: true })).toBe("");
+    expect(pageAnimation("/noten/ma", "/noten/de", "PUSH", { desktop: true })).toBe("");
+    expect(pageAnimation("/noten", "/noten/ma", "PUSH")).toBe("animate-page-forward");
+    expect(pageKey("/notenrechner", { desktop: true })).toBe("/notenrechner");
+  });
+});

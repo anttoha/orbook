@@ -6,6 +6,14 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.29.1",
+    date: "2026-11-22",
+    behoben: [
+      "Noten am PC: Wenn du ein Fach oder „Schnitt“ öffnest, blendet nur die rechte Spalte um – die Seite lädt nicht mehr sichtbar neu.",
+      "Menü am PC: Gruppen wie „Leistung“ klappen weich auf und zu. Passt das Menü nicht auf den Bildschirm, wird der Rand blass – so siehst du, dass du scrollen kannst.",
+    ],
+  },
+  {
     version: "0.29.0",
     date: "2026-11-22",
     neu: [

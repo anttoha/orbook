@@ -2332,4 +2332,7 @@ export const en = {
   // Was ist neu 0.29.0
   "Neu: Ziele für deine Noten. Im Fach tippst du „Ziel setzen“ – und siehst sofort, welche Note du in der nächsten Arbeit brauchst und ob das „erreichbar“, „knapp“ oder „schwer“ ist.": "New: goals for your grades. In a subject, tap “Set goal” – and you instantly see which grade you need in the next test and whether that’s “doable”, “tight” or “hard”.",
   "Dazu ein Verlauf: Wie sich dein Schnitt übers Halbjahr entwickelt hat, im Fach und insgesamt – einfach auf „Schnitt“ tippen.": "Plus a progress chart: how your average developed over the half-year, per subject and overall – just tap “Average”.",
+  // Was ist neu 0.29.1
+  "Noten am PC: Wenn du ein Fach oder „Schnitt“ öffnest, blendet nur die rechte Spalte um – die Seite lädt nicht mehr sichtbar neu.": "Grades on PC: when you open a subject or “Average”, only the right column fades in – the page no longer visibly reloads.",
+  "Menü am PC: Gruppen wie „Leistung“ klappen weich auf und zu. Passt das Menü nicht auf den Bildschirm, wird der Rand blass – so siehst du, dass du scrollen kannst.": "Menu on PC: groups like “Performance” now open and close smoothly. If the menu doesn’t fit on the screen, its edge fades out – so you can see there’s more to scroll.",
 };

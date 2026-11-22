@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useHotkeys } from "../../shared/hooks/useHotkeys";
 import { useNavTabs } from "../../shared/hooks/useNavTabs";
+import { useScrollFade } from "../../shared/hooks/useScrollFade";
 import { cn } from "../../shared/utils/cn";
 import NavGroup from "./NavGroup";
 import NavigationLink from "./NavigationLink";
@@ -17,6 +18,7 @@ import SoonList from "./SoonList";
 // ─────────────────────────────────────────────────────────────
 const SideNav = () => {
   const [isHidden, setIsHidden] = useState(false); // чи згорнутий сайдбар
+  const [scrollRef, scrollFade] = useScrollFade(); // края меню гаснут, если его можно прокрутить
   const { tabs } = useNavTabs("pc"); // пункти з «Untere Leiste» (частина 35): розділи і групи
 
   useHotkeys({ "mod+b": () => setIsHidden((prev) => !prev) }); // ⌘B / Ctrl+B — згорнути або розгорнути
@@ -37,8 +39,8 @@ const SideNav = () => {
       </div>
 
       {/* Меню и «Bald» прокручиваются, если экран низкий (часто, когда группа раскрыта);
-          шапка, поиск и низ (план, тема, Admin) остаются на месте */}
-      <div className="-mx-1 mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain px-1 no-scrollbar">
+          шапка, поиск и низ (план, тема, Admin) остаются на месте. Края гаснут, если есть что прокрутить */}
+      <div ref={scrollRef} className={cn("-mx-1 mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain px-1 no-scrollbar", scrollFade)}>
       <nav className="space-y-1">
         {tabs.map((tab, index) =>
           tab.items ? (

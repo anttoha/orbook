@@ -11,11 +11,15 @@ const depth = (pathname) => pathname.split("/").filter(Boolean).length;
 // Ключ сторінки: коли він змінюється, сторінка грає анімацію появи.
 // Дні (/tag/…) гортаються свайпом зі своєю анімацією, тому для них ключ один.
 // На ПК «Einstellungen» (/mehr/…) — одна сторінка з вкладками: меню зліва стоїть,
-// а розділ праворуч міняє сам SettingsLayout. Тому вся сторінка не їде
+// а розділ праворуч міняє сам SettingsLayout. Тому вся сторінка не їде.
+// Так само «Noten» на ПК: список зліва стоїть, праворуч міняється предмет або «Schnitt» (сама сторінка Noten)
+const DESKTOP_SPLIT = ["/mehr", "/noten"];
+const inSection = (pathname, root) => pathname === root || pathname.startsWith(`${root}/`);
+
 export function pageKey(pathname, { desktop = false } = {}) {
   if (pathname.startsWith("/tag/")) return "/tag";
-  if (desktop && (pathname === "/mehr" || pathname.startsWith("/mehr/"))) return "/mehr";
-  return pathname;
+  const split = desktop && DESKTOP_SPLIT.find((root) => inSection(pathname, root));
+  return split || pathname;
 }
 
 // Клас анімації. navigationType з React Router: "POP" — назад/вперед браузера, "PUSH"/"REPLACE" — перехід за посиланням.

@@ -35,7 +35,19 @@ const NavGroup = ({ group, index, isHidden }) => {
         <span className="flex-1 truncate text-left">{t(group.label)}</span>
         <ChevronDown className={cn("size-4 text-faint transition-transform", shown && "rotate-180")} />
       </button>
-      {shown && <div className="mt-1 ml-5.5 space-y-1 border-l border-rule pl-2">{links}</div>}
+      {/* Раскрывается плавно: высота растёт от 0 до содержимого (grid 0fr → 1fr), строки проявляются.
+          Свёрнутые ссылки остаются в разметке, но inert — их не достать ни мышью, ни Tab */}
+      <div
+        inert={!shown}
+        className={cn(
+          "grid transition-[grid-template-rows,opacity] duration-300 ease-soft motion-reduce:transition-none",
+          shown ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+        )}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <div className="mt-1 ml-5.5 space-y-1 border-l border-rule pl-2">{links}</div>
+        </div>
+      </div>
     </div>
   );
 };

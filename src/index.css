@@ -758,6 +758,12 @@ html[data-motion="aus"] *::after {
     }
 }
 
+/* Затухание краёв прокручиваемого списка (useScrollFade): 28px снизу и/или сверху становятся прозрачными —
+   видно, что дальше ещё есть. Маска работает только с прозрачностью, цвет «black» тут значит «видно» */
+@utility fade-bottom { mask-image: linear-gradient(to bottom, black calc(100% - 28px), transparent); }
+@utility fade-top { mask-image: linear-gradient(to top, black calc(100% - 28px), transparent); }
+@utility fade-y { mask-image: linear-gradient(to bottom, transparent, black 28px, black calc(100% - 28px), transparent); }
+
 /* Анімації для вікон і меню (animate-fade-in, animate-pop-in тощо).
    Правило (13.11, владелец: «без ИИ-слоп анимаций»): движение короткое и тихое — без отскоков и перелётов
    (никаких cubic-bezier с перебором и scale > 1), сдвиг не больше 8px, время 120–240 мс.
