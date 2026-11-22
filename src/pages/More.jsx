@@ -38,6 +38,8 @@ import { useDecks } from "../shared/hooks/useKarten";
 import { totalDue } from "../shared/utils/karten";
 import { useNow } from "../shared/hooks/useNow";
 import { SECTION_ICONS } from "../components/navbar/navIcons";
+import { useLerntimerStore } from "../shared/store/lerntimerStore";
+import { durationText, localDay, minutesOn } from "../shared/utils/lerntimer";
 
 const THEME_LABELS = { get light() { return translate("Hell"); }, get dark() { return translate("Dunkel"); }, get system() { return translate("System"); } };
 
@@ -103,7 +105,8 @@ const PhoneMenu = () => {
   const rest = restOf(navOf(nav, "phone"), me?.features); // школа могла вимкнути статистику — її тоді немає
   const { today } = useNow();
   const kartenDue = totalDue(useDecks(), today); // часть 43: «12 fällig» справа
-  const restValues = { statistik: t("Woche · Monat"), materialien: links ? `${links} ${t(links === 1 ? "Link" : "Links")}` : null, karteikarten: kartenDue > 0 ? t("{due} fällig", { due: kartenDue }) : null };
+  const lernHeute = useLerntimerStore((s) => minutesOn(s.sessions, localDay(new Date()))); // часть 44: «1 h 15 min» справа
+  const restValues = { lerntimer: lernHeute > 0 ? durationText(lernHeute) : null, statistik: t("Woche · Monat"), materialien: links ? `${links} ${t(links === 1 ? "Link" : "Links")}` : null, karteikarten: kartenDue > 0 ? t("{due} fällig", { due: kartenDue }) : null };
   const [seiten, einstellungen] = settingsGroups;
   // «6 Links» праворуч: список питаємо один раз за сесію (далі його оновлює сторінка Materialien)
   useEffect(() => {

@@ -77,6 +77,8 @@
        │ text-countdown│ 46/900│ число днів у вікні Klausur          │
        │ text-stat    │ 32/900│ великі числа в статистиці            │
        │ text-sheet   │ 30/900│ заголовок панелі справа на ПК        │
+       │ text-timer-pc│ 72/900│ цифры Lerntimer на ПК (часть 44)     │
+       │ text-timer   │ 58/900│ цифры Lerntimer на телефоне          │
        │ text-title   │ 29/900│ заголовок сторінки на телефоні       │
        │ text-panel   │ 28/900│ дата в панелі дня, діалог на ПК      │
        │ text-heading │ 26/900│ заголовок шторки / панелі            │
@@ -133,6 +135,14 @@
     --text-countdown-pc--line-height: 1;
     --text-countdown-pc--font-weight: 900;
     --text-countdown-pc--letter-spacing: -0.015em;
+    --text-timer-pc: 4.5rem; /* «17:42» в кольце Lerntimer на ПК (макет 44 pc-01) */
+    --text-timer-pc--line-height: 1;
+    --text-timer-pc--font-weight: 900;
+    --text-timer-pc--letter-spacing: -0.02em;
+    --text-timer: 3.625rem; /* «25:00» в кольце Lerntimer (макет 44 handy-01) */
+    --text-timer--line-height: 1;
+    --text-timer--font-weight: 900;
+    --text-timer--letter-spacing: -0.02em;
     --text-stat: 2rem;
     --text-stat--line-height: 1.15;
     --text-stat--font-weight: 900;
@@ -649,7 +659,18 @@ html[data-motion="weniger"] {
     --animate-bar-grow: none;
     --animate-bar-fill: none;
     --animate-deck-shake: none;
+    --animate-ring-start: none;
+    --animate-ring-breathe: none;
+    --animate-ring-done: none;
+    --animate-digit-in: none;
+    --animate-dot-pop: none;
+    --animate-confetti: none;
+    --animate-float-up: fade-in 0.2s ease-out backwards;
+    --animate-timer-glow: none;
 }
+/* «Weniger»: кольцо не тает плавно, а просто перерисовывается; салюта нет */
+html[data-motion="weniger"] .ring-motion { transition: none; }
+html[data-motion="weniger"] .confetti { display: none; }
 /* «Weniger»: карточка не вращается, а просто меняет сторону */
 html[data-motion="weniger"] .flip-motion { transition: none; }
 html[data-motion="weniger"] :where(button, a[href], [role="switch"], [role="button"]):active { scale: none; }
@@ -855,10 +876,35 @@ html[data-motion="aus"] *::after {
     @keyframes bar-grow { from { scale: 1 0; } }
     @keyframes bar-fill { from { scale: 0 1; } }
     @keyframes deck-shake { 25% { translate: -6px 0; } 50% { translate: 5px 0; } 75% { translate: -3px 0; } }
+
+    /* Lerntimer (часть 44) — тоже игра (владелец 22.11: «с анимациями очень прикольными»):
+       старт — кольцо «вдыхает», цифры перелистываются, на паузе кольцо дышит, точка раунда впрыгивает,
+       в конце — галочка с пружиной и салют из точек. «Weniger» — без движения, только проявление */
+    --animate-ring-start: ring-start 0.6s var(--ease-spring);
+    --animate-ring-breathe: ring-breathe 2.6s ease-in-out infinite;
+    --animate-ring-done: ring-done 0.7s var(--ease-spring);
+    --animate-digit-in: digit-in 0.32s var(--ease-spring);
+    --animate-dot-pop: dot-pop 0.5s var(--ease-spring);
+    --animate-confetti: confetti 0.9s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+    --animate-float-up: float-up 0.5s var(--ease-spring) backwards;
+    --animate-timer-glow: timer-glow 2.4s ease-in-out infinite;
+    @keyframes ring-start { 0% { scale: 1; } 35% { scale: 0.92; } 100% { scale: 1; } }
+    @keyframes ring-breathe { 0%, 100% { scale: 1; opacity: 1; } 50% { scale: 0.97; opacity: 0.7; } }
+    @keyframes ring-done { 0% { scale: 1; } 30% { scale: 1.06; } 100% { scale: 1; } }
+    @keyframes digit-in { from { opacity: 0; transform: translateY(-45%) scale(0.9); } }
+    @keyframes dot-pop { 0% { scale: 0; } 60% { scale: 1.5; } 100% { scale: 1; } }
+    @keyframes confetti {
+        0% { opacity: 1; transform: translate(0, 0) scale(1); }
+        100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.4) rotate(var(--rot)); }
+    }
+    @keyframes float-up { from { opacity: 0; transform: translateY(16px) scale(0.96); } }
+    @keyframes timer-glow { 0%, 100% { opacity: 0.18; scale: 1; } 50% { opacity: 0.32; scale: 1.04; } }
 }
 
 /* Переворот карточки (часть 43): 3D по оси Y с лёгкой пружиной в конце */
 @utility flip-motion { transition: transform 0.5s var(--ease-spring); }
+/* Кольцо Lerntimer (часть 44): тает плавно между тиками, цвет фазы меняется мягко */
+@utility ring-motion { transition: stroke-dashoffset 0.35s linear, stroke 0.6s ease, rotate 0.35s linear; }
 
 /* ── Печать (часть 25): на бумаге только лист из PrintArea, приложение и окна скрыты.
    Цвета фона печатаем как есть (иначе браузер выбросит серые плашки) ── */

@@ -21,6 +21,7 @@ import { useAndroidUpdateOnStart } from "../shared/hooks/useAndroidUpdateOnStart
 import { useAndroidWidgetSync } from "../shared/hooks/useAndroidWidgetSync";
 import { useTipsOnStart } from "../shared/hooks/useTipsOnStart";
 import { usePlanLive } from "../shared/hooks/usePlanLive";
+import { useLerntimerClock } from "../shared/hooks/useLerntimerClock";
 import { useCalendarFeedCourses } from "../shared/hooks/useCalendarFeedCourses";
 import { usePushOnStart } from "../shared/hooks/usePushOnStart";
 import { useLernplanShift } from "../shared/hooks/useLernplanShift";
@@ -70,6 +71,7 @@ const HomePage = () => {
   usePushOnStart(Boolean(me) && me.features?.push !== false); // часть 17: Mitteilungen — курсы и «я ещё здесь»
   useCalendarFeedCourses(Boolean(me)); // часть 40: Kalender-Abo — новые «Meine Kurse» сразу на сервер
   usePlanLive(Boolean(me)); // часть 26: новый план приходит сам (поток), без потока — опрос раз в минуту
+  useLerntimerClock(Boolean(me)); // часть 44: конец раунда/перерыва — звук и тост на любой странице, будильник в Android-App
   useNotesSync(Boolean(me) && me.features?.notesSync !== false); // нотатки на інших пристроях (якщо є Sync-Code)
 
   // Раз на хвилину: оновити час школи (рядок «зараз» і «noch 27 min»)

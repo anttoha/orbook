@@ -83,3 +83,11 @@ export const hasAppPrint = () => typeof androidBridge()?.printPage === "function
 export const appPrintPage = (title) => androidBridge()?.printPage?.(title ?? "ORBook");
 export const hasAppPrintHtml = () => typeof androidBridge()?.printHtml === "function";
 export const appPrintHtml = (html, title) => androidBridge()?.printHtml?.(html, title ?? "InfoPoint");
+
+// ── Часть 44: Lerntimer — будильник на конец раунда/перерыва (уведомление, даже если приложение закрыто) ──
+
+// Есть ли будильник таймера (APK с частью 44); в браузере и в старом APK — false
+export const hasTimerAlarm = () => typeof androidBridge()?.timerAlarm === "function";
+// at — когда (мс, Date.now()), title/text — текст уведомления. Новый будильник заменяет старый
+export const setTimerAlarm = ({ at, title, text }) => androidBridge()?.timerAlarm?.(JSON.stringify({ at, title, text }));
+export const cancelTimerAlarm = () => androidBridge()?.timerCancel?.();

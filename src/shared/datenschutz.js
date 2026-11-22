@@ -108,6 +108,14 @@ export const SECTIONS = [
     ],
   },
   {
+    id: "lerntimer",
+    title: "Lerntimer",
+    intro: [
+      "Deine Lernzeit (Fach, Tag, Uhrzeit, Minuten) und die Einstellungen des Timers liegen nur auf deinem Gerät. Mit Sync kommen sie verschlüsselt mit, solange „Lerntimer“ dort eingeschaltet ist – als eigener Block unter einer anderen zufälligen Kennung. Lernzeit älter als 400 Tage fällt aus dem Sync heraus.",
+      "In der Android-App stellt der Timer einen Wecker auf dem Handy, damit die Meldung „Runde geschafft“ auch bei geschlossener App kommt. Der Server erfährt davon nichts.",
+    ],
+  },
+  {
     id: "geraet",
     title: "Auf deinem Gerät",
     intro: [

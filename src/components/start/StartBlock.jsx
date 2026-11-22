@@ -5,6 +5,7 @@ import CountdownBlock from "./CountdownBlock";
 import HeuteBlock from "./HeuteBlock";
 import JetztBlock from "./JetztBlock";
 import KartenBlock from "./KartenBlock";
+import LerntimerBlock from "./LerntimerBlock";
 import MaterialienBlock from "./MaterialienBlock";
 import NotizenBlock from "./NotizenBlock";
 import StatistikBlock from "./StatistikBlock";
@@ -28,6 +29,7 @@ const COMPONENTS = {
   noten: NotenBlock,
   countdown: CountdownBlock,
   karteikarten: KartenBlock,
+  lerntimer: LerntimerBlock,
 };
 
 // Один блок «Start» в своей границе ошибок. editing — режим «Anpassen» (без ссылок)

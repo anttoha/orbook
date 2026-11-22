@@ -8,6 +8,9 @@ import { useUserStore } from "../../shared/store/userStore";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useKartenStore } from "../../shared/store/kartenStore";
 import { liveDecks } from "../../shared/utils/karten";
+import { Timer } from "lucide-react";
+import { useLerntimerStore } from "../../shared/store/lerntimerStore";
+import { durationText, liveSessions } from "../../shared/utils/lerntimer";
 import { KartenIcon } from "../ui/icons";
 import { visibleNotes } from "../../shared/utils/notes";
 import { cn } from "../../shared/utils/cn";
@@ -31,6 +34,7 @@ const SyncParts = () => {
   const classCount = useClasses((s) => s.list.length);
   const noten = usePlanStore((s) => s.me?.features?.noten === true);
   const decks = useKartenStore((s) => liveDecks(s.decks).length);
+  const lernMin = useLerntimerStore((s) => liveSessions(s.sessions).reduce((sum, x) => sum + x.min, 0));
   const t = useT();
   const rows = [
     { key: "notes", icon: FileText, title: translate("Notizen"), hint: `${notes} ${notes === 1 ? translate("Notiz") : translate("Notizen")}` },
@@ -43,6 +47,8 @@ const SyncParts = () => {
     ...(noten ? [{ key: "noten", icon: ClipboardCheck, title: t("Noten"), hint: t("geholte Noten, ohne Login") }] : []),
     // Часть 43: стопки и Lernstand (отдельным блоком)
     { key: "karten", icon: KartenIcon, title: t("Karteikarten"), hint: decks === 1 ? t("1 Stapel") : t("{decks} Stapel", { decks }) },
+    // Часть 44: Lernzeit и настройки таймера (тоже отдельным блоком)
+    { key: "lerntimer", icon: Timer, title: t("Lerntimer"), hint: t("{zeit} Lernzeit", { zeit: durationText(lernMin) }) },
   ];
 
   return (

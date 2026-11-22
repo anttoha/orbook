@@ -5,6 +5,9 @@ import StackedChart from "../components/stats/StackedChart";
 import StatCard from "../components/stats/StatCard";
 import StatsSkeleton from "../components/stats/StatsSkeleton";
 import SubjectBars from "../components/stats/SubjectBars";
+import LernzeitSection from "../components/lerntimer/LernzeitSection";
+import { useLerntimerStore } from "../shared/store/lerntimerStore";
+import { liveSessions } from "../shared/utils/lerntimer";
 import { StatsIcon } from "../components/ui/icons";
 import { PlanBanner, PlanError } from "../components/ui/PlanState";
 import Segmented from "../components/ui/Segmented";
@@ -69,6 +72,7 @@ const Statistic = () => {
   const range = !isDesktop && chosen === "halfyear" ? "month" : chosen; // вікно звузили — на телефоні Halbjahr немає
   const stats = useStats(range);
   const { main, week } = stats;
+  const hasLernzeit = useLerntimerStore((s) => liveSessions(s.sessions).length > 0); // часть 44: тогда над планом подпись «Stundenplan»
 
   const body = () => {
     if (stats.status === "loading") return <StatsSkeleton />;
@@ -104,6 +108,9 @@ const Statistic = () => {
         <Segmented options={isDesktop ? RANGES_DESKTOP : RANGES} value={range} onChange={setRange} label={t("Zeitraum")} size="form" className="shrink-0" />
       </header>
 
+      {/* часть 44: своё время учёбы (с устройства) — сверху, до плана; план может и не загрузиться */}
+      <LernzeitSection range={range} />
+      {hasLernzeit && <h2 className="-mb-2 text-hint font-extrabold text-faint">{t("Stundenplan")}</h2>}
       <PlanBanner resource={stats} onRetry={stats.reload} />
       {body()}
     </section>

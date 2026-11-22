@@ -27,6 +27,7 @@ export const BLOCKS = [
   { kind: "noten", get label() { return translate("Noten"); }, get hint() { return translate("Schnitt und neue Noten"); }, sizes: ["klein"], feature: "noten" },
   { kind: "countdown", get label() { return translate("Countdown"); }, get hint() { return translate("Tage bis zu den Ferien"); }, sizes: ["klein"] },
   { kind: "karteikarten", get label() { return translate("Karteikarten"); }, get hint() { return translate("Was heute dran ist"); }, sizes: ["klein", "breit"] }, // часть 43
+  { kind: "lerntimer", get label() { return translate("Lerntimer"); }, get hint() { return translate("Restzeit und heute gelernt"); }, sizes: ["klein", "breit"] }, // часть 44
 ];
 
 // Сколько строк показывают Tests и Termine (настройка «Einträge»)

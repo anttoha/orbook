@@ -24,6 +24,8 @@ export const SECTIONS = {
   statistik: { to: "/statistik", get label() { return translate("Statistik"); }, feature: "statistics" },
   // Karteikarten (часть 43): по умолчанию в «Mehr», в панель — через «Untere Leiste»
   karteikarten: { to: "/karteikarten", get label() { return translate("Karteikarten"); } },
+  // Lerntimer (часть 44): тоже в «Mehr», в панель — через «Untere Leiste»
+  lerntimer: { to: "/lerntimer", get label() { return translate("Lerntimer"); } },
 };
 export const SECTION_KEYS = Object.keys(SECTIONS);
 

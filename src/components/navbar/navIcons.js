@@ -1,4 +1,4 @@
-import { Award, BookOpen, CalendarDays, CalendarX, ClipboardCheck, Clock, Ellipsis, Folder, House, List, ListChecks, Star, Table2 } from "lucide-react";
+import { Award, BookOpen, CalendarDays, CalendarX, ClipboardCheck, Clock, Ellipsis, Folder, House, List, ListChecks, Star, Table2, Timer } from "lucide-react";
 import { FlagIcon, KartenIcon, StatsIcon } from "../ui/icons";
 
 // Иконки разделов «Untere Leiste» (ключи — из shared/utils/navLayout.js SECTIONS). Логика иконок не знает
@@ -14,6 +14,7 @@ export const SECTION_ICONS = {
   materialien: Folder,
   statistik: StatsIcon,
   karteikarten: KartenIcon,
+  lerntimer: Timer,
   mehr: Ellipsis,
 };
 

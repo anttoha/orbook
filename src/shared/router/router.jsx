@@ -7,6 +7,7 @@ import Lernplan from "../../pages/Lernplan";
 import Karteikarten from "../../pages/Karteikarten";
 import KartenEdit from "../../pages/KartenEdit";
 import KartenLernen from "../../pages/KartenLernen";
+import Lerntimer from "../../pages/Lerntimer";
 import KartenImport from "../../pages/KartenImport";
 import HomeworkEdit from "../../pages/HomeworkEdit";
 import EditorCode from "../../pages/EditorCode";
@@ -121,6 +122,8 @@ export const router = createBrowserRouter([
           page({ path: "testen/termine/:id/bearbeiten", Component: AppointmentEdit }),
           page({ path: "editor-code", Component: EditorCode }),
           // Karteikarten (часть 43): всё на устройстве. /karten#k1.… — ссылка «Stapel teilen»
+          // Lerntimer (часть 44): всё на устройстве
+          page({ path: "lerntimer", Component: Lerntimer }),
           page({ path: "karteikarten", Component: Karteikarten }),
           page({ path: "karteikarten/neu", Component: KartenEdit }),
           page({ path: "karteikarten/lernen", Component: KartenLernen }),

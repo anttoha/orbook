@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { DEFAULT_SETTINGS, breakAfter, isOver, nextRound, pauseRun, resumeRun, sessionOf, startRun, timesOf } from "../utils/lerntimer";
+import { DEFAULT_SETTINGS, breakAfter, isOver, nextRound, pauseRun, phaseEnd, resumeRun, sessionOf, startRun, timesOf } from "../utils/lerntimer";
 
 // ─────────────────────────────────────────────────────────────
 // lerntimerStore — Lerntimer (часть 44). Только на устройстве (localStorage «orbook.lerntimer»);
@@ -56,14 +56,15 @@ export const useLerntimerStore = create(
         settle: (now) => {
           const { run } = get();
           if (!isOver(run, now)) return null;
-          const end = run.startedAt + run.pausedMs + run.durMs; // когда фаза кончилась на самом деле
+          const end = phaseEnd(run); // когда фаза кончилась на самом деле (вкладку могли открыть позже)
           if (run.phase === "pause") {
             set({ run: null, round: nextRound(run.round, times()) });
             return "pause";
           }
           const session = closeFocus(end);
-          set({ run: null, done: { min: session?.min ?? 0, code: run.code, round: run.round } });
+          // «Pause von selbst starten» — шторки нет, перерыв сразу (с конца раунда); иначе шторка «Runde geschafft!»
           if (get().settings.autoPause) startBreak(run.round, end);
+          else set({ run: null, done: { min: session?.min ?? 0, code: run.code, round: run.round } });
           return "focus";
         },
 
@@ -75,7 +76,8 @@ export const useLerntimerStore = create(
           startBreak(done.round, now);
         },
         finishDay: () => set({ run: null, round: 1, done: null }),
-        closeDone: () => set({ done: null }),
+        // Шторку закрыли без выбора — как «Pause überspringen»: следующий раунд
+        closeDone: () => get().done && set({ done: null, round: nextRound(get().done.round, times()) }),
 
         // «Pause überspringen»
         skipBreak: () => {

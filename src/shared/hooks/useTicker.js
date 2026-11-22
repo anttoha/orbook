@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import { usePlanStore } from "../store/planStore";
 
-// Часы школы, которые тикают каждые `ms` (по умолчанию 5 с) — для «geprüft vor 20 Sek.».
-// Общий «now» в planStore обновляется раз в минуту: для секунд этого мало. → миллисекунды
-export const useTicker = (ms = 5000) => {
-  const clock = usePlanStore((s) => s.clock);
-  const [now, setNow] = useState(() => clock.now().getTime());
+// Текущее время (Date.now()), пока active — обновляется каждые ms (Lerntimer, часть 44).
+// Таймер считает от времени старта, поэтому пропущенный тик (вкладка в фоне) ничего не ломает
+export function useTicker(active, ms = 250) {
+  const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
-    const id = setInterval(() => setNow(clock.now().getTime()), ms);
-    return () => clearInterval(id);
-  }, [clock, ms]);
+    if (!active) return undefined;
+    const id = setInterval(() => setNow(Date.now()), ms);
+    return () => clearInterval(id); // остановили таймер или ушли со страницы
+  }, [active, ms]);
   return now;
-};
+}

@@ -40,6 +40,9 @@ export const progressOf = (run, now) => (run ? remainingMs(run, now) / run.durMs
 export const pauseRun = (run, now) => (run.pausedAt ? run : { ...run, pausedAt: now });
 export const resumeRun = (run, now) => (run.pausedAt ? { ...run, pausedAt: null, pausedMs: run.pausedMs + (now - run.pausedAt) } : run);
 
+// Когда фаза кончается (кончилась) на самом деле, если её больше не ставят на паузу
+export const phaseEnd = (run) => run.startedAt + run.pausedMs + run.durMs;
+
 // Когда закончится (если не на паузе) — для «fertig um 16:52» и будильника Android
 export const endsAt = (run, now) => now + remainingMs(run, now);
 
