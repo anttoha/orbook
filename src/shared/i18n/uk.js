@@ -2315,4 +2315,18 @@ export const uk = {
   "Beispiel": "Приклад",
   // Was ist neu 0.28.1
   "Kalender-Abo: Der Beispiel-Tag oben ist jetzt als „Beispiel“ markiert – vorher stand dort „9b“, und das sah aus wie ein Fehler.": "Підписка на календар: день-приклад угорі тепер позначено «Приклад» – раніше там було «9b», і це виглядало як помилка.",
+  // Notenziel + Verlauf (часть 42)
+  "Ziel {note}": "Мета {note}",
+  "Kein Ziel": "Без мети",
+  "Verlauf ab 2 Noten": "Хід — від 2 оцінок",
+  "Ziele in Fächern": "Цілі з предметів",
+  "jetzt {now} · Ziel {ziel}": "зараз {now} · мета {ziel}",
+  "Nächste Note: {note} oder besser": "Наступна оцінка: {note} або краще",
+  "Ziel setzen": "Поставити мету",
+  "Ziel": "Мета",
+  "Ziel entfernen": "Прибрати мету",
+  "erreichbar": "реально",
+  "knapp": "впритул",
+  "schwer": "важко",
+  "Deine Ziele für Noten liegen nur auf deinem Gerät und kommen mit Sync verschlüsselt mit, solange „Noten“ dort eingeschaltet ist. „Abmelden“ lässt sie stehen.": "Твої цілі з оцінок зберігаються лише на твоєму пристрої і їдуть із Sync зашифровано, поки там увімкнено «Оцінки». «Вийти» їх не видаляє.",
 };

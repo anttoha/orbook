@@ -4,16 +4,15 @@ import AccountRow from "../components/noten/AccountRow";
 import FachView from "../components/noten/FachView";
 import NotenHeader, { RefreshButton } from "../components/noten/NotenHeader";
 import NotenLogin from "../components/noten/NotenLogin";
-import Notenrechner from "../components/noten/Notenrechner";
 import NotenSkeleton from "../components/noten/NotenSkeleton";
 import NotenTiles from "../components/noten/NotenTiles";
+import SchnittView from "../components/noten/SchnittView";
 import OfflineBanner from "../components/noten/OfflineBanner";
 import PdfDialog, { PdfButton } from "../components/noten/PdfDialog";
 import StandLine from "../components/noten/StandLine";
 import SubjectList from "../components/noten/SubjectList";
 import ZeugnisList from "../components/noten/ZeugnisList";
 import Segmented from "../components/ui/Segmented";
-import Sheet from "../components/ui/Sheet";
 import StateScreen from "../components/ui/StateScreen";
 import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useNotenRefresh } from "../shared/hooks/useNotenRefresh";
@@ -21,8 +20,11 @@ import { useT } from "../shared/hooks/useT";
 import { translate } from "../shared/i18n/translate";
 import { useNotenStore } from "../shared/store/notenStore";
 import { usePlanStore } from "../shared/store/planStore";
-import { absenceStats, defaultHalf, gradesOf, averageOf, noteNumber, overviewOf, zeugnisOf } from "../shared/utils/noten";
+import { absenceStats, defaultHalf, gradesOf, averageOf, overviewOf, zeugnisOf } from "../shared/utils/noten";
 import { hasSheet } from "../shared/utils/notenSheet";
+
+// /noten/schnitt — экран «Schnitt» (часть 42), а не предмет
+const SCHNITT = "schnitt";
 
 const TABS = [
   { value: "1", get label() { return translate("1. Halbjahr"); } },
@@ -47,7 +49,7 @@ const Overview = ({ data, tab, half, fresh, selected }) => {
   const empty = zeugnis ? finals.length === 0 : overview.subjects.length === 0;
   return (
     <>
-      {!zeugnis && <NotenTiles overview={overview} absences={absenceStats(data.absences, half)} />}
+      {!zeugnis && <NotenTiles overview={overview} absences={absenceStats(data.absences, half)} half={half} />}
       {empty && <p className="rounded-card bg-card px-4 py-4 text-body-sm text-muted">{zeugnis ? t("Noch keine Zeugnisnoten") : t("Noch keine Noten")}</p>}
       {!empty && (zeugnis ? <ZeugnisList subjects={finals} selected={selected} /> : <SubjectList subjects={overview.subjects} fresh={fresh} half={half} selected={selected} />)}
       <AccountRow />
@@ -76,8 +78,9 @@ const LoginPage = ({ data, busy, error }) => {
 
 // ─────────────────────────────────────────────────────────────
 // Noten aus Home.InfoPoint (часть 36b). /noten и /noten/:fach (?hj=1|2|zeugnis).
-// Телефон: /noten — обзор (handy-01), /noten/ma — предмет (handy-02) с Notenrechner в шторке (handy-03).
-// ПК (pc-01): слева обзор, справа предмет (выбранный или первый) с Notenrechner прямо в колонке.
+// Телефон: /noten — обзор (handy-01), /noten/ma — предмет (handy-02) с шторкой «Mein Ziel» (часть 42),
+// /noten/schnitt — общий ход и цели (42 handy-04).
+// ПК (pc-01): слева обзор, справа предмет (выбранный или первый) или «Schnitt».
 // Данные — notenStore (кеш последнего ответа InfoPoint); запрос — только по кнопке.
 // ─────────────────────────────────────────────────────────────
 const Noten = () => {
@@ -88,7 +91,6 @@ const Noten = () => {
   const enabled = usePlanStore((s) => s.me?.features?.noten !== false);
   const { data, busy, error, fresh, loginOpen } = useNotenStore();
   const refresh = useNotenRefresh();
-  const [rechnerOpen, setRechnerOpen] = useState(false);
   const [pdfOpen, setPdfOpen] = useState(false);
 
   if (!enabled) return <Navigate to="/" replace />;
@@ -104,6 +106,18 @@ const Noten = () => {
   const pdfSheet = pdfOpen && <PdfDialog open onClose={() => setPdfOpen(false)} data={data} start={tab} />;
   const tabs = <Segmented options={TABS} value={tab} onChange={setTab} label={t("Halbjahr")} size={isDesktop ? "sm" : "md"} className={isDesktop ? "w-75 shrink-0" : undefined} />;
 
+  const schnitt = fach === SCHNITT;
+
+  // Телефон, открыт «Schnitt» (часть 42)
+  if (!isDesktop && schnitt) {
+    return (
+      <section className="flex flex-col gap-5.5">
+        <NotenHeader backTo={`/noten?hj=${tab}`} eyebrow={`${t("Noten")} · ${t(`${half}. Halbjahr`)}`} title={t("Schnitt")} />
+        <SchnittView overview={overviewOf(data, half)} half={half} />
+      </section>
+    );
+  }
+
   // Телефон, открыт предмет
   if (!isDesktop && fach) {
     const subject = subjectFor(data, fach, half);
@@ -111,10 +125,7 @@ const Noten = () => {
     return (
       <section className="flex flex-col gap-5.5">
         <NotenHeader backTo={`/noten?hj=${tab}`} eyebrow={`${t("Noten")} · ${t(`${half}. Halbjahr`)}`} title={subject.name} />
-        <FachView subject={subject} fresh={fresh} onRechner={subject.list.length > 0 ? () => setRechnerOpen(true) : null} />
-        <Sheet open={rechnerOpen} onClose={() => setRechnerOpen(false)} desktop="dialog" eyebrow={`${subject.name} · ${t("jetzt")} ${noteNumber(subject.average)}`} title={t("Notenrechner")}>
-          <Notenrechner key={`${subject.code}-${half}`} subject={subject} />
-        </Sheet>
+        <FachView subject={subject} fresh={fresh} half={half} />
       </section>
     );
   }
@@ -144,8 +155,8 @@ const Noten = () => {
     );
   }
 
-  // ПК: справа выбранный предмет (или первый в списке)
-  const shownCode = fach ?? (tab === "zeugnis" ? zeugnisOf(data)[0]?.code : overviewOf(data, half).subjects[0]?.code);
+  // ПК: справа «Schnitt» или выбранный предмет (или первый в списке)
+  const shownCode = schnitt ? null : fach ?? (tab === "zeugnis" ? zeugnisOf(data)[0]?.code : overviewOf(data, half).subjects[0]?.code);
   const subject = shownCode ? subjectFor(data, shownCode, half) : null;
   return (
     <section className="grid grid-cols-2 items-start gap-9">
@@ -162,21 +173,16 @@ const Noten = () => {
           {tabs}
           <RefreshButton />
         </div>
+        {schnitt && (
+          <>
+            <h2 className="truncate text-heading text-ink">{t("Schnitt")}</h2>
+            <SchnittView overview={overviewOf(data, half)} half={half} wide />
+          </>
+        )}
         {subject && (
           <>
             <h2 className="truncate text-heading text-ink">{subject.name}</h2>
-            <FachView
-              subject={subject}
-              fresh={fresh}
-              rechner={
-                subject.list.length > 0 && (
-                  <section>
-                    <h2 className="mb-2.5 text-hint font-extrabold text-faint">{t("Notenrechner")}</h2>
-                    <Notenrechner key={`${subject.code}-${half}`} subject={subject} />
-                  </section>
-                )
-              }
-            />
+            <FachView key={`${subject.code}-${half}`} subject={subject} fresh={fresh} half={half} wide />
           </>
         )}
       </div>

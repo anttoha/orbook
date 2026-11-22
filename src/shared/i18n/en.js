@@ -2315,4 +2315,18 @@ export const en = {
   "Beispiel": "Example",
   // Was ist neu 0.28.1
   "Kalender-Abo: Der Beispiel-Tag oben ist jetzt als „Beispiel“ markiert – vorher stand dort „9b“, und das sah aus wie ein Fehler.": "Calendar subscription: the sample day at the top is now marked as “Example” – before it said “9b”, which looked like a mistake.",
+  // Notenziel + Verlauf (часть 42)
+  "Ziel {note}": "Goal {note}",
+  "Kein Ziel": "No goal",
+  "Verlauf ab 2 Noten": "Progress from 2 grades",
+  "Ziele in Fächern": "Goals by subject",
+  "jetzt {now} · Ziel {ziel}": "now {now} · goal {ziel}",
+  "Nächste Note: {note} oder besser": "Next grade: {note} or better",
+  "Ziel setzen": "Set goal",
+  "Ziel": "Goal",
+  "Ziel entfernen": "Remove goal",
+  "erreichbar": "doable",
+  "knapp": "tight",
+  "schwer": "hard",
+  "Deine Ziele für Noten liegen nur auf deinem Gerät und kommen mit Sync verschlüsselt mit, solange „Noten“ dort eingeschaltet ist. „Abmelden“ lässt sie stehen.": "Your grade goals are stored only on your device and travel encrypted with Sync while “Grades” is switched on there. “Sign out” keeps them.",
 };

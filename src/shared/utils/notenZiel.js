@@ -1,4 +1,4 @@
-import { averageOf, neededGrade, weightOf } from "./noten";
+import { averageOf, neededGrade } from "./noten";
 
 // ─────────────────────────────────────────────────────────────
 // Notenziel + Verlauf (часть 42): расчёты без React.
@@ -52,6 +52,3 @@ export function scaleBottom(points, ziel) {
   const worst = Math.max(...points.map((p) => p.value), ziel ?? 1);
   return Math.min(6, Math.max(3, Math.ceil(worst - 1e-9)));
 }
-
-// Вес следующей оценки по умолчанию (как в Notenrechner 36b): есть ×2 — тогда ×2
-export const defaultK = (grades) => (grades.some((g) => weightOf(g) >= 2) ? 2 : 1);

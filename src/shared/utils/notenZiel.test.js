@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { allSeries, defaultK, scaleBottom, zielInfo, zielSeries, zielStatus } from "./notenZiel";
+import { allSeries, scaleBottom, zielInfo, zielSeries, zielStatus } from "./notenZiel";
 
 // Mathe из макета: 2- (27.08.), 1 (03.09.), 2 (10.09.), 3+ ×2 (16.09.) → Schnitt 2,14
 const MA = [
@@ -54,15 +54,11 @@ describe("allSeries", () => {
   });
 });
 
-describe("scaleBottom / defaultK", () => {
+describe("scaleBottom", () => {
   it("mindestens 3, passt schlechtesten Punkt und Ziel, höchstens 6", () => {
     expect(scaleBottom([{ value: 2.1 }], 2)).toBe(3);
     expect(scaleBottom([{ value: 3.65 }], 3)).toBe(4);
     expect(scaleBottom([{ value: 2 }], 4.5)).toBe(5);
     expect(scaleBottom([{ value: 6 }], null)).toBe(6);
-  });
-  it("×2, wenn es schon eine doppelte Note gibt", () => {
-    expect(defaultK(MA)).toBe(2);
-    expect(defaultK([{ value: 2 }])).toBe(1);
   });
 });

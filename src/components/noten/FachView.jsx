@@ -1,41 +1,32 @@
-import { Calculator, ChevronRight } from "lucide-react";
-import { useEffect } from "react";
+import { ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useNotenZiel } from "../../shared/hooks/useNotenZiel";
 import { useNotenStore } from "../../shared/store/notenStore";
 import { useT } from "../../shared/hooks/useT";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
-import { cn } from "../../shared/utils/cn";
 import { fachClasses } from "../../shared/utils/lessons";
-import { badgeOf, dayDate, gradeKey, nextExamOf, noteNumber, weightOf } from "../../shared/utils/noten";
+import { badgeOf, dayDate, gradeKey, nextExamOf, weightOf } from "../../shared/utils/noten";
 import { translate } from "../../shared/i18n/translate";
-import Button from "../ui/Button";
 import { FlagIcon } from "../ui/icons";
+import { zielInfo, zielSeries } from "../../shared/utils/notenZiel";
 import DateTile from "./DateTile";
 import GradePill from "./GradePill";
 import NewBadge from "./NewBadge";
+import SchnittCard from "./SchnittCard";
+import ZielCard from "./ZielCard";
+import ZielSheet from "./ZielSheet";
 
 // «×2» в подписи, если оценка весит больше одной; «×0,5» — как есть
 const weightText = (g) => (weightOf(g) === 1 ? null : translate("zählt ×{n}", { n: String(weightOf(g)).replace(".", ",") }));
 
-// Карточка цветом предмета: SCHNITT 2,1 · «4 Noten» · «Doppelt zählt ×2»
-const SchnittCard = ({ subject }) => {
-  const t = useT();
-  const overrides = useUserStore((s) => s.colorOverrides);
+// Подпись справа в карточке Schnitt: «4 Noten», на ПК ещё «Klassenarbeit zählt ×2»
+function schnittCaption(subject, wide) {
+  const count = subject.list.length === 1 ? translate("1 Note") : translate("{n} Noten", { n: subject.list.length });
   const heavy = subject.list.find((g) => weightOf(g) > 1);
-  return (
-    <div className={cn("flex items-end justify-between gap-3 rounded-card px-4.5 py-4.5", fachClasses(badgeOf(subject.code), overrides))}>
-      <div>
-        <p className="text-small font-extrabold tracking-wide uppercase">{t("Schnitt")}</p>
-        <p className="mt-2 text-lobby">{noteNumber(subject.average)}</p>
-      </div>
-      <div className="mb-2 min-w-0 text-right">
-        <p className="text-lead font-extrabold">{subject.list.length === 1 ? t("1 Note") : translate("{n} Noten", { n: subject.list.length })}</p>
-        {heavy?.weightLabel && <p className="truncate text-body-sm">{`${heavy.weightLabel} ${weightText(heavy)}`}</p>}
-      </div>
-    </div>
-  );
-};
+  return wide && heavy?.weightLabel ? `${count} · ${heavy.weightLabel} ${weightText(heavy)}` : count;
+}
 
 // Строка оценки: [16 SEP] Klassenarbeit · «Di 16.09. · zählt ×2»   (neu) [3+]
 const GradeRow = ({ grade, isNew }) => {
@@ -69,24 +60,29 @@ const NextTest = ({ subject }) => {
 };
 
 // ─────────────────────────────────────────────────────────────
-// Предмет (макет handy-02; на ПК — правая колонка pc-01).
-// rechner — что показать вместо кнопки «Notenrechner» (на ПК расчёт стоит прямо в колонке)
+// Предмет (макет 42 handy-02; на ПК — правая колонка pc-01): Schnitt с графиком, цель, оценки.
+// Цель — своя в каждом полугодии (half); шторка «Mein Ziel» живёт здесь же. wide — колонка ПК
 // ─────────────────────────────────────────────────────────────
-const FachView = ({ subject, fresh, onRechner, rechner }) => {
+const FachView = ({ subject, fresh, half, wide = false }) => {
   const t = useT();
+  const [zielOpen, setZielOpen] = useState(false);
+  const { goal } = useNotenZiel(half, subject.code);
   const markSeen = useNotenStore((s) => s.markSeen);
+  const overrides = useUserStore((s) => s.colorOverrides);
   // «neu» видно, пока смотришь предмет; ушёл с него (назад или другой предмет на ПК) — уже не новые
   useEffect(() => () => markSeen(subject.code), [subject.code, markSeen]);
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-3.5">
-        <SchnittCard subject={subject} />
-        {onRechner && (
-          <Button onClick={onRechner} className="flex-none">
-            <Calculator className="size-4.5" />
-            {t("Notenrechner")}
-          </Button>
-        )}
+        <SchnittCard
+          average={subject.average}
+          ziel={goal?.ziel}
+          caption={schnittCaption(subject, wide)}
+          points={zielSeries(subject.list)}
+          colorClass={fachClasses(badgeOf(subject.code), overrides)}
+          wide={wide}
+        />
+        {subject.list.length > 0 && <ZielCard info={zielInfo(subject.list, goal)} onOpen={() => setZielOpen(true)} />}
       </div>
       <section>
         <h2 className="mb-2.5 text-hint font-extrabold text-faint">{t("Noten")}</h2>
@@ -96,8 +92,8 @@ const FachView = ({ subject, fresh, onRechner, rechner }) => {
           ))}
         </ul>
       </section>
-      {rechner}
       <NextTest subject={subject} />
+      <ZielSheet open={zielOpen} onClose={() => setZielOpen(false)} half={half} subject={subject} average={subject.average} />
     </div>
   );
 };
