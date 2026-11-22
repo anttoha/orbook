@@ -788,3 +788,5 @@ Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWi
 Android: `notify/TimerAlarm.kt` (точный будильник, канал «Lerntimer»), мост `timerAlarm`/`timerCancel`; демо-APK 0.30.0 (22).
 Скриншоты: `/root/work/orbook-compare/44-lerntimer/shots/` (`_tools/p44.mjs`).
 **Дальше:** владелец проверяет на демо; потом «на прод» (changelog 44, прод-APK) или следующая часть.
+**Прод 22.11:** v0.31.0 (changelog 44, EN/UK), `docs/releases/v0.31.0.md`, тег v0.31.0, прод выложен таймером (`orbook: ausgeliefert 65c9daee`), прод-APK 0.31.0 (23) — в Release и на сайте. Бэкенд не менялся.
+**Дальше:** незаконченных частей в `docs/specs/README.md` нет — новые идеи владельца.
