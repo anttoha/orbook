@@ -2335,4 +2335,10 @@ export const en = {
   // Was ist neu 0.29.1
   "Noten am PC: Wenn du ein Fach oder „Schnitt“ öffnest, blendet nur die rechte Spalte um – die Seite lädt nicht mehr sichtbar neu.": "Grades on PC: when you open a subject or “Average”, only the right column fades in – the page no longer visibly reloads.",
   "Menü am PC: Gruppen wie „Leistung“ klappen weich auf und zu. Passt das Menü nicht auf den Bildschirm, wird der Rand blass – so siehst du, dass du scrollen kannst.": "Menu on PC: groups like “Performance” now open and close smoothly. If the menu doesn’t fit on the screen, its edge fades out – so you can see there’s more to scroll.",
+  // Karteikarten (часть 43)
+  "Karteikarten": "Flashcards",
+  "1 Stapel": "1 deck",
+  "{decks} Stapel": "{decks} decks",
+  "Wie heißt der Stapel?": "What's the deck called?",
+  "Zu viele Karteikarten für Sync — lösch ein paar alte Stapel.": "Too many flashcards to sync — delete a few old decks.",
 };

@@ -10,6 +10,8 @@ import { useClasses } from "./classesStore";
 import { useTasksStore } from "./tasksStore";
 import { useNotenStore } from "./notenStore";
 import { useNotenZielStore } from "./notenZielStore";
+import { useKartenStore } from "./kartenStore";
+import { kartenKeys, syncDecks } from "../utils/kartenSync";
 import { useUserStore } from "./userStore";
 
 // ─────────────────────────────────────────────────────────────
@@ -66,6 +68,8 @@ export const useSyncStore = create(
           const res = await syncWith(code, get());
           if (get().code !== code) return; // пока ждали, код сменили — результат уже не наш
           applyBlock(res.block, get().parts, set); // класс могли переключить: applyBlock кладёт данные по id класса
+          if (get().parts.karten !== false) await syncKarten(code);
+          if (get().code !== code) return;
           set({ version: res.version, lastSyncAt: new Date().toISOString(), status: "idle", error: null });
         } catch (error) {
           handleError(error, set, get);
@@ -125,7 +129,8 @@ export const useSyncStore = create(
         const old = get().code;
         const code = generateSyncCode();
         const res = await syncWith(code, get());
-        if (old) await deleteSyncBlock((await keysFor(old)).syncId);
+        if (get().parts.karten !== false) await syncKarten(code);
+        if (old) await deleteBlocks(old);
         applyBlock(res.block, get().parts, set);
         set({ code, version: res.version, lastSyncAt: new Date().toISOString(), status: "idle", error: null });
       },
@@ -133,7 +138,7 @@ export const useSyncStore = create(
       // «Sync-Daten löschen»: блок на сервере удалить, код забыть. На устройстве всё остаётся
       forget: async () => {
         const { code } = get();
-        if (code) await deleteSyncBlock((await keysFor(code)).syncId);
+        if (code) await deleteBlocks(code);
         set({ code: null, version: 0, lastSyncAt: null, status: "idle", error: null });
       },
     }),
@@ -148,6 +153,22 @@ export const useSyncStore = create(
 async function syncWith(code, { stamps, parts }) {
   const keys = await keysFor(code);
   return syncBlock({ keys, local: localBlock(stamps), parts, home: useClasses.getState().homeId, request: makeSyncRequest(keys.syncId), crypto: BOX });
+}
+
+// Karteikarten (часть 43) — второй блок рядом с основным (kartenSync.js): большие стопки не мешают остальному
+async function syncKarten(code) {
+  const keys = await kartenKeys(await keysFor(code));
+  const { decks } = await syncDecks({ keys, local: useKartenStore.getState().decks, request: makeSyncRequest(keys.syncId), crypto: BOX });
+  const current = useKartenStore.getState().decks;
+  const next = mergeNotes(current, decks); // пока шёл запрос, могли ответить на карточку — сливаем ещё раз
+  if (differs(next, current)) quietly(() => useKartenStore.getState().setSynced(next));
+}
+
+// Удалить с сервера оба блока кода (основной и Karteikarten). Второго может и не быть — DELETE безопасен
+async function deleteBlocks(code) {
+  const keys = await keysFor(code);
+  await deleteSyncBlock(keys.syncId);
+  await deleteSyncBlock((await kartenKeys(keys)).syncId);
 }
 
 // Отметки времени классов. Старая общая отметка «kurse» (до 29d) — это курсы «домашнего» класса
@@ -311,7 +332,11 @@ export function watchChanges(onChange) {
   const stopZiele = useNotenZielStore.subscribe((state, prev) => {
     if (!applying && state.stamp !== prev.stamp) onChange();
   });
+  const stopKarten = useKartenStore.subscribe((state, prev) => {
+    if (!applying && state.decks !== prev.decks) onChange();
+  });
   return () => {
+    stopKarten();
     stopZiele();
     stopNoten();
     stopUser();

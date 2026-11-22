@@ -63,6 +63,7 @@ export function syncErrorText(error) {
   if (error?.message === "wrong_code") return translate("Code passt nicht zu den Daten");
   if (error?.message === "conflict") return translate("Konnte nicht abgeglichen werden. Später erneut versuchen.");
   if (error?.message === "too_big") return translate("Zu viel zum Synchronisieren — lösch ein paar alte Notizen oder Aufgaben.");
+  if (error?.message === "karten_too_big") return translate("Zu viele Karteikarten für Sync — lösch ein paar alte Stapel.");
   if (error?.code === "sync_full") return translate("Der Sync-Speicher ist voll.");
   if (error?.code === "offline" || error?.code === "timeout") return translate("Nicht synchronisiert — keine Verbindung");
   return error?.message || "Nicht synchronisiert";

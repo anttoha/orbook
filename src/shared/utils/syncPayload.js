@@ -14,8 +14,9 @@ import { mergeNotes } from "./notes";
 
 // Части, которые можно включать и выключать (по умолчанию все включены)
 // noten (часть 36b) — оценки из InfoPoint (без логина и пароля: они только на устройстве) и цели (часть 42)
-export const SYNC_PARTS = ["notes", "aufgaben", "kurse", "darstellung", "klassen", "noten"];
-export const ALL_PARTS = { notes: true, aufgaben: true, kurse: true, darstellung: true, klassen: true, noten: true };
+// karten (часть 43) — Karteikarten, они едут отдельным блоком (kartenSync.js)
+export const SYNC_PARTS = ["notes", "aufgaben", "kurse", "darstellung", "klassen", "noten", "karten"];
+export const ALL_PARTS = { notes: true, aufgaben: true, kurse: true, darstellung: true, klassen: true, noten: true, karten: true };
 // Устройство со старой версией хранит parts без klassen — отсутствие значит «включено»
 const isOn = (parts, name) => parts?.[name] !== false;
 

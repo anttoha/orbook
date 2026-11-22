@@ -62,3 +62,9 @@ export const SparkIcon = ({ className }) => <Outline d="M12 3v4M12 17v4M3 12h4M1
 
 // Школа (часть 29): дом с дверью — «Schulen & Klassen», «Schule hinzufügen»
 export const SchoolIcon = ({ className }) => <Outline d="M3 21h18M5 21V10l7-5 7 5v11M10 21v-5h4v5M12 10.5v.01" className={className} />;
+
+// Karteikarten (часть 43): две карточки стопкой
+export const KartenIcon = ({ className, strokeWidth }) => <Outline d="M5 8h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2zM7 4h12a2 2 0 0 1 2 2v9" className={className} strokeWidth={strokeWidth} />;
+
+// «Umdrehen»: две стрелки по кругу
+export const FlipIcon = ({ className }) => <Outline d="M4 12a8 8 0 0 1 14-5.3M20 4v4h-4M20 12a8 8 0 0 1-14 5.3M4 20v-4h4" className={className} />;

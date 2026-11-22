@@ -6,6 +6,9 @@ import { useSyncStore } from "../../shared/store/syncStore";
 import { useTasksStore } from "../../shared/store/tasksStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { usePlanStore } from "../../shared/store/planStore";
+import { useKartenStore } from "../../shared/store/kartenStore";
+import { liveDecks } from "../../shared/utils/karten";
+import { KartenIcon } from "../ui/icons";
 import { visibleNotes } from "../../shared/utils/notes";
 import { cn } from "../../shared/utils/cn";
 import RowSwitch from "../ui/RowSwitch";
@@ -27,6 +30,7 @@ const SyncParts = () => {
   const theme = useTheme((s) => s.theme);
   const classCount = useClasses((s) => s.list.length);
   const noten = usePlanStore((s) => s.me?.features?.noten === true);
+  const decks = useKartenStore((s) => liveDecks(s.decks).length);
   const t = useT();
   const rows = [
     { key: "notes", icon: FileText, title: translate("Notizen"), hint: `${notes} ${notes === 1 ? translate("Notiz") : translate("Notizen")}` },
@@ -37,6 +41,8 @@ const SyncParts = () => {
     ...(classCount > 0 ? [{ key: "klassen", icon: LayoutGrid, title: t("Meine Klassen"), hint: t("Name, Farbe, Reihenfolge – ohne Zugangscodes") }] : []),
     // Часть 36b: только оценки — логин InfoPoint остаётся на устройстве
     ...(noten ? [{ key: "noten", icon: ClipboardCheck, title: t("Noten"), hint: t("geholte Noten, ohne Login") }] : []),
+    // Часть 43: стопки и Lernstand (отдельным блоком)
+    { key: "karten", icon: KartenIcon, title: t("Karteikarten"), hint: decks === 1 ? t("1 Stapel") : t("{decks} Stapel", { decks }) },
   ];
 
   return (
