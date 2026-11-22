@@ -776,3 +776,9 @@ Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWi
 **Дальше:** владелец проверяет на демо; потом «на прод» (changelog 43) или 44 (Opus · effort medium).
 **Прод 22.11:** v0.30.0 (changelog 43, EN/UK), `docs/releases/v0.30.0.md`, тег v0.30.0, прод выложен таймером (`orbook: ausgeliefert 80a04811`). Бэкенд и APK не менялись.
 **Дальше:** новый чат, Opus · effort medium → `/orb-auto` (часть 44 Lerntimer, сначала макеты).
+
+## Часть 44 · Lerntimer (2026-11-22, дизайн)
+Макеты `design/neu/44-lerntimer/` (`gen.py` на кирпичиках 43/30/19c, `build.py`, 17 SVG/PNG, `index.html`), артефакт https://claude.ai/artifact/HnhgpxaXwKCCfk5xEUj34R.
+Что на макетах: экран «Lerntimer» (предмет, кольцо, точки раундов, 25/5 · 50/10 · Eigene, Start, «Heute»), идёт / pausiert / Pause (зелёное кольцо), шторка «Runde geschafft!», окно «Timer stoppen?», шторка «Einstellungen» (минуты, раунды, Ton, Vibration, Pause von selbst starten), блок «Lerntimer» на Start, раздел «Lernzeit» сверху в «Statistik», ПК (таймер слева, Heute/неделя/предметы справа).
+Решения (в обзоре): только устройство + Sync; счёт от времени старта; Android — уведомление в конце раунда; засчитывается каждая минута (и при «Stopp», меньше 1 мин — нет); раздел в Mehr → Seiten (группа «Leistung»).
+**Дальше:** «ок дизайн» → `/orb-spec 44`, `/orb-build`, `/orb-check` (Opus · effort medium).
