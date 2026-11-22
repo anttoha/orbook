@@ -2329,4 +2329,7 @@ export const en = {
   "knapp": "tight",
   "schwer": "hard",
   "Deine Ziele für Noten liegen nur auf deinem Gerät und kommen mit Sync verschlüsselt mit, solange „Noten“ dort eingeschaltet ist. „Abmelden“ lässt sie stehen.": "Your grade goals are stored only on your device and travel encrypted with Sync while “Grades” is switched on there. “Sign out” keeps them.",
+  // Was ist neu 0.29.0
+  "Neu: Ziele für deine Noten. Im Fach tippst du „Ziel setzen“ – und siehst sofort, welche Note du in der nächsten Arbeit brauchst und ob das „erreichbar“, „knapp“ oder „schwer“ ist.": "New: goals for your grades. In a subject, tap “Set goal” – and you instantly see which grade you need in the next test and whether that’s “doable”, “tight” or “hard”.",
+  "Dazu ein Verlauf: Wie sich dein Schnitt übers Halbjahr entwickelt hat, im Fach und insgesamt – einfach auf „Schnitt“ tippen.": "Plus a progress chart: how your average developed over the half-year, per subject and overall – just tap “Average”.",
 };

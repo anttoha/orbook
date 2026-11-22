@@ -6,6 +6,14 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.29.0",
+    date: "2026-11-22",
+    neu: [
+      "Neu: Ziele für deine Noten. Im Fach tippst du „Ziel setzen“ – und siehst sofort, welche Note du in der nächsten Arbeit brauchst und ob das „erreichbar“, „knapp“ oder „schwer“ ist.",
+      "Dazu ein Verlauf: Wie sich dein Schnitt übers Halbjahr entwickelt hat, im Fach und insgesamt – einfach auf „Schnitt“ tippen.",
+    ],
+  },
+  {
     version: "0.28.1",
     date: "2026-11-21",
     behoben: [

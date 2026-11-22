@@ -761,4 +761,5 @@ Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWi
 Дизайн ок 22.11. Spec `docs/specs/42-notenziel/spec.md`.
 Фронт (демо `030d109`): расчёты `shared/utils/notenZiel.js` (+тесты: статус, ход Schnitt, шкала), цели — `notenZielStore` (`orbook.notenziel`, ключ «полугодие:код», `*` — общий), Sync — поле `ziele` с частью «Noten» (`syncPayload.js`, `syncStore.js`); «Abmelden» цели не стирает. Компоненты `components/noten/`: `SchnittChart` (SVG, currentColor) + `Sparkline`, `SchnittCard`, `ZielCard`, `ZielBadge`, `ZielForm` (бывший Notenrechner) в `ZielSheet`, `SchnittView` (`/noten/schnitt`). Datenschutz — строка про цели, EN/UK. Бэкенд и APK не менялись.
 Скриншоты: `/root/work/orbook-compare/42-notenziel/shots/` (`_tools/p42.mjs`).
-**Дальше:** владелец проверяет на демо; потом «на прод» (changelog 42) или 43 (Opus · effort high).
+**Прод 22.11:** v0.29.0 (changelog 42, EN/UK), `docs/releases/v0.29.0.md`, тег v0.29.0. Бэкенд и APK не менялись.
+**Дальше:** новый чат, Opus · effort high → `/orb-auto` (часть 43, сначала макеты).

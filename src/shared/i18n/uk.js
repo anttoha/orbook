@@ -2329,4 +2329,7 @@ export const uk = {
   "knapp": "впритул",
   "schwer": "важко",
   "Deine Ziele für Noten liegen nur auf deinem Gerät und kommen mit Sync verschlüsselt mit, solange „Noten“ dort eingeschaltet ist. „Abmelden“ lässt sie stehen.": "Твої цілі з оцінок зберігаються лише на твоєму пристрої і їдуть із Sync зашифровано, поки там увімкнено «Оцінки». «Вийти» їх не видаляє.",
+  // Was ist neu 0.29.0
+  "Neu: Ziele für deine Noten. Im Fach tippst du „Ziel setzen“ – und siehst sofort, welche Note du in der nächsten Arbeit brauchst und ob das „erreichbar“, „knapp“ oder „schwer“ ist.": "Нове: цілі для оцінок. У предметі натисни «Поставити мету» – і одразу побачиш, яка оцінка потрібна на наступній роботі і чи це «реально», «впритул» чи «важко».",
+  "Dazu ein Verlauf: Wie sich dein Schnitt übers Halbjahr entwickelt hat, im Fach und insgesamt – einfach auf „Schnitt“ tippen.": "А ще графік: як змінювався твій середній бал за півріччя, у предметі й загалом – просто натисни «Середній бал».",
 };
