@@ -12,6 +12,7 @@ import net.orbitium.orbook.noten.NotenStore
 import net.orbitium.orbook.noten.NotenWorker
 import net.orbitium.orbook.notify.Notifications
 import net.orbitium.orbook.notify.Notifier
+import net.orbitium.orbook.notify.TimerAlarm
 import net.orbitium.orbook.widget.WidgetStore
 import net.orbitium.orbook.widget.WidgetWorker
 import net.orbitium.orbook.widget.Widgets
@@ -145,6 +146,19 @@ class AndroidBridge(private val web: WebView, private val host: WidgetHost? = nu
     @JavascriptInterface
     fun testNotify() {
         if (allowed()) Notifications.test(context)
+    }
+
+    // ── Lerntimer (часть 44) — src/shared/api/android.js ──
+
+    /** Будильник на конец фазы: {"at": мс, "title", "text"}. Заменяет прежний. */
+    @JavascriptInterface
+    fun timerAlarm(json: String) {
+        if (allowed()) runCatching { TimerAlarm.set(context, JSONObject(json)) }
+    }
+
+    @JavascriptInterface
+    fun timerCancel() {
+        if (allowed()) TimerAlarm.cancel(context)
     }
 
     // ── Noten прямо из InfoPoint (часть 36c) — src/shared/api/noten.js ──

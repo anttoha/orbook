@@ -97,6 +97,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 }
             }
             Alarms.TICK -> Widgets.redraw(context)
+            TimerAlarm.ACTION -> TimerAlarm.fire(context) // часть 44: Lerntimer
             else -> WidgetWorker.schedule(context) // BOOT_COMPLETED, MY_PACKAGE_REPLACED: будильники после перезагрузки пропадают
         }
         Alarms.schedule(context)

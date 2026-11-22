@@ -38,7 +38,7 @@ const PRESETS = [
 const SubjectPill = ({ code, text }) => {
   const overrides = useUserStore((s) => s.colorOverrides);
   return (
-    <p className={cn("mx-auto flex h-8.5 max-w-full items-center gap-2 truncate rounded-full px-3.5 text-body-sm font-extrabold motion-safe:animate-pop-in", fachClasses(code, overrides))}>
+    <p className={cn("mx-auto flex h-8.5 w-fit max-w-full items-center gap-2 truncate rounded-full px-3.5 text-body-sm font-extrabold motion-safe:animate-pop-in", fachClasses(code, overrides))}>
       <span className={`size-2.5 shrink-0 rounded-full ${fachDotClass(code, overrides)}`} />
       {text}
     </p>

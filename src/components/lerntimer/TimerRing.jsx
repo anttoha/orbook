@@ -51,7 +51,7 @@ const TimerRing = ({ progress, phase = "focus", paused = false, running = false,
         )}
       </svg>
       <div className="relative flex flex-col items-center">
-        <p className={cn("text-small font-extrabold tracking-widest", paused ? "text-faint" : pause ? "text-ok" : "text-accent-ink")}>{top}</p>
+        <p className={cn("text-small font-extrabold tracking-widest uppercase", paused ? "text-faint" : pause ? "text-ok" : "text-accent-ink")}>{top}</p>
         <p className={cn("mt-2", large ? "text-timer-pc" : "text-timer", paused ? "text-muted" : "text-ink")}>
           <Digits text={time} />
         </p>

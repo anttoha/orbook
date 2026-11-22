@@ -25,6 +25,7 @@ object Notifier {
     const val PLAN = "plan"
     const val LESSON = "lesson"
     const val NOTEN = "noten" // часть 36c
+    const val TIMER = "lerntimer" // часть 44: конец раунда/перерыва
 
     /** granted — можно; denied — запрещено (нужны настройки Android); ask — ещё не спрашивали. */
     fun permission(context: Context): String {
@@ -43,6 +44,7 @@ object Notifier {
         manager.createNotificationChannel(NotificationChannel(PLAN, texts.t("Plan und Tests"), NotificationManager.IMPORTANCE_DEFAULT))
         manager.createNotificationChannel(NotificationChannel(LESSON, texts.t("Vor der Stunde"), NotificationManager.IMPORTANCE_HIGH))
         manager.createNotificationChannel(NotificationChannel(NOTEN, texts.t("Noten"), NotificationManager.IMPORTANCE_DEFAULT))
+        manager.createNotificationChannel(NotificationChannel(TIMER, texts.t("Lerntimer"), NotificationManager.IMPORTANCE_HIGH))
     }
 
     fun post(context: Context, note: Note, channel: String, texts: Texts) {
@@ -63,7 +65,7 @@ object Notifier {
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
             .setContentIntent(tap)
             .setAutoCancel(true)
-            .setCategory(if (channel == LESSON) NotificationCompat.CATEGORY_REMINDER else NotificationCompat.CATEGORY_EVENT)
+            .setCategory(if (channel == LESSON || channel == TIMER) NotificationCompat.CATEGORY_REMINDER else NotificationCompat.CATEGORY_EVENT)
             .build()
         try {
             NotificationManagerCompat.from(context).notify(note.id.hashCode(), notification)

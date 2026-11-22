@@ -51,14 +51,15 @@ const DoneSheet = ({ done, rounds, today, breakMin, longBreak, onBreak, onFinish
       desktop="dialog"
       title={t("Runde geschafft!")}
       footer={
-        <div className="flex w-full flex-col gap-2">
-          <Button variant="primary" onClick={onBreak}>
+        <>
+          {/* basis-full — каждая кнопка на свою строку (футер шторки — flex-wrap) */}
+          <Button variant="primary" onClick={onBreak} className="basis-full">
             <Coffee className="size-4.5" /> {longBreak ? t("{min} min lange Pause", { min: breakMin }) : t("{min} min Pause", { min: breakMin })}
           </Button>
-          <Button onClick={onFinish}>
+          <Button onClick={onFinish} className="basis-full">
             <CheckIcon className="size-4" /> {t("Fertig für heute")}
           </Button>
-        </div>
+        </>
       }
     >
       {done && (
