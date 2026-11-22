@@ -758,4 +758,7 @@ Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWi
 Макеты `design/neu/42-notenziel/` (`gen.py` на кирпичиках части 36, `build.py`, 11 SVG/PNG, `index.html`), артефакт https://claude.ai/artifact/FF975Vxs1PzfW7SH7qknq6.
 Что на макетах: значок «Ziel 2,0» цветом статуса в списке «Noten»; плитка «Schnitt» с мини-графиком открывает экран «Schnitt» (общий ход + общая цель + цели предметов); у предмета карточка Schnitt с графиком и пунктиром цели, карточка цели вместо кнопки «Notenrechner»; шторка «Mein Ziel» (расчёт 36b + статус, «Speichern», «Ziel entfernen»).
 Решения (в обзоре): цели только на устройстве + Sync; статус erreichbar / knapp (лучше Schnitt не больше чем на 0,7) / schwer; цель на полугодие, в «Zeugnis» нет.
-**Дальше:** «ок дизайн» → `/orb-spec 42`, `/orb-build`, `/orb-check` (Opus · effort medium).
+Дизайн ок 22.11. Spec `docs/specs/42-notenziel/spec.md`.
+Фронт (демо `030d109`): расчёты `shared/utils/notenZiel.js` (+тесты: статус, ход Schnitt, шкала), цели — `notenZielStore` (`orbook.notenziel`, ключ «полугодие:код», `*` — общий), Sync — поле `ziele` с частью «Noten» (`syncPayload.js`, `syncStore.js`); «Abmelden» цели не стирает. Компоненты `components/noten/`: `SchnittChart` (SVG, currentColor) + `Sparkline`, `SchnittCard`, `ZielCard`, `ZielBadge`, `ZielForm` (бывший Notenrechner) в `ZielSheet`, `SchnittView` (`/noten/schnitt`). Datenschutz — строка про цели, EN/UK. Бэкенд и APK не менялись.
+Скриншоты: `/root/work/orbook-compare/42-notenziel/shots/` (`_tools/p42.mjs`).
+**Дальше:** владелец проверяет на демо; потом «на прод» (changelog 42) или 43 (Opus · effort high).
