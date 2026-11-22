@@ -753,3 +753,9 @@ Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWi
 **Прод 21.11:** v0.28.0 (changelog 41, EN/UK), `docs/releases/v0.28.0.md`, тег v0.28.0, прод выложен таймером (`orbook: ausgeliefert b3a9c47a`). Бэкенд и APK не менялись.
 **Дальше:** новый чат, Opus · effort medium → `/orb 42`.
 **Прод 21.11:** v0.28.1 — Kalender-Abo: вместо «ORBook · 9b» в превью — бейдж «Beispiel» (владелец: «как будто ошибка»). Только фронт.
+
+## Часть 42 · Notenziel + Verlauf (2026-11-22, дизайн)
+Макеты `design/neu/42-notenziel/` (`gen.py` на кирпичиках части 36, `build.py`, 11 SVG/PNG, `index.html`), артефакт https://claude.ai/artifact/FF975Vxs1PzfW7SH7qknq6.
+Что на макетах: значок «Ziel 2,0» цветом статуса в списке «Noten»; плитка «Schnitt» с мини-графиком открывает экран «Schnitt» (общий ход + общая цель + цели предметов); у предмета карточка Schnitt с графиком и пунктиром цели, карточка цели вместо кнопки «Notenrechner»; шторка «Mein Ziel» (расчёт 36b + статус, «Speichern», «Ziel entfernen»).
+Решения (в обзоре): цели только на устройстве + Sync; статус erreichbar / knapp (лучше Schnitt не больше чем на 0,7) / schwer; цель на полугодие, в «Zeugnis» нет.
+**Дальше:** «ок дизайн» → `/orb-spec 42`, `/orb-build`, `/orb-check` (Opus · effort medium).
