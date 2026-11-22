@@ -764,3 +764,9 @@ Android: три вида в `widget/NotenKinds.kt`, расчёт `widget/NotenWi
 **Прод 22.11:** v0.29.0 (changelog 42, EN/UK), `docs/releases/v0.29.0.md`, тег v0.29.0. Бэкенд и APK не менялись.
 **Прод 22.11:** v0.29.1 — по скриншотам владельца: на ПК «Noten» при смене предмета/«Schnitt» анимируется только правая колонка (`pageMotion.js` `DESKTOP_SPLIT`), группа в боковом меню раскрывается плавно (`NavGroup.jsx`), у прокручиваемого меню гаснут края (`useScrollFade`, `utils/scrollEdges.js` + тест, `@utility fade-*` в `index.css`). Скриншоты `orbook-compare/42-notenziel/shots/fix-*.png` (`_tools/fix-anim.mjs`).
 **Дальше:** новый чат, Opus · effort high → `/orb-auto` (часть 43, сначала макеты).
+
+## Часть 43 · Vokabeln / Karteikarten (2026-11-22, дизайн)
+Макеты `design/neu/43-karteikarten/` (`gen.py` на кирпичиках 41/30/19c/16, `build.py`, 22 SVG/PNG, `index.html`), артефакт https://claude.ai/artifact/PxJZgJY4jNvtE5xMAUzLXZ.
+Что на макетах: раздел «Karteikarten» (Heute lernen + стопки по предметам, пусто), стопка (тест, Lernstand 5 коробок, «Zuerst zeigen», «fällige lernen» / «Alle üben», карточки, ⋮, удалить?), учить (лицо → «Umdrehen» → «Weiß ich / Weiß ich nicht», «Geschafft!»), «Neuer Stapel» (Liste с проверкой строк, Einzeln-шторка), 43b: блок на Start, строки в Aufgaben, карточка в шторке теста, «Stapel teilen» (QR/ссылка) и «Stapel übernehmen»; ПК — список+стопка и учить.
+Решения (в обзоре): только устройство + Sync; Leitner 5 коробок, 1/2/4/8/16 дней; «Alle üben» коробки не двигает; карточки при «Teilen» — в ссылке после «#», без сервера; учитель стопки классу не раздаёт.
+**Дальше:** «ок дизайн» → `/orb-spec 43`, `/orb-build`, `/orb-check` (Opus · effort high).
