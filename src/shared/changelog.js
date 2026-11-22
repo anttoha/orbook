@@ -6,6 +6,15 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.30.0",
+    date: "2026-11-22",
+    neu: [
+      "Neu: Karteikarten. Leg Stapel für Vokabeln, Begriffe oder Jahreszahlen an – einzeln oder als Liste reinkopiert („the journey – die Reise“).",
+      "Beim Lernen drehst du die Karte um und sagst „Weiß ich“ oder „Weiß ich nicht“ – am Handy auch per Wischen. Was du kannst, kommt seltener dran, was nicht, gleich morgen wieder.",
+      "Hängt ein Stapel an einem Test, siehst du ihn direkt im Test. Was heute dran ist, steht in den Aufgaben und als Block auf Start. Und mit „Teilen“ schickst du einen Stapel per Link oder QR an Freunde.",
+    ],
+  },
+  {
     version: "0.29.1",
     date: "2026-11-22",
     behoben: [
