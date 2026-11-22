@@ -9,6 +9,7 @@ import { decryptNotes, deriveSync, encryptNotes, generateSyncCode, normalizeSync
 import { useClasses } from "./classesStore";
 import { useTasksStore } from "./tasksStore";
 import { useNotenStore } from "./notenStore";
+import { useNotenZielStore } from "./notenZielStore";
 import { useUserStore } from "./userStore";
 
 // ─────────────────────────────────────────────────────────────
@@ -168,6 +169,7 @@ function localBlock(stamps) {
     kurse: { value: kurseOf(user), updatedAt: stamps.kurse },
     darstellung: { value: darstellungOf(user, useTheme.getState().theme), updatedAt: stamps.darstellung },
     noten: notenOf(),
+    ziele: zieleOf(),
     klassen: classList().length > 0 ? localKlassen(user, useClasses.getState().activeId, classList(), classStamps(stamps)) : null,
   };
 }
@@ -176,6 +178,12 @@ function localBlock(stamps) {
 function notenOf() {
   const { data, stamp } = useNotenStore.getState();
   return stamp ? { value: data, updatedAt: stamp } : null;
+}
+
+// Цели (часть 42): ни разу не меняли здесь — null, тогда берутся пришедшие
+function zieleOf() {
+  const { ziele, stamp } = useNotenZielStore.getState();
+  return stamp ? { value: ziele, updatedAt: stamp } : null;
 }
 
 const differs = (a, b) => JSON.stringify(a) !== JSON.stringify(b);
@@ -203,6 +211,9 @@ function applyBlock(block, parts, set) {
     }
     if (parts.noten !== false && block.noten?.updatedAt && block.noten.updatedAt !== useNotenStore.getState().stamp) {
       useNotenStore.getState().setSynced(block.noten.value ?? null, block.noten.updatedAt);
+    }
+    if (parts.noten !== false && block.ziele?.updatedAt && block.ziele.updatedAt !== useNotenZielStore.getState().stamp) {
+      useNotenZielStore.getState().setSynced(block.ziele.value, block.ziele.updatedAt);
     }
     set({ stamps });
   } finally {
@@ -297,7 +308,11 @@ export function watchChanges(onChange) {
   const stopNoten = useNotenStore.subscribe((state, prev) => {
     if (!applying && state.stamp !== prev.stamp) onChange();
   });
+  const stopZiele = useNotenZielStore.subscribe((state, prev) => {
+    if (!applying && state.stamp !== prev.stamp) onChange();
+  });
   return () => {
+    stopZiele();
     stopNoten();
     stopUser();
     stopTheme();

@@ -2,7 +2,8 @@
 // Sync-блок целиком (часть 25): не только заметки, а всё, что пользователь выбрал.
 // Блок шифруется как раньше (syncCrypto.js); сервер видит только зашифрованный текст.
 // Блок: { notes, tasks, marks, kurse: { value, updatedAt } | null, darstellung: { value, updatedAt } | null,
-//         klassen: { [classId]: { notes, kurse, info } } | null, noten: { value, updatedAt } | null }
+//         klassen: { [classId]: { notes, kurse, info } } | null, noten: { value, updatedAt } | null,
+//         ziele: { value, updatedAt } | null }
 // Старый блок { notes } тоже подходит: недостающие части — пустые.
 // Часть 29d: у каждого класса свои заметки и курсы — они в klassen. Верхние notes/kurse — копия
 // «домашнего» класса, чтобы старые версии приложения на других устройствах продолжали работать.
@@ -12,7 +13,7 @@ import { appearanceOf } from "./appearance";
 import { mergeNotes } from "./notes";
 
 // Части, которые можно включать и выключать (по умолчанию все включены)
-// noten (часть 36b) — оценки из InfoPoint (без логина и пароля: они только на устройстве)
+// noten (часть 36b) — оценки из InfoPoint (без логина и пароля: они только на устройстве) и цели (часть 42)
 export const SYNC_PARTS = ["notes", "aufgaben", "kurse", "darstellung", "klassen", "noten"];
 export const ALL_PARTS = { notes: true, aufgaben: true, kurse: true, darstellung: true, klassen: true, noten: true };
 // Устройство со старой версией хранит parts без klassen — отсутствие значит «включено»
@@ -48,6 +49,7 @@ export const readBlock = (plain) => ({
   kurse: plain?.kurse ?? null,
   darstellung: plain?.darstellung ?? null,
   noten: plain?.noten ?? null, // часть 36b: { value: ответ InfoPoint | null после «Abmelden», updatedAt }
+  ziele: plain?.ziele ?? null, // часть 42: { value: цели по оценкам, updatedAt }
   klassen: plain?.klassen ?? null, // null — блок записан до части 29d (последним: так же, как в mergeBlock)
 });
 
@@ -151,6 +153,8 @@ function mergeTop(local, remote, parts, now) {
     darstellung: parts.darstellung ? newerSetting(local.darstellung, remote.darstellung) : remote.darstellung,
     // Оценки: побеждает более новое (загрузка или «Abmelden»). Устройство старой версии parts.noten не знает — значит включено
     noten: isOn(parts, "noten") ? newerSetting(local.noten ?? null, remote.noten ?? null) : (remote.noten ?? null),
+    // Цели (часть 42) едут вместе с «Noten»: побеждает более новое изменение
+    ziele: isOn(parts, "noten") ? newerSetting(local.ziele ?? null, remote.ziele ?? null) : (remote.ziele ?? null),
   };
 }
 

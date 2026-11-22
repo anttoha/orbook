@@ -10,7 +10,7 @@ const box = { encryptNotes: async (_k, v) => JSON.stringify(v), decryptNotes: as
 
 describe("readBlock", () => {
   it("старый блок только с заметками → остальное пустое", () => {
-    expect(readBlock({ notes: [note("a", "x")] })).toEqual({ notes: [note("a", "x")], tasks: [], marks: [], kurse: null, darstellung: null, noten: null, klassen: null });
+    expect(readBlock({ notes: [note("a", "x")] })).toEqual({ notes: [note("a", "x")], tasks: [], marks: [], kurse: null, darstellung: null, noten: null, ziele: null, klassen: null });
   });
 });
 
@@ -226,5 +226,18 @@ describe("nav · часть 35", () => {
   it("«Untere Leiste» едет с Darstellung, по умолчанию — null", () => {
     expect(darstellungOf({}, "light").nav).toBeNull();
     expect(darstellungOf({ nav: { phone: ["start"] } }, "light").nav).toEqual({ phone: ["start"] });
+  });
+});
+
+describe("ziele · часть 42", () => {
+  const empty = readBlock(null);
+  const mine = { value: { "1:ma": { ziel: 2, k: 2 } }, updatedAt: "2026-11-22T10:00:00Z" };
+  const theirs = { value: { "1:de": { ziel: 1.5, k: 1 } }, updatedAt: "2026-11-22T09:00:00Z" };
+  it("новее побеждает; выключенные «Noten» — цели из блока как есть", () => {
+    expect(mergeBlock({ ...empty, ziele: mine }, { ...empty, ziele: theirs }).ziele).toBe(mine);
+    expect(mergeBlock({ ...empty, ziele: mine }, { ...empty, ziele: theirs }, { notes: true, aufgaben: true, kurse: true, darstellung: true, noten: false }).ziele).toBe(theirs);
+  });
+  it("блок старой версии без ziele — свои цели остаются", () => {
+    expect(mergeBlock({ ...empty, ziele: mine }, readBlock({ notes: [] })).ziele).toBe(mine);
   });
 });
