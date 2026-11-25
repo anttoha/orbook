@@ -1861,6 +1861,7 @@ export const uk = {
   "Raum {n}": "Кабінет {n}",
   "dann {n}": "далі {n}",
   "Wochenende": "Вихідні",
+  "Schulfrei": "Немає занять",
   "Frei": "Вільно",
   "{n} Änderungen": "{n} змін",
   "KW": "Тиж.",

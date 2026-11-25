@@ -1861,6 +1861,7 @@ export const en = {
   "Raum {n}": "Room {n}",
   "dann {n}": "then {n}",
   "Wochenende": "Weekend",
+  "Schulfrei": "No school",
   "Frei": "Free",
   "{n} Änderungen": "{n} changes",
   "KW": "Wk",

@@ -20,6 +20,7 @@ const BlockSheet = ({ block, onClose, onSize, onOpt, onRemove }) => {
   const info = block ? blockInfo(block.kind) : null;
   const hasCount = block?.opts.count != null;
   const hasMine = block?.opts.mine != null;
+  const hasEvening = block?.opts.evening != null;
 
   return (
     <Sheet open={Boolean(block)} onClose={onClose} desktop="dialog" eyebrow={t("Block")} title={info ? t(info.label) : ""}>
@@ -34,7 +35,7 @@ const BlockSheet = ({ block, onClose, onSize, onOpt, onRemove }) => {
             </div>
           </div>
 
-          {(hasCount || hasMine) && (
+          {(hasCount || hasMine || hasEvening) && (
             <ListCard>
               {hasCount && (
                 <SettingRow label={t("Einträge")}>
@@ -44,6 +45,11 @@ const BlockSheet = ({ block, onClose, onSize, onOpt, onRemove }) => {
               {hasMine && (
                 <SettingRow label={t("Nur meine Kurse")}>
                   <Switch label={t("Nur meine Kurse")} checked={block.opts.mine} onChange={(on) => onOpt("mine", on)} />
+                </SettingRow>
+              )}
+              {hasEvening && (
+                <SettingRow label={t("Abends schon morgen")}>
+                  <Switch label={t("Abends schon morgen")} checked={block.opts.evening} onChange={(on) => onOpt("evening", on)} />
                 </SettingRow>
               )}
             </ListCard>

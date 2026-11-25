@@ -4,7 +4,7 @@
 // ─────────────────────────────────────────────────────────────
 import { isFree, lastDay } from "./appointments";
 import { addDays, isWeekend } from "./format";
-import { toMinutes } from "./lessonClock";
+import { lessonState, toMinutes } from "./lessonClock";
 import { visibleNotes } from "./notes";
 
 const CHANGED = ["cancelled", "substitution", "moved", "added", "room_change"];
@@ -12,6 +12,15 @@ const CHANGED = ["cancelled", "substitution", "moved", "added", "room_change"];
 // Ближайший выпавший урок сегодня после этой минуты: «09:25 · Englisch fällt aus» в блоке «Jetzt»
 export function nextCancelled(lessons, minutes) {
   return lessons.filter((l) => l.status === "cancelled" && l.start && toMinutes(l.start) > minutes).sort((a, b) => toMinutes(a.start) - toMinutes(b.start))[0] ?? null;
+}
+
+// «Abends schon morgen» (часть 45): сегодня смотреть уже нечего? Свободный день, ни одного
+// своего урока или последний закончился. Плана нет — не знаем, значит остаёмся на сегодня
+export function isDayDone(day, lessons, now) {
+  if (day?.status === "holiday") return true;
+  if (day?.status !== "ok") return false;
+  const active = lessons.filter((l) => l.status !== "cancelled");
+  return active.length === 0 || lessonState(active, now).over;
 }
 
 // «Änderungen»: изменения сегодня и в следующий учебный день (days — дни из загруженных недель).

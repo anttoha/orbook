@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { changesSoon, holidayCountdown, latestMaterials, latestNotes, nextCancelled, schoolDaysUntil } from "./startData";
+import { changesSoon, holidayCountdown, isDayDone, latestMaterials, latestNotes, nextCancelled, schoolDaysUntil } from "./startData";
 
 const lesson = (period, start, status = "normal") => ({ period, start, end: "23:59", status, subject: { code: "Ma", name: "Mathe" } });
 
@@ -8,6 +8,22 @@ describe("startData", () => {
     const lessons = [lesson(1, "07:30", "cancelled"), lesson(3, "09:25", "cancelled"), lesson(4, "10:30")];
     expect(nextCancelled(lessons, 8 * 60).period).toBe(3);
     expect(nextCancelled(lessons, 10 * 60)).toBeNull();
+  });
+
+  it("«Abends schon morgen»: сегодня уже нечего смотреть", () => {
+    const at = (time) => new Date(`2026-11-25T${time}:00+01:00`);
+    const short = (period, start, end, status = "normal") => ({ ...lesson(period, start, status), end });
+    const lessons = [short(1, "07:30", "08:15"), short(2, "08:20", "09:05"), short(3, "09:25", "10:10", "cancelled")];
+    const day = { status: "ok" };
+    expect(isDayDone(day, lessons, at("09:04"))).toBe(false);
+    expect(isDayDone(day, lessons, at("09:05"))).toBe(true); // выпавший 3-й урок не держит день
+    expect(isDayDone(day, [], at("06:00"))).toBe(true); // своих уроков нет
+    expect(isDayDone(day, [lessons[2]], at("06:00"))).toBe(true); // всё отменено
+    expect(isDayDone(day, [{ ...lesson(10, null), end: null }], at("20:00"))).toBe(false); // время неизвестно
+    expect(isDayDone({ status: "holiday" }, [], at("08:00"))).toBe(true);
+    expect(isDayDone({ status: "not_published" }, [], at("20:00"))).toBe(false);
+    expect(isDayDone({ status: "unavailable" }, [], at("20:00"))).toBe(false);
+    expect(isDayDone(null, [], at("20:00"))).toBe(false);
   });
 
   it("изменения сегодня и в следующий учебный день", () => {

@@ -15,7 +15,7 @@ export const SIZE_LABELS = { get klein() { return translate("Klein"); }, get bre
 // opts — настройки блока по умолчанию, feature — раздел, который школа может выключить (me.features)
 export const BLOCKS = [
   { kind: "jetzt", get label() { return translate("Jetzt"); }, get hint() { return translate("Aktuelle und nächste Stunde"); }, sizes: ["breit"] },
-  { kind: "heute", get label() { return translate("Heute"); }, get hint() { return translate("Alle Stunden des Tages"); }, sizes: ["breit", "gross"] },
+  { kind: "heute", get label() { return translate("Heute"); }, get hint() { return translate("Alle Stunden des Tages"); }, sizes: ["breit", "gross"], opts: { evening: false } },
   { kind: "woche", get label() { return translate("Woche"); }, get hint() { return translate("Die ganze Woche im Kleinen"); }, sizes: ["gross"] },
   { kind: "tests", get label() { return translate("Tests"); }, get hint() { return translate("Was als Nächstes ansteht"); }, sizes: ["klein", "breit", "gross"], opts: { count: 2, mine: true } },
   { kind: "aufgaben", get label() { return translate("Aufgaben"); }, get hint() { return translate("Offene Hausaufgaben"); }, sizes: ["klein", "breit"] },
