@@ -21,6 +21,7 @@ import { useAndroidUpdateOnStart } from "../shared/hooks/useAndroidUpdateOnStart
 import { useAndroidWidgetSync } from "../shared/hooks/useAndroidWidgetSync";
 import { useTipsOnStart } from "../shared/hooks/useTipsOnStart";
 import { usePlanLive } from "../shared/hooks/usePlanLive";
+import { useSchoolNow } from "../shared/hooks/useSchoolNow";
 import { useLerntimerClock } from "../shared/hooks/useLerntimerClock";
 import { useCalendarFeedCourses } from "../shared/hooks/useCalendarFeedCourses";
 import { usePushOnStart } from "../shared/hooks/usePushOnStart";
@@ -46,7 +47,6 @@ const HomePage = () => {
   const me = usePlanStore((s) => s.me); // хто я
   const startError = usePlanStore((s) => s.startError); // помилка старту
   const start = usePlanStore((s) => s.start); // GET /api/auth/me (+ решта даних)
-  const tick = usePlanStore((s) => s.tick); // оновити «зараз»
   const demo = usePlanStore((s) => s.meta?.demo); // демо-сервер?
   // чи пройдено вибір курсів. Учителю він не потрібен: бачить увесь план класу (змінити можна в «Meine Kurse»)
   const coursesChosen = useUserStore((s) => s.coursesChosen) || isTeacher(me);
@@ -74,12 +74,7 @@ const HomePage = () => {
   useLerntimerClock(Boolean(me)); // часть 44: конец раунда/перерыва — звук и тост на любой странице, будильник в Android-App
   useNotesSync(Boolean(me) && me.features?.notesSync !== false); // нотатки на інших пристроях (якщо є Sync-Code)
 
-  // Раз на хвилину: оновити час школи (рядок «зараз» і «noch 27 min»)
-  useEffect(() => {
-    if (!me) return undefined; // не увійшли — нічого не робимо
-    const id = setInterval(tick, 60_000);
-    return () => clearInterval(id);
-  }, [me, tick]);
+  useSchoolNow(Boolean(me)); // «зараз» за часом школи: раз на хвилину і при поверненні у вкладку
 
   if (me === undefined && !startError) return <div className="min-h-dvh bg-paper" />; // перевіряємо…
 

@@ -120,12 +120,13 @@ describe("api: частый опрос", () => {
     expect(fetch.mock.calls[0][1].headers["If-None-Match"]).toBe('"abc"');
   });
 
-  it("обычные запросы ETag не шлют и кеш не выключают", async () => {
+  // часть 46: кэш браузера не должен отдавать старый ответ как свежий — ни в одном запросе
+  it("обычные запросы ETag не шлют, кэш браузера тоже выключен", async () => {
     reply(200, {}, { ETag: '"zzz"' });
     await api("/week");
     await api("/week");
     expect(fetch.mock.calls[1][1].headers["If-None-Match"]).toBeUndefined();
-    expect(fetch.mock.calls[1][1].cache).toBeUndefined();
+    expect(fetch.mock.calls[1][1].cache).toBe("no-store");
   });
 });
 

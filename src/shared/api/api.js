@@ -62,9 +62,9 @@ export const examIcsUrl = (id) => `/api/exams/${id}.ics`;
 // Головна функція: await api("/week?date=2026-10-05")
 //                  classId — запит від імені іншого класу (карточки «Meine Klassen»); null — без класу
 //                  await api("/auth/login", { method: "POST", body: { password } })
-// conditional: true — частий опит. Самі шлемо If-None-Match і вимикаємо кеш браузера:
-// інакше браузер сам отримує 304 і віддає коду стару відповідь як 200, і екран перемальовується.
-// Сервер відповів 304 → api повертає null.
+// Кэш браузера выключен для всех /api (cache: "no-store"): без сети Android-App иначе отдаёт вчерашний
+// /meta как свежий ответ, и «сегодня» уезжает назад (часть 46). Офлайн-копия — только offlineCache.js.
+// conditional: true — частий опит: самі шлемо If-None-Match, на 304 api повертає null і екран не перемальовується.
 const savedEtags = new Map(); // «клас:шлях» → останній ETag
 
 export async function api(path, { method = "GET", body, signal, headers = {}, timeout = TIMEOUT_MS, conditional = false, classId = defaultClass(path) } = {}) {
@@ -81,7 +81,7 @@ export async function api(path, { method = "GET", body, signal, headers = {}, ti
       method,
       signal: timer.signal,
       credentials: "same-origin", // надсилати cookies
-      ...(conditional ? { cache: "no-store" } : {}),
+      cache: "no-store",
       headers: { ...(body !== undefined ? { "Content-Type": "application/json" } : {}), ...classHeader(path, classId), ...etagHeader, ...headers },
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });
