@@ -837,3 +837,6 @@ Android: `widget/FuerDich.kt` — погода из ответа, настрой
 Скриншоты сайта: `/root/work/orbook-compare/50-wetter/shots/c-*` (`_tools/p50c.mjs`).
 **Дальше:** владелец ставит демо-APK и проверяет виджеты на телефоне; потом «на прод» (changelog 45–50, прод-APK).
 
+**Прод 26.11:** v0.32.0 (changelog 45–50, EN/UK), `docs/releases/v0.32.0.md`, тег v0.32.0, Release создан Actions, прод-APK 0.32.0 (26) — в Release и на сайте. Бэкенд (`a23b6f9`) уже на проде с выкладки 50c (общий код, без миграций). Погода на проде появится, когда админ включит «Wetter» и выберет место школы.
+CI упал на `WidgetShots` (Robolectric качает Android до проверки `WIDGET_SHOTS`) — тест теперь исключён без `WIDGET_SHOTS` (`38ddfd4`).
+Открыто: «Abmelden» через Sync не стирает вход InfoPoint в Android-App (а — стирать / б — оставить), ждёт ответа владельца.
