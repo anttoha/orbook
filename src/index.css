@@ -321,6 +321,7 @@
     --color-ok-tint: #e1f5eb;
     --color-danger-tint: #fce7eb;
     --color-ok: #1f9d6b;
+    --color-rain: #4c82ec; /* часть 50a: «60 %» дождя в часах шторки «Wetter» (как Mathe-solid в макете) */
     --color-skeleton: #eee7de;
     --color-switch-off: #c0b8c6;
     --color-switch-thumb: #ffffff;
@@ -422,6 +423,7 @@
     --color-ok-tint: #163027;
     --color-danger-tint: #3a1d25;
     --color-ok: #5fd3a2;
+    --color-rain: #6191ee; /* часть 50a: «60 %» дождя в часах шторки «Wetter» (как Mathe-solid в макете) */
     --color-skeleton: #27222f;
     --color-switch-off: #352f40;
     --color-switch-thumb: #16131c;

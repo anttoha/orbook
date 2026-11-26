@@ -23,6 +23,7 @@ import { AllCoursesButton, AllCoursesLegend } from "../components/week/AllCourse
 import { useHotkeys } from "../shared/hooks/useHotkeys";
 import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useNow } from "../shared/hooks/useNow";
+import WeatherCard from "../components/weather/WeatherCard";
 import { useDay, useLessonFilter } from "../shared/hooks/usePlan";
 import { useSheet } from "../shared/hooks/useSheet";
 import { useSwipe } from "../shared/hooks/useSwipe";
@@ -204,6 +205,7 @@ const Day = () => {
           </div>
 
           <aside className="grid content-start gap-4 lg:grid-cols-2 desktop:grid-cols-1">
+            <WeatherCard date={date} />
             <AppointmentBanner date={date} />
             {day?.info.length > 0 && <DayInfoCard day={day} onOpen={openInfo} />}
             <HomeworkDue date={date} />
@@ -236,6 +238,8 @@ const Day = () => {
           )}
 
           <PlanBanner resource={week} onRetry={reload} />
+          {/* часть 50a: погода дня — нет прогноза, карточки нет */}
+          <WeatherCard date={date} />
           {day?.info.length > 0 && <DayInfoBanner info={day.info} onClick={openInfo} />}
           <AppointmentBanner date={date} />
           {checkBanner}

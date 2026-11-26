@@ -812,3 +812,11 @@ Android: `notify/TimerAlarm.kt` (точный будильник, канал «L
 Дизайн ок 26.11. + владелец: «в настройках можно выбрать ВСЁ, что у каждого своё» → дорисованы `handy-13-einstellungen`, `handy-14-mitnehmen`, `handy-15-mitnehmen-neu`, `pc-03-einstellungen` (Losgehen, Abends ab, Zeigen, пороги Wetter-Tipps, Mitnehmen pro Fach, Am Testtag erinnern). Spec `docs/specs/50-wetter/spec.md` (50a погода+бэкенд, 50b блок+настройки, 50c виджеты+APK).
 Ок 26.11. + владелец: настройки не должны выглядеть как «только для Start» → шторка блока и «Widget einstellen» ведут строкой «Einstellungen · Start und Widget ›» на общую страницу `/fuer-dich` (eyebrow «Start · Widget»). План бэкенда показан, возражений нет. Ещё 26.11.: вещи в «Mitnehmen pro Fach» — свой текст для любого своего предмета, «Oft gebraucht» — лишь подсказки (в spec).
 **Дальше:** новый чат, Opus · effort high → `/orb 50` — начать с 50a (бэкенд погоды по spec, потом Woche/Tag/шторка/админ, Datenschutz).
+
+### 50a · Wetter (2026-11-26, демо)
+Бэкенд (`/opt/orbook-be` `491b809`, выложен): `GET /api/weather` (Open-Meteo через сервер, кеш у школы `internal.weatherCache`: свежий 30 мин, запасной до 24 ч, иначе 204; ETag), настройки школы `weather.enabled`/`weather.place`, админ `GET /api/admin/weather/places` (поиск, 20/мин) и `/preview`; демо — Hannover, прогноз сдвинут на демо-даты. DATENSCHUTZ.md, API/FRONTEND/openapi/api.http.
+Фронт: `shared/utils/weather.js` (+тест: значки WMO, «ab 13 Uhr», Losgehen, Wetter-Tipps по порогам, «Stand»), `api/weather.js`, `weatherStore` (кеш offlineCache, 204 = «погоды нет»; без `conditional`, чтобы 204 не путать с 304), `components/weather/*` (WeatherIcon, WeatherMini, WeatherCard, WeatherSheet `?sheet=wetter`, HourStrip, TipChips), третья строка в плашке дня Woche (телефон и ПК — на ПК тоже третьей строкой: колонки узкие, справа кнопка (i)), карточка в Tag, Admin → Einstellungen → «Wetter» (`/admin/wetter`). Токен `--color-rain`. Datenschutz — раздел «Wetter», срок, «Links nach draußen», копия погоды на устройстве; EN/UK.
+Пока без настроек ученика (Losgehen 45 мин и пороги по умолчанию) — они в 50b.
+Скриншоты: `/root/work/orbook-compare/50-wetter/shots/` (`_tools/p50.mjs`).
+**Дальше:** 50b (блок «Für dich jetzt», `nowFocus.js`, настройки `/fuer-dich`, Sync) — новый чат, Opus · effort high → `/orb 50`.
+

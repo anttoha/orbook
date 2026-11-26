@@ -5,6 +5,7 @@ import { AdminError, AdminSkeleton } from "../components/admin/AdminState";
 import PasswordLinks from "../components/admin/settings/PasswordLinks";
 import ExamTypesLink from "../components/admin/settings/ExamTypesLink";
 import ChannelsLink from "../components/admin/settings/ChannelsLink";
+import WeatherLink from "../components/admin/settings/WeatherLink";
 import ClassesCard from "../components/admin/settings/ClassesCard";
 import DangerZone from "../components/admin/settings/DangerZone";
 import { AppointmentsCard, FeaturesCard, HomeworkCard, MusterCard, PushCard, SecurityCard, UpdateCard } from "../components/admin/settings/OptionCards";
@@ -59,6 +60,7 @@ const SettingsForm = ({ data }) => {
           <PasswordLinks className="order-1" />
           <ExamTypesLink className="order-1" count={form.exams?.types?.length} />
           <ChannelsLink className="order-1" />
+          <WeatherLink className="order-1" weather={data.settings.weather} />
           <SchoolCard
             className="order-2"
             school={form.school}

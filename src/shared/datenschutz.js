@@ -2,7 +2,7 @@
 // Меняется что-то в данных (новая таблица, cookie, срок) — поправь текст здесь и дату STAND.
 // Формат раздела: title, intro — абзацы, rows — пары [что, пояснение] (cookies, сроки).
 
-export const STAND = "2026-11-22";
+export const STAND = "2026-11-26";
 
 // Коротко — первые строки страницы (макет 27). Иконки подставляет страница по id.
 export const FACTS = [
@@ -116,10 +116,18 @@ export const SECTIONS = [
     ],
   },
   {
+    id: "wetter",
+    title: "Wetter",
+    intro: [
+      "Nur wenn der Admin das Wetter einschaltet. Dann holt der Server von ORBook die Vorhersage bei Open-Meteo (Schweiz) – für den Ort der Schule, den der Admin aussucht. Dorthin gehen nur die Koordinaten dieses Orts, nichts über dich.",
+      "Dein Gerät fragt Open-Meteo nie selbst: Deine IP-Adresse und dein Standort gehen nicht dorthin. Der Server hebt die letzte Vorhersage höchstens 24 Stunden auf. Wetterdaten: Open-Meteo (CC BY 4.0).",
+    ],
+  },
+  {
     id: "geraet",
     title: "Auf deinem Gerät",
     intro: [
-      "Im Browser (localStorage) liegen: deine Klassen mit dem Namen und der Farbe, die du ihnen gibst, deine Kurse, Darstellung (auch die Sprache, Design und Akzentfarbe), Fachfarben, Stundenplan-Ansicht und die Blöcke auf deinem Start, deine Notizen, Aufgaben und Häkchen, deine Karteikarten, dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne, damit die App auch ohne Netz geht.",
+      "Im Browser (localStorage) liegen: deine Klassen mit dem Namen und der Farbe, die du ihnen gibst, deine Kurse, Darstellung (auch die Sprache, Design und Akzentfarbe), Fachfarben, Stundenplan-Ansicht und die Blöcke auf deinem Start, deine Notizen, Aufgaben und Häkchen, deine Karteikarten, dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne und des Wetters, damit die App auch ohne Netz geht.",
       "In der Android-App liegt zusätzlich eine Kopie für das Widget: der Plan der nächsten zwei Wochen, Tests, Hausaufgaben, Termine, deine letzten Notizen und Häkchen. Dafür fragt die App den Server alle 15, 30 oder 60 Minuten (so wie im Widget eingestellt, sonst 30) – mit deiner Anmeldung, wie die Website. Entfernst du das letzte Widget und sind die Mitteilungen der App aus, hört das auf. Die Kopie löscht Android zusammen mit der App.",
       "Mitteilungen in der Android-App macht die App selbst: Sie vergleicht den Plan, den sie für Widgets und Mitteilungen ohnehin lädt, mit dem vorigen und meldet, was sich geändert hat. Die Erinnerung vor der Stunde stellt sie aus dem gespeicherten Plan – auch ohne Internet. Der Server erfährt davon nichts, Google oder andere Dienste sind nicht beteiligt.",
       "Damit ORBook auch ohne Internet startet, legt die Website ihre eigenen Seiten und Dateien auf dem Gerät ab (Service Worker). Daten deiner Klasse sind darin nicht.",
@@ -153,6 +161,7 @@ export const SECTIONS = [
       ["Mitteilungen", "bis du sie ausschaltest, höchstens 60 Tage ohne Zustellung; was schon geschickt wurde: 14 Tage"],
       ["Kalender-Abo", "bis du es löschst oder die Anmeldung auf dem Gerät endet"],
       ["Telegram-Gruppe", "bis der Admin sie trennt; was geschickt wurde: 30 Tage"],
+      ["Wetter", "letzte Vorhersage für den Ort der Schule, höchstens 24 Stunden"],
       ["Telegram-Bot", "bis du ihn trennst oder blockierst, höchstens 60 Tage ohne Nachricht; was schon geschickt wurde: 14 Tage"],
       ["Protokoll für den Admin", "30 Tage, ohne IP und ohne Namen"],
       ["Sicherungskopien", "14 Tage, vor größeren Änderungen bis zu 60 Tage"],
@@ -162,7 +171,7 @@ export const SECTIONS = [
     id: "draussen",
     title: "Links nach draußen",
     intro: [
-      "Materialien öffnen Google Drive oder OneDrive. „Teilen“ öffnet WhatsApp oder das Teilen-Menü deines Geräts. Dort gelten die Regeln dieser Anbieter. Die App schickt ihnen vorher nichts. Mitteilungen laufen über den Dienst deines Browsers, verschlüsselt (siehe oben). Ein Kalender-Abo holt dein Kalender selbst ab (siehe oben).",
+      "Materialien öffnen Google Drive oder OneDrive. „Teilen“ öffnet WhatsApp oder das Teilen-Menü deines Geräts. Dort gelten die Regeln dieser Anbieter. Die App schickt ihnen vorher nichts. Mitteilungen laufen über den Dienst deines Browsers, verschlüsselt (siehe oben). Ein Kalender-Abo holt dein Kalender selbst ab (siehe oben). Das Wetter holt der Server, nicht dein Gerät (siehe oben).",
       "Wir geben keine Daten weiter und verkaufen nichts. Der Server steht in Deutschland.",
     ],
   },

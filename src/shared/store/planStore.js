@@ -11,6 +11,7 @@ import { currentMonday } from "../utils/lessons";
 import { planChanges } from "../utils/planDiff";
 import { isTeacherCode, startTarget } from "../utils/classes";
 import { useAppointmentStore } from "./appointmentsStore";
+import { useWeatherStore } from "./weatherStore";
 import { useClasses } from "./classesStore";
 import { useMaterials } from "./materialsStore";
 import { usePushStore } from "./pushStore";
@@ -170,6 +171,7 @@ export const usePlanStore = create((set, get) => ({
     seenWeeks = {};
     useMaterials.getState().reset();
     useAppointmentStore.getState().reset();
+    useWeatherStore.getState().reset();
     // me не стираем: меню и раскладка остаются на месте, пока грузится новый класс (без «белой вспышки»)
     set({ ...NO_CLASS_DATA });
     await get().start();
@@ -246,6 +248,7 @@ export const usePlanStore = create((set, get) => ({
     cache.clearAll(); // кеш відповідей особистий — стираємо
     useMaterials.getState().reset();
     useAppointmentStore.getState().reset();
+    useWeatherStore.getState().reset();
     seenChange.save(null);
     seenWeeks = {};
     useClasses.getState().reset(); // вийшли з усіх класів

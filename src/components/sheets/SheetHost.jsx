@@ -27,6 +27,7 @@ import TelegramSheet from "../push/TelegramSheet";
 import PlanCheckSheet from "../muster/PlanCheckSheet";
 import AddClassSheet from "./AddClassSheet";
 import ClassSettingsSheet from "./ClassSettingsSheet";
+import WeatherSheet from "../weather/WeatherSheet";
 
 // Яке ім'я в адресі (?sheet=…) якій шторці відповідає
 const SHEETS = {
@@ -57,6 +58,7 @@ const SHEETS = {
   telegram: TelegramSheet, // «Mit Telegram verbinden» (часть 27b)
   klasseneu: AddClassSheet, // «Klasse hinzufügen» (часть 29)
   klasse: ClassSettingsSheet, // «Klasse einstellen» (часть 29), ?id=2
+  wetter: WeatherSheet, // «Wetter» дня (часть 50a), ?datum=…
 };
 
 // ─────────────────────────────────────────────────────────────

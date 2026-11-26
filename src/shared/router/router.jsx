@@ -81,6 +81,7 @@ export const router = createBrowserRouter([
           page({ path: "materialien", lazy: load(() => import("../../pages/AdminMaterials")) }), // усі посилання, видалення (частина 15)
           page({ path: "termine", lazy: load(() => import("../../pages/AdminAppointments")) }), // усі терміни (частина 18)
           page({ path: "kanaele", lazy: load(() => import("../../pages/AdminChannels")) }), // Telegram-група класу (частина 27)
+          page({ path: "wetter", lazy: load(() => import("../../pages/AdminWeather")) }), // место школы для погоды (часть 50a)
           page({ path: "schulen", lazy: load(() => import("../../pages/AdminSchools")) }), // школи і класи сервера (частина 29c)
           page({ path: "termine/neu", lazy: load(() => import("../../pages/AdminAppointmentEdit")) }),
           page({ path: "termine/:id/bearbeiten", lazy: load(() => import("../../pages/AdminAppointmentEdit")) }),
