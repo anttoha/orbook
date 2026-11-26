@@ -280,21 +280,16 @@ def strip(s): return s[s.index("</defs>") + 7: s.rindex("</svg>")] if "</defs>" 
 
 def p_block(st):
     c = st.c
-    top = 128
+    top = 396
     b = [strip(p_start(st)), p30.sheet(st, top, "Block", "Für dich jetzt")]
     y = top + 108
     b.append(label(18, y, "Größe", c))
     for i, (nm, sh) in enumerate([("Klein", "k"), ("Breit", "b"), ("Groß", "g")]):
         b.append(p30.size_tile(st, 18 + i * 120.67, y + 12, 112.67, nm, sh, i == 2))
     y += 126
-    b.append(label(18, y, "Zeigen", c)); y += 12
-    rows = [("Wetter", True), ("Was mitnehmen", True), ("Hausaufgaben", True), ("Tests", True), ("Änderungen", True)]
-    b.append(st.card(18, y, 354, 54 * len(rows)))
-    for i, (t, on) in enumerate(rows): b.append(p30.switch_row(st, 18, y + i * 54, 354, t, on, i == 0))
-    y += 54 * len(rows) + 26
-    b.append(st.card(18, y, 354, 108))
-    b.append(T(32, y + 34.5, "Losgehen vorher", 14.5, 500, c["ink"]) + stepper(st, 220, y + 8, "45 min"))
-    b.append(p30.switch_row(st, 18, y + 54, 354, "Nur meine Kurse", True))
+    b.append(st.card(18, y, 354, 54) + link_row(st, 18, y, 354, "Einstellungen", "Start und Widget", True))
+    y += 54 + 16
+    b.append(st.button(18, y, 354, "Vom Start entfernen", "danger", p30.TRASH))
     return st.page(390, 844, "".join(b))
 
 # ════════════════ 50a · Woche mit Wetter ════════════════
@@ -564,14 +559,9 @@ def p_config(theme="hell"):
     ch_, _ = W.chips(st, x, y, w, ALL_KINDS, "fuer"); b.append(ch_)
     rows = (len(ALL_KINDS) + 2) // 3
     y += rows * 64 + (rows - 1) * 8 + 30
-    b.append(label(x, y, "Zeigen", c)); y += 12
-    rws = [("Wetter", True), ("Was mitnehmen", True), ("Hausaufgaben", True), ("Tests", True), ("Änderungen", True)]
-    b.append(st.card(x, y, w, 54 * len(rws)))
-    for i, (t, on) in enumerate(rws): b.append(p30.switch_row(st, x, y + i * 54, w, t, on, i == 0))
-    y += 54 * len(rws) + 24
-    b.append(st.card(x, y, w, 108) + T(x + 14, y + 34.5, "Losgehen vorher", 14.5, 500, c["ink"]) + stepper(st, x + w - 150, y + 8, "45 min")
-             + p30.switch_row(st, x, y + 54, w, "Nur meine Kurse", True))
-    y += 108 + 30
+    b.append(label(x, y, "Für dich jetzt", c)); y += 12
+    b.append(st.card(x, y, w, 54) + link_row(st, x, y, w, "Einstellungen", "Start und Widget", True))
+    y += 54 + 30
     H = y + 92
     b.append(R(0, H - 92, 390, 92, 0, c["paper"]) + HL(0, 390, H - 92, c) + st.button(18, H - 76, 354, "Fertig", "primary", CHECK))
     return g.svg(390, H, c, "".join(b), W.wall_defs(390))
@@ -632,7 +622,7 @@ def link_row(st, x, y, w, text, right, first=False):
 def p_settings(st):
     c = st.c
     x, w = 18, 354
-    b = [st.rbtn(18, 33.31, BACK), eyebrow(66, 33, "Mehr", c), title(66, 65, "Für dich jetzt", c)]
+    b = [st.rbtn(18, 33.31, BACK), eyebrow(66, 33, "Start · Widget", c), title(66, 65, "Für dich jetzt", c)]
     y = 112
     b.append(label(x, y, "Losgehen", c)); y += 12
     b.append(st.card(x, y, w, 108) + step_row(st, x, y, w, "Vor der 1. Stunde", "45 min", first=True)
@@ -702,7 +692,7 @@ def pc_settings(st):
     s1 = strip(p_settings(st))
     s2 = strip(p_mitnehmen(st))
     b = [p30.pc_side(st, "Start")]
-    b.append(eyebrow(284, 39, "Mehr", c) + title(284, 80, "Für dich jetzt", c, 38))
+    b.append(eyebrow(284, 39, "Start · Widget", c) + title(284, 80, "Für dich jetzt", c, 38))
     b.append(f'<g transform="translate(266 20) scale(0.84)">{s1.split(title(66, 65, "Für dich jetzt", c), 1)[1]}</g>')
     b.append(f'<g transform="translate(830 20) scale(1)">{s2.split(title(66, 65, "Mitnehmen", c), 1)[1]}</g>')
     b.append(label(848, 108, "Mitnehmen pro Fach", c))

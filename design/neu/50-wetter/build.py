@@ -38,10 +38,11 @@ SECTIONS = [
      "вечером/в выходные (следующий учебный день), в каникулы (сколько осталось). Внизу — маленькие размеры и отдельный блок «Wetter».",
      [("handy-02-tageszeiten", "Über den Tag")], "pc"),
     ("einstellen", "3 · Настройки блока",
-     "Как у остальных блоков (часть 30): размер, что показывать, за сколько минут до первого урока выходить, «Nur meine Kurse».",
+     "В шторке блока — только то, что касается самого блока: размер и «Vom Start entfernen». Всё содержимое настраивается в одном месте — "
+     "строка «Einstellungen · Start und Widget» ведёт на страницу «Für dich jetzt» (3b). Та же строка есть в «Widget einstellen» (раздел 9).",
      [("handy-03-block-einstellen", "Block · Für dich jetzt")], "phone"),
     ("alles", "3b · НОВОЕ: все личные настройки (после «ок дизайн», 26.11.)",
-     "Mehr → «Für dich jetzt» (и строка «Alle Einstellungen» в шторке блока). Всё, что у каждого своё: за сколько минут до первого урока выходить, "
+     "Одна страница для блока на Start и для виджета (сверху «Start · Widget»): Mehr → «Für dich jetzt», из шторки блока и из «Widget einstellen». Всё, что у каждого своё: за сколько минут до первого урока выходить, "
      "с какого часа вечером показывать завтра, что показывать, <b>пороги Wetter-Tipps</b> (минус до «Aus» — выключить), "
      "«Am Testtag erinnern» и <b>Mitnehmen pro Fach</b>: свои вещи на каждый предмет (Sport → Sportsachen по умолчанию, остальное добавляешь сам; "
      "«Oft gebraucht» — подсказки одним нажатием). Хранится на устройстве + Sync, виджет берёт те же настройки.",
@@ -68,7 +69,7 @@ SECTIONS = [
      "не влезает — плотнее или «+ N», без обрезки посередине. Заодно при сборке проверю скриншотами все 12 старых видов во всех размерах.",
      [("handy-09-widget-fuer-dich", "Für dich jetzt"), ("handy-10-widget-wetter", "Wetter")], "wide"),
     ("designs", "9 · Soft / Glas / Klar и «Widget einstellen»",
-     "Оформление, тема и акцент — как у всех виджетов. В «Einstellen» у «Für dich jetzt» те же переключатели, что у блока.",
+     "Оформление, тема и акцент — как у всех виджетов. В «Einstellen» у «Für dich jetzt» своих переключателей нет — строка «Einstellungen · Start und Widget» открывает приложение на общей странице настроек.",
      [("handy-11-widget-designs", "Auf dem Startbildschirm")], "pc"),
     ("config", "", "", [("handy-12-widget-einstellen", "Einstellen · Für dich jetzt")], "phone"),
     ("pc", "10 · ПК",
