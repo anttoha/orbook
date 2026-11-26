@@ -15,6 +15,8 @@ import { kartenKeys, syncDecks } from "../utils/kartenSync";
 import { timerBlockOf, useLerntimerStore } from "./lerntimerStore";
 import { lerntimerKeys, mergeTimerBlocks, syncTimer } from "../utils/lerntimerSync";
 import { localDay } from "../utils/lerntimer";
+import { fuerDichBlockOf, useFuerDichStore } from "./fuerDichStore";
+import { fuerDichKeys, newerBlock, syncFuerDich } from "../utils/fuerDichSync";
 import { useUserStore } from "./userStore";
 
 // ─────────────────────────────────────────────────────────────
@@ -79,6 +81,7 @@ export const useSyncStore = create(
           applyBlock(res.block, get().parts, set); // класс могли переключить: applyBlock кладёт данные по id класса
           if (get().parts.karten !== false) await syncKarten(code);
           if (get().parts.lerntimer !== false) await syncLerntimer(code);
+          if (get().parts.fuerDich !== false) await syncFuerDichPart(code);
           if (get().code !== code) return;
           set({ version: res.version, lastSyncAt: new Date().toISOString(), status: "idle", error: null });
         } catch (error) {
@@ -143,6 +146,7 @@ export const useSyncStore = create(
         const res = await syncWith(code, get());
         if (get().parts.karten !== false) await syncKarten(code);
         if (get().parts.lerntimer !== false) await syncLerntimer(code);
+        if (get().parts.fuerDich !== false) await syncFuerDichPart(code);
         if (old) await deleteBlocks(old);
         applyBlock(res.block, get().parts, set);
         set({ code, version: res.version, lastSyncAt: new Date().toISOString(), status: "idle", error: null });
@@ -187,12 +191,22 @@ async function syncLerntimer(code) {
   if (differs(next.sessions, current.sessions) || differs(next.settings, current.settings)) quietly(() => useLerntimerStore.getState().setSynced(next));
 }
 
-// Удалить с сервера все блоки кода (основной, Karteikarten, Lerntimer). Других может и не быть — DELETE безопасен
+// «Für dich jetzt» (часть 50b) — свой блок (fuerDichSync.js): настройки блока и виджета
+async function syncFuerDichPart(code) {
+  const keys = await fuerDichKeys(await keysFor(code));
+  const { block } = await syncFuerDich({ keys, local: fuerDichBlockOf(), request: makeSyncRequest(keys.syncId), crypto: BOX });
+  const current = fuerDichBlockOf();
+  const next = newerBlock(current, block); // пока шёл запрос, настройку могли поменять
+  if (next && next !== current && differs(next, current)) quietly(() => useFuerDichStore.getState().setSynced(next));
+}
+
+// Удалить с сервера все блоки кода (основной, Karteikarten, Lerntimer, Für dich). Других может и не быть — DELETE безопасен
 async function deleteBlocks(code) {
   const keys = await keysFor(code);
   await deleteSyncBlock(keys.syncId);
   await deleteSyncBlock((await kartenKeys(keys)).syncId);
   await deleteSyncBlock((await lerntimerKeys(keys)).syncId);
+  await deleteSyncBlock((await fuerDichKeys(keys)).syncId);
 }
 
 // Отметки времени классов. Старая общая отметка «kurse» (до 29d) — это курсы «домашнего» класса
@@ -372,7 +386,12 @@ export function watchChanges(onChange) {
   const stopTimer = useLerntimerStore.subscribe((state, prev) => {
     if (!applying && (state.sessions !== prev.sessions || state.settingsStamp !== prev.settingsStamp)) onChange();
   });
+  // «Für dich jetzt»: изменённые настройки
+  const stopFuerDich = useFuerDichStore.subscribe((state, prev) => {
+    if (!applying && state.stamp !== prev.stamp) onChange();
+  });
   return () => {
+    stopFuerDich();
     stopTimer();
     stopKarten();
     stopZiele();

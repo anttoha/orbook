@@ -8,7 +8,7 @@ import { useUserStore } from "../../shared/store/userStore";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useKartenStore } from "../../shared/store/kartenStore";
 import { liveDecks } from "../../shared/utils/karten";
-import { Timer } from "lucide-react";
+import { Sparkles, Timer } from "lucide-react";
 import { useLerntimerStore } from "../../shared/store/lerntimerStore";
 import { durationText, liveSessions } from "../../shared/utils/lerntimer";
 import { KartenIcon } from "../ui/icons";
@@ -49,6 +49,8 @@ const SyncParts = () => {
     { key: "karten", icon: KartenIcon, title: t("Karteikarten"), hint: decks === 1 ? t("1 Stapel") : t("{decks} Stapel", { decks }) },
     // Часть 44: Lernzeit и настройки таймера (тоже отдельным блоком)
     { key: "lerntimer", icon: Timer, title: t("Lerntimer"), hint: t("{zeit} Lernzeit", { zeit: durationText(lernMin) }) },
+    // Часть 50b: настройки «Für dich jetzt» и вещи по предметам (тоже отдельным блоком)
+    { key: "fuerDich", icon: Sparkles, title: t("Für dich jetzt"), hint: t("Einstellungen und Mitnehmen") },
   ];
 
   return (

@@ -57,6 +57,15 @@ export function rowSheet(row) {
   return row.kind === "own" ? ["aufgabe", { id: row.id }] : ["hausaufgabe", { id: row.id }];
 }
 
+// Срок коротко: «überfällig», «bis heute», «bis morgen», «bis Fr»; без срока — null (блоки Start)
+export function dueText(due, today) {
+  if (!due) return null;
+  if (due < today) return translate("überfällig");
+  if (due === today) return translate("bis heute");
+  if (due === addDays(today, 1)) return translate("bis morgen");
+  return `${translate("bis")} ${weekdayShort(due)}`;
+}
+
 // Список «Aufgaben»: открытые по группам («Bis morgen» … «Ohne Datum») и сделанные отдельно
 export function aufgabenList({ homework = [], tasks = [], marks = [], today }) {
   const doneIds = new Set(marks.filter((m) => m.done).map((m) => m.id));

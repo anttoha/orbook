@@ -27,6 +27,9 @@ export const BLOCKS = [
   { kind: "noten", get label() { return translate("Noten"); }, get hint() { return translate("Schnitt und neue Noten"); }, sizes: ["klein"], feature: "noten" },
   { kind: "countdown", get label() { return translate("Countdown"); }, get hint() { return translate("Tage bis zu den Ferien"); }, sizes: ["klein"] },
   { kind: "karteikarten", get label() { return translate("Karteikarten"); }, get hint() { return translate("Was heute dran ist"); }, sizes: ["klein", "breit"] }, // часть 43
+  // часть 50b: меняется по времени дня; настройки — общие со виджетом, на странице /fuer-dich (settings)
+  { kind: "fuerDich", get label() { return translate("Für dich jetzt"); }, get hint() { return translate("Was du gerade brauchst"); }, sizes: ["gross", "breit", "klein"], settings: "/fuer-dich" },
+  { kind: "wetter", get label() { return translate("Wetter"); }, get hint() { return translate("Heute und Losgehen"); }, sizes: ["klein"] },
   { kind: "lerntimer", get label() { return translate("Lerntimer"); }, get hint() { return translate("Restzeit und heute gelernt"); }, sizes: ["klein", "breit"] }, // часть 44
 ];
 
@@ -35,9 +38,9 @@ export const COUNTS = [2, 3, 5];
 
 export const blockInfo = (kind) => BLOCKS.find((b) => b.kind === kind) ?? null;
 
-// Раскладка по умолчанию (spec): Jetzt, Tests, Aufgaben, Woche, Änderungen, Notizen.
+// Раскладка по умолчанию: «Für dich jetzt» (часть 50b, вместо «Jetzt» — урок он тоже показывает), Tests, Aufgaben, Woche, Änderungen, Notizen.
 // id = вид: каждый блок на Start бывает только один раз
-const DEFAULT_KINDS = ["jetzt", "tests", "aufgaben", "woche", "aenderungen", "notizen"];
+const DEFAULT_KINDS = ["fuerDich", "tests", "aufgaben", "woche", "aenderungen", "notizen"];
 export const defaultBlocks = () => DEFAULT_KINDS.map(makeBlock);
 
 function makeBlock(kind) {

@@ -820,3 +820,11 @@ Android: `notify/TimerAlarm.kt` (точный будильник, канал «L
 Скриншоты: `/root/work/orbook-compare/50-wetter/shots/` (`_tools/p50.mjs`).
 **Дальше:** 50b (блок «Für dich jetzt», `nowFocus.js`, настройки `/fuer-dich`, Sync) — новый чат, Opus · effort high → `/orb 50`.
 
+### 50b · «Für dich jetzt» (2026-11-26, демо)
+Правило — `shared/utils/nowFocus.js` (+тест на каждый отрезок: ferien, morgen, stunde, pause, nachmittag, abend, нет плана, выходные): `keyLessons` (первый урок + изменённые), `packList` (погода → тест → вещи), `lessonAside`. Сбор данных — `hooks/useFuerDich.js`.
+Настройки — `shared/utils/fuerDich.js` (+тест: шаги степперов с «Aus», вещи до 40 символов / 10 на предмет, проверка пришедшего), `fuerDichStore` (`orbook.fuerDich`), Sync — свой блок `fuerDichSync.js` («orbook-fuerdich-v1», часть «Für dich jetzt» в «Was wird synchronisiert»). Подсказки «Oft gebraucht» — `shared/constants/packHints.js`.
+Вид: `components/fuerdich/*` (FocusMorgen, FocusStunde — урок и перемена, FocusAhead — «Für morgen» / «Nächster Schultag», FocusFerien, MitnehmenList/Sheet), блоки `FuerDichBlock` (Groß/Breit/Klein) и `WetterBlock` (Klein). Шторка блока — строка «Einstellungen · Start und Widget ›». Страницы `/fuer-dich` (ПК — две колонки) и `/fuer-dich/mitnehmen`, строка в Mehr → Seiten.
+По умолчанию на Start: «Für dich jetzt» вместо «Jetzt» (только у тех, кто раскладку не менял). Шторка и карточка «Wetter» берут свои «Losgehen vorher» и пороги. Stepper — ширина по содержимому («unter 12°»). Datenschutz — раздел «Für dich jetzt»; EN/UK.
+Скриншоты: `/root/work/orbook-compare/50-wetter/shots/b-*` (`_tools/p50b.mjs`, погода — `_tools/p50data.mjs`).
+**Дальше:** 50c — виджеты Android «Für dich jetzt» и «Wetter» (Kotlin повторяет `nowFocus.js`), `weather` в `/api/widget` (бэкенд), проверка 12 старых видов, демо-APK — новый чат, Opus · effort high → `/orb 50`.
+

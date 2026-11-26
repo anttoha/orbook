@@ -1,3 +1,5 @@
+import { ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useT } from "../../shared/hooks/useT";
 import SizeTile from "./SizeTile";
 import { blockInfo, COUNTS, SIZES } from "../../shared/utils/startBlocks";
@@ -52,6 +54,19 @@ const BlockSheet = ({ block, onClose, onSize, onOpt, onRemove }) => {
                   <Switch label={t("Abends schon morgen")} checked={block.opts.evening} onChange={(on) => onOpt("evening", on)} />
                 </SettingRow>
               )}
+            </ListCard>
+          )}
+
+          {/* часть 50b: настройки содержимого — общие со виджетом, поэтому только переход на их страницу */}
+          {info.settings && (
+            <ListCard>
+              <li className="flex">
+                <Link to={info.settings} className="-mx-2 flex h-14 min-w-0 flex-1 items-center gap-3 rounded-field px-2 hover:bg-paper">
+                  <span className="flex-1 text-row text-ink">{t("Einstellungen")}</span>
+                  <span className="truncate text-label text-faint">{t("Start und Widget")}</span>
+                  <ChevronRight className="size-4 shrink-0 text-faint2" />
+                </Link>
+              </li>
             </ListCard>
           )}
 

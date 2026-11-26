@@ -1,4 +1,4 @@
-import { Bell, CalendarSync, Info, Palette, Smartphone, Sparkles, Sun, Table2, UserPlus, UsersRound } from "lucide-react";
+import { Bell, CalendarSync, Info, Palette, Smartphone, Sparkle, Sparkles, Sun, Table2, UserPlus, UsersRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { version } from "../../package.json";
@@ -128,6 +128,8 @@ const PhoneMenu = () => {
         {rest.map((key) => (
           <MenuRow key={key} to={SECTIONS[key].to} icon={SECTION_ICONS[key]} label={SECTIONS[key].label} value={restValues[key]} />
         ))}
+        {/* часть 50b: настройки «Für dich jetzt» — одни для Start и виджета */}
+        <MenuRow to="/fuer-dich" icon={Sparkle} label={t("Für dich jetzt")} value={t("Start · Widget")} />
         <MenuRow to="/mehr/neuigkeiten" icon={Sparkles} label={t("Neuigkeiten")} badge={<NewBadge />} value={changelog[0]?.version} />
         {/* частина 16: посилання і QR для однокласників; вимкнене — шторка так і скаже */}
         <MenuRow onClick={() => openSheet("einladen")} icon={UserPlus} label={t("Klasse einladen")} value="Link + QR" />

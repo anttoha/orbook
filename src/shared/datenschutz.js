@@ -124,10 +124,18 @@ export const SECTIONS = [
     ],
   },
   {
+    id: "fuer-dich",
+    title: "Für dich jetzt",
+    intro: [
+      "Deine Einstellungen für „Für dich jetzt“ (wann du losgehst, was gezeigt wird, Wetter-Tipps) und was du pro Fach mitnehmen willst, liegen nur auf deinem Gerät. Was der Block zeigt, rechnet dein Gerät selbst aus dem Plan aus – der Server erfährt nichts davon.",
+      "Mit Sync kommen die Einstellungen verschlüsselt mit, solange „Für dich jetzt“ dort eingeschaltet ist – als eigener Block unter einer anderen zufälligen Kennung.",
+    ],
+  },
+  {
     id: "geraet",
     title: "Auf deinem Gerät",
     intro: [
-      "Im Browser (localStorage) liegen: deine Klassen mit dem Namen und der Farbe, die du ihnen gibst, deine Kurse, Darstellung (auch die Sprache, Design und Akzentfarbe), Fachfarben, Stundenplan-Ansicht und die Blöcke auf deinem Start, deine Notizen, Aufgaben und Häkchen, deine Karteikarten, dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne und des Wetters, damit die App auch ohne Netz geht.",
+      "Im Browser (localStorage) liegen: deine Klassen mit dem Namen und der Farbe, die du ihnen gibst, deine Kurse, Darstellung (auch die Sprache, Design und Akzentfarbe), Fachfarben, Stundenplan-Ansicht und die Blöcke auf deinem Start, die Einstellungen von „Für dich jetzt“, deine Notizen, Aufgaben und Häkchen, deine Karteikarten, dein Sync-Code, was du in „Neuigkeiten“ schon gesehen hast, und eine Kopie der letzten Pläne und des Wetters, damit die App auch ohne Netz geht.",
       "In der Android-App liegt zusätzlich eine Kopie für das Widget: der Plan der nächsten zwei Wochen, Tests, Hausaufgaben, Termine, deine letzten Notizen und Häkchen. Dafür fragt die App den Server alle 15, 30 oder 60 Minuten (so wie im Widget eingestellt, sonst 30) – mit deiner Anmeldung, wie die Website. Entfernst du das letzte Widget und sind die Mitteilungen der App aus, hört das auf. Die Kopie löscht Android zusammen mit der App.",
       "Mitteilungen in der Android-App macht die App selbst: Sie vergleicht den Plan, den sie für Widgets und Mitteilungen ohnehin lädt, mit dem vorigen und meldet, was sich geändert hat. Die Erinnerung vor der Stunde stellt sie aus dem gespeicherten Plan – auch ohne Internet. Der Server erfährt davon nichts, Google oder andere Dienste sind nicht beteiligt.",
       "Damit ORBook auch ohne Internet startet, legt die Website ihre eigenen Seiten und Dateien auf dem Gerät ab (Service Worker). Daten deiner Klasse sind darin nicht.",

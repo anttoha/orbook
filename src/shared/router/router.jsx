@@ -8,6 +8,8 @@ import Karteikarten from "../../pages/Karteikarten";
 import KartenEdit from "../../pages/KartenEdit";
 import KartenLernen from "../../pages/KartenLernen";
 import Lerntimer from "../../pages/Lerntimer";
+import FuerDich from "../../pages/FuerDich";
+import FuerDichMitnehmen from "../../pages/FuerDichMitnehmen";
 import KartenImport from "../../pages/KartenImport";
 import HomeworkEdit from "../../pages/HomeworkEdit";
 import EditorCode from "../../pages/EditorCode";
@@ -111,6 +113,9 @@ export const router = createBrowserRouter([
           // Karteikarten (часть 43): всё на устройстве. /karten#k1.… — ссылка «Stapel teilen»
           // Lerntimer (часть 44): всё на устройстве
           page({ path: "lerntimer", Component: Lerntimer }),
+          // «Für dich jetzt» (часть 50b): настройки блока на Start и виджета, вещи по предметам
+          page({ path: "fuer-dich", Component: FuerDich }),
+          page({ path: "fuer-dich/mitnehmen", Component: FuerDichMitnehmen }),
           page({ path: "karteikarten", Component: Karteikarten }),
           page({ path: "karteikarten/neu", Component: KartenEdit }),
           page({ path: "karteikarten/lernen", Component: KartenLernen }),

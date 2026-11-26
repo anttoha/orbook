@@ -2,6 +2,7 @@ import { ChevronRight } from "lucide-react";
 import { useWeather } from "../../shared/hooks/useWeather";
 import { useSheet } from "../../shared/hooks/useSheet";
 import { useT } from "../../shared/hooks/useT";
+import { useFuerDichStore } from "../../shared/store/fuerDichStore";
 import { dayOf, degrees, standLabel, summaryLine, weatherTips } from "../../shared/utils/weather";
 import Liquid from "../ui/Liquid";
 import TipChips from "./TipChips";
@@ -16,11 +17,12 @@ const WeatherCard = ({ date, weather: given, onOpen }) => {
   const t = useT();
   const { openSheet } = useSheet();
   const own = useWeather();
+  const thresholds = useFuerDichStore((s) => s.settings.tips); // свои пороги «Wetter-Tipps» (часть 50b)
   const weather = given ?? own.weather;
   const day = dayOf(weather, date);
   if (!day) return null;
 
-  const tip = weatherTips(day)[0]; // в карточке — только главный совет
+  const tip = weatherTips(day, null, thresholds)[0]; // в карточке — только главный совет
   const offline = !given && own.status === "offline" && own.savedAt; // без сети — «Stand gestern 21:30»
   const open = onOpen ?? (() => openSheet("wetter", { datum: date }));
 

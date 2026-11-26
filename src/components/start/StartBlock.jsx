@@ -2,6 +2,7 @@ import AenderungenBlock from "./AenderungenBlock";
 import AufgabenBlock from "./AufgabenBlock";
 import BlockBoundary from "./BlockBoundary";
 import CountdownBlock from "./CountdownBlock";
+import FuerDichBlock from "./FuerDichBlock";
 import HeuteBlock from "./HeuteBlock";
 import JetztBlock from "./JetztBlock";
 import KartenBlock from "./KartenBlock";
@@ -12,6 +13,7 @@ import StatistikBlock from "./StatistikBlock";
 import NotenBlock from "./NotenBlock";
 import TermineBlock from "./TermineBlock";
 import TestsBlock from "./TestsBlock";
+import WetterBlock from "./WetterBlock";
 import WocheBlock from "./WocheBlock";
 
 // Вид блока → компонент. Новый блок = компонент + строка здесь + строка в BLOCKS (shared/utils/startBlocks.js)
@@ -30,6 +32,8 @@ const COMPONENTS = {
   countdown: CountdownBlock,
   karteikarten: KartenBlock,
   lerntimer: LerntimerBlock,
+  fuerDich: FuerDichBlock, // часть 50b
+  wetter: WetterBlock,
 };
 
 // Один блок «Start» в своей границе ошибок. editing — режим «Anpassen» (без ссылок)

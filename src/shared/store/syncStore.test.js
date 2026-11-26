@@ -134,7 +134,7 @@ describe("syncStore: правки во время запроса (часть 47)
 
   it("настройка, изменённая во время запроса, не откатывается и уходит следующим проходом", async () => {
     useSyncStore.getState().touch("darstellung");
-    useSyncStore.setState({ parts: { ...ALL_PARTS, karten: false, lerntimer: false } }); // только основной блок
+    useSyncStore.setState({ parts: { ...ALL_PARTS, karten: false, lerntimer: false, fuerDich: false } }); // только основной блок
     await useSyncStore.getState().enable();
     server.fetch.mockClear();
 

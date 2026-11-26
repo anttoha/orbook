@@ -3,7 +3,7 @@ import { addBlock, blocksOf, defaultBlocks, isBlockEnabled, moveBlock, nextSize,
 
 describe("startBlocks", () => {
   it("раскладка по умолчанию — шесть блоков из spec", () => {
-    expect(defaultBlocks().map((b) => b.kind)).toEqual(["jetzt", "tests", "aufgaben", "woche", "aenderungen", "notizen"]);
+    expect(defaultBlocks().map((b) => b.kind)).toEqual(["fuerDich", "tests", "aufgaben", "woche", "aenderungen", "notizen"]);
     expect(defaultBlocks().find((b) => b.kind === "tests").opts).toEqual({ count: 2, mine: true });
   });
 
@@ -14,7 +14,7 @@ describe("startBlocks", () => {
   });
 
   it("отбрасывает незнакомые виды, повторы и недопустимый размер", () => {
-    const saved = [{ kind: "wetter", size: "klein" }, { kind: "woche", size: "klein" }, { kind: "woche", size: "gross" }, null, { kind: "tests", size: "breit", opts: { count: 5 } }];
+    const saved = [{ kind: "radio", size: "klein" }, { kind: "woche", size: "klein" }, { kind: "woche", size: "gross" }, null, { kind: "tests", size: "breit", opts: { count: 5 } }];
     expect(blocksOf(saved)).toEqual([
       { id: "woche", kind: "woche", size: "gross", opts: {} },
       { id: "tests", kind: "tests", size: "breit", opts: { count: 5, mine: true } },
@@ -25,16 +25,16 @@ describe("startBlocks", () => {
     const blocks = addBlock([], "termine");
     expect(blocks).toEqual([{ id: "termine", kind: "termine", size: "klein", opts: { count: 2 } }]);
     expect(addBlock(blocks, "termine")).toBe(blocks); // второй раз не добавляется
-    expect(addBlock(blocks, "wetter")).toBe(blocks);
+    expect(addBlock(blocks, "radio")).toBe(blocks);
     expect(removeBlock(blocks, "termine")).toEqual([]);
   });
 
   it("переставить на место другого блока", () => {
     const kinds = (list) => list.map((b) => b.kind);
     const blocks = defaultBlocks();
-    expect(kinds(moveBlock(blocks, "notizen", "jetzt"))).toEqual(["notizen", "jetzt", "tests", "aufgaben", "woche", "aenderungen"]);
-    expect(kinds(moveBlock(blocks, "jetzt", "aufgaben"))).toEqual(["tests", "aufgaben", "jetzt", "woche", "aenderungen", "notizen"]);
-    expect(moveBlock(blocks, "jetzt", "nichts")).toBe(blocks);
+    expect(kinds(moveBlock(blocks, "notizen", "fuerDich"))).toEqual(["notizen", "fuerDich", "tests", "aufgaben", "woche", "aenderungen"]);
+    expect(kinds(moveBlock(blocks, "fuerDich", "aufgaben"))).toEqual(["tests", "aufgaben", "fuerDich", "woche", "aenderungen", "notizen"]);
+    expect(moveBlock(blocks, "fuerDich", "nichts")).toBe(blocks);
   });
 
   it("размер: только допустимый, стрелки — по кругу", () => {

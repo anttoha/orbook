@@ -2,20 +2,10 @@ import { useNow } from "../../shared/hooks/useNow";
 import { useT } from "../../shared/hooks/useT";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useTasksStore } from "../../shared/store/tasksStore";
-import { addDays, weekdayShort } from "../../shared/utils/format";
-import { aufgabenList } from "../../shared/utils/tasks";
+import { aufgabenList, dueText } from "../../shared/utils/tasks";
 import BlockCard from "./BlockCard";
 import BlockEmpty from "./BlockEmpty";
 import BlockSkeleton from "./BlockSkeleton";
-
-// «bis morgen», «bis Fr»; без срока — ничего
-function dueText(due, today, t) {
-  if (!due) return null;
-  if (due < today) return t("überfällig");
-  if (due === today) return t("bis heute");
-  if (due === addDays(today, 1)) return t("bis morgen");
-  return `${t("bis")} ${weekdayShort(due)}`;
-}
 
 // ─────────────────────────────────────────────────────────────
 // Блок «Aufgaben» (макет handy-01): сколько открыто и ближайшая — домашки класса и свои задачи
@@ -41,7 +31,7 @@ const AufgabenBlock = ({ editing }) => {
           <span className="text-body-sm font-semibold text-muted">{t("offen")}</span>
         </p>
         <p className="mt-auto truncate text-body-sm font-semibold text-ink">{what}</p>
-        {first.due && <p className="truncate text-caption font-bold text-accent-ink">{dueText(first.due, today, t)}</p>}
+        {first.due && <p className="truncate text-caption font-bold text-accent-ink">{dueText(first.due, today)}</p>}
       </>
     );
   };

@@ -3,6 +3,7 @@ import { useDay, useLessonFilter } from "../../shared/hooks/usePlan";
 import { useNow } from "../../shared/hooks/useNow";
 import { useT } from "../../shared/hooks/useT";
 import { useWeather } from "../../shared/hooks/useWeather";
+import { useFuerDichStore } from "../../shared/store/fuerDichStore";
 import { weekdayLong } from "../../shared/utils/format";
 import { berlinParts } from "../../shared/utils/lessonClock";
 import { dayOf, degrees, hourAt, leaveLine, leaveTime, rainFrom, schoolHours, standLabel, weatherTips } from "../../shared/utils/weather";
@@ -11,9 +12,6 @@ import Sheet from "../ui/Sheet";
 import HourStrip from "./HourStrip";
 import TipChips from "./TipChips";
 import WeatherIcon from "./WeatherIcon";
-
-// Сколько минут до первого урока выходить (в части 50b — своя настройка «Losgehen vorher»)
-const LEAVE_MINUTES = 45;
 
 // ─────────────────────────────────────────────────────────────
 // Шторка «Wetter» (макет 50 handy-06). Адрес: ?sheet=wetter&datum=2026-11-26
@@ -25,14 +23,15 @@ const WeatherSheet = ({ open, onClose, sheet }) => {
   const { day: planDay } = useDay(sheet.datum);
   const filter = useLessonFilter(); // «Meine Kurse»
   const { now, today } = useNow();
+  const { leaveMinutes, tips: thresholds } = useFuerDichStore((s) => s.settings); // «Losgehen vorher» и «Wetter-Tipps» (часть 50b)
   const day = dayOf(weather, sheet.datum);
   if (!day) return null;
 
   const lessons = planDay?.status === "ok" || planDay?.muster ? filter(planDay.lessons) : [];
-  const leave = leaveTime(lessons, LEAVE_MINUTES);
+  const leave = leaveTime(lessons, leaveMinutes);
   const atLeave = hourAt(day, leave);
   const leaveInfo = leaveLine(atLeave);
-  const tips = weatherTips(day, atLeave);
+  const tips = weatherTips(day, atLeave, thresholds);
   const hours = schoolHours(day);
   const nowHour = sheet.datum === today ? Math.floor(berlinParts(now).minutes / 60) : null; // час школы, не устройства
   const rain = [day.rainMax != null ? `${day.rainMax} %` : null, rainFrom(day)].filter(Boolean).join(" ");
