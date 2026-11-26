@@ -9,9 +9,42 @@
 // ─────────────────────────────────────────────────────────────
 const PAGES = "orbook-pages-v1";
 const FILES = "orbook-files-v1";
+// Файлы сборки одинаковы для любых заголовков запроса (Vary не учитываем) — иначе скрипт мог бы «не найтись»
+const MATCH = { ignoreVary: true };
 
-// Новая версия sw.js включается сразу, а не после закрытия всех вкладок
-self.addEventListener("install", () => self.skipWaiting());
+// Новая версия sw.js включается сразу, а не после закрытия всех вкладок.
+// Часть 48: первая страница загрузилась ещё без sw.js и в кэш не попала — кладём её сейчас, чтобы офлайн
+// работал уже после одного визита. Не получилось (сеть пропала) — не беда: уведомления всё равно включаются
+self.addEventListener("install", (event) => {
+  self.skipWaiting();
+  event.waitUntil(precache().catch(() => {}));
+});
+
+// Пути своего сайта из HTML (src, href) и CSS (url(...)): сборка, шрифты, theme-init.js, иконки
+const linked = (text, pattern) => [...text.matchAll(pattern)].map((match) => match[1]);
+
+async function precache() {
+  const response = await fetch("/", { cache: "no-cache" });
+  if (!response.ok) return;
+  const files = await caches.open(FILES);
+  const save = async (path) => {
+    if (await files.match(path, MATCH)) return files.match(path, MATCH); // уже есть
+    const answer = await fetch(path);
+    if (!answer.ok) throw new Error(path);
+    await files.put(path, answer.clone());
+    return answer;
+  };
+  const paths = linked(await response.clone().text(), /(?:src|href)="(\/[^"]+)"/g);
+  await Promise.all(
+    paths.map(async (path) => {
+      const saved = await save(path);
+      if (!path.endsWith(".css")) return;
+      await Promise.all(linked(await saved.clone().text(), /url\(["']?(\/assets\/[^"')]+)/g).map(save));
+    }),
+  );
+  // страницу — последней: сохранённая главная всегда со всеми своими файлами
+  await (await caches.open(PAGES)).put("/", response);
+}
 self.addEventListener("activate", (event) =>
   event.waitUntil(
     (async () => {
@@ -39,7 +72,7 @@ async function page(request) {
 // Файлы сборки и картинки: сохранённые, если есть; иначе из сети (и запомнить)
 async function file(request) {
   const cache = await caches.open(FILES);
-  const saved = await cache.match(request);
+  const saved = await cache.match(request, MATCH);
   if (saved) {
     // файлы без хэша в имени (theme-init.js, иконки) — тихо обновить на следующий раз
     if (!new URL(request.url).pathname.startsWith("/assets/")) fetch(request).then((r) => r.ok && cache.put(request, r)).catch(() => {});

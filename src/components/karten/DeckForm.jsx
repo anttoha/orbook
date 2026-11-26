@@ -9,10 +9,11 @@ import { useKartenStore } from "../../shared/store/kartenStore";
 import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { formSubjects } from "../../shared/utils/examRules";
-import { DEFAULT_SIDES, NAME_MAX, SIDE_MAX, examRef, upcomingExams, validateDeckName } from "../../shared/utils/karten";
+import { DEFAULT_SIDES, NAME_MAX, SIDE_MAX, deckLimitError, examRef, upcomingExams, validateDeckName } from "../../shared/utils/karten";
 import { shortDay } from "../../shared/utils/lernplan";
 import { mySubjectCodes, subjectItems } from "../../shared/utils/picker";
 import Button from "../ui/Button";
+import ErrorText from "../ui/ErrorText";
 import Field from "../ui/Field";
 import { CheckIcon } from "../ui/icons";
 import ListPicker from "../ui/ListPicker";
@@ -49,6 +50,7 @@ const DeckForm = ({ deck, preset = {} }) => {
   const [mode, setMode] = useState("liste");
   const [list, setList] = useState({ text: "", cards: [], errors: [] });
   const [error, setError] = useState(null);
+  const [limit, setLimit] = useState(null); // «Höchstens …» — стопка не сохранена
   const { addDeck, updateDeck } = useKartenStore.getState();
 
   const setSide = (i, value) => setSides(sides.map((old, j) => (i === j ? value : old)));
@@ -71,7 +73,10 @@ const DeckForm = ({ deck, preset = {} }) => {
         toast.success(translate("Stapel gespeichert"));
         return navigate(`/karteikarten/${deck.id}`, { replace: true });
       }
-      const id = addDeck({ ...fields, cards: mode === "liste" ? list.cards : [] });
+      const cards = mode === "liste" ? list.cards : [];
+      const full = deckLimitError(useKartenStore.getState().decks, cards.length);
+      if (full) return setLimit(full);
+      const id = addDeck({ ...fields, cards });
       toast.success(translate("Stapel gespeichert"));
       navigate(mode === "einzeln" ? `/karteikarten/${id}?karte=neu` : `/karteikarten/${id}`, { replace: true });
     } catch {
@@ -112,11 +117,28 @@ const DeckForm = ({ deck, preset = {} }) => {
       {!deck && (
         <Field label={t("Karten")}>
           <div className="flex flex-col gap-3">
-            <Segmented options={MODES} value={mode} onChange={setMode} label={t("Karten")} />
-            {mode === "liste" && <ListInput value={list} onChange={setList} />}
+            <Segmented
+              options={MODES}
+              value={mode}
+              onChange={(value) => {
+                setMode(value);
+                setLimit(null);
+              }}
+              label={t("Karten")}
+            />
+            {mode === "liste" && (
+              <ListInput
+                value={list}
+                onChange={(value) => {
+                  setList(value);
+                  setLimit(null);
+                }}
+              />
+            )}
           </div>
         </Field>
       )}
+      <ErrorText>{limit}</ErrorText>
       <Button type="submit" variant="primary" className="flex-none">
         <CheckIcon className="size-4" /> {t("Stapel speichern")}
       </Button>

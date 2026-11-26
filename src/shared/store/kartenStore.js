@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { CARDS_MAX, answer, editDeck, newCard, newDeck, removeDeck, resetCards } from "../utils/karten";
+import { answer, cardsLimitError, deckLimitError, editDeck, newCard, newDeck, removeDeck, resetCards } from "../utils/karten";
 
 // ─────────────────────────────────────────────────────────────
 // kartenStore — Karteikarten (часть 43): стопки и Lernstand.
@@ -17,7 +17,9 @@ export const useKartenStore = create(
       return {
         decks: [],
 
+        // Сверх лимита ничего не добавляем: addDeck → null, addCards → false (текст ошибки — karten.js)
         addDeck: (fields) => {
+          if (deckLimitError(get().decks, fields.cards?.length)) return null;
           const deck = newDeck(fields);
           set({ decks: [...get().decks, deck] });
           return deck.id;
@@ -26,7 +28,12 @@ export const useKartenStore = create(
         deleteDeck: (id) => set({ decks: get().decks.map((deck) => (deck.id === id ? removeDeck(deck) : deck)) }),
         resetDeck: (id) => change(id, (deck) => ({ cards: resetCards(deck.cards) })),
 
-        addCards: (id, cards) => change(id, (deck) => ({ cards: [...deck.cards, ...cards.map(newCard)].slice(0, CARDS_MAX) })),
+        addCards: (id, cards) => {
+          const target = get().decks.find((deck) => deck.id === id && !deck.deleted);
+          if (!target || cardsLimitError(target.cards.length, cards.length)) return false;
+          change(id, (deck) => ({ cards: [...deck.cards, ...cards.map(newCard)] }));
+          return true;
+        },
         updateCard: (id, cardId, { a, b }) => change(id, (deck) => ({ cards: deck.cards.map((card) => (card.id === cardId ? { ...card, a: a.trim(), b: b.trim() } : card)) })),
         deleteCard: (id, cardId) => change(id, (deck) => ({ cards: deck.cards.filter((card) => card.id !== cardId) })),
 

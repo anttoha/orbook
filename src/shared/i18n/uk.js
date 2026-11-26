@@ -2336,6 +2336,9 @@ export const uk = {
   // Was ist neu 0.29.1
   "Noten am PC: Wenn du ein Fach oder „Schnitt“ öffnest, blendet nur die rechte Spalte um – die Seite lädt nicht mehr sichtbar neu.": "Оцінки на ПК: коли відкриваєш предмет або «Середній бал», плавно змінюється лише права колонка – сторінка більше не «перезавантажується».",
   "Menü am PC: Gruppen wie „Leistung“ klappen weich auf und zu. Passt das Menü nicht auf den Bildschirm, wird der Rand blass – so siehst du, dass du scrollen kannst.": "Меню на ПК: групи на кшталт «Успішність» тепер плавно розгортаються і згортаються. Якщо меню не вміщається на екрані, його край блякне – видно, що можна гортати.",
+  // Лимиты Karteikarten (часть 48)
+  "Höchstens {n} Karten pro Stapel.": "Щонайбільше {n} карток у наборі.",
+  "Höchstens {n} Stapel. Lösch zuerst einen alten.": "Щонайбільше {n} наборів. Спочатку видали старий.",
   // Karteikarten (часть 43)
   "Karteikarten": "Картки",
   "1 Stapel": "1 набір",

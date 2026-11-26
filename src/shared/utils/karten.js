@@ -51,6 +51,17 @@ export function validateDeckName(value) {
   return null;
 }
 
+// ── Лимиты (часть 48): одна проверка для всех мест, где добавляют. Текст ошибки или null ──
+
+// Ещё adding карточек в стопку, где их уже have
+export const cardsLimitError = (have, adding) => (have + adding > CARDS_MAX ? translate("Höchstens {n} Karten pro Stapel.", { n: CARDS_MAX }) : null);
+
+// Новая стопка с adding карточками (удалённые стопки не считаются)
+export function deckLimitError(decks, adding = 0) {
+  if (liveDecks(decks).length >= DECKS_MAX) return translate("Höchstens {n} Stapel. Lösch zuerst einen alten.", { n: DECKS_MAX });
+  return cardsLimitError(0, adding);
+}
+
 // ── Leitner ──
 
 export const isDue = (card, today) => !card.due || card.due <= today;

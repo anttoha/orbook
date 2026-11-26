@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { toast } from "sonner";
 import DeckBadge from "../components/karten/DeckBadge";
 import Button from "../components/ui/Button";
+import ErrorText from "../components/ui/ErrorText";
 import Field from "../components/ui/Field";
 import { CheckIcon } from "../components/ui/icons";
 import ListPicker from "../components/ui/ListPicker";
@@ -16,6 +17,7 @@ import { useKartenStore } from "../shared/store/kartenStore";
 import { usePlanStore } from "../shared/store/planStore";
 import { useUserStore } from "../shared/store/userStore";
 import { formSubjects } from "../shared/utils/examRules";
+import { deckLimitError } from "../shared/utils/karten";
 import { decodeDeck } from "../shared/utils/kartenShare";
 import { mySubjectCodes, subjectItems } from "../shared/utils/picker";
 
@@ -55,10 +57,12 @@ const ImportForm = ({ shared }) => {
   const picked = useUserStore((s) => s.picked);
   const addDeck = useKartenStore((s) => s.addDeck);
   const [subject, setSubject] = useState(null);
+  const [error, setError] = useState(null);
   const rest = shared.cards.length - PREVIEW;
 
   const take = () => {
     const id = addDeck({ ...shared, subject });
+    if (!id) return setError(deckLimitError(useKartenStore.getState().decks, shared.cards.length));
     toast.success(translate("Stapel übernommen"));
     navigate(`/karteikarten/${id}`, { replace: true });
   };
@@ -95,6 +99,7 @@ const ImportForm = ({ shared }) => {
         </ul>
         {rest > 0 && <p className="mt-3 text-center text-label font-bold text-faint">{t("und {rest} weitere", { rest })}</p>}
       </Field>
+      <ErrorText>{error}</ErrorText>
       <Button variant="primary" onClick={take} className="flex-none">
         <CheckIcon className="size-4" /> {t("Übernehmen")}
       </Button>

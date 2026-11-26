@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { useT } from "../../shared/hooks/useT";
 import { translate } from "../../shared/i18n/translate";
 import { useKartenStore } from "../../shared/store/kartenStore";
-import { TEXT_MAX, sideName } from "../../shared/utils/karten";
+import { TEXT_MAX, cardsLimitError, sideName } from "../../shared/utils/karten";
 import Button from "../ui/Button";
 import { CheckIcon, TrashIcon } from "../ui/icons";
 import Sheet from "../ui/Sheet";
@@ -25,20 +25,26 @@ const CardForm = ({ deck, card, onDone }) => {
   const t = useT();
   const [a, setA] = useState(card?.a ?? "");
   const [b, setB] = useState(card?.b ?? "");
+  const [error, setError] = useState(null);
   const first = useRef(null);
   const { addCards, updateCard, deleteCard } = useKartenStore.getState();
   const filled = a.trim() && b.trim();
 
+  // false — стопка полна: ошибка под полями, введённый текст остаётся
   const save = () => {
-    if (card) updateCard(deck.id, card.id, { a, b });
-    else addCards(deck.id, [{ a, b }]);
+    if (card) {
+      updateCard(deck.id, card.id, { a, b });
+      return true;
+    }
+    if (addCards(deck.id, [{ a, b }])) return true;
+    setError(cardsLimitError(deck.cards.length, 1));
+    return false;
   };
 
   // Enter / «Nächste Karte»: сохранить и сразу следующую
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!filled) return;
-    save();
+    if (!filled || !save()) return;
     if (card) return onDone();
     toast.success(translate("«{a}» gespeichert", { a: a.trim() }));
     setA("");
@@ -47,7 +53,8 @@ const CardForm = ({ deck, card, onDone }) => {
   };
 
   const handleDone = () => {
-    if (filled) save();
+    // «Fertig» при полной стопке: первый раз показываем ошибку, второй — закрываем
+    if (filled && !error && !save()) return;
     onDone();
   };
 
@@ -60,7 +67,7 @@ const CardForm = ({ deck, card, onDone }) => {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <TextField id="karte-a" ref={first} label={sideName(deck, "a")} value={a} onChange={(e) => setA(e.target.value)} maxLength={TEXT_MAX} autoFocus />
-      <TextField id="karte-b" label={sideName(deck, "b")} value={b} onChange={(e) => setB(e.target.value)} maxLength={TEXT_MAX} />
+      <TextField id="karte-b" label={sideName(deck, "b")} value={b} onChange={(e) => setB(e.target.value)} maxLength={TEXT_MAX} error={error} />
       <div className="flex gap-2">
         {card ? (
           <>
