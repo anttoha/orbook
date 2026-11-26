@@ -32,25 +32,6 @@ import Week from "../../pages/Week";
 import Klassen from "../../pages/Klassen";
 import Schule from "../../pages/Schule";
 import Day from "../../pages/Day";
-import Admin from "../../pages/Admin";
-import AdminOverview from "../../pages/AdminOverview";
-import AdminCodes from "../../pages/AdminCodes";
-import AdminTeacherCodes from "../../pages/AdminTeacherCodes";
-import AdminTeachers from "../../pages/AdminTeachers";
-import AdminExamTypes from "../../pages/AdminExamTypes";
-import AdminExams from "../../pages/AdminExams";
-import AdminCourses from "../../pages/AdminCourses";
-import AdminMuster from "../../pages/AdminMuster";
-import AdminLog from "../../pages/AdminLog";
-import AdminAccessCodes from "../../pages/AdminAccessCodes";
-import AdminPasswords from "../../pages/AdminPasswords";
-import AdminChannels from "../../pages/AdminChannels";
-import AdminMaterials from "../../pages/AdminMaterials";
-import AdminAppointments from "../../pages/AdminAppointments";
-import AdminAppointmentEdit from "../../pages/AdminAppointmentEdit";
-import AdminSchools from "../../pages/AdminSchools";
-import ClassManage from "../../pages/ClassManage";
-import AdminSettings from "../../pages/AdminSettings";
 import RouteError from "../../pages/RouteError";
 import Datenschutz from "../../pages/Datenschutz";
 import JoinPage from "../../pages/JoinPage";
@@ -63,6 +44,10 @@ import SettingsLayout from "../../pages/SettingsLayout";
 // падає тільки контент, а меню лишається. Той, що вгорі, ловить решту,
 // наприклад неіснуючу адресу або збій у самій оболонці.
 const page = (route) => ({ ...route, errorElement: <RouteError inline /> });
+
+// Часть 49: админка и «Klasse verwalten» нужны немногим — их код загружается, только когда их открыли.
+// Не загрузилась (нет сети, вышла новая версия) — тот же errorElement с «Neu laden»
+const load = (page) => async () => ({ Component: (await page()).default });
 
 export const router = createBrowserRouter([
   {
@@ -77,27 +62,28 @@ export const router = createBrowserRouter([
       // Адмінка: свій вхід і своє меню, вхід класу їй не потрібен (docs/frontend/09-admin.md)
       {
         path: "admin",
-        Component: Admin,
+        lazy: load(() => import("../../pages/Admin")),
         errorElement: <RouteError />,
+        hydrateFallbackElement: <div className="min-h-dvh bg-paper" />, // пока едет код админки
         children: [
-          page({ index: true, Component: AdminOverview }),
-          page({ path: "codes", Component: AdminCodes }),
-          page({ path: "lehrer", Component: AdminTeacherCodes }), // Lehrer-Codes (частина 14)
-          page({ path: "lehrkraefte", Component: AdminTeachers }), // Lehrkräfte verwalten (частина 34)
-          page({ path: "klausuren", Component: AdminExams }),
-          page({ path: "arten", Component: AdminExamTypes }), // Arten von Tests mit Kürzel (часть 24)
-          page({ path: "kurse", Component: AdminCourses }),
-          page({ path: "muster", Component: AdminMuster }), // свій Muster тижнів A і B (частина 19b)
-          page({ path: "protokoll", Component: AdminLog }),
-          page({ path: "einstellungen", Component: AdminSettings }),
-          page({ path: "zugang", Component: AdminAccessCodes }), // Zugangscodes (частина 14c)
-          page({ path: "passwoerter", Component: AdminPasswords }), // пароль класу і адміна (частина 14b)
-          page({ path: "materialien", Component: AdminMaterials }), // усі посилання, видалення (частина 15)
-          page({ path: "termine", Component: AdminAppointments }), // усі терміни (частина 18)
-          page({ path: "kanaele", Component: AdminChannels }), // Telegram-група класу (частина 27)
-          page({ path: "schulen", Component: AdminSchools }), // школи і класи сервера (частина 29c)
-          page({ path: "termine/neu", Component: AdminAppointmentEdit }),
-          page({ path: "termine/:id/bearbeiten", Component: AdminAppointmentEdit }),
+          page({ index: true, lazy: load(() => import("../../pages/AdminOverview")) }),
+          page({ path: "codes", lazy: load(() => import("../../pages/AdminCodes")) }),
+          page({ path: "lehrer", lazy: load(() => import("../../pages/AdminTeacherCodes")) }), // Lehrer-Codes (частина 14)
+          page({ path: "lehrkraefte", lazy: load(() => import("../../pages/AdminTeachers")) }), // Lehrkräfte verwalten (частина 34)
+          page({ path: "klausuren", lazy: load(() => import("../../pages/AdminExams")) }),
+          page({ path: "arten", lazy: load(() => import("../../pages/AdminExamTypes")) }), // Arten von Tests mit Kürzel (часть 24)
+          page({ path: "kurse", lazy: load(() => import("../../pages/AdminCourses")) }),
+          page({ path: "muster", lazy: load(() => import("../../pages/AdminMuster")) }), // свій Muster тижнів A і B (частина 19b)
+          page({ path: "protokoll", lazy: load(() => import("../../pages/AdminLog")) }),
+          page({ path: "einstellungen", lazy: load(() => import("../../pages/AdminSettings")) }),
+          page({ path: "zugang", lazy: load(() => import("../../pages/AdminAccessCodes")) }), // Zugangscodes (частина 14c)
+          page({ path: "passwoerter", lazy: load(() => import("../../pages/AdminPasswords")) }), // пароль класу і адміна (частина 14b)
+          page({ path: "materialien", lazy: load(() => import("../../pages/AdminMaterials")) }), // усі посилання, видалення (частина 15)
+          page({ path: "termine", lazy: load(() => import("../../pages/AdminAppointments")) }), // усі терміни (частина 18)
+          page({ path: "kanaele", lazy: load(() => import("../../pages/AdminChannels")) }), // Telegram-група класу (частина 27)
+          page({ path: "schulen", lazy: load(() => import("../../pages/AdminSchools")) }), // школи і класи сервера (частина 29c)
+          page({ path: "termine/neu", lazy: load(() => import("../../pages/AdminAppointmentEdit")) }),
+          page({ path: "termine/:id/bearbeiten", lazy: load(() => import("../../pages/AdminAppointmentEdit")) }),
         ],
       },
       {
@@ -154,7 +140,7 @@ export const router = createBrowserRouter([
               page({ path: "mitteilungen", Component: Mitteilungen }), // Web Push (частина 17)
               page({ path: "kalender", Component: CalendarFeed }), // Kalender-Abo (часть 40)
               page({ path: "editor-code", Component: EditorCode }),
-              page({ path: "klasse-verwalten", Component: ClassManage }), // Zugangscodes своего класса (часть 29c)
+              page({ path: "klasse-verwalten", lazy: load(() => import("../../pages/ClassManage")) }), // Zugangscodes своего класса (часть 29c)
               page({ path: "neuigkeiten", Component: Neuigkeiten }), // «Was ist neu», все версии (часть 22b)
               page({ path: "android", Component: AndroidApp }), // Android-App: версия и обновление (часть 31a)
               page({ path: "android/widget/:id", Component: WidgetSettings }), // «Widget einstellen» (часть 31b)
