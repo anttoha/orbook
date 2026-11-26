@@ -39,7 +39,12 @@ android {
 
     // Один код — два APK: прод открывает orbook.orbitium.net, демо — orbook-demo (можно поставить оба)
     // Robolectric (скриншоты виджетов в тестах) берёт настоящие ресурсы приложения: значки, цвета
-    testOptions { unitTests.isIncludeAndroidResources = true }
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+        // «Фото» виджетов — только по просьбе (WIDGET_SHOTS=<папка>): иначе Robolectric качает Android
+        // ещё до самого теста, и CI падает, если загрузка не удалась
+        unitTests.all { if (System.getenv("WIDGET_SHOTS") == null) it.exclude("**/WidgetShots*") }
+    }
 
     flavorDimensions += "site"
     productFlavors {
