@@ -6,6 +6,16 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.33.0",
+    date: "2026-11-26",
+    neu: [
+      "Neu: ein Rundgang durch die App. Beim ersten Start zeigt ORBook dir direkt auf dem Bildschirm, wo was ist – du tippst selbst mit. Nochmal ansehen: Mehr → „Rundgang“.",
+    ],
+    behoben: [
+      "Wenn du dich über Sync bei den Noten abmeldest, bist du jetzt auf allen Geräten abgemeldet – auch in der Android-App.",
+    ],
+  },
+  {
     version: "0.32.0",
     date: "2026-11-26",
     neu: [

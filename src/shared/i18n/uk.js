@@ -2597,4 +2597,7 @@ export const uk = {
   "Probier Soft, Glas und Klar aus.": "Спробуй М'який, Скло і Чіткий.",
   "Such dir deine Farbe aus.": "Обери свій колір.",
   "Leg unten hin, was du oft brauchst.": "Поклади вниз те, що часто потрібно.",
+  // changelog 0.33.0
+  "Neu: ein Rundgang durch die App. Beim ersten Start zeigt ORBook dir direkt auf dem Bildschirm, wo was ist – du tippst selbst mit. Nochmal ansehen: Mehr → „Rundgang“.": "Нове: екскурсія застосунком. Під час першого запуску ORBook показує просто на екрані, де що є, – а ти натискаєш сам. Переглянути ще раз: Ще → «Екскурсія».",
+  "Wenn du dich über Sync bei den Noten abmeldest, bist du jetzt auf allen Geräten abgemeldet – auch in der Android-App.": "Якщо виходиш з оцінок через Sync, тепер вихід відбувається на всіх пристроях – і в Android-застосунку теж.",
 };
