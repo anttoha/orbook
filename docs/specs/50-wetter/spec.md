@@ -34,7 +34,7 @@
 - **Admin → Einstellungen → Wetter:** «Wetter anzeigen» (вкл/выкл для всей школы), поиск города → список (город, регион, страна) → выбрать → превью сегодня → «Speichern». Ничего не найдено — «Kein Ort gefunden.»
 - **Start:** блок «Für dich jetzt» (Klein/Breit/Groß), нажатие → `/day/<дата>` того дня, о котором блок. Шторка блока: только размер, строка «Einstellungen · Start und Widget ›» (→ `/fuer-dich`) и «Vom Start entfernen». Своих переключателей содержимого в шторке нет — чтобы не казалось, что это настройка только Start.
 - **Widget einstellen** (50c): у вида «Für dich jetzt» вместо переключателей — та же строка «Einstellungen · Start und Widget ›», открывает приложение на `/fuer-dich`.
-- **Mehr → Seiten → «Für dich jetzt»** (`/fuer-dich`, сверху eyebrow «Start · Widget»): все настройки (ниже). «Pro Fach ›» → `/fuer-dich/mitnehmen`: по карточке на свой предмет, плашки вещей с ×, «+ Neu» → шторка «Mitnehmen» (поле + «Oft gebraucht» для предмета).
+- **Mehr → Seiten → «Für dich jetzt»** (`/fuer-dich`, сверху eyebrow «Start · Widget»): все настройки (ниже). «Pro Fach ›» → `/fuer-dich/mitnehmen`: по карточке на свой предмет, плашки вещей с ×, «+ Neu» → шторка «Mitnehmen»: **главное — своё поле, пишешь любую вещь** («Zeichenblock», «Flöte», «Laborkittel» …); «Oft gebraucht» — только быстрые подсказки, ими можно не пользоваться. Нажатие на плашку — переименовать, × — убрать. Карточки — для **всех своих предметов** (из «Meine Kurse»), а не только для тех, где есть подсказки.
 - ПК: Einstellungen и Mitnehmen — одна страница в две колонки.
 
 ## Что показывает блок — `shared/utils/nowFocus.js`
@@ -51,7 +51,7 @@
 
 ## Настройки (только устройство + Sync, свой блок на `sideBlock.js`, часть «Für dich jetzt» в «Was wird synchronisiert»)
 `orbook.fuerDich` = `{ leaveMinutes: 45 (5…120, шаг 5), eveningFrom: "17:00" (14:00…22:00, шаг 30 мин), show: { wetter, mitnehmen, hausaufgaben, tests, aenderungen: true, termine: false }, onlyMine: true, tips: { regenjacke: 50 (%, 10…90 или null = Aus), jacke: 12, muetze: 3, sonnencreme: 6 (UV) или null }, testReminder: true, items: { "<Kurs-/Fachcode>": ["Sportsachen", …] } }`.
-По умолчанию в `items` — только Sport → «Sportsachen». Вещь — до 40 символов, до 10 на предмет. «Oft gebraucht» — маленький список подсказок по предмету в `shared/constants/packHints.js` (Sport, Kunst, Mathe, Musik, Englisch/Sprachen, Naturwissenschaften; остальное — общие). Блок и виджет читают одни и те же настройки (в Android — через мост, как оформление виджета).
+По умолчанию в `items` — только Sport → «Sportsachen» (её тоже можно убрать или переименовать). Вещи — свободный текст пользователя (решение владельца 26.11.: «чтобы свои можно было ставить, а не только предлагаемые»). Вещь — до 40 символов, до 10 на предмет. «Oft gebraucht» — маленький список подсказок по предмету в `shared/constants/packHints.js` (Sport, Kunst, Mathe, Musik, Englisch/Sprachen, Naturwissenschaften; остальное — общие). Блок и виджет читают одни и те же настройки (в Android — через мост, как оформление виджета).
 
 ## Погода на клиенте
 - `shared/api/weather.js`: `GET /api/weather` (через `api`, `conditional: true`), кеш в `offlineCache` (офлайн — последний ответ, «Stand gestern 21:30»).
