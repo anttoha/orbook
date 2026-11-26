@@ -615,6 +615,99 @@ def pc_woche(st):
             b.append(T(x + 14, y + 52, "fällt aus" if aus else f"{p30.TEACH[code]} · {p30.ROOM[code]}", 12.5, 600 if not aus else 800, col))
     return st.page(1440, 900, "".join(b))
 
+# ════════════════ Einstellungen «Für dich jetzt» — всё личное (пожелание владельца 26.11.) ════════════════
+def step_row(st, x, y, w, text, value, icon=None, first=False, sw=128):
+    """Строка «название — [− значение +]». Минимум у правил погоды — «Aus»."""
+    c = st.c
+    out = ("" if first else HL(x + 14, x + w - 14, y, c))
+    tx = x + 14
+    if icon: out += ICON(x + 14, y + 17, 0.83, c["muted"], icon, 2); tx = x + 46
+    return out + T(tx, y + 34.5, text, 14.5, 500, c["ink"]) + stepper(st, x + w - 14 - sw, y + 8, value, w=sw)
+
+def link_row(st, x, y, w, text, right, first=False):
+    c = st.c
+    return (("" if first else HL(x + 14, x + w - 14, y, c)) + T(x + 14, y + 34.5, text, 14.5, 500, c["ink"])
+            + T(x + w - 36, y + 34, right, 13, 400, c["faint"], "end") + ICON(x + w - 30, y + 19, 0.67, c["faint2"], CHEV_R))
+
+def p_settings(st):
+    c = st.c
+    x, w = 18, 354
+    b = [st.rbtn(18, 33.31, BACK), eyebrow(66, 33, "Mehr", c), title(66, 65, "Für dich jetzt", c)]
+    y = 112
+    b.append(label(x, y, "Losgehen", c)); y += 12
+    b.append(st.card(x, y, w, 108) + step_row(st, x, y, w, "Vor der 1. Stunde", "45 min", first=True)
+             + step_row(st, x, y + 54, w, "Abends schon morgen", "ab 17:00")); y += 108 + 28
+    b.append(label(x, y, "Zeigen", c)); y += 12
+    rows = [("Wetter", True), ("Was mitnehmen", True), ("Hausaufgaben", True), ("Tests", True), ("Änderungen", True), ("Termine", False), ("Nur meine Kurse", True)]
+    b.append(st.card(x, y, w, 54 * len(rows)))
+    for i, (t, on) in enumerate(rows): b.append(p30.switch_row(st, x, y + i * 54, w, t, on, i == 0))
+    y += 54 * len(rows) + 28
+    b.append(label(x, y, "Wetter-Tipps", c)); y += 12
+    tips = [("Regenjacke", UMBRELLA, "ab 50 %"), ("Jacke", SHIRT, "unter 12°"), ("Mütze & Schal", SNOWF, "unter 3°"), ("Sonnencreme", SUN, "Aus")]
+    b.append(st.card(x, y, w, 54 * len(tips)))
+    for i, (t, ic, v) in enumerate(tips): b.append(step_row(st, x, y + i * 54, w, t, v, ic, i == 0, sw=140))
+    y += 54 * len(tips) + 28
+    b.append(label(x, y, "Mitnehmen", c)); y += 12
+    b.append(st.card(x, y, w, 108) + link_row(st, x, y, w, "Pro Fach", "4 Fächer", True)
+             + p30.switch_row(st, x, y + 54, w, "Am Testtag erinnern", True)); y += 108 + 28
+    return st.page(390, y + 10, "".join(b))
+
+SNOWF = P("M12 2v20M4.9 7l14.2 10M4.9 17l14.2-10M9 4l3 3 3-3M9 20l3-3 3 3")
+
+MITNEHMEN = [("Sp", "Sport", ["Sportsachen", "Duschzeug"]), ("Ku", "Kunst", ["Malkasten"]), ("Ma", "Mathe", ["Taschenrechner", "Geodreieck"]),
+             ("En", "Englisch", ["Wörterbuch"]), ("De", "Deutsch", []), ("Ph", "Physik", []), ("Ge", "Geschichte", [])]
+
+def item_chip(st, x, y, text, h=32):
+    c = st.c
+    w = tw(text, 13) + 44
+    return (R(x, y, w, h, h / 2, c["sand"]) + T(x + 13, y + h / 2 + 4.7, text, 13, 800, c["ink"])
+            + ICON(x + w - 25, y + h / 2 - 6.5, 0.54, c["faint"], CLOSE, 2.4)), w
+
+def add_chip(st, x, y, h=32, text="Hinzufügen"):
+    c = st.c
+    w = tw(text, 13) + 40
+    return (R(x + .75, y + .75, w - 1.5, h - 1.5, h / 2, "none", c["rule"], 1.5, ' stroke-dasharray="4 3"')
+            + ICON(x + 11, y + h / 2 - 7, 0.58, c["accink"], PLUS, 2.4) + T(x + 30, y + h / 2 + 4.7, text, 13, 800, c["accink"])), w
+
+def p_mitnehmen(st, adding=False):
+    c = st.c
+    x, w = 18, 354
+    b = [st.rbtn(18, 33.31, BACK), eyebrow(66, 33, "Für dich jetzt", c), title(66, 65, "Mitnehmen", c)]
+    y = 100
+    for code, name, items in MITNEHMEN:
+        chips_, cx, cy = [], x + 14, 52
+        for it in items + [None]:   # плашки переносятся на новую строку, а не вылезают за край
+            s, cw_ = item_chip(st, 0, 0, it) if it else add_chip(st, 0, 0, text="Hinzufügen" if not items else "Neu")
+            if cx + cw_ > x + w - 14: cx, cy = x + 14, cy + 40
+            chips_.append(f'<g transform="translate({cx} {y + cy})">{s}</g>'); cx += cw_ + 8
+        hh = cy + 52
+        b.append(st.card(x, y, w, hh) + DOT(x + 20, y + 26, 5, st.sub[code][0]) + T(x + 34, y + 31, name, 15, 800, c["ink"]) + "".join(chips_))
+        y += hh + 12
+        if y > 700: break
+    if adding:   # Шторка «Neu bei Kunst»: поле и готовые подсказки
+        top = 470
+        b.append(p30.sheet(st, top, "Kunst", "Mitnehmen"))
+        b.append(field(st, x, top + 98, w, "Zeichenblock", focus=True))
+        yy = top + 172
+        b.append(label(x, yy, "Oft gebraucht", c)); yy += 12
+        cx = x
+        for t in ["Pinsel", "Schere", "Kleber"]:
+            s2, cw_ = add_chip(st, cx, yy, text=t); b.append(s2); cx += cw_ + 8
+        b.append(st.button(x, yy + 56, w, "Hinzufügen", "primary", PLUS))
+    return st.page(390, 844, "".join(b))
+
+def pc_settings(st):
+    """ПК: настройки слева, справа «Mitnehmen pro Fach» — одна страница."""
+    c = st.c
+    s1 = strip(p_settings(st))
+    s2 = strip(p_mitnehmen(st))
+    b = [p30.pc_side(st, "Start")]
+    b.append(eyebrow(284, 39, "Mehr", c) + title(284, 80, "Für dich jetzt", c, 38))
+    b.append(f'<g transform="translate(266 20) scale(0.84)">{s1.split(title(66, 65, "Für dich jetzt", c), 1)[1]}</g>')
+    b.append(f'<g transform="translate(830 20) scale(1)">{s2.split(title(66, 65, "Mitnehmen", c), 1)[1]}</g>')
+    b.append(label(848, 108, "Mitnehmen pro Fach", c))
+    return st.page(1440, 900, "".join(b))
+
 # ════════════════ Список экранов ════════════════
 def soft(fn): return lambda th: fn(W.style("soft", th))
 
@@ -633,6 +726,10 @@ SCREENS = {
     "handy-12-widget-einstellen": (p_config, ("hell",)),
     "pc-01-start": (soft(pc_start), ("hell", "dunkel")),
     "pc-02-woche": (soft(pc_woche), ("hell",)),
+    "handy-13-einstellungen": (soft(p_settings), ("hell", "dunkel")),
+    "handy-14-mitnehmen": (soft(p_mitnehmen), ("hell", "dunkel")),
+    "handy-15-mitnehmen-neu": (soft(lambda st: p_mitnehmen(st, True)), ("hell",)),
+    "pc-03-einstellungen": (soft(pc_settings), ("hell",)),
 }
 
 if __name__ == "__main__":
