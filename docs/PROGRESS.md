@@ -853,3 +853,5 @@ CI упал на `WidgetShots` (Robolectric качает Android до прове
 Элементы — по меткам `data-tour`; нет элемента 1,5 с — шаг пропускается (у шагов-действий тур сам открывает страницу). Флаг `tourPending` вместо `tipsPending`; повтор — Mehr → «Rundgang». Бэкенд и Datenschutz не менялись.
 Скриншоты всего тура (телефон светлая/тёмная, ПК): `/root/work/orbook-compare/52-rundgang/v2/` (`_tools/p52.mjs`).
 **Дальше:** владелец проходит тур на демо; потом «на прод» (changelog: neu).
+
+**Прод 26.11:** v0.33.0 (части 51 + 52; changelog neu «Rundgang», behoben «Abmelden über Sync», EN/UK), `docs/releases/v0.33.0.md`, тег v0.33.0, Release создан Actions, таймер выложил прод (`4afc2d25`). Без нового APK и без бэкенда.
