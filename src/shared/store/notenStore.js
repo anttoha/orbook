@@ -13,6 +13,10 @@ import { usePlanStore } from "./planStore";
 // Android-App (часть 36c): запрос идёт из приложения прямо в InfoPoint, пароль с «Angemeldet bleiben»
 // приложение хранит само (зашифрованно) — здесь он только в памяти.
 // ─────────────────────────────────────────────────────────────
+// Номер сессии: «Abmelden» начинает новую. Ответ, спрошенный в прошлой сессии, выбрасываем —
+// иначе он вернул бы оценки и логин после выхода (часть 47)
+let session = 0;
+
 export const useNotenStore = create(
   persist(
     (set, get) => ({
@@ -41,20 +45,28 @@ export const useNotenStore = create(
           set({ loginOpen: true });
           return "no_login";
         }
+        const mine = session;
+        const stale = () => mine !== session;
         set({ busy: true });
         try {
           const data = app ? await fetchNotenApp({ url: usePlanStore.getState().meta?.infopointUrl, username, password, remember }) : await fetchNoten(username, password);
+          if (stale()) {
+            // старый APK успел сохранить логин уже после выхода — стереть ещё раз (если никто не вошёл заново)
+            if (app && !get().username) appNotenLogout();
+            return null;
+          }
           get().take(data);
           set({ error: null, loginOpen: false });
           return null;
         } catch (error) {
+          if (stale()) return null;
           const code = errorCode(error);
           const loginAgain = code === "denied" || code === "no_login";
           const shown = code === "no_login" ? null : { code, retryAfter: error?.retryAfter ?? error?.details?.retryAfter ?? null };
           set({ error: shown, ...(loginAgain ? { password: "", loginOpen: true } : {}) });
           return code;
         } finally {
-          set({ busy: false });
+          if (!stale()) set({ busy: false });
         }
       },
 
@@ -72,8 +84,9 @@ export const useNotenStore = create(
 
       // «Abmelden»: логин и оценки стираются здесь, а через Sync — и на других устройствах
       logout: () => {
+        session += 1;
         appNotenLogout();
-        set({ data: null, stamp: new Date().toISOString(), fresh: [], username: "", password: "", error: null, loginOpen: false });
+        set({ data: null, stamp: new Date().toISOString(), fresh: [], username: "", password: "", busy: false, error: null, loginOpen: false });
       },
 
       closeLogin: () => set({ loginOpen: false, error: null }),
@@ -85,7 +98,11 @@ export const useNotenStore = create(
       markSeen: (code) => set({ fresh: get().fresh.filter((key) => !key.startsWith(`${code}|`)) }),
 
       // Пришло через Sync с другого устройства
-      setSynced: (value, stamp) => set({ data: value, stamp, fresh: value ? get().fresh : [] }),
+      // value null — «Abmelden» на другом устройстве: идущий запрос тоже больше не нужен
+      setSynced: (value, stamp) => {
+        if (!value) session += 1;
+        set({ data: value, stamp, fresh: value ? get().fresh : [], ...(value ? {} : { busy: false }) });
+      },
     }),
     {
       name: "orbook.noten",

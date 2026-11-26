@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useSyncStore } from "./syncStore";
 import { useTasksStore } from "./tasksStore";
+import { useNotenStore } from "./notenStore";
 import { migrateUser, useUserStore } from "./userStore";
 import { ALL_PARTS } from "../utils/syncPayload";
 
@@ -104,6 +105,67 @@ describe("syncStore", () => {
     await useSyncStore.getState().runSync();
     expect(useSyncStore.getState()).toMatchObject({ status: "error", error: "Nicht synchronisiert — keine Verbindung" });
     expect(useUserStore.getState().notes).toHaveLength(1);
+  });
+});
+
+describe("syncStore: правки во время запроса (часть 47)", () => {
+  let server;
+  // Первый GET «висит», пока тест не позовёт release()
+  const holdFirstGet = () => {
+    let release;
+    const gate = new Promise((resolve) => (release = resolve));
+    server.fetch.mockImplementationOnce(async (url, options) => {
+      await gate;
+      return server.real(url, options);
+    });
+    return release;
+  };
+  const started = () => vi.waitFor(() => expect(server.fetch).toHaveBeenCalled(), { timeout: 5000 });
+
+  beforeEach(() => {
+    server = fakeServer();
+    server.real = server.fetch.getMockImplementation();
+    vi.stubGlobal("fetch", server.fetch);
+    useSyncStore.setState({ code: null, version: 0, lastSyncAt: null, status: "idle", error: null, disabled: false, parts: ALL_PARTS, stamps: { kurse: null, darstellung: null } });
+    useUserStore.setState({ notes: [], picked: [], coursesChosen: false, showWeekend: false });
+    useTasksStore.setState({ tasks: [], marks: [] });
+    useNotenStore.setState({ data: null, stamp: null });
+  });
+
+  it("настройка, изменённая во время запроса, не откатывается и уходит следующим проходом", async () => {
+    useSyncStore.getState().touch("darstellung");
+    useSyncStore.setState({ parts: { ...ALL_PARTS, karten: false, lerntimer: false } }); // только основной блок
+    await useSyncStore.getState().enable();
+    server.fetch.mockClear();
+
+    const release = holdFirstGet();
+    const running = useSyncStore.getState().runSync();
+    await started();
+    await new Promise((resolve) => setTimeout(resolve, 5)); // отметка времени должна стать новее
+    useUserStore.setState({ showWeekend: true });
+    useSyncStore.getState().touch("darstellung");
+    useSyncStore.getState().runSync(); // пока идёт первый — только «ещё раз»
+    release();
+    await running;
+
+    expect(useUserStore.getState().showWeekend).toBe(true);
+    expect(server.fetch.mock.calls.map(([, o]) => o.method)).toEqual(["GET", "GET", "PUT"]);
+    expect(useSyncStore.getState()).toMatchObject({ status: "idle", version: 2 });
+  });
+
+  it("оценки, удалённые «Abmelden» во время запроса, не возвращаются", async () => {
+    useNotenStore.setState({ data: { subjects: [] }, stamp: "2026-11-20T08:00:00.000Z" });
+    await useSyncStore.getState().enable();
+    server.fetch.mockClear();
+
+    const release = holdFirstGet();
+    const running = useSyncStore.getState().runSync();
+    await started();
+    useNotenStore.getState().logout();
+    release();
+    await running;
+
+    expect(useNotenStore.getState().data).toBeNull();
   });
 });
 

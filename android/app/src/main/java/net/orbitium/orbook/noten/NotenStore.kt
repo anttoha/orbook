@@ -58,7 +58,10 @@ class NotenStore(context: Context) {
     fun tries(): List<Long> = prefs.getString("tries", "")!!.split(',').mapNotNull { it.toLongOrNull() }
     fun saveTries(list: List<Long>) = prefs.edit().putString("tries", list.joinToString(",")).apply()
 
-    /** «Abmelden»: всё, кроме лимитов (иначе выход-вход обходил бы их). */
+    /** «Abmelden»: стереть и начать новую сессию — идущие запросы после этого ничего не сохранят (часть 47). */
+    fun logout() = SESSION.end { clear() }
+
+    /** Всё, кроме лимитов (иначе выход-вход обходил бы их). */
     fun clear() = prefs.edit().remove("url").remove("username").remove("password").remove("data").remove("fetchedAt").remove("seen").remove("fresh").apply()
 
     private fun read(name: String): String? = prefs.getString(name, null)?.let(::open)
@@ -95,6 +98,8 @@ class NotenStore(context: Context) {
 
     companion object {
         const val FILE = "orbook-noten"
+        /** Одна на приложение: сайт, фон и виджеты работают в одном процессе. */
+        val SESSION = NotenSession()
         private const val ALIAS = "orbook-noten"
         private const val AES = "AES/GCM/NoPadding"
         private const val IV = 12

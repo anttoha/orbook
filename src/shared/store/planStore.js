@@ -49,6 +49,18 @@ let statusRequest = null; // запит /plan/status, що зараз викон
 let examsRequest = null;
 let pastExamsRequest = null;
 let homeworkRequest = null;
+// Номер «поколения» (часть 47): другой класс или выход — новое. Ответ из прошлого поколения не должен
+// трогать экран: ни данными, ни ошибкой, ни «загрузка закончилась»
+let epoch = 0;
+function newEpoch() {
+  epoch += 1;
+  examsRequest = pastExamsRequest = homeworkRequest = statusRequest = null; // запити старого класу нам уже не потрібні
+}
+// Запомнить поколение перед запросом: const outdated = watchEpoch(); await …; if (outdated()) return;
+function watchEpoch() {
+  const mine = epoch;
+  return () => mine !== epoch;
+}
 // Скільки днів тому збережено відповідь. Обидва моменти — за годинником пристрою
 const daysSince = (savedAt) => daysBetween(berlinParts(new Date(savedAt)).date, berlinParts(new Date()).date);
 const NO_PAST_EXAMS = { status: "idle", exams: [], savedAt: null, error: null };
@@ -82,7 +94,7 @@ const seenChange = {
 let seenWeeks = {};
 
 // Дані одного класу: при переході в інший клас вони стираються (me теж — HomePage покаже порожній екран, поки вантажимо)
-const NO_CLASS_DATA = { live: "off", meta: null, courses: [], coursesStatus: "loading", exams: [], examsState: { status: "loading", savedAt: null, error: null }, pastExams: NO_PAST_EXAMS, homework: [], homeworkState: { status: "loading", savedAt: null, error: null }, status: null, weeks: {}, newPlan: null, lastStandShown: false };
+const NO_CLASS_DATA = { refreshing: false, live: "off", meta: null, courses: [], coursesStatus: "loading", exams: [], examsState: { status: "loading", savedAt: null, error: null }, pastExams: NO_PAST_EXAMS, homework: [], homeworkState: { status: "loading", savedAt: null, error: null }, status: null, weeks: {}, newPlan: null, lastStandShown: false };
 
 // «Beim Start öffnen» (частина 29): дивимось лише раз — при запуску застосунку
 let booted = false;
@@ -91,6 +103,7 @@ let booted = false;
 function activate(id) {
   const { activeId } = useClasses.getState();
   if (activeId === id) return;
+  newEpoch();
   // перший запуск після оновлення: те, що вже лежить на пристрої, належить цьому класу
   if (activeId != null) {
     quietly(() => useUserStore.getState().swapClass(activeId, id));
@@ -100,9 +113,6 @@ function activate(id) {
 }
 
 // Клас, якого вже немає (код вимкнули / клас прибрали): позначити й питати сервер без заголовка
-// Відповідь прийшла, а клас уже інший (переключили, поки чекали) — її не показуємо
-const stale = (classId) => useClasses.getState().activeId !== classId;
-
 const lostClass = (error) => error?.status === 403 && (error.code === "class_gone" || error.code === "not_member");
 
 export const usePlanStore = create((set, get) => ({
@@ -137,9 +147,11 @@ export const usePlanStore = create((set, get) => ({
       if (classId != null) activate(classId); // «Beim Start öffnen»
       set({ startPage: page });
     }
+    const outdated = watchEpoch();
     try {
       // /auth/me відповідає 200 і без входу ({ authenticated: false })
       const me = await loadMe();
+      if (outdated()) return; // пока ждали, открыли другой класс или вышли
       if (me.authenticated && me.class?.id != null) {
         activate(me.class.id); // сервер відповів за інший клас (наш пропав) — відкриваємо його
         useClasses.getState().syncFromServer(me.classes, me.class);
@@ -147,7 +159,7 @@ export const usePlanStore = create((set, get) => ({
       set({ me: me.authenticated ? me : null });
       if (me.authenticated) get().loadBasics(); // увійшли — вантажимо решту
     } catch (error) {
-      set({ startError: error }); // ні мережі, ні збереженого
+      if (!outdated()) set({ startError: error }); // ні мережі, ні збереженого
     }
   },
 
@@ -156,7 +168,6 @@ export const usePlanStore = create((set, get) => ({
     if (useClasses.getState().activeId === id) return;
     activate(id);
     seenWeeks = {};
-    examsRequest = pastExamsRequest = homeworkRequest = statusRequest = null; // запити старого класу нам уже не потрібні
     useMaterials.getState().reset();
     useAppointmentStore.getState().reset();
     // me не стираем: меню и раскладка остаются на месте, пока грузится новый класс (без «белой вспышки»)
@@ -229,7 +240,9 @@ export const usePlanStore = create((set, get) => ({
 
   // ── «Klasse verlassen»: вихід на цьому пристрої ──
   logout: async () => {
+    newEpoch();
     await api("/auth/logout", { method: "POST" }).catch(() => {}); // без мережі — виходимо локально
+    newEpoch(); // и всё, что спросили, пока шёл выход
     cache.clearAll(); // кеш відповідей особистий — стираємо
     useMaterials.getState().reset();
     useAppointmentStore.getState().reset();
@@ -242,11 +255,11 @@ export const usePlanStore = create((set, get) => ({
   // ── Після входу: паралельно meta, курси, Klausuren, стан плану ──
   loadBasics: async () => {
     // Кожен запит окремо: якщо один упав, інші все одно покажуться
-    const classId = useClasses.getState().activeId;
+    const outdated = watchEpoch();
     const load = async (key, path, apply) => {
       try {
         const result = await loadWithCache(key, () => api(path));
-        if (!stale(classId)) apply(result);
+        if (!outdated()) apply(result);
       } catch {
         // помилку окремого запиту не показуємо: екрани мають свої стани
       }
@@ -262,6 +275,7 @@ export const usePlanStore = create((set, get) => ({
       get().loadHomework(),
       load("status", "/plan/status", ({ data }) => set({ status: data })),
     ]);
+    if (outdated()) return;
     // Після meta: «сьогодні» вже за годинником школи
     get().noticePlanChange(get().status?.lastChangeAt);
   },
@@ -269,12 +283,12 @@ export const usePlanStore = create((set, get) => ({
   // ── Курси класу. Окремо від loadBasics, щоб кнопка «Erneut versuchen» могла вантажити лише їх ──
   loadCourses: async () => {
     set({ coursesStatus: "loading" });
-    const classId = useClasses.getState().activeId;
+    const outdated = watchEpoch();
     try {
       const { data } = await loadWithCache("courses", () => api("/courses"));
-      if (!stale(classId)) set({ courses: data?.courses ?? [], coursesStatus: "ready" });
+      if (!outdated()) set({ courses: data?.courses ?? [], coursesStatus: "ready" });
     } catch {
-      set({ coursesStatus: "error" });
+      if (!outdated()) set({ coursesStatus: "error" });
     }
   },
 
@@ -282,15 +296,15 @@ export const usePlanStore = create((set, get) => ({
   loadExams: async () => {
     if (examsRequest) return;
     if (get().examsState.status === "error") set({ examsState: { status: "loading", savedAt: null, error: null } });
+    const outdated = watchEpoch();
     try {
-      const classId = useClasses.getState().activeId;
       examsRequest = loadWithCache("exams", () => api("/exams"));
       const { data, fromCache, status, savedAt, error } = await examsRequest;
-      if (!stale(classId)) set({ exams: fromCache ? freshenExams(data.exams, daysSince(savedAt)) : data.exams, examsState: { status, savedAt, error: error ?? null } });
+      if (!outdated()) set({ exams: fromCache ? freshenExams(data.exams, daysSince(savedAt)) : data.exams, examsState: { status, savedAt, error: error ?? null } });
     } catch (error) {
-      set({ examsState: { status: "error", savedAt: null, error } });
+      if (!outdated()) set({ examsState: { status: "error", savedAt: null, error } });
     } finally {
-      examsRequest = null;
+      if (!outdated()) examsRequest = null;
     }
   },
 
@@ -298,16 +312,16 @@ export const usePlanStore = create((set, get) => ({
   loadHomework: async () => {
     if (homeworkRequest) return;
     if (get().homeworkState.status === "error") set({ homeworkState: { status: "loading", savedAt: null, error: null } });
+    const outdated = watchEpoch();
     try {
-      const classId = useClasses.getState().activeId;
       homeworkRequest = loadWithCache("homework", () => api("/homework"));
       const { data, fromCache, status, savedAt, error } = await homeworkRequest;
       const items = data?.homework ?? [];
-      if (!stale(classId)) set({ homework: fromCache ? freshenExams(items, daysSince(savedAt)) : items, homeworkState: { status, savedAt, error: error ?? null } });
+      if (!outdated()) set({ homework: fromCache ? freshenExams(items, daysSince(savedAt)) : items, homeworkState: { status, savedAt, error: error ?? null } });
     } catch (error) {
-      set({ homeworkState: { status: "error", savedAt: null, error } });
+      if (!outdated()) set({ homeworkState: { status: "error", savedAt: null, error } });
     } finally {
-      homeworkRequest = null;
+      if (!outdated()) homeworkRequest = null;
     }
   },
 
@@ -322,14 +336,16 @@ export const usePlanStore = create((set, get) => ({
   loadPastExams: async () => {
     if (pastExamsRequest) return;
     if (get().pastExams.exams.length === 0) set({ pastExams: { ...NO_PAST_EXAMS, status: "loading" } });
+    const outdated = watchEpoch();
     try {
       pastExamsRequest = loadWithCache("exams:past", () => api("/exams?past=true"));
       const { data, fromCache, status, savedAt, error } = await pastExamsRequest;
+      if (outdated()) return;
       set({ pastExams: { status, exams: fromCache ? withDaysLeft(data.exams, daysSince(savedAt)) : data.exams, savedAt, error: error ?? null } });
     } catch (error) {
-      set({ pastExams: { ...NO_PAST_EXAMS, status: "error", error } });
+      if (!outdated()) set({ pastExams: { ...NO_PAST_EXAMS, status: "error", error } });
     } finally {
-      pastExamsRequest = null;
+      if (!outdated()) pastExamsRequest = null;
     }
   },
 
@@ -342,13 +358,17 @@ export const usePlanStore = create((set, get) => ({
 
   // ── Editor-Code. Сам код ніде не лежить: сервер пам'ятає його за сесією. Помилку показує форма ──
   unlockEditor: async (code) => {
+    const outdated = watchEpoch();
     const { editor } = await api("/editor/unlock", { method: "POST", body: { code } });
+    if (outdated()) return; // код относится к прошлому классу
     set((s) => ({ me: { ...s.me, editor } }));
     get().examsChanged(); // canEdit у записах залежить від коду
     get().loadHomework();
   },
   lockEditor: async () => {
+    const outdated = watchEpoch();
     await api("/editor/lock", { method: "POST" });
+    if (outdated()) return;
     get().dropEditor();
     get().examsChanged();
     get().loadHomework();
@@ -364,15 +384,15 @@ export const usePlanStore = create((set, get) => ({
     // запам'ятати до запиту: відповідь перезапише і екран, і збережене
     if (!seen) seenWeeks[monday] ??= prev?.data ?? cache.load(`week:${monday}`)?.data ?? null;
     if (!silent || !prev?.data) setWeek({ status: "loading", data: prev?.data ?? null });
-    const classId = useClasses.getState().activeId;
+    const outdated = watchEpoch();
     try {
       const result = await loadWithCache(`week:${monday}`, () => api(`/week?date=${monday}`));
-      if (stale(classId)) return;
+      if (outdated()) return;
       setWeek({ status: result.status, data: result.data, savedAt: result.savedAt, error: result.error ?? null });
       if (seen && result.status === "ready") seenWeeks[monday] = result.data;
       if (result.status === "ready") set({ lastStandShown: false }); // школа знову відповідає
     } catch (error) {
-      if (!stale(classId)) setWeek({ status: "error", data: null, error });
+      if (!outdated()) setWeek({ status: "error", data: null, error });
     }
   },
 
@@ -395,7 +415,9 @@ export const usePlanStore = create((set, get) => ({
     const today = berlinParts(get().now).date;
     const monday = currentMonday(today);
     const before = seenWeeks[monday] ?? get().weeks[monday]?.data ?? null;
+    const outdated = watchEpoch();
     const fresh = await api(`/week?date=${monday}`).catch(() => null); // не вийшло — плашка без подробиць
+    if (outdated()) return;
     set({ newPlan: { lastChangeAt, changes: fresh ? planChanges(before, fresh, today) : [] } });
   },
 
@@ -411,8 +433,10 @@ export const usePlanStore = create((set, get) => ({
   refreshPlan: async (monday) => {
     if (get().refreshing) return; // уже йде
     set({ refreshing: true });
+    const outdated = watchEpoch();
     try {
       const result = await api("/plan/refresh", { method: "POST", body: typeof monday === "string" ? { week: monday } : undefined });
+      if (outdated()) return;
       set({ status: result.status });
       if (!result.refreshed) {
         toast.error(translate("Plan konnte nicht geladen werden"), { duration: 6000, action: { label: translate("Nochmal"), onClick: () => get().refreshPlan() } });
@@ -426,10 +450,11 @@ export const usePlanStore = create((set, get) => ({
       }
       set((s) => ({ planStamp: s.planStamp + 1 })); // «Plan-Status» и «Verlauf» перечитывают дни
     } catch (error) {
+      if (outdated()) return;
       // 429 → «Bitte in 2 Minuten erneut versuchen.»; інше — текст сервера
       toast.error(error.code === "rate_limited" ? retryText(error) : error.message);
     } finally {
-      set({ refreshing: false });
+      if (!outdated()) set({ refreshing: false });
     }
   },
 
@@ -455,16 +480,17 @@ export const usePlanStore = create((set, get) => ({
   // ── Без Live: раз на хвилину — чи змінився план? (GET /api/plan/status) ──
   checkStatus: async () => {
     if (statusRequest) return; // попередній опит ще йде (повільна мережа): не накладаємо
+    const outdated = watchEpoch();
     try {
       statusRequest = api("/plan/status", { conditional: true });
       const status = await statusRequest;
-      if (!status) return; // 304 — нічого не змінилось, нічого не перемальовуємо
+      if (!status || outdated()) return; // 304 — нічого не змінилось, нічого не перемальовуємо
       set({ status });
       await get().noticePlanChange(status.lastChangeAt);
     } catch {
       // немає мережі — спробуємо наступного разу
     } finally {
-      statusRequest = null;
+      if (!outdated()) statusRequest = null;
     }
   },
 }));
@@ -472,11 +498,12 @@ export const usePlanStore = create((set, get) => ({
 // GET /auth/me від імені відкритого класу. Його вже немає (403) — позначаємо і питаємо без заголовка:
 // сервер відповість за перший клас пристрою
 async function loadMe() {
+  const classId = useClasses.getState().activeId;
   try {
     return (await loadWithCache("me", () => api("/auth/me"))).data;
   } catch (error) {
     if (!lostClass(error)) throw error;
-    useClasses.getState().markGone(useClasses.getState().activeId);
+    useClasses.getState().markGone(classId);
     return api("/auth/me", { classId: null });
   }
 }
@@ -484,5 +511,6 @@ async function loadMe() {
 // Сесія закінчилась (401 на будь-якому запиті) → екран входу з поясненням
 // (Zugangscode вимкнули чи видалили, пароль класу змінили, вхід застарів — частина 14c)
 setUnauthorizedHandler((error) => {
-  usePlanStore.setState({ me: null, weeks: {}, loginNotice: signedOutNotice(error) });
+  newEpoch();
+  usePlanStore.setState({ me: null, refreshing: false, weeks: {}, loginNotice: signedOutNotice(error) });
 });

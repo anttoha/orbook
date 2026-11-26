@@ -51,6 +51,68 @@ describe("notenStore", () => {
     expect(useNotenStore.getState().loginOpen).toBe(true);
   });
 
+  describe("späte Antwort (Teil 47)", () => {
+    // Anfrage, die erst auf «antworten()» fertig wird
+    const slow = (mock) => {
+      let answer;
+      mock.mockImplementationOnce(() => new Promise((resolve, reject) => (answer = { resolve, reject })));
+      return () => answer;
+    };
+
+    it("Abmelden während des Abrufs: Noten und Login kommen nicht zurück", async () => {
+      const request = slow(fetchNoten);
+      const running = useNotenStore.getState().login("max", "geheim", true);
+      useNotenStore.getState().logout();
+      request().resolve(DATA);
+      expect(await running).toBeNull();
+      expect(useNotenStore.getState()).toMatchObject({ data: null, username: "", password: "", busy: false });
+    });
+
+    it("später Fehler öffnet nach dem Abmelden nichts mehr", async () => {
+      const request = slow(fetchNoten);
+      const running = useNotenStore.getState().login("max", "alt", true);
+      useNotenStore.getState().logout();
+      request().reject(new ApiError(403, "infopoint_denied", "x"));
+      await running;
+      expect(useNotenStore.getState()).toMatchObject({ error: null, loginOpen: false });
+    });
+
+    it("alte Antwort stört den neuen Login nicht", async () => {
+      const first = slow(fetchNoten);
+      const old = useNotenStore.getState().login("max", "geheim", true);
+      useNotenStore.getState().logout();
+      const second = slow(fetchNoten);
+      const next = useNotenStore.getState().login("mia", "neu", true);
+      first().resolve(DATA);
+      await old;
+      expect(useNotenStore.getState()).toMatchObject({ data: null, busy: true, username: "mia" });
+      second().resolve({ ...DATA, updatedAt: "2026-11-25" });
+      await next;
+      expect(useNotenStore.getState().data.updatedAt).toBe("2026-11-25");
+    });
+
+    it("Abmelden auf einem anderen Gerät (Sync) während des Abrufs", async () => {
+      const request = slow(fetchNoten);
+      const running = useNotenStore.getState().login("max", "geheim", true);
+      useNotenStore.getState().setSynced(null, new Date().toISOString());
+      request().resolve(DATA);
+      await running;
+      expect(useNotenStore.getState().data).toBeNull();
+    });
+
+    it("alte Android-App hat den Login gespeichert: er wird noch einmal gelöscht", async () => {
+      hasAppNoten.mockReturnValue(true);
+      const request = slow(fetchNotenApp);
+      const running = useNotenStore.getState().login("max", "geheim", true);
+      useNotenStore.getState().logout();
+      appNotenLogout.mockClear();
+      request().resolve(DATA);
+      await running;
+      expect(appNotenLogout).toHaveBeenCalledOnce();
+      expect(useNotenStore.getState().data).toBeNull();
+    });
+  });
+
   describe("Android-App (Teil 36c)", () => {
     beforeEach(() => hasAppNoten.mockReturnValue(true));
 

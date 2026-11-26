@@ -202,7 +202,7 @@ class AndroidBridge(private val web: WebView, private val host: WidgetHost? = nu
     @JavascriptInterface
     fun notenLogout() {
         if (!allowed()) return
-        NotenStore(context).clear()
+        NotenStore(context).logout()
         NotenWorker.schedule(context)
         Widgets.redraw(context) // часть 39: виджеты Noten — «In ORBook bei Noten anmelden»
     }

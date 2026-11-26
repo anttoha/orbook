@@ -33,6 +33,7 @@ const keysFor = (code) => {
 };
 
 let retryTimer = null; // повтор после 429
+let again = false; // пока шла синхронизация, попросили ещё раз — сделаем следующий проход
 let applying = false; // сейчас записываем пришедшее — это не «изменение пользователя»
 
 // Часть 29: переключение класса меняет заметки и курсы в userStore, но это не правка пользователя
@@ -61,10 +62,15 @@ export const useSyncStore = create(
       parts: ALL_PARTS, // «Was wird synchronisiert» — у каждого устройства своё
       stamps: { kurse: null, darstellung: null, klassen: {} }, // когда здесь меняли Meine Kurse, Darstellung, курсы и имя/цвет каждого класса (null — ни разу)
 
-      // Синхронизировать сейчас. Вторая синхронизация, пока идёт первая, не нужна: изменения подхватит следующая
+      // Синхронизировать сейчас. Две сразу не идут: вторая только отмечает «ещё раз» (часть 47)
       runSync: async () => {
         const { code, status, disabled } = get();
-        if (!code || disabled || status === "syncing") return;
+        if (!code || disabled) return;
+        if (status === "syncing") {
+          again = true;
+          return;
+        }
+        again = false;
         clearTimeout(retryTimer);
         set({ status: "syncing" });
         try {
@@ -76,8 +82,10 @@ export const useSyncStore = create(
           if (get().code !== code) return;
           set({ version: res.version, lastSyncAt: new Date().toISOString(), status: "idle", error: null });
         } catch (error) {
-          handleError(error, set, get);
+          if (get().code === code) handleError(error, set, get);
+          return;
         }
+        if (again) await get().runSync(); // правки, сделанные во время запроса
       },
 
       // «Code erzeugen»: включить синхронизацию с новым кодом
@@ -227,6 +235,12 @@ const differs = (a, b) => JSON.stringify(a) !== JSON.stringify(b);
 // Только поля, которые реально пришли (в блоке от другой версии приложения поля может не быть)
 const defined = (value) => Object.fromEntries(Object.entries(value ?? {}).filter(([, v]) => v !== undefined));
 
+// Можно ли записать пришедшую настройку: она не старее своей (своё могли изменить, пока шёл запрос)
+const notOlder = (incoming, local) => !local || (Boolean(incoming) && incoming >= local);
+
+// Оценки и цели: берём только действительно новое
+const isNewer = (incoming, local) => Boolean(incoming) && incoming !== local && notOlder(incoming, local);
+
 // Записать слитый блок в сторы — только включённые части и только если что-то изменилось
 // (иначе экраны перерисуются зря). Пока шёл запрос, пользователь мог что-то поменять — списки сливаем ещё раз
 function applyBlock(block, parts, set) {
@@ -237,19 +251,19 @@ function applyBlock(block, parts, set) {
     if (withClasses) applyClasses(block.klassen, parts, stamps);
     if (parts.notes && !withClasses) applyNotes(block.notes);
     if (parts.aufgaben) applyTasks(block);
-    if (parts.kurse && block.kurse && !withClasses) {
+    if (parts.kurse && block.kurse && !withClasses && notOlder(block.kurse.updatedAt, stamps.kurse)) {
       const value = defined(block.kurse.value);
       if (differs(kurseOf(useUserStore.getState()), kurseOf({ ...useUserStore.getState(), ...value }))) useUserStore.setState(value);
       stamps.kurse = block.kurse.updatedAt;
     }
-    if (parts.darstellung && block.darstellung) {
+    if (parts.darstellung && block.darstellung && notOlder(block.darstellung.updatedAt, stamps.darstellung)) {
       applyDarstellung(defined(block.darstellung.value));
       stamps.darstellung = block.darstellung.updatedAt;
     }
-    if (parts.noten !== false && block.noten?.updatedAt && block.noten.updatedAt !== useNotenStore.getState().stamp) {
+    if (parts.noten !== false && isNewer(block.noten?.updatedAt, useNotenStore.getState().stamp)) {
       useNotenStore.getState().setSynced(block.noten.value ?? null, block.noten.updatedAt);
     }
-    if (parts.noten !== false && block.ziele?.updatedAt && block.ziele.updatedAt !== useNotenZielStore.getState().stamp) {
+    if (parts.noten !== false && isNewer(block.ziele?.updatedAt, useNotenZielStore.getState().stamp)) {
       useNotenZielStore.getState().setSynced(block.ziele.value, block.ziele.updatedAt);
     }
     set({ stamps });
@@ -262,6 +276,7 @@ function applyBlock(block, parts, set) {
 function applyClasses(klassen, parts, stamps) {
   const { activeId } = useClasses.getState();
   stamps.klassen = { ...(stamps.klassen ?? {}) };
+  const own = classStamps(stamps); // свои отметки на этот момент
   for (const item of classList()) {
     const entry = klassen[String(item.id)];
     if (!entry) continue;
@@ -272,17 +287,19 @@ function applyClasses(klassen, parts, stamps) {
       const next = mergeNotes(current.notes ?? [], entry.notes);
       if (!sameNotes(next, current.notes ?? [])) patch.notes = next;
     }
-    if (parts.kurse && entry.kurse) {
+    if (parts.kurse && entry.kurse && notOlder(entry.kurse.updatedAt, own[item.id]?.kurse)) {
       const value = defined(entry.kurse.value);
       if (differs(kurseOf(current), kurseOf({ ...current, ...value }))) Object.assign(patch, value);
       stamps.klassen[item.id] = { ...(stamps.klassen[item.id] ?? {}), kurse: entry.kurse.updatedAt };
     }
     if (Object.keys(patch).length > 0) useUserStore.setState(classPatch(user, item.id, activeId, patch));
-    if (parts.klassen !== false && entry.info) stamps.klassen[item.id] = { ...(stamps.klassen[item.id] ?? {}), info: entry.info.updatedAt };
   }
   if (parts.klassen !== false) {
     const list = classList();
-    const next = applyInfo(list, klassen);
+    // имя, цвет и порядок — только у тех классов, где пришедшее не старее своего
+    const fresh = Object.entries(klassen).filter(([id, entry]) => entry.info && notOlder(entry.info.updatedAt, own[id]?.info));
+    for (const [id, entry] of fresh) stamps.klassen[id] = { ...(stamps.klassen[id] ?? {}), info: entry.info.updatedAt };
+    const next = applyInfo(list, Object.fromEntries(fresh));
     if (differs(next, list)) useClasses.setState({ list: next });
   }
 }

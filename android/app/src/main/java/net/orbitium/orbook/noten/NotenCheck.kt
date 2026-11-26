@@ -45,6 +45,7 @@ object NotenCheck {
      */
     fun fetch(context: Context, url: String?, username: String?, password: String?, remember: Boolean): Outcome {
         val store = NotenStore(context)
+        val session = NotenStore.SESSION.current() // до чтения логина: «Abmelden» во время запроса отменяет запись
         val saved = store.login()
         val user = username?.takeIf { it.isNotBlank() } ?: saved?.username
         val pass = password?.takeIf { it.isNotEmpty() } ?: saved?.password?.takeIf { saved.username == user }
@@ -52,20 +53,23 @@ object NotenCheck {
         limit(store)?.let { return it }
 
         val result = load(context, url, user, pass)
-        if (result.data != null) {
-            val now = System.currentTimeMillis()
-            store.markOk(now)
-            if (remember) {
-                store.saveLogin(NotenStore.Login(url, user, pass))
-                store.saveData(result.data, now)
-                store.saveSeen(gradeKeys(result.data))
-            } else {
-                store.clear()
+        val current = NotenStore.SESSION.ifSame(session) {
+            if (result.data != null) {
+                val now = System.currentTimeMillis()
+                store.markOk(now)
+                if (remember) {
+                    store.saveLogin(NotenStore.Login(url, user, pass))
+                    store.saveData(result.data, now)
+                    store.saveSeen(gradeKeys(result.data))
+                } else {
+                    store.clear()
+                }
+            } else if (result.code == "infopoint_denied" && store.login()?.let { it.username == user && it.password == pass } == true) {
+                store.forgetPassword() // только тот пароль, что не подошёл: новый мог появиться, пока ждали
             }
-            Widgets.redraw(context) // часть 39: виджеты Noten — новые оценки сразу на рабочем столе
-        } else if (result.code == "infopoint_denied" && saved != null && saved.username == user) {
-            store.forgetPassword()
         }
+        if (!current) return Outcome(code = "no_login") // пока ждали, вышли
+        if (result.data != null) Widgets.redraw(context) // часть 39: виджеты Noten — новые оценки сразу на рабочем столе
         NotenWorker.schedule(context)
         return result
     }
@@ -74,15 +78,19 @@ object NotenCheck {
     fun background(context: Context) {
         val store = NotenStore(context)
         val login = store.login() ?: return
+        val session = NotenStore.SESSION.current()
         val before = store.seen()
         val outcome = fetch(context, login.url, login.username, login.password, remember = true)
         val data = outcome.data ?: return
         if (before == null) return // первый раз — всё «уже было»
         // часть 39: новые оценки — «neu» и в виджетах, пока сайт их не покажет (он потом пришлёт свой список)
         val added = gradeKeys(data) - before
-        if (added.isNotEmpty()) { store.saveFresh(store.fresh() + added); Widgets.redraw(context) }
         val fresh = newGrades(data, before)
-        if (fresh.isNotEmpty()) notify(context, fresh)
+        // уведомление и «neu» — тоже запись: после «Abmelden» их не должно быть
+        NotenStore.SESSION.ifSame(session) {
+            if (added.isNotEmpty()) { store.saveFresh(store.fresh() + added); Widgets.redraw(context) }
+            if (fresh.isNotEmpty()) notify(context, fresh)
+        }
     }
 
     private fun limit(store: NotenStore): Outcome? {

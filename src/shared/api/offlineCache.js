@@ -9,6 +9,9 @@ const PREFIX = "orbook.cache."; // усі ключі кешу починають
 // Частина 29: у кожного класу свій кеш — «orbook.cache.c2.week:…». Без класу (старий сервер) — як раніше
 const scoped = (key, classId = currentClassId()) => (classId != null ? `c${classId}.${key}` : key);
 
+// Сколько раз кэш стирали: ответ, спрошенный до выхода, не должен записаться после него (часть 47)
+let wipes = 0;
+
 export const cache = {
   // Зберегти відповідь разом із часом збереження
   save(key, data, classId) {
@@ -28,10 +31,12 @@ export const cache = {
   },
   // Стерти весь кеш ORBook (при виході)
   clearAll() {
+    wipes += 1;
     removeKeys(PREFIX);
   },
   // Стерти кеш одного класу («Klasse entfernen»)
   clearClass(classId) {
+    wipes += 1;
     removeKeys(`${PREFIX}c${classId}.`);
   },
 };
@@ -58,9 +63,10 @@ function removeKeys(prefix) {
 // classId берём В МОМЕНТ ЗАПРОСА (часть 29): ответ может прийти, когда открыт уже другой класс —
 // тогда копия всё равно ляжет к тому классу, для которого её спрашивали
 export async function loadWithCache(key, loader, classId = currentClassId()) {
+  const wipesBefore = wipes;
   try {
     const data = await loader();
-    if (data !== null) cache.save(key, data, classId); // null = 304 «не змінилось» — лишаємо збережене
+    if (data !== null && wipes === wipesBefore) cache.save(key, data, classId); // null = 304 «не змінилось» — лишаємо збережене
     const saved = data === null ? cache.load(key, classId) : null;
     return { data: data ?? saved?.data ?? null, fromCache: false, savedAt: null, status: "ready" };
   } catch (error) {
