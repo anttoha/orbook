@@ -840,3 +840,8 @@ Android: `widget/FuerDich.kt` — погода из ответа, настрой
 **Прод 26.11:** v0.32.0 (changelog 45–50, EN/UK), `docs/releases/v0.32.0.md`, тег v0.32.0, Release создан Actions, прод-APK 0.32.0 (26) — в Release и на сайте. Бэкенд (`a23b6f9`) уже на проде с выкладки 50c (общий код, без миграций). Погода на проде появится, когда админ включит «Wetter» и выберет место школы.
 CI упал на `WidgetShots` (Robolectric качает Android до проверки `WIDGET_SHOTS`) — тест теперь исключён без `WIDGET_SHOTS` (`38ddfd4`).
 Открыто: «Abmelden» через Sync не стирает вход InfoPoint в Android-App (а — стирать / б — оставить), ждёт ответа владельца.
+
+## Часть 51 · «Abmelden» через Sync стирает вход везде (2026-11-26, демо)
+Владелец выбрал «а». `notenStore.setSynced(null)` теперь стирает логин/пароль и вызывает `appNotenLogout()` (Android-App забывает вход InfoPoint, фон больше не опрашивает). `pullApp` берёт оценки из фона, не сдвигая отметку Sync (`take(data, stamp)`), иначе принесённое фоном после выхода перебило бы выход. Тесты в `notenStore.test.js`. Datenschutz: «Abmelden» действует и на других устройствах с Sync (EN/UK). APK не менялся (мост `notenLogout` уже есть).
+**Дальше:** «на прод» (changelog: behoben), без нового APK.
+

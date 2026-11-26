@@ -95,7 +95,7 @@ export const SECTIONS = [
       "In der Android-App geht die Anfrage direkt vom Handy an den InfoPoint deiner Schule – Benutzername, Passwort und Noten kommen beim ORBook-Server gar nicht an. Der InfoPoint sieht dabei, wie im Browser, die Internet-Adresse deines Handys. Mit „Angemeldet bleiben“ speichert die App Login und zuletzt geholte Noten verschlüsselt (Schlüssel im Android-Keystore, ohne Backup).",
       "Schaltest du in den Mitteilungen der App „Neue Note“ ein, schaut die App selbst etwa alle 3 Stunden im InfoPoint nach (nicht in der Ruhezeit) und meldet neue Noten. Standardmäßig ist das aus.",
       "Die Noten-Widgets der Android-App (Noten, Neue Noten, Fehlzeiten) zeigen nur, was die App schon gespeichert hat, und fragen selbst nichts ab. Noten und Fehlzeiten sind dort standardmäßig verdeckt („•••“). Schaltest du bei einem Widget „Noten anzeigen“ ein, sieht sie jeder, der auf deinen Startbildschirm schaut.",
-      "„Abmelden“ löscht Login und Noten auf diesem Gerät und im Sync.",
+      "„Abmelden“ löscht Login und Noten auf diesem Gerät, im Sync und auf deinen anderen Geräten mit Sync – auch das in der Android-App gespeicherte Login.",
     ],
   },
   {

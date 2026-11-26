@@ -143,6 +143,22 @@ describe("notenStore", () => {
       expect(useNotenStore.getState().fresh).toEqual(["ma|2026-11-20|2|"]);
     });
 
+    it("Teil 51: Abmelden auf einem anderen Gerät (Sync) löscht den Login auch hier und in der App", () => {
+      useNotenStore.setState({ data: DATA, username: "max", password: "geheim", stamp: "2026-11-20T10:00:00Z" });
+      appNotenLogout.mockClear();
+      useNotenStore.getState().setSynced(null, "2026-11-26T10:00:00Z");
+      const s = useNotenStore.getState();
+      expect([s.data, s.username, s.password]).toEqual([null, "", ""]);
+      expect(appNotenLogout).toHaveBeenCalledOnce();
+    });
+
+    it("Teil 51: Noten aus dem Hintergrund schieben die Sync-Marke nicht vor (ein Abmelden woanders gewinnt)", () => {
+      useNotenStore.setState({ data: DATA, fresh: [], stamp: "2026-11-20T10:00:00Z" });
+      appNotenData.mockReturnValue({ data: { ...DATA, fetchedAt: "2026-11-27T06:00:00Z" }, fetchedAt: 1 });
+      useNotenStore.getState().pullApp();
+      expect(useNotenStore.getState().stamp).toBe("2026-11-20T10:00:00Z");
+    });
+
     it("Abmelden löscht auch in der App", () => {
       useNotenStore.getState().logout();
       expect(appNotenLogout).toHaveBeenCalled();

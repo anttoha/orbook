@@ -71,13 +71,16 @@ export const useNotenStore = create(
       },
 
       // Новый ответ InfoPoint: «neu» — оценки, которых раньше не было
-      take: (data) => set({ data, stamp: new Date().toISOString(), fresh: [...new Set([...get().fresh, ...freshKeys(get().data, data)])] }),
+      // stamp — отметка для Sync; по умолчанию «сейчас»
+      take: (data, stamp = new Date().toISOString()) => set({ data, stamp, fresh: [...new Set([...get().fresh, ...freshKeys(get().data, data)])] }),
 
       // Android-App проверяла InfoPoint в фоне (часть 36c) — взять её оценки, если они новее наших
       pullApp: () => {
         if (!hasAppNoten()) return;
         const fresh = newerAppData(get().data, appNotenData());
-        if (fresh) get().take(fresh);
+        // Часть 51: отметку Sync не двигаем — фон мог загрузить оценки уже после «Abmelden» на другом
+        // устройстве, и с отметкой «сейчас» они перебили бы этот выход. Своё «обновить» ставит отметку как обычно
+        if (fresh) get().take(fresh, get().stamp);
         const saved = appNotenState();
         if (saved?.saved && !get().username && saved.username) set({ username: saved.username });
       },
@@ -98,10 +101,16 @@ export const useNotenStore = create(
       markSeen: (code) => set({ fresh: get().fresh.filter((key) => !key.startsWith(`${code}|`)) }),
 
       // Пришло через Sync с другого устройства
-      // value null — «Abmelden» на другом устройстве: идущий запрос тоже больше не нужен
+      // value null — «Abmelden» на другом устройстве: идущий запрос не нужен, и вход здесь тоже стираем
+      // (решение владельца 26.11.: иначе Android-App в фоне снова приносила бы оценки)
       setSynced: (value, stamp) => {
-        if (!value) session += 1;
-        set({ data: value, stamp, fresh: value ? get().fresh : [], ...(value ? {} : { busy: false }) });
+        if (value) {
+          set({ data: value, stamp });
+          return;
+        }
+        session += 1;
+        appNotenLogout();
+        set({ data: null, stamp, fresh: [], username: "", password: "", busy: false, error: null, loginOpen: false });
       },
     }),
     {
