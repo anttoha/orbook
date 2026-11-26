@@ -84,7 +84,7 @@ it("подписи и размеры превью", () => {
   expect(previewSize({ cols: 2, rows: 2 })).toBe("klein");
   expect(previewSize({ cols: 4, rows: 2 })).toBe("breit");
   expect(previewSize({ cols: 4, rows: 4 })).toBe("gross");
-  expect(WIDGET_KINDS).toHaveLength(9);
+  expect(WIDGET_KINDS).toHaveLength(11);
 });
 
 it("заголовки видов виджета с заглавной буквы на любом языке", async () => {
@@ -93,4 +93,24 @@ it("заголовки видов виджета с заглавной букв�
   expect(upperFirst("changes")).toBe("Changes");
   expect(upperFirst("")).toBe("");
   expect(upperFirst(undefined)).toBeUndefined();
+});
+
+// Часть 50c: виджет подставляет значение в единственное место «{…}» текста — в переводах оно должно остаться
+it("в тексте виджета не больше одного места для подстановки, и переводы его сохраняют", () => {
+  for (const key of WIDGET_TEXTS) {
+    const slots = key.match(/\{[a-zA-Z0-9]+\}/g) ?? [];
+    expect(slots.length, key).toBeLessThanOrEqual(1);
+    for (const slot of slots) {
+      expect(en[key], `en: ${key}`).toContain(slot);
+      expect(uk[key], `uk: ${key}`).toContain(slot);
+    }
+  }
+});
+
+it("часть 50c: настройки «Für dich jetzt» в снимке — проверенные", () => {
+  expect(buildSnapshot({}).fuerDich.leaveMinutes).toBe(45);
+  const snap = buildSnapshot({ fuerDich: { leaveMinutes: 30, eveningFrom: "25:00", items: { Ku: ["Zeichenblock", ""] } } });
+  expect(snap.fuerDich.leaveMinutes).toBe(30);
+  expect(snap.fuerDich.eveningFrom).toBe("17:00");
+  expect(snap.fuerDich.items).toEqual({ Ku: ["Zeichenblock"] });
 });

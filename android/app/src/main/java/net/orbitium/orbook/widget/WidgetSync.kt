@@ -35,7 +35,7 @@ object WidgetSync {
             .filterNot { it.noten } // часть 39: оценки берутся с телефона, у сервера спрашивать нечего
         // часть 31e: включены уведомления — загружаем и классы без виджета («Meine Kurse»)
         val notify = if (Notifications.active(context)) Notifications.classIds(context).map { it to true } else emptyList()
-        for ((classId, mine) in (configs.map { it.classId to it.mine } + notify).distinct()) {
+        for ((classId, mine) in (configs.map { it.classId to it.mineWith(snapshot) } + notify).distinct()) {
             val own = snapshot.classes.firstOrNull { it.id == classId }
             fetch(store, classId, mine, own)
         }

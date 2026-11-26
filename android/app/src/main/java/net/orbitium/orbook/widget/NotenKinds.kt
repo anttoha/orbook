@@ -120,7 +120,7 @@ private fun ColumnScope.Noten(s: WidgetState, v: NotenView, look: Look) {
     if (v.subjects.isEmpty()) { Center(look, t.t("Noch keine Noten"), look.p.muted); return }
     val newest = v.latest.firstOrNull { it.fresh }
     Row(GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
-        Big(look, noteNumber(v.average), show, if (oneRowNow) 22 else 28)
+        Big(look, noteNumber(v.average), show, if (oneRowNow) 16 else 28)
         Caption(look, t.t("Schnitt"))
         Spacer(GlanceModifier.defaultWeight())
         if (oneRowNow && newest != null) {
@@ -137,7 +137,7 @@ private fun ColumnScope.Noten(s: WidgetState, v: NotenView, look: Look) {
     val prio = { x: GradeSubject -> if (x.fresh) 0 else 1 + v.subjects.indexOf(x) }
     val fit = if (narrow) fit(v.subjects, avail, GRADE_MODES, prio) else fitColumns(v.subjects, avail, GRADE_MODES, prio)
     if (narrow) {
-        fit.shown.forEachIndexed { i, x -> if (i > 0) Divider(look); SubjectRow(s, look, x, fit.density, fit.rowDp, show, true) }
+        Column(GlanceModifier.fillMaxWidth()) { fit.shown.forEachIndexed { i, x -> if (i > 0) Divider(look); SubjectRow(s, look, x, fit.density, fit.rowDp, show, true) } }
     } else {
         // две колонки: левая — первая половина, правая — вторая (как читают сверху вниз)
         val half = (fit.shown.size + 1) / 2
@@ -155,7 +155,8 @@ private fun ColumnScope.Noten(s: WidgetState, v: NotenView, look: Look) {
 
 @Composable
 private fun SubjectRow(s: WidgetState, look: Look, x: GradeSubject, density: Density, rowDp: Float, show: Boolean, narrow: Boolean) {
-    val name = if (narrow && x.name.length > 9) notenBadge(x.code) else x.name
+    // с плашкой «neu» длинному имени в колонке не хватает места — плашка сжималась в «…» (часть 50c)
+    val name = if ((narrow || x.fresh) && x.name.length > 9) notenBadge(x.code) else x.name
     Row(GlanceModifier.fillMaxWidth().height(rowDp.dp), verticalAlignment = Alignment.CenterVertically) {
         SubjectDot(s, look, x.code)
         Spacer(GlanceModifier.width(8.dp))
@@ -191,11 +192,13 @@ private fun ColumnScope.NeueNoten(s: WidgetState, v: NotenView, look: Look) {
     Header(s, look, if (narrow) t.t("Neu:").trimEnd(':') else t.t("Neue Noten"), R.drawable.w_star, accent = true, right = if (narrow) null else t.t("{n}. Halbjahr", v.half))
     if (v.latest.isEmpty()) { Center(look, t.t("Noch keine Noten"), look.p.muted); return }
     val fit = fit(v.latest, free(0f), GRADE_MODES) { v.latest.indexOf(it) }
+    Column(GlanceModifier.fillMaxWidth()) { // своя колонка: Glance рисует не больше 10 элементов в одной (часть 50c)
     fit.shown.forEachIndexed { i, x ->
         if (i > 0) Divider(look)
         GradeRow(s, look, x, fit.density, fit.rowDp, show, narrow)
     }
     More(s, look, fit.hidden)
+    }
 }
 
 @Composable
@@ -242,12 +245,12 @@ private fun ColumnScope.Fehlzeiten(s: WidgetState, v: NotenView, look: Look) {
     if (oneRowNow) {
         Row(GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
             if (narrow) {
-                Big(look, "${st.days}", show, 22); Caption(look, t.t("Tage"))
+                Big(look, "${st.days}", show, 16); Caption(look, t.t("Tage"))
             } else {
                 listOf(Triple("${st.days}", t.t("Tage"), look.p.ink), Triple("${st.hours}", t.t("Std."), look.p.ink), Triple("${st.unexcused}", t.t("unentsch."), danger))
                     .forEach { (n, unit, color) ->
                         Row(GlanceModifier.defaultWeight(), verticalAlignment = Alignment.Bottom) {
-                            Big(look, n, show, 22, color); Caption(look, unit, look.of(if (show && color == danger && bad) look.p.danger else look.p.muted), 12)
+                            Big(look, n, show, 16, color); Caption(look, unit, look.of(if (show && color == danger && bad) look.p.danger else look.p.muted), 12)
                         }
                     }
             }
@@ -285,6 +288,7 @@ private fun ColumnScope.Fehlzeiten(s: WidgetState, v: NotenView, look: Look) {
     Spacer(GlanceModifier.height(14.dp))
     Label(t.t("Zuletzt"), look.of(look.p.faint), 12.5f, bold = true)
     val rows = v.absences.take((avail / 31f).toInt())
+    Column(GlanceModifier.fillMaxWidth()) { // своя колонка: Glance рисует не больше 10 элементов в одной (часть 50c)
     rows.forEachIndexed { i, a ->
         if (i > 0) Divider(look)
         Row(GlanceModifier.fillMaxWidth().height(31.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -294,6 +298,7 @@ private fun ColumnScope.Fehlzeiten(s: WidgetState, v: NotenView, look: Look) {
                 Label(t.t(if (a.excused) "entschuldigt" else "unentschuldigt"), look.of(if (a.excused) look.p.ok else look.p.danger), 11.5f, heavy = true)
             }
         }
+    }
     }
 }
 

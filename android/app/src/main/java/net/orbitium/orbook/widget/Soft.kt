@@ -55,6 +55,7 @@ object Soft {
     val danger = Tone(0xFFD6455D, 0xFFFF8AA0)
     val dangerTint = Tone(0xFFFCE7EB, 0xFF3A1D25)
     val ok = Tone(0xFF1F9D6B, 0xFF5FD3A2)
+    val rain = Tone(0xFF4C82EC, 0xFF6191EE) // часть 50c: «60 %» дождя (--color-rain)
 
     private val base = Palette(card, ink, muted, faint, hair, sand, skeleton, accent, accentInk, tint, onAccent, danger, dangerTint, ok)
 

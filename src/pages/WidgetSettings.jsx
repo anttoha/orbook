@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { Check, X } from "lucide-react";
+import { Link, Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Check, ChevronRight, X } from "lucide-react";
 import { androidWidget, closeWidget, saveWidget } from "../shared/api/android";
 import { useT } from "../shared/hooks/useT";
 import { useClasses } from "../shared/store/classesStore";
-import { cellsLabel, configToSave, isNotenKind, parseWidget, widgetClass } from "../shared/utils/widgetConfig";
+import { SHARED_SETTINGS_KINDS, cellsLabel, configToSave, isNotenKind, parseWidget, widgetClass } from "../shared/utils/widgetConfig";
 import WidgetBehaviour from "../components/android/WidgetBehaviour";
 import WidgetKindGrid from "../components/android/WidgetKindGrid";
 import WidgetLook from "../components/android/WidgetLook";
 import WidgetPreview from "../components/android/WidgetPreview";
 import WidgetShow from "../components/android/WidgetShow";
 import Button from "../components/ui/Button";
+import ListCard from "../components/ui/ListCard";
 import RoundButton from "../components/ui/RoundButton";
 import Segmented from "../components/ui/Segmented";
 
@@ -29,11 +30,13 @@ const WidgetSettings = () => {
   const { id } = useParams();
   const [params] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const first = params.get("neu") === "1";
   const classes = useClasses((s) => s.list).filter((item) => !item.gone);
   const activeId = useClasses((s) => s.activeId);
+  // часть 50c: вернулись со страницы /fuer-dich — черновик лежит в истории (ещё не сохранён в приложении)
   const [draft, setDraft] = useState(() => {
-    const saved = parseWidget(androidWidget(id));
+    const saved = location.state?.draft?.id === Number(id) ? location.state.draft : parseWidget(androidWidget(id));
     return saved && { ...saved, classId: widgetClass(saved, classes, activeId) };
   });
 
@@ -42,6 +45,9 @@ const WidgetSettings = () => {
   const change = (patch) => setDraft((old) => ({ ...old, ...patch }));
   const noten = isNotenKind(draft.kind); // оценки с телефона: ни класса, ни «Verhalten»
   const back = () => (first ? closeWidget() : navigate("/mehr/android"));
+  const shared = SHARED_SETTINGS_KINDS[draft.kind];
+  // Перед переходом кладём черновик в эту запись истории: «назад» вернёт выбранный вид, а не сохранённый
+  const keepDraft = () => navigate(`${location.pathname}${location.search}`, { replace: true, state: { draft } });
   const done = () => {
     saveWidget(id, configToSave(draft));
     if (!first) navigate("/mehr/android"); // при первой настройке экран закроет само приложение
@@ -73,6 +79,17 @@ const WidgetSettings = () => {
       )}
 
       <WidgetShow draft={draft} change={change} />
+      {shared && (
+        <ListCard title="Für dich jetzt">
+          <li className="flex">
+            <Link to={shared} onClick={keepDraft} className="-mx-2 flex h-14 min-w-0 flex-1 items-center gap-3 rounded-field px-2 hover:bg-paper">
+              <span className="flex-1 text-row text-ink">{t("Einstellungen")}</span>
+              <span className="truncate text-label text-faint">{t("Start und Widget")}</span>
+              <ChevronRight className="size-4 shrink-0 text-faint2" />
+            </Link>
+          </li>
+        </ListCard>
+      )}
       <WidgetLook draft={draft} change={change} />
       {!noten && <WidgetBehaviour draft={draft} change={change} />}
 

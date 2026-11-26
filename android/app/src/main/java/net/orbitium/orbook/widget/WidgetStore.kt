@@ -38,6 +38,9 @@ data class WidgetConfig(
 ) {
     val noten: Boolean get() = kind in NOTEN_KINDS
 
+    /** «Nur meine Kurse»: у «Für dich jetzt» (часть 50c) — из его общих настроек (/fuer-dich), у остальных — своя. */
+    fun mineWith(snapshot: Snapshot): Boolean = if (kind == "fuerDich") snapshot.fuerDich.onlyMine else mine
+
     fun toJson(): JSONObject = JSONObject()
         .put("kind", kind).put("classId", classId ?: JSONObject.NULL).put("mine", mine)
         .put("look", look).put("design", design).put("accent", accent).put("font", font).put("alpha", alpha)
@@ -49,7 +52,7 @@ data class WidgetConfig(
     companion object {
         /** Часть 39: виды с оценками — данные с телефона (NotenStore), сервер для них не спрашиваем. */
         val NOTEN_KINDS = listOf("noten", "neueNoten", "fehlzeiten")
-        val KINDS = listOf("jetzt", "heute", "woche", "tests", "aufgaben", "aenderungen", "termine", "notizen", "countdown") + NOTEN_KINDS
+        val KINDS = listOf("jetzt", "heute", "woche", "tests", "aufgaben", "aenderungen", "termine", "notizen", "countdown") + NOTEN_KINDS + listOf("fuerDich", "wetter")
         private val ACCENTS = listOf("app", "violett", "blau", "gruen", "orange", "pink", "grafit")
 
         fun from(json: JSONObject?): WidgetConfig {
@@ -109,6 +112,7 @@ data class Snapshot(
     val accent: String = "violett",
     val plan: PlanView = PlanView(),
     val activeId: Int? = null, // часть 31e: открытый класс — о его уроках напоминает «Vor der Stunde»
+    val fuerDich: FuerDichSettings = FuerDichSettings(), // часть 50c: настройки «Für dich jetzt» (общие с Start)
 )
 
 /** «Stundenplan» приложения (src/shared/utils/planView.js) — то, что нужно виджету. */
@@ -155,6 +159,7 @@ class WidgetStore(context: Context) {
             design = look?.optString("design")?.takeIf { it in setOf("soft", "glas", "klar") } ?: "soft",
             accent = look?.optString("accent")?.ifEmpty { null } ?: "violett",
             activeId = if (o.isNull("activeId") || !o.has("activeId")) null else o.optInt("activeId"),
+            fuerDich = FuerDichSettings.from(o.optJSONObject("fuerDich")),
             plan = PlanView(
                 lessonLabel = if (plan?.optString("lessonLabel") == "name") "name" else "kuerzel",
                 showRoom = plan?.optBoolean("showRoom", true) ?: true,

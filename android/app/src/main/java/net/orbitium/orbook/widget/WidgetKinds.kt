@@ -37,19 +37,19 @@ import java.time.temporal.IsoFields
  */
 
 /** Размер виджета словами: узкий (2 колонки), в одну строку рабочего стола, сколько места под строками. */
-private class Area(val width: Dp, val height: Dp) {
+internal class Area(val width: Dp, val height: Dp) {
     val narrow get() = width < 200.dp
     val oneRow get() = height < 110.dp
 }
 
 @Composable
-private fun area() = LocalSize.current.let { Area(it.width, it.height) }
+internal fun area() = LocalSize.current.let { Area(it.width, it.height) }
 
 private fun Lesson.past(today: Boolean, time: LocalTime) = today && end != null && end <= time
 private fun Lesson.running(today: Boolean, time: LocalTime) = today && start != null && end != null && time >= start && time < end
 
 @Composable
-private fun Bar(look: Look, progress: Float, color: Tone = look.p.accent) =
+internal fun Bar(look: Look, progress: Float, color: Tone = look.p.accent) =
     LinearProgressIndicator(progress.coerceIn(0f, 1f), GlanceModifier.fillMaxWidth().height(5.dp), look.of(color), look.of(look.p.sand))
 
 // ════════════════════ Jetzt ════════════════════
@@ -125,10 +125,12 @@ internal fun ColumnScope.Jetzt(s: WidgetState, data: WidgetData, look: Look, now
     val used = 150f + (if (showBar) 13f else 0f)
     val free = freeDp(s, area.height.value, header = false) - used - 26f
     if (!area.narrow && s.config.next && rest.isNotEmpty() && free >= 21f) {
-        Spacer(GlanceModifier.height(8.dp)); Divider(look); Spacer(GlanceModifier.height(6.dp))
-        Label(t.t("Danach"), look.of(look.p.faint), 12, heavy = true)
-        Spacer(GlanceModifier.height(4.dp))
-        LessonRows(s, look, rest, today = true, time = time, free = free, narrow = false)
+        Column(GlanceModifier.fillMaxWidth()) { // своя колонка: в общей больше 10 элементов Glance не рисует
+            Spacer(GlanceModifier.height(8.dp)); Divider(look); Spacer(GlanceModifier.height(6.dp))
+            Label(t.t("Danach"), look.of(look.p.faint), 12, heavy = true)
+            Spacer(GlanceModifier.height(4.dp))
+            LessonRows(s, look, rest, today = true, time = time, free = free, narrow = false)
+        }
     }
     Fill(); Footer(s, look)
 }
@@ -193,11 +195,13 @@ internal fun ColumnScope.Heute(s: WidgetState, data: WidgetData, look: Look, now
 internal fun LessonRows(s: WidgetState, look: Look, lessons: List<Lesson>, today: Boolean, time: LocalTime, free: Float, narrow: Boolean) {
     val next = if (today) lessons.firstOrNull { !it.cancelled && (it.end == null || it.end > time) } else null
     val fit = fit(lessons, free, LIST_MODES) { lessonPriority(it, it == next, it.past(today, time)) }
+    Column(GlanceModifier.fillMaxWidth()) { // своя колонка: Glance рисует не больше 10 элементов в одной (часть 50c)
     fit.shown.forEachIndexed { i, lesson ->
         if (i > 0) Divider(look)
         LessonRow(s, look, lesson, fit.density, fit.rowDp, lesson.running(today, time), lesson.past(today, time), narrow)
     }
     More(s, look, fit.hidden)
+    }
 }
 
 @Composable
@@ -252,10 +256,21 @@ internal fun ColumnScope.Woche(s: WidgetState, data: WidgetData, look: Look, now
     val title = if (area.narrow) "${t.t("KW")} $week" else "${t.t("Woche")} · ${t.t("KW")} $week"
     if (days.isEmpty()) { Header(s, look, title, R.drawable.w_week, chip = true); Label(t.t("Wochenende"), look.of(look.p.faint), 13); Fill(); return }
     val periods = days.flatMap { d -> d.lessons.map { it.period } }.distinct().sorted()
+    // часть 50c: в одну строку рабочего стола вся неделя не помещается (клетки в 0 dp) — только сегодняшний
+    // (в выходные — первый) день строкой: буква дня и уроки по порядку
+    if (area.oneRow) {
+        val day = days.firstOrNull { it.date == now.toLocalDate() } ?: days.first()
+        val size = WeekCellSize.of(freeDp(s, area.height.value, header = false), 1, 2, "kuerzel")
+        // узкий: на клетку ~20 dp — Kürzel обрезался бы в «…», остаются только цвета предметов
+        WeekAcross(s, look, listOf(day), periods, if (area.narrow && periods.size > 4) WeekCellSize(size.height, false, false, size.fontSize, false) else size, now)
+        Fill(); return
+    }
     // Показываем ВСЕ уроки недели: высота ячейки подбирается под виджет, а не наоборот
     val gap = if (periods.size > 6 || area.height < 200.dp) 2 else 4
     val free = freeDp(s, area.height.value)
-    val cell = WeekCellSize.of(free - 16, periods.size, gap, s.config.cell)
+    val tall = WeekCellSize.of(free - 16, periods.size, gap, s.config.cell)
+    // узкая неделя: клетка ~22 dp — крупный шрифт резал «Ma»/«Ph» в «…» (часть 50c)
+    val cell = if (area.narrow && tall.fontSize > 11f) WeekCellSize(tall.height, false, false, 11f, tall.text, tight = true) else tall
     // Широкий и низкий (4×2, 5×2): 8–10 уроков в высоту не влезают с текстом — поворачиваем неделю:
     // дни строками, уроки столбцами. Строк всего 5, и в клетке хватает места на Kürzel.
     // Совсем низкий — ещё и без шапки «Woche · KW»: важнее предметы, чем номер недели
@@ -278,7 +293,8 @@ internal fun ColumnScope.Woche(s: WidgetState, data: WidgetData, look: Look, now
             }
         }
     }
-    periods.forEach { period ->
+    // своя колонка: Glance показывает не больше 10 элементов в одной, а уроков бывает 8–10
+    Column(GlanceModifier.fillMaxWidth()) { periods.forEach { period ->
         Row(GlanceModifier.fillMaxWidth().padding(bottom = gap.dp)) {
             days.forEach { d ->
                 val all = d.lessons.filter { it.period == period && !(s.hideCancelled && it.cancelled) }
@@ -286,7 +302,7 @@ internal fun ColumnScope.Woche(s: WidgetState, data: WidgetData, look: Look, now
                 Box(GlanceModifier.defaultWeight().padding(horizontal = (gap / 2f).dp)) { WeekCell(s, look, lesson, cell) }
             }
         }
-    }
+    } }
     Fill(); Footer(s, look)
 }
 
@@ -298,17 +314,20 @@ private fun WeekAcross(s: WidgetState, look: Look, days: List<Day>, periods: Lis
             Box(GlanceModifier.width(24.dp), contentAlignment = Alignment.CenterStart) {
                 Label(weekday(d.date, s.texts).uppercase(), look.of(if (d.date == now.toLocalDate()) look.p.accent else look.p.faint), 10, heavy = true)
             }
-            periods.forEach { period ->
-                val all = d.lessons.filter { it.period == period && !(s.hideCancelled && it.cancelled) }
-                val lesson = all.firstOrNull { !it.cancelled } ?: all.firstOrNull()
-                Box(GlanceModifier.defaultWeight().padding(horizontal = 1.dp)) { WeekCell(s, look, lesson, cell) }
+            // свой ряд: в одном Glance рисует не больше 10 элементов (буква дня + 10 уроков уже 11)
+            Row(GlanceModifier.defaultWeight()) {
+                periods.forEach { period ->
+                    val all = d.lessons.filter { it.period == period && !(s.hideCancelled && it.cancelled) }
+                    val lesson = all.firstOrNull { !it.cancelled } ?: all.firstOrNull()
+                    Box(GlanceModifier.defaultWeight().padding(horizontal = 1.dp)) { WeekCell(s, look, lesson, cell) }
+                }
             }
         }
     }
 }
 
 /** Ячейка недели: чем больше места, тем больше в ней написано (не больше, чем разрешено в «In der Zelle»). */
-private class WeekCellSize(val height: Int, val room: Boolean, val teacher: Boolean, val fontSize: Float, val text: Boolean) {
+private class WeekCellSize(val height: Int, val room: Boolean, val teacher: Boolean, val fontSize: Float, val text: Boolean, val tight: Boolean = false) {
     companion object {
         fun of(free: Float, periods: Int, gap: Int, detail: String): WeekCellSize {
             val h = (free / periods.coerceAtLeast(1)).toInt() - gap
@@ -336,7 +355,7 @@ private fun WeekCell(s: WidgetState, look: Look, lesson: Lesson?, cell: WeekCell
     val ink = if (lesson.cancelled) look.p.danger else fach.text
     if (!cell.text) return Box(mod.background(look.of(bg))) {}
     // подпись: «Wie App» — как клетка недели в приложении (Kürzel или Name)
-    val small = cell.height < 34
+    val small = cell.height < 34 || cell.tight // tight — узкая неделя: без отступов, Kürzel по центру
     val label = when {
         small -> lesson.code // в маленькой клетке «Mathe» не влезет — только Kürzel
         s.config.subject == "name" -> lesson.title
@@ -382,6 +401,7 @@ internal fun ColumnScope.Tests(s: WidgetState, data: WidgetData, look: Look, now
     Header(s, look, t.t("Tests"), R.drawable.w_flag, chip = true)
     if (exams.isEmpty()) { Empty(look, t.t("Keine Tests")); Fill(); Footer(s, look); return }
     val fit = fit(exams, freeDp(s, area.height.value), LIST_MODES) { exams.indexOf(it) }
+    Column(GlanceModifier.fillMaxWidth()) { // своя колонка: Glance рисует не больше 10 элементов в одной (часть 50c)
     fit.shown.forEachIndexed { i, exam ->
         if (i > 0) Divider(look)
         val soon = ChronoUnit.DAYS.between(today, exam.date) <= 3
@@ -403,6 +423,7 @@ internal fun ColumnScope.Tests(s: WidgetState, data: WidgetData, look: Look, now
         }
     }
     More(s, look, fit.hidden)
+    }
     Fill(); Footer(s, look)
 }
 
@@ -443,6 +464,7 @@ internal fun ColumnScope.Aufgaben(s: WidgetState, data: WidgetData, look: Look, 
     if (list.isEmpty()) { Empty(look, t.t("Alles erledigt")); Fill(); Footer(s, look); return }
     // важнее — невыполненные и с близким сроком
     val fit = fit(list, freeDp(s, area.height.value), LIST_MODES) { e -> (if (e.id in s.snapshot.done) 1000 else 0) + ChronoUnit.DAYS.between(today, e.date).toInt().coerceIn(-99, 999) }
+    Column(GlanceModifier.fillMaxWidth()) { // своя колонка: Glance рисует не больше 10 элементов в одной (часть 50c)
     fit.shown.forEachIndexed { i, task ->
         if (i > 0) Divider(look)
         val done = task.id in s.snapshot.done
@@ -465,6 +487,7 @@ internal fun ColumnScope.Aufgaben(s: WidgetState, data: WidgetData, look: Look, 
         }
     }
     More(s, look, fit.hidden)
+    }
     Fill(); Footer(s, look)
 }
 
@@ -502,6 +525,7 @@ internal fun ColumnScope.Aenderungen(s: WidgetState, data: WidgetData, look: Loo
     // узко — всегда две строки (статус под предметом), остальное — «+ N weitere»
     val modes = if (area.narrow) listOf(Mode(Density.NORMAL, 42)) else LIST_MODES
     val fit = fit(changes, freeDp(s, area.height.value), modes) { changes.indexOf(it) }
+    Column(GlanceModifier.fillMaxWidth()) { // своя колонка: Glance рисует не больше 10 элементов в одной (часть 50c)
     fit.shown.forEachIndexed { i, (day, lesson) ->
         if (i > 0) Divider(look)
         val color = if (lesson.cancelled) look.p.danger else look.p.accentInk
@@ -523,6 +547,7 @@ internal fun ColumnScope.Aenderungen(s: WidgetState, data: WidgetData, look: Loo
         }
     }
     More(s, look, fit.hidden)
+    }
     Fill(); Footer(s, look)
 }
 
@@ -550,6 +575,7 @@ internal fun ColumnScope.Termine(s: WidgetState, data: WidgetData, look: Look, n
     if (items.isEmpty()) { Empty(look, t.t("Keine Termine")); Fill(); Footer(s, look); return }
     val modes = if (area.narrow) listOf(Mode(Density.NORMAL, 50), Mode(Density.ZWEI, 40)) else listOf(Mode(Density.NORMAL, 50), Mode(Density.KOMPAKT, 28), Mode(Density.DICHT, 21))
     val fit = fit(items, freeDp(s, area.height.value), modes) { items.indexOf(it) }
+    Column(GlanceModifier.fillMaxWidth()) { // своя колонка: Glance рисует не больше 10 элементов в одной (часть 50c)
     fit.shown.forEachIndexed { i, item ->
         if (i > 0) Divider(look)
         Row(GlanceModifier.fillMaxWidth().height(fit.rowDp.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -580,6 +606,7 @@ internal fun ColumnScope.Termine(s: WidgetState, data: WidgetData, look: Look, n
         }
     }
     More(s, look, fit.hidden)
+    }
     Fill(); Footer(s, look)
 }
 
@@ -594,14 +621,15 @@ internal fun ColumnScope.Notizen(s: WidgetState, look: Look) {
     if (area.oneRow) {
         Header(s, look, t.t("Notizen"), R.drawable.w_file)
         val first = notes.firstOrNull() ?: run { Label(t.t("Keine Notizen"), look.of(look.p.faint), 13); return }
-        // узко: одна заметка в две строки, а не «Vokabeln Unit 3 le…»
-        Label(first, look.of(look.p.ink), if (area.narrow) 13.5f else 15, heavy = true, lines = if (area.narrow) 2 else 1)
+        // под шапкой места на одну строку (часть 50c: две строки обрезались снизу)
+        Label(first, look.of(look.p.ink), if (area.narrow) 13.5f else 15, heavy = true)
         return
     }
     Header(s, look, t.t("Notizen"), R.drawable.w_file, chip = true)
     if (notes.isEmpty()) { Label(t.t("Keine Notizen"), look.of(look.p.faint), 13); Fill(); return }
     val modes = if (area.narrow) listOf(Mode(Density.ZWEI, 44)) else listOf(Mode(Density.NORMAL, 52), Mode(Density.KOMPAKT, 28), Mode(Density.DICHT, 21))
     val fit = fit(notes, freeDp(s, area.height.value), modes) { notes.indexOf(it) }
+    Column(GlanceModifier.fillMaxWidth()) { // своя колонка: Glance рисует не больше 10 элементов в одной (часть 50c)
     fit.shown.forEachIndexed { i, note ->
         if (i > 0) Divider(look)
         val two = fit.density == Density.NORMAL || fit.density == Density.ZWEI
@@ -610,6 +638,7 @@ internal fun ColumnScope.Notizen(s: WidgetState, look: Look) {
         }
     }
     More(s, look, fit.hidden)
+    }
     Fill()
 }
 
@@ -637,7 +666,7 @@ internal fun ColumnScope.CountdownView(s: WidgetState, data: WidgetData, look: L
     if (area.oneRow) {
         if (area.narrow) {
             Row(verticalAlignment = Alignment.Bottom) {
-                Label("$n", look.of(look.p.ink), 26, heavy = true)
+                Label("$n", look.of(look.p.ink), 21, heavy = true)
                 Spacer(GlanceModifier.width(5.dp))
                 Box(GlanceModifier.padding(bottom = 4.dp)) { Label(unit, look.of(look.p.muted), 12.5f, bold = true) }
             }

@@ -66,9 +66,10 @@ class OrbWidget : GlanceAppWidget() {
         val store = WidgetStore(context)
         val config = store.config(appWidgetId) ?: WidgetConfig()
         val snapshot = store.snapshot()
-        val key = WidgetStore.key(config.classId, config.mine)
+        val mine = config.mineWith(snapshot)
+        val key = WidgetStore.key(config.classId, mine)
         // часть 31e: своего ответа ещё нет (только что положили, а сети нет) — берём тот же класс с другим «Nur meine Kurse»
-        val json = store.data(key) ?: store.data(WidgetStore.key(config.classId, !config.mine))
+        val json = store.data(key) ?: store.data(WidgetStore.key(config.classId, !mine))
         val state = WidgetState(
             config = config,
             snapshot = snapshot,
@@ -138,6 +139,7 @@ private val PATHS = mapOf(
     "jetzt" to "/heute", "heute" to "/heute", "aenderungen" to "/heute", "woche" to "/woche",
     "tests" to "/testen", "aufgaben" to "/testen", "termine" to "/testen", "countdown" to "/testen", "notizen" to "/start",
     "noten" to "/noten", "neueNoten" to "/noten", "fehlzeiten" to "/fehlzeiten",
+    "fuerDich" to "/start", "wetter" to "/heute", // часть 50c
 )
 
 /** «Beim Tippen öffnen»: Passend (по виду) или своя страница. */
@@ -150,7 +152,7 @@ private fun openApp(context: Context, path: String) =
     Intent(context, MainActivity::class.java).setData(Uri.parse(Site.url(path))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
 @Composable
-private fun WidgetContent(context: Context, s: WidgetState) {
+internal fun WidgetContent(context: Context, s: WidgetState) {
     val look = s.look
     // виды с оценками открывают свой раздел всегда: «Beim Tippen öffnen» у них нет
     val path = when {
@@ -298,6 +300,8 @@ private fun ColumnScope.Kind(s: WidgetState, data: WidgetData, look: Look) {
         "termine" -> Termine(s, data, look, now)
         "notizen" -> Notizen(s, look)
         "countdown" -> CountdownView(s, data, look, now)
+        "fuerDich" -> FuerDichKind(s, data, look, now)
+        "wetter" -> WetterKind(s, data, look, now)
         else -> Jetzt(s, data, look, now)
     }
 }

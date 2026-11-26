@@ -828,3 +828,12 @@ Android: `notify/TimerAlarm.kt` (точный будильник, канал «L
 Скриншоты: `/root/work/orbook-compare/50-wetter/shots/b-*` (`_tools/p50b.mjs`, погода — `_tools/p50data.mjs`).
 **Дальше:** 50c — виджеты Android «Für dich jetzt» и «Wetter» (Kotlin повторяет `nowFocus.js`), `weather` в `/api/widget` (бэкенд), проверка 12 старых видов, демо-APK — новый чат, Opus · effort high → `/orb 50`.
 
+### 50c · виджеты «Für dich jetzt» и «Wetter» (2026-11-26, демо)
+Бэкенд (`/opt/orbook-be` `a23b6f9`, выложен): `/api/widget` получил поле `weather` (тот же кеш школы, что `/api/weather`, с сегодняшнего дня, до 5 дней; `null` — погоды нет), общая функция `school_weather`; API/FRONTEND/openapi.
+Android: `widget/FuerDich.kt` — погода из ответа, настройки из снимка, `nowFocus` (повтор `nowFocus.js`) + `FuerDichTest` (8 тестов); `widget/WetterKinds.kt` — виды «Für dich jetzt» (утро — свой вид по макету, урок/перемена — как «Jetzt», после школы/вечер — «Für morgen»/«Nächster Schultag», каникулы) и «Wetter» (2×1…4×4: часы 07–14, следующие дни); значки погоды — lucide → vector (`_tools/lucide2vector.mjs`). «Nur meine Kurse» у «Für dich jetzt» — из `/fuer-dich` (`WidgetConfig.mineWith`). `Texts.t` подставляет любое `{имя}` — ключи сайта как есть.
+Скриншоты виджетов без телефона: `WidgetShots.kt` (Robolectric, только тесты) — `WIDGET_SHOTS=<папка> ./gradlew testDemoDebugUnitTest --tests '*WidgetShots*'` (ANDROID_HOME=/opt/android-sdk); листы всех 14 видов × 8 размеров, светлая/тёмная, Glas/Klar — `/root/work/orbook-compare/50-wetter/widgets/`.
+Найдено и исправлено в старых видах: Glance рисует **не больше 10 элементов в одной Column/Row** — у «Heute», «Tests», «Aufgaben», «Änderungen», «Termine», «Notizen», «Noten», «Fehlzeiten» и «Danach» у «Jetzt» пропадали нижние строки и «+ N weitere» (теперь списки в своей колонке); x×1: обрезанные цифры у Noten/Fehlzeiten/Countdown, Notizen в одну строку; «Woche» x×1 — сегодняшний день строкой (раньше пустые клетки), узкая неделя без «…»; плашка «neu» у длинного предмета.
+Сайт: виды `fuerDich`/`wetter` в «Widget einstellen», у «Für dich jetzt» — строка «Einstellungen · Start und Widget ›» (черновик сохраняется в истории при переходе), снимок для виджета несёт `fuerDich` и новые тексты (тест: одно место подстановки и оно есть в переводах). Datenschutz — копия погоды и настроек в виджете (EN/UK). Демо-APK 0.31.0 (25).
+Скриншоты сайта: `/root/work/orbook-compare/50-wetter/shots/c-*` (`_tools/p50c.mjs`).
+**Дальше:** владелец ставит демо-APK и проверяет виджеты на телефоне; потом «на прод» (changelog 45–50, прод-APK).
+

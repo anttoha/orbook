@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { androidBridge, refreshWidgets, saveSnapshot } from "../api/android";
 import { appNotenFresh } from "../api/noten";
 import { useClasses } from "../store/classesStore";
+import { useFuerDichStore } from "../store/fuerDichStore";
 import { useLanguage } from "../store/languageStore";
 import { useNotenStore } from "../store/notenStore";
 import { usePlanStore } from "../store/planStore";
@@ -32,6 +33,7 @@ export const useAndroidWidgetSync = (enabled) => {
         theme: useTheme.getState().theme,
         lang: useLanguage.getState().lang,
         fallbackName: usePlanStore.getState().me?.className ?? "",
+        fuerDich: useFuerDichStore.getState().settings,
       });
       const json = JSON.stringify(snapshot);
       if (json === last) return; // ничего нового — не будим виджет
@@ -61,6 +63,7 @@ export const useAndroidWidgetSync = (enabled) => {
       useTasksStore.subscribe(later),
       useTheme.subscribe(later),
       useLanguage.subscribe(later),
+      useFuerDichStore.subscribe(later), // часть 50c: виджет «Für dich jetzt» читает те же настройки
       usePlanStore.subscribe(onPlan),
       useNotenStore.subscribe(onNoten),
     ];

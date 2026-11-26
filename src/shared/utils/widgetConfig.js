@@ -39,7 +39,11 @@ export const WIDGET_DEFAULTS = {
   open: "auto", // что открыть по нажатию: auto (по виду) | tag | woche | tests | start
 };
 
-export const WIDGET_KIND_LIST = ["jetzt", "heute", "woche", "tests", "aufgaben", "aenderungen", "termine", "notizen", "countdown", "noten", "neueNoten", "fehlzeiten"];
+export const WIDGET_KIND_LIST = ["jetzt", "heute", "woche", "tests", "aufgaben", "aenderungen", "termine", "notizen", "countdown", "noten", "neueNoten", "fehlzeiten", "fuerDich", "wetter"];
+
+// Часть 50c: «Für dich jetzt» берёт настройки со страницы /fuer-dich (общие с Start) — своих строк у вида нет,
+// только переход туда. «Nur meine Kurse» у него тоже оттуда (Android: WidgetConfig.mineWith)
+export const SHARED_SETTINGS_KINDS = { fuerDich: "/fuer-dich" };
 
 // Часть 39: виды с оценками из InfoPoint. Данные — с телефона, не класса: им не нужны «Klasse», «Nur meine Kurse»
 // и «Verhalten» (обновлять у сервера нечего, открывают всегда «Noten»)
@@ -123,6 +127,8 @@ export const WIDGET_ROWS = {
   noten: ["showGrades"],
   neueNoten: ["showGrades"],
   fehlzeiten: ["showGrades"],
+  fuerDich: [], // настройки — на /fuer-dich (SHARED_SETTINGS_KINDS)
+  wetter: [],
 };
 
 // «4 × 2»

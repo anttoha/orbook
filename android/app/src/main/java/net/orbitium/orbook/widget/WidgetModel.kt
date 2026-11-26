@@ -52,6 +52,7 @@ data class WidgetData(
     val homework: List<Entry>,
     val appointments: List<Termin>,
     val countdown: Countdown?,
+    val weather: Weather? = null, // часть 50c: прогноз места школы (null — погоды нет)
 )
 
 private fun JSONObject.str(key: String): String? = if (isNull(key)) null else optString(key).ifEmpty { null }
@@ -85,6 +86,7 @@ fun parseWidgetData(json: String): WidgetData {
         appointments = o.optJSONArray("appointments").map { a ->
             Termin(a.str("kind") ?: "other", a.str("title") ?: "", LocalDate.parse(a.getString("dateFrom")), a.date("dateTo"), a.str("timeFrom"))
         },
+        weather = o.optJSONObject("weather")?.let(::parseWeather),
         countdown = o.optJSONObject("countdown")?.let { c ->
             Countdown(
                 title = c.str("title") ?: "",

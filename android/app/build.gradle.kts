@@ -38,6 +38,9 @@ android {
     }
 
     // Один код — два APK: прод открывает orbook.orbitium.net, демо — orbook-demo (можно поставить оба)
+    // Robolectric (скриншоты виджетов в тестах) берёт настоящие ресурсы приложения: значки, цвета
+    testOptions { unitTests.isIncludeAndroidResources = true }
+
     flavorDimensions += "site"
     productFlavors {
         create("prod") {
@@ -89,4 +92,8 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     // настоящий org.json для тестов на компьютере (в Android он встроен) — сверка разбора Noten с сервером
     testImplementation("org.json:json:20240303")
+    // Часть 50c: скриншоты виджетов без телефона (на сервере нет эмулятора) — Robolectric рисует RemoteViews в PNG.
+    // Только для тестов, в APK не попадает; запуск: WIDGET_SHOTS=<папка> ./gradlew testDemoDebugUnitTest --tests '*WidgetShots*'
+    testImplementation("org.robolectric:robolectric:4.14.1")
+    testImplementation("androidx.test:core-ktx:1.6.1")
 }
