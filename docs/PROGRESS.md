@@ -803,3 +803,10 @@ Android: `notify/TimerAlarm.kt` (точный будильник, канал «L
 - 49: `.github/workflows/ci.yml`; админка и «Klasse verwalten» — `lazy` (старт 2032 → 1849 КБ).
 - Замечено, не менялось: «Abmelden» с другого устройства (через Sync) в Android-App не стирает сохранённый там логин — фон может снова принести оценки. Вопрос владельцу.
 **Дальше:** владелец проверяет демо и демо-APK; потом «на прод» (changelog 45–48, прод-APK).
+
+## Часть 50 · Wetter + «Für dich jetzt» (2026-11-26, дизайн)
+Макеты `design/neu/50-wetter/` (`gen.py` на кирпичиках 39/31d/30/19, `build.py`, 22 SVG/PNG, `index.html`), артефакт https://claude.ai/artifact/68wkQ4teKbiNLxVmWW9WJG.
+Что на макетах: блок «Für dich jetzt» на Start (утро: погода к выходу + что взять + первые уроки; урок; перемена; после школы; вечер/выходные; каникулы; Breit/Klein, блок «Wetter»), шторка настроек блока (Zeigen, «Losgehen vorher 45 min», Nur meine Kurse), погода в плашке «Woche» и карточка в «Tag», шторка «Wetter» (часы 07–14, Losgehen, Stand · Open-Meteo), Admin «Wetter» (Ort der Schule — поиск города), состояния, виджеты «Für dich jetzt» и «Wetter» во всех размерах, Soft/Glas/Klar, «Widget einstellen», ПК Start и Woche.
+Решения (в обзоре): погода только через сервер (Open-Meteo, кеш ~30 мин), место — город; правила «что надеть»; Losgehen по умолчанию 45 мин; разбивка 50a/50b/50c.
+Превью PNG: Nunito поставлен для rsvg в `~/.local/share/fonts/Nunito-Variable.ttf` (из woff2 проекта).
+**Дальше:** «ок дизайн» → `/orb-spec 50`, `/orb-build`, `/orb-check` (Opus · effort high).
