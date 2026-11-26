@@ -5,7 +5,7 @@ import { useT } from "../../shared/hooks/useT";
 // Рядок меню «Mehr»: іконка, назва, значення праворуч і стрілка.
 // state — куди повертатись зі сторінки, яка відкривається і звідки ще (Datenschutz, Editor-Code)
 // onClick замість to — рядок відкриває шторку, а не сторінку («Klasse einladen»)
-const MenuRow = ({ to, state, onClick, icon: Icon, label, value, badge }) => {
+const MenuRow = ({ to, state, onClick, icon: Icon, label, value, badge, tour }) => {
   const t = useT();
   const inner = (
     <>
@@ -23,11 +23,11 @@ const MenuRow = ({ to, state, onClick, icon: Icon, label, value, badge }) => {
   return (
     <li className="flex">
       {onClick ? (
-        <button type="button" onClick={onClick} className={row}>
+        <button type="button" onClick={onClick} data-tour={tour} className={row}>
           {inner}
         </button>
       ) : (
-        <Link to={to} state={state} className={row}>
+        <Link to={to} state={state} data-tour={tour} className={row}>
           {inner}
         </Link>
       )}

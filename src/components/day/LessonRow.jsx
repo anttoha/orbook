@@ -56,6 +56,7 @@ const LessonRow = ({ lesson, exam, homework = [], movedAway = [], date, isPast, 
   const row = (
     <button
       type="button"
+      data-tour="stunde"
       onClick={onOpen}
       disabled={!onOpen}
       className={cn(

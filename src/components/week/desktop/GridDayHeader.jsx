@@ -28,6 +28,7 @@ const GridDayHeader = ({ as: Component = "button", day, isToday, className, styl
       <Component
         {...props}
         aria-label={`${weekdayLong(day.date)}, ${longDate(day.date)}`}
+        data-tour={isToday && Component !== "button" ? "heute" : undefined} // Rundgang: только ссылка на день, кнопка лишь выбирает его справа
         className={cn("flex w-full flex-col", hasWeather ? "h-18" : "h-13", "justify-center rounded-cell px-3 pr-9 text-left transition-colors", isToday ? "bg-accent text-on-accent" : "text-ink hover:bg-sand", day.muster && !isToday && "hatch-line")}
       >
         <span className="flex items-center gap-2">

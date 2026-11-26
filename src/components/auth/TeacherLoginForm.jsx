@@ -47,7 +47,7 @@ const TeacherLoginForm = ({ schoolClass }) => {
     try {
       await loginTeacher(code);
       useLinkCode.getState().clear();
-      useUserStore.getState().setTipsPending(true); // часть 25: «Kurz erklärt» после первого входа
+      useUserStore.getState().setTourPending(true); // часть 52: «Rundgang» после первого входа
       navigate("/", { replace: true }); // прибрати ?zugang=lehrkraft з адреси
     } catch (err) {
       setError(teacherLoginErrorText(err));

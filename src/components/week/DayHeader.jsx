@@ -15,6 +15,7 @@ const DayHeader = ({ day, isToday, style }) => {
       to={`/tag/${day.date}`}
       style={style}
       aria-label={`${weekdayLong(day.date)}, ${longDate(day.date)}`}
+      data-tour={isToday ? "heute" : undefined}
       className={cn("relative flex flex-col items-center justify-center rounded-cell transition-colors", hasWeather ? "h-18" : "h-13", isToday ? "bg-accent text-on-accent" : "text-ink hover:bg-sand", day.muster && !isToday && "hatch-line")}
     >
       <span className={cn("text-micro font-bold uppercase", isToday ? "text-today-sub" : "text-faint")}>{translate(day.weekday)}</span>

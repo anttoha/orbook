@@ -1,4 +1,4 @@
-import { Bell, CalendarSync, Info, Palette, Smartphone, Sparkle, Sparkles, Sun, Table2, UserPlus, UsersRound } from "lucide-react";
+import { Bell, CalendarSync, Compass, Palette, Smartphone, Sparkle, Sparkles, Sun, Table2, UserPlus, UsersRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { version } from "../../package.json";
@@ -31,7 +31,8 @@ import { useUserStore } from "../shared/store/userStore";
 import { useCalendarFeedOfClass } from "../shared/store/calendarFeedStore";
 import { courseCount } from "../shared/utils/courses";
 import { isTeacher } from "../shared/utils/examRules";
-import { hasAppNotify } from "../shared/api/android";
+import { useStartTour } from "../shared/hooks/useStartTour";
+import { TOUR_STEPS } from "../shared/utils/tour";
 import { translate } from "../shared/i18n/translate";
 import { navOf, restOf, SECTIONS } from "../shared/utils/navLayout";
 import { useDecks } from "../shared/hooks/useKarten";
@@ -101,6 +102,7 @@ const PhoneMenu = () => {
   const links = useMaterials((s) => (s.status === "idle" ? null : s.items.length));
   const ensureMaterials = useMaterials((s) => s.ensure);
   const { openSheet } = useSheet();
+  const startTour = useStartTour();
   const nav = useUserStore((s) => s.nav);
   const rest = restOf(navOf(nav, "phone"), me?.features); // школа могла вимкнути статистику — її тоді немає
   const { today } = useNow();
@@ -136,15 +138,15 @@ const PhoneMenu = () => {
         {/* часть 31a/31c: в APK — версия и обновление, в браузере — скачать (пока на сервере есть APK) */}
         {android && <MenuRow to="/mehr/android" icon={Smartphone} label={t("Android-App")} value={android.versionName} />}
         {offer && <MenuRow to="/mehr/android" icon={Smartphone} label={t("Android-App")} value={t("APK · Widget")} badge={androidSeen ? null : <Badge variant="live">{t("Neu")}</Badge>} />}
-        {/* часть 25: три подсказки с первого входа — открыть ещё раз */}
-        <MenuRow onClick={() => openSheet("tipps")} icon={Info} label={t("Kurz erklärt")} value={t(hasAppNotify() ? "4 Tipps" : "3 Tipps")} />
+        {/* часть 52: тур по настоящим экранам ещё раз (раньше — «Kurz erklärt») */}
+        <MenuRow onClick={startTour} icon={Compass} label={t("Rundgang")} value={t("{n} Schritte", { n: TOUR_STEPS.length })} />
         <MenuRow to="/mehr/datenschutz" icon={ShieldIcon} label={t("Datenschutz")} />
       </ListCard>
 
       {/* «Einstellungen» — те, що налаштовується */}
       <ListCard title={einstellungen.title} hint={einstellungen.hint}>
         <MenuRow to="/mehr/kurse" icon={Table2} label={t("Meine Kurse")} value={count.all > 0 ? `${count.on} ${t("von")} ${count.all}` : null} />
-        <MenuRow to="/mehr/darstellung" icon={Sun} label={t("Darstellung")} value={THEME_LABELS[theme]} />
+        <MenuRow to="/mehr/darstellung" icon={Sun} label={t("Darstellung")} value={THEME_LABELS[theme]} tour="darstellung" />
         <MenuRow to="/mehr/fachfarben" icon={Palette} label={t("Fachfarben")} />
         {pushAllowed && <MenuRow to="/mehr/mitteilungen" icon={Bell} label={t("Mitteilungen")} value={prefsSummary(pushOn, pushPrefs)} />}
         <MenuRow to="/mehr/kalender" icon={CalendarSync} label={t("Kalender-Abo")} value={feed?.on ? "an" : "Aus"} />

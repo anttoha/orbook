@@ -15,7 +15,7 @@ const GRID = "grid grid-flow-row-dense grid-cols-2 auto-rows-block gap-2.5 lg:au
 export const StartGrid = ({ blocks }) => (
   <div className={cn(GRID, "lg:grid-cols-4")}>
     {blocks.map((block, i) => (
-      <div key={block.id} className={cn("motion-safe:animate-rise-in", SPAN[block.size])} style={{ animationDelay: `${i * 40}ms` }}>
+      <div key={block.id} data-tour={block.kind === "fuerDich" ? "block-fuer" : undefined} className={cn("motion-safe:animate-rise-in", SPAN[block.size])} style={{ animationDelay: `${i * 40}ms` }}>
         <StartBlock block={block} />
       </div>
     ))}

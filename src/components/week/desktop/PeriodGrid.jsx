@@ -33,6 +33,7 @@ const PeriodGrid = ({ days, selectedDay, onSelectDay, onLessonClick }) => {
 
   return (
     <div
+      data-tour="woche-raster"
       className="grid gap-x-2.5 gap-y-3"
       // 64px під номер уроку + рівні колонки днів; рядки: шапка + уроки мінімальної висоти
       style={{ gridTemplateColumns: `64px repeat(${days.length}, minmax(0, 1fr))`, gridTemplateRows: `auto repeat(${rows.length}, minmax(${rowHeight}px, auto))` }}

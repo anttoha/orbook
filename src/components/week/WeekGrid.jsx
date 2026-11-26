@@ -49,7 +49,7 @@ const WeekGrid = ({ days, onLessonClick }) => {
   const nowPos = todayIndex >= 0 ? nowPosition(rows, berlinParts(now).minutes) : null;
 
   return (
-    <div className="grid gap-1" style={{ gridTemplateColumns: `1.375rem repeat(${dayCount}, minmax(0, 1fr))` }}>
+    <div data-tour="woche-raster" className="grid gap-1" style={{ gridTemplateColumns: `1.375rem repeat(${dayCount}, minmax(0, 1fr))` }}>
       {/* ── шапка з днями, під нею — терміни дня (частина 18) ── */}
       {days.map((day, di) => (
         <div key={day.date} style={{ gridRow: 1, gridColumn: di + 2 }} className="flex min-w-0 flex-col gap-1">

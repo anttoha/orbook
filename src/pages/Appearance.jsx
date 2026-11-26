@@ -60,12 +60,13 @@ const Appearance = () => {
         <ThemePicker value={theme} onChange={setTheme} />
       </div>
 
-      <div>
+      {/* data-tour — метки для Rundgang (часть 52): здесь можно «поклацать» прямо в туре */}
+      <div data-tour="design">
         <h2 className="mb-2.5 text-hint font-extrabold text-faint">{t("Design")}</h2>
         <DesignPicker value={user.design} glassBg={user.glassBg} onChange={user.setDesign} />
       </div>
 
-      <div>
+      <div data-tour="akzent">
         <h2 className="mb-2.5 text-hint font-extrabold text-faint">{t("Akzentfarbe")}</h2>
         <AccentPicker value={user.accent} onChange={user.setAccent} />
       </div>
@@ -95,7 +96,7 @@ const Appearance = () => {
         <MenuRow to="/start/anpassen" icon={House} label={t("Start")} badge={!user.startSeen && <Badge variant="live">{t("Neu")}</Badge>} />
         <MenuRow to="/mehr/darstellung/stundenplan" icon={Table} label={t("Stundenplan")} value={planSummary(planOf(user.plan)).map(t).join(" · ")} />
         {/* часть 35: что в нижней панели (на ПК — в боковом меню) и группы */}
-        <MenuRow to="/mehr/darstellung/leiste" icon={Award} label={t("Untere Leiste")} value={`${placesUsed(navOf(user.nav, "phone"))} ${t("Plätze")}`} />
+        <MenuRow to="/mehr/darstellung/leiste" icon={Award} label={t("Untere Leiste")} value={`${placesUsed(navOf(user.nav, "phone"))} ${t("Plätze")}`} tour="leiste" />
       </ListCard>
 
       <PillButton glass="glass" size="lg" onClick={reset} className="flex h-12 items-center justify-center gap-2 rounded-full bg-sand text-row font-bold text-ink transition-opacity active:opacity-80">

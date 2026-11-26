@@ -18,6 +18,7 @@ const NavigationLink = ({ active, tab, isHidden = false, badge = null, index = 0
     <Link
       to={tab.to}
       aria-current={active ? "page" : undefined}
+      data-tour={flashKey ? `nav-${flashKey}` : undefined} // Rundgang (часть 52) находит пункт по ключу
       title={isHidden ? t(tab.label) : undefined} // підказка в згорнутому вигляді
       className={cn(
         "relative flex h-10.5 items-center gap-3 overflow-hidden rounded-full px-3 text-body font-semibold transition-colors",

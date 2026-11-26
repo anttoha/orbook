@@ -27,6 +27,7 @@ const NavGroup = ({ group, index, isHidden }) => {
       <button
         type="button"
         aria-expanded={shown}
+        data-tour={`nav-${group.id}`}
         onClick={() => setOpen(!open)}
         className="relative flex h-10.5 w-full items-center gap-3 rounded-full px-3 text-body font-semibold text-ink/80 transition-colors hover:bg-sand"
       >

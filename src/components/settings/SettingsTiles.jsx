@@ -1,4 +1,6 @@
-import { ChevronRight, Info, Keyboard, UserPlus } from "lucide-react";
+import { ChevronRight, Compass, Keyboard, UserPlus } from "lucide-react";
+import { useStartTour } from "../../shared/hooks/useStartTour";
+import { TOUR_STEPS } from "../../shared/utils/tour";
 import { Link } from "react-router-dom";
 import { settingsGroups, settingsSections } from "../../shared/constants/constants";
 import { useSyncAllowed } from "../../shared/hooks/useNotesSync";
@@ -91,6 +93,7 @@ const SettingsTiles = () => {
   const { app, offer } = useAndroidOffer();
   const android = Boolean(app) || offer;
   const { openSheet } = useSheet();
+  const startTour = useStartTour(); // часть 52: Rundgang вместо «Kurz erklärt»
   const visible = settingsSections.filter((section) => section.hint && sectionVisible(section, { syncAllowed, teacher: isTeacher(me), features: me?.features, canManage: Boolean(me?.canManageClass), android }));
 
   return (
@@ -117,8 +120,8 @@ const SettingsTiles = () => {
                   </Liquid>
                 </li>
                 <li>
-                  <Liquid as="button" refract type="button" onClick={() => openSheet("tipps")} className={`${tile} w-full`}>
-                    <TileBody icon={Info} label={t("Kurz erklärt")} hint={t("3 Tipps für den Anfang")} />
+                  <Liquid as="button" refract type="button" onClick={startTour} className={`${tile} w-full`}>
+                    <TileBody icon={Compass} label={t("Rundgang")} hint={t("{n} Schritte", { n: TOUR_STEPS.length })} />
                   </Liquid>
                 </li>
                 <li>

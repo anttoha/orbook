@@ -23,7 +23,7 @@ const LessonCell = ({ lesson, isPast, overrides, examShort, plan = PLAN_DEFAULTS
   // Скасований урок: пунктирна рамка, закреслений код
   if (lesson.status === "cancelled") {
     return (
-      <button type="button" aria-label={label} {...props} className={cn(base, "border border-dashed border-faint2", isPast && "opacity-50", className)}>
+      <button type="button" aria-label={label} data-tour="ausfall" {...props} className={cn(base, "border border-dashed border-faint2", isPast && "opacity-50", className)}>
         <span className="truncate text-hint font-semibold text-faint line-through">{cellTitle(lesson, plan)}</span>
         <span className="truncate text-nano font-bold text-muted">{t("fällt aus")}</span>
       </button>

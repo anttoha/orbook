@@ -669,7 +669,12 @@ html[data-motion="weniger"] {
     --animate-confetti: none;
     --animate-float-up: fade-in 0.2s ease-out backwards;
     --animate-timer-glow: none;
+    --animate-tour-pop: fade-in 0.2s ease-out;
+    --animate-tour-pulse: none;
+    --animate-tour-spin: none;
 }
+/* «Weniger»: прожектор Rundgang не переезжает, а сразу стоит на месте (часть 52) */
+html[data-motion="weniger"] :is(.tour-spot, .tour-move) { transition: none; }
 /* «Weniger»: кольцо не тает плавно, а просто перерисовывается; салюта нет */
 html[data-motion="weniger"] .ring-motion { transition: none; }
 html[data-motion="weniger"] .confetti { display: none; }
@@ -901,7 +906,24 @@ html[data-motion="aus"] *::after {
     }
     @keyframes float-up { from { opacity: 0; transform: translateY(16px) scale(0.96); } }
     @keyframes timer-glow { 0%, 100% { opacity: 0.18; scale: 1; } 50% { opacity: 0.32; scale: 1.04; } }
+
+    /* Rundgang (часть 52) — тоже игра (владелец 26.11: «с анимациями конечно»): пузырь выпрыгивает с пружиной,
+       вокруг шага-действия расходятся кольца, «орбита» в приветствии один раз проворачивается */
+    --animate-tour-pop: tour-pop 0.45s var(--ease-spring) backwards;
+    --animate-tour-pulse: tour-pulse 1.6s ease-out infinite;
+    --animate-tour-spin: tour-spin 1.1s var(--ease-soft) 0.15s backwards;
+    @keyframes tour-pop { from { opacity: 0; transform: translateY(10px) scale(0.92); } }
+    @keyframes tour-pulse { 0% { opacity: 0.55; scale: 1; } 100% { opacity: 0; scale: 1.18; } }
+    @keyframes tour-spin { from { rotate: -200deg; scale: 0.6; opacity: 0; } }
 }
+
+/* Rundgang: прожектор — рамка с огромной тенью цвета затемнения; переезжает и меняет размер плавно */
+@utility tour-spot {
+    box-shadow: 0 0 0 200vmax var(--color-overlay);
+    transition: top 0.45s var(--ease-soft), left 0.45s var(--ease-soft), width 0.45s var(--ease-soft), height 0.45s var(--ease-soft), border-radius 0.45s var(--ease-soft);
+}
+/* Пузырь едет за прожектором */
+@utility tour-move { transition: translate 0.45s var(--ease-soft); }
 
 /* Переворот карточки (часть 43): 3D по оси Y с лёгкой пружиной в конце */
 @utility flip-motion { transition: transform 0.5s var(--ease-spring); }

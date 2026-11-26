@@ -57,7 +57,7 @@ export const useUserStore = create(
       motion: APPEARANCE_DEFAULTS.motion, // null — як у системі | "voll" | "weniger" | "aus"
       seenNews: null, // версия из changelog, для которой окно «Was ist neu» уже показано
       readNews: null, // версия, список которой открыт в «Neuigkeiten» (пока не совпадает — в «Mehr» горит метка NEU)
-      tipsPending: false, // «Kurz erklärt» ещё не показано новичку (часть 25)
+      tourPending: false, // «Rundgang» ещё не показан новичку (часть 52; раньше «Kurz erklärt», часть 25)
       checkedPlan: [], // «So lassen» у «Einträge prüfen» (частина 19): ключі з shared/utils/muster.js checkKey
       // Частина 29: нотатки, курси, «Alle Kurse» і checkedPlan — свої в кожного класу. Зверху лежать поля
       // відкритого класу (тому екрани нічого не знають про класи), решта — тут: { [classId]: { notes, picked, … } }
@@ -112,10 +112,10 @@ export const useUserStore = create(
       // «Weiter» на екрані першого запуску: зберегти вибір і більше не питати
       // Новичку окно «Was ist neu» не нужно: для него всё и так новое, поэтому текущую версию считаем увиденной
       // Новичок сразу начинает со «Start» (часть 30c); у остальных Startansicht не меняется
-      finishCourseChoice: (picked, hiddenRequired = []) => set({ picked, hiddenRequired, coursesChosen: true, tipsPending: !get().coursesChosen, ...(get().coursesChosen ? {} : { startView: "start", startOffer: "ja" }), seenNews: get().seenNews ?? changelog[0]?.version ?? null, readNews: get().readNews ?? changelog[0]?.version ?? null }),
+      finishCourseChoice: (picked, hiddenRequired = []) => set({ picked, hiddenRequired, coursesChosen: true, tourPending: !get().coursesChosen, ...(get().coursesChosen ? {} : { startView: "start", startOffer: "ja" }), seenNews: get().seenNews ?? changelog[0]?.version ?? null, readNews: get().readNews ?? changelog[0]?.version ?? null }),
 
-      // «Kurz erklärt»: показать при следующем старте / уже показано
-      setTipsPending: (tipsPending) => set({ tipsPending }),
+      // «Rundgang»: показать при следующем старте / уже показан
+      setTourPending: (tourPending) => set({ tourPending }),
 
       // Окно «Was ist neu» показано — повторно само не откроется
       markNewsShown: () => set({ seenNews: changelog[0]?.version ?? null }),

@@ -65,7 +65,7 @@ const TimeGrid = ({ days, onLessonClick }) => {
   );
 
   return (
-    <div className="grid" style={{ ...columns, rowGap: 10 }}>
+    <div data-tour="woche-raster" className="grid" style={{ ...columns, rowGap: 10 }}>
       {/* ── шапка: дні тижня (посилання на сторінку дня) ── */}
       {shown.map((day, di) => (
         <GridDayHeader key={day.date} as={Link} to={`/tag/${day.date}`} day={day} isToday={di === todayIndex} style={{ gridRow: 1, gridColumn: di + 2 }} />

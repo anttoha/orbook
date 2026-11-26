@@ -19,7 +19,8 @@ import { useAppHotkeys } from "../shared/hooks/useAppHotkeys";
 import { useNewsOnStart } from "../shared/hooks/useNewsOnStart";
 import { useAndroidUpdateOnStart } from "../shared/hooks/useAndroidUpdateOnStart";
 import { useAndroidWidgetSync } from "../shared/hooks/useAndroidWidgetSync";
-import { useTipsOnStart } from "../shared/hooks/useTipsOnStart";
+import { useTourOnStart } from "../shared/hooks/useTourOnStart";
+import Tour from "../components/tour/Tour";
 import { usePlanLive } from "../shared/hooks/usePlanLive";
 import { useSchoolNow } from "../shared/hooks/useSchoolNow";
 import { useLerntimerClock } from "../shared/hooks/useLerntimerClock";
@@ -64,7 +65,7 @@ const HomePage = () => {
 
   useAppHotkeys(Boolean(me) && coursesChosen); // W, D, N, K, R, «?» — на будь-якій сторінці
   useNewsOnStart(Boolean(me) && coursesChosen); // «Was ist neu» — один раз после новой версии (часть 22b)
-  useTipsOnStart(Boolean(me) && coursesChosen && !link); // «Kurz erklärt» — один раз новичку (часть 25)
+  useTourOnStart(Boolean(me) && coursesChosen && !link); // «Rundgang» — один раз новичку (часть 52)
   useAndroidUpdateOnStart(Boolean(me) && coursesChosen); // в Android-App: раз в день «Update ist da?» (часть 31a)
   useAndroidWidgetSync(Boolean(me)); // в Android-App: снимок для виджета и «освежить» после нового плана (часть 31b)
   useLernplanShift(Boolean(me)); // часть 41: тест перенесли — Lernplan переезжает за ним
@@ -124,6 +125,8 @@ const HomePage = () => {
       {/* шторки з адреси (?sheet=…) — працюють на будь-якій сторінці.
           Лежать поза Container: інакше flex додав би їм зайвий відступ праворуч */}
       <SheetHost />
+      {/* Rundgang (часть 52): приветствие и прожектор поверх всего */}
+      <Tour />
       {/* спливаючі сповіщення (toast) */}
       <AppToaster />
     </Tooltip.Provider>

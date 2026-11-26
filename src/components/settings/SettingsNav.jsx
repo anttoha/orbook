@@ -1,4 +1,5 @@
-import { Info, Keyboard, UserPlus } from "lucide-react";
+import { Compass, Keyboard, UserPlus } from "lucide-react";
+import { useStartTour } from "../../shared/hooks/useStartTour";
 import { Link, useLocation } from "react-router-dom";
 import { settingsGroups, settingsSections } from "../../shared/constants/constants";
 import { useSyncAllowed } from "../../shared/hooks/useNotesSync";
@@ -22,7 +23,7 @@ const SectionLink = ({ section, pathname }) => {
   const active = isTabActive(section, pathname);
   return (
     <li>
-      <Link to={section.to} aria-current={active ? "page" : undefined} className={cn(item, active ? "bg-accent font-extrabold text-on-accent" : idle)}>
+      <Link to={section.to} aria-current={active ? "page" : undefined} data-tour={section.to === "/mehr/darstellung" ? "darstellung" : undefined} className={cn(item, active ? "bg-accent font-extrabold text-on-accent" : idle)}>
         <section.icon className="size-4 shrink-0" />
         {section.label}
         {section.badge === "news" && !active && <NewBadge />}
@@ -53,6 +54,7 @@ const SettingsNav = () => {
   const { app, offer } = useAndroidOffer();
   const android = Boolean(app) || offer;
   const { openSheet } = useSheet();
+  const startTour = useStartTour(); // часть 52: Rundgang вместо «Kurz erklärt»
   const visible = settingsSections.filter((section) => sectionVisible(section, { syncAllowed, teacher: isTeacher(me), features: me?.features, canManage: Boolean(me?.canManageClass), android }));
 
   return (
@@ -78,7 +80,7 @@ const SettingsNav = () => {
             {group.key === "seiten" && (
               <>
                 <SheetItem icon={UserPlus} label={t("Klasse einladen")} onClick={() => openSheet("einladen")} />
-                <SheetItem icon={Info} label={t("Kurz erklärt")} onClick={() => openSheet("tipps")} />
+                <SheetItem icon={Compass} label={t("Rundgang")} onClick={startTour} />
                 <SheetItem icon={Keyboard} label={t("Tastenkürzel")} onClick={() => openSheet("tasten")} />
               </>
             )}

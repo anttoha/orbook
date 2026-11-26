@@ -88,7 +88,7 @@ const LinkTab = ({ tab, active, device }) => {
   const flash = useNavFlash(device, tab.key);
   const label = t(tab.short ?? tab.label);
   return (
-    <Link to={tab.to} aria-label={label} aria-current={active ? "page" : undefined} className={pillClass(active)}>
+    <Link to={tab.to} aria-label={label} aria-current={active ? "page" : undefined} data-tour={tab.key ? `nav-${tab.key}` : undefined} className={pillClass(active)}>
       <tab.icon className="size-5 shrink-0" />
       <TabLabel active={active}>{label}</TabLabel>
       <NavFlash stamp={flash} />
@@ -116,7 +116,7 @@ const GroupTab = ({ tab, look, device, first, open, setOpen }) => {
   const menuId = `gruppe-${tab.id}`;
 
   return (
-    <div className={pillClass(tab.active, open && !tab.active)}>
+    <div data-tour={device ? `nav-${tab.id}` : undefined} className={pillClass(tab.active, open && !tab.active)}>
       <NavFlash stamp={flash} />
       <button
         type="button"
