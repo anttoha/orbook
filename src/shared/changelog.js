@@ -6,6 +6,22 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.32.0",
+    date: "2026-11-26",
+    neu: [
+      "Neu auf Start: „Für dich jetzt“. Morgens siehst du, wann du los musst, wie das Wetter ist und was in die Tasche gehört – im Unterricht die Stunde, nach der Schule schon alles für morgen.",
+      "Wetter für deine Schule: Symbol und Grad in der Woche, eine Karte im Tag und beim Antippen der Verlauf bis mittags – sobald deine Schule das Wetter eingeschaltet hat.",
+      "Was du in welchem Fach brauchst, legst du selbst fest – Sportsachen, Zeichenblock, Flöte, was du willst. Alles unter Mehr → „Für dich jetzt“.",
+      "Android: zwei neue Widgets – „Für dich jetzt“ und „Wetter“.",
+      "Der Block „Heute“ auf Start kann abends schon morgen zeigen – einfach im Block einschalten.",
+    ],
+    behoben: [
+      "Ohne Internet zeigt die App nicht mehr den Tag von gestern, und nach dem ersten Besuch geht sie auch offline auf.",
+      "Wer schnell hin und her tippt (Klasse wechseln, Noten), macht nichts mehr aus Versehen rückgängig.",
+      "Große Widgets zeigen wieder alle Stunden und Aufgaben, und in schmalen Widgets werden keine Zahlen mehr abgeschnitten.",
+    ],
+  },
+  {
     version: "0.31.0",
     date: "2026-11-22",
     neu: [

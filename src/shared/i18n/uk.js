@@ -2581,4 +2581,13 @@ export const uk = {
   "Mappe": "Папка",
   "Deine Einstellungen für „Für dich jetzt“ (wann du losgehst, was gezeigt wird, Wetter-Tipps) und was du pro Fach mitnehmen willst, liegen nur auf deinem Gerät. Was der Block zeigt, rechnet dein Gerät selbst aus dem Plan aus – der Server erfährt nichts davon.": "Твої налаштування «Для тебе зараз» (коли виходиш, що показувати, поради за погодою) і що брати з кожного предмета зберігаються лише на твоєму пристрої. Що показує блок, пристрій сам вираховує з розкладу – сервер про це нічого не знає.",
   "Mit Sync kommen die Einstellungen verschlüsselt mit, solange „Für dich jetzt“ dort eingeschaltet ist – als eigener Block unter einer anderen zufälligen Kennung.": "Із Sync налаштування передаються зашифровано, поки там увімкнено «Для тебе зараз» – окремим блоком під іншим випадковим ідентифікатором.",
+  // часть 45–50: «Was ist neu» 0.32.0
+  "Neu auf Start: „Für dich jetzt“. Morgens siehst du, wann du los musst, wie das Wetter ist und was in die Tasche gehört – im Unterricht die Stunde, nach der Schule schon alles für morgen.": "Нове на Start: «Для тебе зараз». Зранку видно, коли виходити, яка погода і що покласти в сумку – на уроці поточний урок, після школи вже все на завтра.",
+  "Wetter für deine Schule: Symbol und Grad in der Woche, eine Karte im Tag und beim Antippen der Verlauf bis mittags – sobald deine Schule das Wetter eingeschaltet hat.": "Погода для твоєї школи: значок і градуси в тижні, картка в дні, а якщо натиснути – прогноз до обіду. Щойно школа увімкне погоду.",
+  "Was du in welchem Fach brauchst, legst du selbst fest – Sportsachen, Zeichenblock, Flöte, was du willst. Alles unter Mehr → „Für dich jetzt“.": "Що потрібно на якийсь предмет, вирішуєш сам – спортивна форма, альбом, флейта, що завгодно. Усе в Ще → «Для тебе зараз».",
+  "Android: zwei neue Widgets – „Für dich jetzt“ und „Wetter“.": "Android: два нові віджети – «Для тебе зараз» і «Погода».",
+  "Der Block „Heute“ auf Start kann abends schon morgen zeigen – einfach im Block einschalten.": "Блок «Сьогодні» на Start увечері може показувати вже завтра – просто увімкни це в блоці.",
+  "Ohne Internet zeigt die App nicht mehr den Tag von gestern, und nach dem ersten Besuch geht sie auch offline auf.": "Без інтернету застосунок більше не показує вчорашній день, а після першого відкриття працює й офлайн.",
+  "Wer schnell hin und her tippt (Klasse wechseln, Noten), macht nichts mehr aus Versehen rückgängig.": "Швидкі перемикання туди-сюди (клас, оцінки) більше нічого випадково не скасовують.",
+  "Große Widgets zeigen wieder alle Stunden und Aufgaben, und in schmalen Widgets werden keine Zahlen mehr abgeschnitten.": "Великі віджети знову показують усі уроки й завдання, а у вузьких більше не обрізаються цифри.",
 };
