@@ -1,6 +1,6 @@
 # 52 · Rundgang — интерактивный тур для новичка
 
-**Статус:** в работе (дизайн ок 2026-11-26)
+**Статус:** готово (2026-11-26, демо)
 **Источники:** `design/neu/52-rundgang/` (handy-00…09, pc-01…02), старое окно «Kurz erklärt» (часть 25, `TipsSheet`), `Appearance.jsx`, `NavSettings.jsx`, `navLayout.js`.
 
 ## Зачем

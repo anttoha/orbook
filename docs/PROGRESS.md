@@ -845,3 +845,11 @@ CI упал на `WidgetShots` (Robolectric качает Android до прове
 Владелец выбрал «а». `notenStore.setSynced(null)` теперь стирает логин/пароль и вызывает `appNotenLogout()` (Android-App забывает вход InfoPoint, фон больше не опрашивает). `pullApp` берёт оценки из фона, не сдвигая отметку Sync (`take(data, stamp)`), иначе принесённое фоном после выхода перебило бы выход. Тесты в `notenStore.test.js`. Datenschutz: «Abmelden» действует и на других устройствах с Sync (EN/UK). APK не менялся (мост `notenLogout` уже есть).
 **Дальше:** «на прод» (changelog: behoben), без нового APK.
 
+
+## Часть 52 · Rundgang — интерактивный тур (2026-11-26, демо)
+Дизайн `design/neu/52-rundgang` (ок 26.11). Вместо окна «Kurz erklärt» (часть 25, удалено вместе с `TipPictures`) — тур по настоящим экранам:
+прожектор (`tour-spot`: тень цвета `overlay`, переезжает через `transition`), пузырь с пружиной (`animate-tour-pop`), пульс у шагов-действий.
+11 шагов (`shared/utils/tour.js` + тест): Für dich → Woche (нажать) → Ausfall → Heute (нажать) → Stunde → Leistung → Mehr (нажать) → Darstellung (нажать) → Design/Farbe (можно щёлкать) → Untere Leiste → Fertig.
+Элементы — по меткам `data-tour`; нет элемента 1,5 с — шаг пропускается (у шагов-действий тур сам открывает страницу). Флаг `tourPending` вместо `tipsPending`; повтор — Mehr → «Rundgang». Бэкенд и Datenschutz не менялись.
+Скриншоты всего тура (телефон светлая/тёмная, ПК): `/root/work/orbook-compare/52-rundgang/v2/` (`_tools/p52.mjs`).
+**Дальше:** владелец проходит тур на демо; потом «на прод» (changelog: neu).
