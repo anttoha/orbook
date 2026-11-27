@@ -860,3 +860,5 @@ CI упал на `WidgetShots` (Robolectric качает Android до прове
 Пожелание владельца: в «Frei» выбрать весь день или отдельные уроки; уроки плана не прятать, а помечать. Дизайн `design/neu/53-frei-stunden` (ок 27.11), spec `docs/specs/53-frei-stunden/spec.md`.
 Бэкенд: `periods` у Appointment (схема 0018, `null` — весь день, 1…15), выложен `scripts/update.sh` на прод и демо (поле совместимо со старым фронтом). Фронт: «Unterricht» в форме (`FreePeriodsField`), `freeOn`/`markFreeLessons`/`useFreeMarker` → уроки `free: true` зелёные в Woche/Tag/ПК, плашка «Frei: …». Datenschutz не меняется (личных данных нет). Changelog — при релизе.
 Скриншоты: `/root/work/orbook-compare/53-frei-stunden/` (мок, `_tools/p53.mjs`).
+
+**Прод 27.11:** v0.34.0 (часть 53; changelog neu «Frei stundenweise», EN/UK), `docs/releases/v0.34.0.md`, тег v0.34.0, Release опубликован Actions, таймер выложил прод (`5926b50d`). Бэкенд уже был выложен (схема 0018). Без нового APK.
