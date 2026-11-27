@@ -2608,4 +2608,6 @@ export const uk = {
   "{v1} Stunde": "{v1} урок",
   "Frei:": "Вільно:",
   "{label}, frei": "{label}, вільно",
+  // changelog 0.34.0
+  "Freie Tage gehen jetzt auch stundenweise: Bei „Frei“ wählt man „Ganzer Tag“ oder nur einzelne Stunden. Die Stunden verschwinden nicht, sondern sind in Woche und Tag grün als „frei“ markiert.": "Вільний день тепер може бути й на кілька уроків: у «Вільно» вибираєш «Увесь день» або лише окремі уроки. Уроки не зникають — у Тижні й Дні вони позначені зеленим як «вільно».",
 };

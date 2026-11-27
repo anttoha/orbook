@@ -2608,4 +2608,6 @@ export const en = {
   "{v1} Stunde": "{v1} period",
   "Frei:": "Free:",
   "{label}, frei": "{label}, free",
+  // changelog 0.34.0
+  "Freie Tage gehen jetzt auch stundenweise: Bei „Frei“ wählt man „Ganzer Tag“ oder nur einzelne Stunden. Die Stunden verschwinden nicht, sondern sind in Woche und Tag grün als „frei“ markiert.": "Free days can now be just some periods: for “Free”, choose “Whole day” or only certain periods. The lessons don't disappear – they're marked green as “free” in Week and Day.",
 };

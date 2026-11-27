@@ -6,6 +6,13 @@
 // picture — необязательная картинка (ключ из components/changelog/NewsPicture.jsx).
 export const changelog = [
   {
+    version: "0.34.0",
+    date: "2026-11-27",
+    neu: [
+      "Freie Tage gehen jetzt auch stundenweise: Bei „Frei“ wählt man „Ganzer Tag“ oder nur einzelne Stunden. Die Stunden verschwinden nicht, sondern sind in Woche und Tag grün als „frei“ markiert.",
+    ],
+  },
+  {
     version: "0.33.0",
     date: "2026-11-26",
     neu: [
