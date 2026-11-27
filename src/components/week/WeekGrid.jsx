@@ -1,5 +1,6 @@
 import { useNow } from "../../shared/hooks/useNow";
 import { useLessonFilter } from "../../shared/hooks/usePlan";
+import { useFreeMarker } from "../../shared/hooks/useAppointments";
 import { useUserStore } from "../../shared/store/userStore";
 import { cn } from "../../shared/utils/cn";
 import { berlinParts, isLessonPast, toMinutes } from "../../shared/utils/lessonClock";
@@ -35,6 +36,7 @@ const WeekGrid = ({ days, onLessonClick }) => {
   const t = useT();
   const { now, today } = useNow(); // час школи
   const filter = useLessonFilter(); // «Meine Kurse»
+  const markFree = useFreeMarker(); // уроки в день «Frei» (частина 53)
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
   const lessonTimes = usePlanStore((s) => s.meta?.lessonTimes); // час уроків
   const meta = usePlanStore((s) => s.meta); // виды Tests с Kürzel (часть 24)
@@ -42,7 +44,7 @@ const WeekGrid = ({ days, onLessonClick }) => {
   const cellHeight = compact ? "min-h-13" : "min-h-16"; // висота рядка уроку
   const plan = usePlanView(); // «Stundenplan» (частина 30b)
 
-  const shown = days.map((day) => ({ ...day, lessons: shownLessons(filter(day.lessons), plan) })); // дні без прихованих курсів (і випалих, якщо «Ausblenden»)
+  const shown = days.map((day) => ({ ...day, lessons: shownLessons(markFree(filter(day.lessons), day.date), plan) })); // дні без прихованих курсів (і випалих, якщо «Ausblenden»)
   const rows = periodRows(shown, lessonTimes); // рядки: уроки, що є в цьому тижні
   const dayCount = days.length;
   const todayIndex = days.findIndex((d) => d.date === today); // колонка сьогодні (-1 — не цей тиждень)

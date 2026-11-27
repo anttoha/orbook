@@ -31,6 +31,35 @@ export const lastDay = (item) => item.dateTo ?? item.dateFrom;
 // Чи йде термін у цей день
 export const coversDay = (item, iso) => item.dateFrom <= iso && iso <= lastDay(item);
 
+// ── «Frei» по урокам (частина 53). periods: null — весь день, [5, 6] — лише ці уроки ──
+
+// «5.–6. Stunde», «1., 3.–4. Stunde»; null — «ganzer Tag». Сусідні номери — діапазоном
+export function periodsText(periods) {
+  if (!periods?.length) return translate("ganzer Tag");
+  const parts = [];
+  for (const p of [...periods].sort((a, b) => a - b)) {
+    const last = parts.at(-1);
+    if (last && p === last[1] + 1) last[1] = p;
+    else parts.push([p, p]);
+  }
+  const text = parts.map(([a, b]) => (a === b ? `${a}.` : `${a}.–${b}.`)).join(", ");
+  return translate("{v1} Stunde", { v1: text });
+}
+
+// Що вільне в цей день: null — нічого; { all: true } — весь день; { all: false, periods: Set } — частина уроків
+export function freeOn(items, iso) {
+  const free = items.filter((item) => isFree(item) && coversDay(item, iso));
+  if (free.length === 0) return null;
+  if (free.some((item) => !item.periods?.length)) return { all: true, periods: new Set() };
+  return { all: false, periods: new Set(free.flatMap((item) => item.periods)) };
+}
+
+// Уроки не ховаємо — лише позначаємо free: true (клітинка й рядок стають зеленими «frei»)
+export function markFreeLessons(lessons, free) {
+  if (!free) return lessons;
+  return lessons.map((lesson) => (free.all || free.periods.has(lesson.period) ? { ...lesson, free: true } : lesson));
+}
+
 // ── Хто що бачить ──
 
 // Предмети учня за «Meine Kurse»: обов'язкові курси + вибрані (порожній picked — усі).
@@ -81,7 +110,7 @@ export function metaText(item) {
   const parts = [];
   if (item.subject) parts.push(subjectName(item.subject));
   if (item.dateTo) parts.push(translate("bis {v1}, {v2}", { v1: weekdayShort(item.dateTo), v2: shortDate(item.dateTo) }));
-  const time = timeText(item);
+  const time = isFree(item) ? (item.periods?.length ? periodsText(item.periods) : null) : timeText(item);
   if (time) parts.push(time);
   if (item.place) parts.push(item.place);
   const by = byText(item);
@@ -125,9 +154,12 @@ export function sourceText(item, me) {
 // Для кого: «Gilt für alle mit dem Kurs Physik.» / «Gilt für die ganze Klasse.»
 export const audienceText = (item) => (item.subject ? translate("Gilt für alle mit dem Kurs {v1}.", { v1: subjectName(item.subject) }) : translate("Gilt für die ganze Klasse."));
 
+// Після дати: час, а у «Frei» — уроки («5.–6. Stunde», «ganzer Tag»)
+export const whenExtra = (item) => (isFree(item) ? periodsText(item.periods) : timeText(item));
+
 // Текст для «Teilen» — без автора
 export function appointmentText(item) {
-  const lines = [`${kindInfo(item.kind).label}: ${item.title}`, dateText(item) + (timeText(item) ? ` · ${timeText(item)}` : "")];
+  const lines = [`${kindInfo(item.kind).label}: ${item.title}`, dateText(item) + (whenExtra(item) ? ` · ${whenExtra(item)}` : "")];
   if (item.place) lines.push(item.place);
   if (item.note) lines.push(item.note);
   return `${lines.join("\n")}\n\nvia ORBook`;
@@ -163,6 +195,7 @@ export const appointmentToForm = (item) => ({
   dateTo: item?.dateTo ?? "",
   timeFrom: item?.timeFrom ?? "",
   timeTo: item?.timeTo ?? "",
+  periods: item?.periods ?? null, // «Frei»: null — ganzer Tag, [] / [5, 6] — einzelne Stunden
   place: item?.place ?? "",
   note: item?.note ?? "",
 });
@@ -170,15 +203,17 @@ export const appointmentToForm = (item) => ({
 // Поля форми → тіло запиту: порожнє — null (сервер так очищає поле)
 export function formToBody(form) {
   const empty = (value) => (value?.trim() ? value.trim() : null);
+  const free = form.kind === "free"; // у «Frei» замість часу й місця — уроки
   return {
     kind: form.kind,
     subject: form.subject ?? null,
     title: form.title.trim(),
     dateFrom: form.dateFrom,
     dateTo: empty(form.dateTo),
-    timeFrom: empty(form.timeFrom),
-    timeTo: empty(form.timeTo),
-    place: empty(form.place),
+    timeFrom: free ? null : empty(form.timeFrom),
+    timeTo: free ? null : empty(form.timeTo),
+    ...(free && { periods: form.periods ?? null }), // інші види уроків не мають (сервер сам скидає)
+    place: free ? null : empty(form.place),
     note: empty(form.note),
   };
 }
@@ -198,13 +233,15 @@ export function validateAppointmentForm(form, today, originalDates = null) {
   }
   const changed = !originalDates || originalDates.from !== form.dateFrom || (originalDates.to ?? "") !== (to ?? "");
   if (!errors.dateFrom && !errors.dateTo && changed && (to ?? form.dateFrom) < today) errors.dateFrom = translate("Der Termin liegt in der Vergangenheit.");
-  const from = form.timeFrom?.trim();
-  const until = form.timeTo?.trim();
+  const free = form.kind === "free";
+  if (free && form.periods?.length === 0) errors.periods = translate("Bitte mindestens eine Stunde wählen.");
+  const from = free ? "" : form.timeFrom?.trim(); // у «Frei» часу немає
+  const until = free ? "" : form.timeTo?.trim();
   if (from && !TIME.test(from)) errors.timeFrom = translate("Bitte die Uhrzeit als HH:MM eingeben.");
   if (until && !TIME.test(until)) errors.timeTo = translate("Bitte die Uhrzeit als HH:MM eingeben.");
   else if (until && !from) errors.timeTo = translate("Bitte zuerst die Anfangszeit eingeben.");
   else if (until && from && !to && !errors.timeFrom && until <= from) errors.timeTo = translate("Das Ende liegt vor dem Anfang.");
-  if (form.place.trim().length > PLACE_MAX) errors.place = translate("Der Ort darf höchstens {PLACE_MAX} Zeichen lang sein.", { PLACE_MAX });
+  if (!free && form.place.trim().length > PLACE_MAX) errors.place = translate("Der Ort darf höchstens {PLACE_MAX} Zeichen lang sein.", { PLACE_MAX });
   if (form.note.trim()) {
     const noteError = validateHomeworkText(form.note);
     if (noteError) errors.note = noteError.replace(translate("Die Aufgabe"), translate("Der Hinweis")).replace(translate("in der Aufgabe"), translate("im Hinweis"));

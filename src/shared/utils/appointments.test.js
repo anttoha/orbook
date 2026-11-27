@@ -7,9 +7,12 @@ import {
   countdown,
   dateText,
   formToBody,
+  freeOn,
   groupAppointments,
+  markFreeLessons,
   metaText,
   mySubjects,
+  periodsText,
   sourceText,
   timeText,
   upcomingAppointments,
@@ -128,5 +131,35 @@ describe(".ics", () => {
     expect(timed).toContain("DTSTART;TZID=Europe/Berlin:20260928T074500");
     expect(timed).toContain("DTEND;TZID=Europe/Berlin:20260928T150000");
     expect(timed).toContain("LOCATION:Lüdenscheid");
+  });
+});
+
+describe("Frei nach Stunden (частина 53)", () => {
+  it("уроки — діапазонами, без уроків — весь день", () => {
+    expect(periodsText([6, 5])).toBe("5.–6. Stunde");
+    expect(periodsText([1, 3, 4])).toBe("1., 3.–4. Stunde");
+    expect(periodsText(null)).toBe("ganzer Tag");
+  });
+  it("що вільне в день: весь день перемагає, уроки об'єднуються", () => {
+    const sport = item({ kind: "free", dateFrom: "2026-09-18", periods: [5, 6] });
+    const fest = item({ id: 2, kind: "free", dateFrom: "2026-09-18", periods: [1] });
+    const trip = item({ id: 3, dateFrom: "2026-09-18", periods: null });
+    expect(freeOn([trip], "2026-09-18")).toBeNull(); // Ausflug нічого не звільняє
+    expect([...freeOn([sport, fest], "2026-09-18").periods].sort()).toEqual([1, 5, 6]);
+    expect(freeOn([sport, item({ id: 4, kind: "free", dateFrom: "2026-09-17", dateTo: "2026-09-19", periods: null })], "2026-09-18").all).toBe(true);
+    expect(freeOn([sport], "2026-09-19")).toBeNull();
+  });
+  it("уроки не зникають — лише позначка free", () => {
+    const lessons = [{ period: 4 }, { period: 5 }];
+    expect(markFreeLessons(lessons, null)).toBe(lessons);
+    expect(markFreeLessons(lessons, { all: false, periods: new Set([5]) })).toEqual([{ period: 4 }, { period: 5, free: true }]);
+    expect(markFreeLessons(lessons, { all: true, periods: new Set() }).every((l) => l.free)).toBe(true);
+  });
+  it("форма: без уроку не зберегти, у «Frei» немає часу й місця", () => {
+    const frei = form({ kind: "free", periods: [], timeFrom: "07:45", place: "Aula" });
+    expect(validateAppointmentForm(frei, TODAY).periods).toBe("Bitte mindestens eine Stunde wählen.");
+    expect(validateAppointmentForm({ ...frei, periods: null, timeFrom: "7:4" }, TODAY)).toEqual({});
+    expect(formToBody({ ...frei, periods: [5, 6] })).toMatchObject({ periods: [5, 6], timeFrom: null, place: null });
+    expect(metaText(item({ kind: "free", periods: [5, 6] }))).toBe("5.–6. Stunde");
   });
 });

@@ -16,6 +16,7 @@ import { CheckIcon, TrashIcon } from "../ui/icons";
 import PageHeader from "../ui/PageHeader";
 import TextField from "../ui/TextField";
 import ChipButton from "../ui/ChipButton";
+import FreePeriodsField from "./FreePeriodsField";
 import { useT } from "../../shared/hooks/useT";
 import { translate } from "../../shared/i18n/translate";
 
@@ -57,6 +58,7 @@ const AppointmentForm = ({ item, subjects, eyebrow, admin = false }) => {
   const flow = useExamSave(item, ops);
   const errors = { ...localErrors, ...flow.fieldErrors };
   const backTo = ops.listPath;
+  const free = fields.kind === "free"; // «Frei»: замість часу й місця — уроки (частина 53)
 
   const change = (part) => {
     setFields({ ...fields, ...part });
@@ -95,6 +97,8 @@ const AppointmentForm = ({ item, subjects, eyebrow, admin = false }) => {
           </div>
         </Field>
 
+        {free && <FreePeriodsField periods={fields.periods} error={errors.periods} onChange={(periods) => change({ periods })} />}
+
         <Field label={t("Für")} error={errors.subject}>
           <div className="flex flex-wrap gap-2">
             <Choice selected={!fields.subject} onClick={() => change({ subject: null })}>
@@ -122,12 +126,14 @@ const AppointmentForm = ({ item, subjects, eyebrow, admin = false }) => {
           <TextField id="termin-to" label={t("Bis · optional")} type="date" min={fields.dateFrom || undefined} value={fields.dateTo} error={errors.dateTo} hint={fields.dateTo ? null : t("Für mehrere Tage")} onChange={(event) => change({ dateTo: event.target.value })} />
         </div>
 
-        <div className="grid grid-cols-2 gap-2.5 lg:gap-5">
-          <TextField id="termin-time-from" label={t("Uhrzeit · optional")} type="time" value={fields.timeFrom} error={errors.timeFrom} hint={errors.timeFrom ? null : t("Leer = ganzer Tag.")} onChange={(event) => change({ timeFrom: event.target.value })} />
-          <TextField id="termin-time-to" label={t("Bis · optional")} type="time" value={fields.timeTo} error={errors.timeTo} onChange={(event) => change({ timeTo: event.target.value })} />
-        </div>
+        {!free && (
+          <div className="grid grid-cols-2 gap-2.5 lg:gap-5">
+            <TextField id="termin-time-from" label={t("Uhrzeit · optional")} type="time" value={fields.timeFrom} error={errors.timeFrom} hint={errors.timeFrom ? null : t("Leer = ganzer Tag.")} onChange={(event) => change({ timeFrom: event.target.value })} />
+            <TextField id="termin-time-to" label={t("Bis · optional")} type="time" value={fields.timeTo} error={errors.timeTo} onChange={(event) => change({ timeTo: event.target.value })} />
+          </div>
+        )}
 
-        <TextField id="termin-place" label={t("Ort · optional")} placeholder={t("z. B. Aula")} value={fields.place} error={errors.place} maxLength={80} trailing={<MapPin className="size-4.5" />} onChange={(event) => change({ place: event.target.value })} />
+        {!free && <TextField id="termin-place" label={t("Ort · optional")} placeholder={t("z. B. Aula")} value={fields.place} error={errors.place} maxLength={80} trailing={<MapPin className="size-4.5" />} onChange={(event) => change({ place: event.target.value })} />}
 
         <TextField
           id="termin-note"

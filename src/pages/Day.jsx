@@ -25,6 +25,7 @@ import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
 import { useNow } from "../shared/hooks/useNow";
 import WeatherCard from "../components/weather/WeatherCard";
 import { useDay, useLessonFilter } from "../shared/hooks/usePlan";
+import { useFreeMarker } from "../shared/hooks/useAppointments";
 import { useSheet } from "../shared/hooks/useSheet";
 import { useSwipe } from "../shared/hooks/useSwipe";
 import { usePlanStore } from "../shared/store/planStore";
@@ -62,6 +63,7 @@ const Day = () => {
   const navigate = useNavigate(); // перехід на інший день
   const isDesktop = useMediaQuery(DESKTOP_QUERY); // ≥ 1024px — комп'ютерний вигляд
   const filter = useLessonFilter(); // «Meine Kurse»
+  const markFree = useFreeMarker(); // частина 53
   const setAllCourses = useUserStore((s) => s.setAllCourses); // режим «Alle Kurse» (вибір не змінює)
   const holidays = usePlanStore((s) => s.meta?.holidays); // вільні дні (для гортання)
   const loadWeek = usePlanStore((s) => s.loadWeek); // «Erneut versuchen»
@@ -100,7 +102,7 @@ const Day = () => {
   const openInfo = () => openSheet("info", { datum: date }); // для будь-якого дня, навіть без тексту школи
   const openLesson = (lesson) => openSheet("stunde", { datum: date, stunde: lesson.period, fach: lesson.subject?.code });
 
-  const lessons = day?.status === "ok" ? filter(day.lessons) : []; // уроки без прихованих курсів
+  const lessons = day?.status === "ok" ? markFree(filter(day.lessons), day.date) : []; // уроки без прихованих курсів; у «Frei» — позначені
   const hiddenHere = day?.status === "ok" ? day.lessons.length - lessons.length : 0; // скільки сховано
   const live = day && date === today ? lessonState(mineOnly(lessons), now) : null; // що йде зараз (тільки сьогодні)
   const showLive = Boolean(live?.current || live?.next); // картка «Jetzt / Gleich»

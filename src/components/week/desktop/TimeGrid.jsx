@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useNow } from "../../../shared/hooks/useNow";
 import { useLessonFilter } from "../../../shared/hooks/usePlan";
+import { useFreeMarker } from "../../../shared/hooks/useAppointments";
 import { usePlanView } from "../../../shared/hooks/usePlanView";
 import { shownLessons } from "../../../shared/utils/planView";
 import { FONT_SCALES } from "../../../shared/constants/constants";
@@ -28,12 +29,13 @@ const CARD_GAP = 3; // відступ картки зверху і знизу в
 const TimeGrid = ({ days, onLessonClick }) => {
   const { now, today } = useNow(); // час школи
   const filter = useLessonFilter(); // «Meine Kurse»
+  const markFree = useFreeMarker(); // уроки в день «Frei» (частина 53)
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
   // Висота шкали: більший шрифт і вимкнена «Kompakte Woche» роблять картки вищими
   const pxPerMin = useUserStore((s) => PX_PER_MIN * FONT_SCALES[s.fontScale] * (s.compactWeek ? 1 : 1.25));
 
   const plan = usePlanView(); // «Stundenplan» (частина 30b)
-  const shown = days.map((day) => ({ ...day, lessons: shownLessons(filter(day.lessons), plan) })); // без прихованих курсів (і випалих при «Ausblenden»)
+  const shown = days.map((day) => ({ ...day, lessons: shownLessons(markFree(filter(day.lessons), day.date), plan) })); // без прихованих курсів (і випалих при «Ausblenden»)
   const todayIndex = days.findIndex((d) => d.date === today); // колонка «сьогодні» (-1 — не цей тиждень)
   const timed = shown.flatMap((d) => d.lessons.filter((l) => l.start)); // уроки з часом
 

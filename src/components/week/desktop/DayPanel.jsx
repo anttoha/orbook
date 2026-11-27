@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { List } from "lucide-react";
 import { useNow } from "../../../shared/hooks/useNow";
 import { useDay, useLessonFilter } from "../../../shared/hooks/usePlan";
+import { useFreeMarker } from "../../../shared/hooks/useAppointments";
 import { useSheet } from "../../../shared/hooks/useSheet";
 import { longDate, relativeDayWord, weekdayLong } from "../../../shared/utils/format";
 import { freeText } from "../../../shared/utils/lessons";
@@ -35,10 +36,11 @@ const DayPanel = ({ date }) => {
   const { today } = useNow(); // сьогодні
   const { openSheet } = useSheet(); // відкрити шторку
   const filter = useLessonFilter(); // «Meine Kurse»
+  const markFree = useFreeMarker(); // частина 53
   const { day } = useDay(date); // день із уже завантаженого тижня
   const [view, setView] = useState("liste"); // вигляд усередині картки
 
-  const lessons = day ? filter(day.lessons) : []; // уроки дня
+  const lessons = day ? markFree(filter(day.lessons), day.date) : []; // уроки дня (вільні в «Frei» позначені)
   const word = relativeDayWord(date, today); // heute / morgen / gestern
   const openLesson = (lesson) => openSheet("stunde", { datum: date, stunde: lesson.period, fach: lesson.subject?.code });
 

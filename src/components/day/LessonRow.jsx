@@ -49,8 +49,9 @@ const EntryLine = ({ icon: Icon, accent, children }) => (
 const LessonRow = ({ lesson, exam, homework = [], movedAway = [], date, isPast, live, note, overrides, plan = PLAN_DEFAULTS, onOpen }) => {
   const t = useT();
   const { now } = useNow(); // для смужки прогресу
-  const isCancelled = lesson.status === "cancelled"; // fällt aus?
-  const isChanged = !isCancelled && lesson.status !== "normal"; // зміна (рамка)
+  const isFree = Boolean(lesson.free); // день «Frei» (частина 53): урок є, але вільний
+  const isCancelled = !isFree && lesson.status === "cancelled"; // fällt aus?
+  const isChanged = !isFree && !isCancelled && lesson.status !== "normal"; // зміна (рамка)
   const caption = lessonNote(lesson, null); // рядок з (i): текст школы, перенос
 
   const row = (
@@ -61,7 +62,7 @@ const LessonRow = ({ lesson, exam, homework = [], movedAway = [], date, isPast, 
       disabled={!onOpen}
       className={cn(
         "relative flex min-h-16 w-full rounded-box px-3.5 py-3 text-left transition-shadow outline-none select-none [-webkit-touch-callout:none] hover:shadow-raise focus-visible:ring-2 focus-visible:ring-accent/60",
-        lesson.notMine ? "border border-dashed border-faint2 text-faint" : isCancelled ? "bg-sand text-faint" : subjectLook(lesson.subject?.code, overrides, plan),
+        lesson.notMine ? "border border-dashed border-faint2 text-faint" : isFree ? "bg-ok-tint" : isCancelled ? "bg-sand text-faint" : subjectLook(lesson.subject?.code, overrides, plan),
         lesson.muster && "hatch-muster", // урок із Muster (частина 19)
         (isChanged || live) && "ring-2 ring-accent", // рамка в зміни й в уроку, що йде
         live && "pb-5", // місце під смужку прогресу
@@ -76,9 +77,9 @@ const LessonRow = ({ lesson, exam, homework = [], movedAway = [], date, isPast, 
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
-          <span className={cn("truncate text-body font-extrabold", isCancelled && "line-through")}>{lessonName(lesson)}</span>
+          <span className={cn("truncate text-body font-extrabold", (isCancelled || isFree) && "line-through", isFree && "text-ok")}>{lessonName(lesson)}</span>
           {/* чужий курс у режимі «Alle Kurse» (частина 22) */}
-          {lesson.notMine ? <Badge variant="cancelled">{t("Nicht dein Kurs")}</Badge> : live ? <Badge variant="live">{t("Läuft ·")} {live.minutesLeft} min</Badge> : <StatusBadge lesson={lesson} exam={exam} />}
+          {lesson.notMine ? <Badge variant="cancelled">{t("Nicht dein Kurs")}</Badge> : isFree ? <Badge variant="frei">{t("Frei")}</Badge> : live ? <Badge variant="live">{t("Läuft ·")} {live.minutesLeft} min</Badge> : <StatusBadge lesson={lesson} exam={exam} />}
         </div>
 
         {!isCancelled && <PlaceLine lesson={lesson} />}

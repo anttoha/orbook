@@ -20,6 +20,16 @@ const LessonCell = ({ lesson, isPast, overrides, examShort, plan = PLAN_DEFAULTS
   const room = plan.showRoom ? lesson.room : null; // кабінет унизу (якщо ввімкнено)
   const teacher = plan.showTeacher && !lesson.examId ? lesson.teacher : null; // вчитель — праворуч від назви, як на макеті 30 · handy-13
 
+  // Урок у день «Frei» (частина 53): зелений, пунктир, «frei» замість кабінету
+  if (lesson.free) {
+    return (
+      <button type="button" aria-label={t("{label}, frei", { label })} {...props} className={cn(base, "border border-dashed border-ok bg-ok-tint text-ok", isPast && "opacity-50", className)}>
+        <span className="truncate text-hint font-black">{cellTitle(lesson, plan)}</span>
+        <span className="truncate text-nano font-extrabold">{t("frei")}</span>
+      </button>
+    );
+  }
+
   // Скасований урок: пунктирна рамка, закреслений код
   if (lesson.status === "cancelled") {
     return (

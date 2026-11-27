@@ -2600,4 +2600,12 @@ export const en = {
   // changelog 0.33.0
   "Neu: ein Rundgang durch die App. Beim ersten Start zeigt ORBook dir direkt auf dem Bildschirm, wo was ist – du tippst selbst mit. Nochmal ansehen: Mehr → „Rundgang“.": "New: a tour of the app. On first start ORBook shows you right on the screen where everything is – and you tap along. See it again: More → “Tour”.",
   "Wenn du dich über Sync bei den Noten abmeldest, bist du jetzt auf allen Geräten abgemeldet – auch in der Android-App.": "If you sign out of grades via Sync, you're now signed out on all devices – including the Android app.",
+  // часть 53: Frei nach Stunden
+  "Unterricht": "Lessons",
+  "Nur einzelne Stunden": "Only some periods",
+  "Bitte mindestens eine Stunde wählen.": "Please choose at least one period.",
+  "ganzer Tag": "whole day",
+  "{v1} Stunde": "{v1} period",
+  "Frei:": "Free:",
+  "{label}, frei": "{label}, free",
 };

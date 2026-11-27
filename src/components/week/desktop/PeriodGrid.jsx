@@ -1,5 +1,6 @@
 import { useNow } from "../../../shared/hooks/useNow";
 import { useLessonFilter } from "../../../shared/hooks/usePlan";
+import { useFreeMarker } from "../../../shared/hooks/useAppointments";
 import { usePlanStore } from "../../../shared/store/planStore";
 import { useUserStore } from "../../../shared/store/userStore";
 import { isLessonPast } from "../../../shared/utils/lessonClock";
@@ -21,13 +22,14 @@ import GridDayHeader from "./GridDayHeader";
 const PeriodGrid = ({ days, selectedDay, onSelectDay, onLessonClick }) => {
   const { now, today } = useNow(); // час школи
   const filter = useLessonFilter(); // «Meine Kurse»
+  const markFree = useFreeMarker(); // уроки в день «Frei» (частина 53)
   const overrides = useUserStore((s) => s.colorOverrides); // свої кольори
   const lessonTimes = usePlanStore((s) => s.meta?.lessonTimes); // час уроків
   const rowHeight = useUserStore((s) => (s.compactWeek ? 104 : 130)); // «Kompakte Woche»
 
   const plan = usePlanView(); // «Stundenplan» (частина 30b)
 
-  const shown = days.map((day) => ({ ...day, lessons: shownLessons(filter(day.lessons), plan) })); // без прихованих курсів (і випалих при «Ausblenden»)
+  const shown = days.map((day) => ({ ...day, lessons: shownLessons(markFree(filter(day.lessons), day.date), plan) })); // без прихованих курсів (і випалих при «Ausblenden»)
   const rows = periodRows(shown, lessonTimes); // номери уроків цього тижня
   const selectedIndex = days.findIndex((d) => d.date === selectedDay); // колонка вибраного дня
 

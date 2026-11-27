@@ -4,7 +4,7 @@ import { useAppointment } from "../../shared/hooks/useAppointments";
 import { useNow } from "../../shared/hooks/useNow";
 import { usePlanStore } from "../../shared/store/planStore";
 import { cn } from "../../shared/utils/cn";
-import { appointmentIcs, appointmentText, countdown, dateText, isFree, timeText } from "../../shared/utils/appointments";
+import { appointmentIcs, appointmentText, countdown, dateText, isFree, whenExtra } from "../../shared/utils/appointments";
 import { subjectName } from "../../shared/utils/format";
 import { shareText } from "../../shared/utils/share";
 import AppointmentBadge from "../appointments/AppointmentBadge";
@@ -27,7 +27,7 @@ const Countdown = ({ item, today }) => {
         <p className="text-body font-bold text-ink">{label}</p>
         <p className="mt-0.5 truncate text-hint text-muted">
           {dateText(item)}
-          {timeText(item) && ` · ${timeText(item)}`}
+          {whenExtra(item) && ` · ${whenExtra(item)}`}
         </p>
       </div>
     </Liquid>

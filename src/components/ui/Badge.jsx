@@ -4,6 +4,7 @@ import { cn } from "../../shared/utils/cn";
 const variants = {
   changed: "bg-tint text-accent-ink", // VERTRETUNG, RAUM
   cancelled: "border border-dashed border-faint2 text-muted", // FÄLLT AUS: тільки пунктирна рамка, без заливки
+  frei: "border border-dashed border-ok text-ok", // FREI (частина 53): як FÄLLT AUS, тільки зелений
   exam: "bg-accent text-on-accent", // KLAUSUR
   soft: "bg-sand text-muted", // TEST, ABGABE
   live: "bg-accent text-on-accent", // LÄUFT · 27 MIN

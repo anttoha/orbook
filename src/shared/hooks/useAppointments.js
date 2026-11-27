@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useAppointmentStore } from "../store/appointmentsStore";
 import { usePlanStore } from "../store/planStore";
 import { useUserStore } from "../store/userStore";
-import { appointmentsOn, mySubjects, visibleAppointments } from "../utils/appointments";
+import { appointmentsOn, freeOn, markFreeLessons, mySubjects, visibleAppointments } from "../utils/appointments";
 
 // Терміни, які бачить цей учень: курсові — лише з його предметами («Meine Kurse»).
 // Перший виклик завантажує список; далі — той самий у пам'яті
@@ -24,6 +24,12 @@ export function useAppointments() {
 
 // Терміни одного дня (смужка тижня, плашка дня)
 export const useAppointmentsOn = (iso) => appointmentsOn(useAppointments().items, iso);
+
+// «Frei» (частина 53): markFree(lessons, date) — ті самі уроки, вільні позначені free: true
+export function useFreeMarker() {
+  const { items } = useAppointments();
+  return (lessons, iso) => markFreeLessons(lessons, freeOn(items, iso));
+}
 
 // Один термін для вікна: { item, status } (status: loading | missing | ready)
 export function useAppointment(id) {
